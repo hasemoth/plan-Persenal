@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน (Real-time)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+:root {
+  --ink: #16233B; --ink-soft: #4A5773; --bg: #F3F5F9; --surface: #FFFFFF;
+  --indigo: #3A2E6E; --indigo-deep: #241C4D; --indigo-soft: #EDEAFB;
+  --line: #E1E4EC; --line-soft: #EEF0F5; --cyan: #22D3EE; --danger: #E23D5B;
+  --radius: 10px; --sticky-bg: #FAFBFD;
+}
+* { box-sizing: border-box; }
+body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; margin: 0; padding: 0; }
+#app { display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; background: linear-gradient(135deg, #1B365D, #3A2E6E); color: #fff; }
+.brand-title { font-weight: 700; font-size: 18px; }
+.brand-sub { font-size: 12px; opacity: 0.8; }
+.tabs { display: flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--surface); border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab { position: relative; border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft); padding: 8px 26px 8px 14px; border-radius: 999px; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
+.tab.active { background: var(--indigo); color: #fff; font-weight: 600; border-color: var(--indigo); }
+.badge-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; background: #E2E8F0; color: #475569; }
+.badge-tag.work { background: #E0F2FE; color: #0369A1; }
+.badge-tag.personal { background: #FCE7F3; color: #BE185D; }
+.content { padding: 18px 22px 40px; flex: 1; }
+.toolbar { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.proj-title h2 { margin: 0; font-size: 19px; color: var(--indigo-deep); }
+.primary-btn, .ghost-btn { font-family: inherit; border-radius: 8px; cursor: pointer; font-size: 13px; padding: 7px 12px; border: 1px solid var(--line); background: #fff; }
+.primary-btn { background: var(--indigo); color: #fff; border-color: var(--indigo); font-weight: 600; }
+.gantt-scroll { overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); max-height: 72vh; }
+.gantt-inner { position: relative; min-width: max-content; }
+.gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
+.header-row { display: flex; }
+.row-label { position: sticky; left: 0; z-index: 10; width: 220px; min-width: 220px; background: #FAFBFD; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; padding: 6px 10px; font-size: 13px; }
+.corner { z-index: 30; font-weight: 700; color: var(--indigo-deep); background: var(--indigo-soft); }
+.row-track { position: relative; display: flex; }
+.hdr-seg { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; }
+.year-seg { background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 700; height: 30px; }
+.month-seg { background: #fff; height: 26px; }
+.gantt-body { position: relative; min-width: max-content; }
+.dept-block { display: flex; border-bottom: 2px solid var(--line); width: 100%; align-items: stretch; }
+.subrow { position: relative; height: 32px; border-bottom: 1px solid var(--line-soft); background-image: repeating-linear-gradient(to right, transparent, transparent 51px, var(--line-soft) 51px, var(--line-soft) 52px); }
+.act-bar { position: absolute; top: 4px; height: 24px; border-radius: 6px; color: #14213A; font-size: 11.5px; font-weight: 600; display: flex; align-items: center; padding: 0 8px; white-space: nowrap; box-shadow: 0 1px 2px rgba(20,33,58,0.25); }
+.today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--danger); z-index: 15; }
+.today-line::before { content: 'วันนี้'; position: absolute; top: 2px; left: 4px; font-size: 11px; color: var(--danger); font-weight: 700; background: rgba(255,255,255,0.8); padding: 0 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="app"><div style="padding:40px;text-align:center;">⏳ กำลังโหลดข้อมูลระบบรวม (Real-time)...</div></div>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec';
+const DAY = 86400000;
+const RANGE_START_BE = 2569, RANGE_END_BE = 2575;
+const EPOCH = new Date(Date.UTC(RANGE_START_BE - 543, 0, 1));
+const EPOCH_T = EPOCH.getTime();
+
+function indexFromDate(d) { return Math.round((d.getTime() - EPOCH_T) / DAY); }
+function dateFromIndex(i) { return new Date(EPOCH_T + i * DAY); }
+const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+let state = null;
+let view = { type: 'overview' };
+let zoom = 'month';
+
+async function loadState() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    return await res.json();
+  } catch(e) { console.error(e); return null; }
+}
+
+async function saveState() {
+  await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(state),
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  });
+}
+
+async function init() {
+  state = await loadState();
+  if (!state) { alert('โหลดข้อมูลไม่สำเร็จ'); return; }
+  render();
+  // รีเฟรชดึงข้อมูลอัตโนมัติทุก 10 วินาที เพื่อให้เป็น Real-time กับลิงก์ที่ 1
+  setInterval(async () => {
+    const fresh = await loadState();
+    if (fresh && JSON.stringify(fresh) !== JSON.stringify(state)) {
+      state = fresh;
+      render();
+    }
+  }, 10000);
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="brand-title">แผนการดำเนินงานรวม (ส่วนตัว & ที่ทำงาน)</div>
+        <div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time กับระบบสำนักงาน</div>
+      </div>
+    </div>
+    <div class="tabs" id="tabContainer"></div>
+    <div class="content" id="mainContent"></div>
+  `;
+
+  // Render Tabs
+  const tabContainer = document.getElementById('tabContainer');
+  const ovBtn = document.createElement('button');
+  ovBtn.className = 'tab' + (view.type === 'overview' ? ' active' : '');
+  ovBtn.textContent = '📊 ภาพรวมทั้งหมด (ส่วนตัว + ที่ทำงาน)';
+  ovBtn.onclick = () => { view = { type: 'overview' }; render(); };
+  tabContainer.appendChild(ovs = ovBtn);
+
+  state.projects.forEach(p => {
+    const btn = document.createElement('button');
+    const isAct = (view.type === 'project' && view.id === p.id);
+    btn.className = 'tab' + (isAct ? ' active' : '');
+    
+    // ตรวจสอบว่าเป็นโครงการประเภทไหน (ถ้ามีคำว่า "ส่วนตัว" ให้ติดป้ายชมพู ถ้าไม่ใช่ให้ติดป้ายฟ้าทำงาน)
+    const isPersonal = p.name.includes('ส่วนตัว') || p.category === 'personal';
+    const tagClass = isPersonal ? 'personal' : 'work';
+    const tagName = isPersonal ? 'ส่วนตัว' : 'ที่ทำงาน';
+
+    btn.innerHTML = `<span>${p.name}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
+    btn.onclick = () => { view = { type: 'project', id: p.id }; render(); };
+    tabContainer.appendChild(btn);
+  });
+
+  // ปุ่มเพิ่มโปรเจกต์ใหม่ได้ทั้ง 2 ประเภท
+  const addBtn = document.createElement('button');
+  addBtn.className = 'tab';
+  addBtn.style.borderStyle = 'dashed';
+  addBtn.textContent = '+ เพิ่มโครงการ (ส่วนตัว/ทำงาน)';
+  addBtn.onclick = addNewProjectModal;
+  tabContainer.appendChild(addBtn);
+
+  // Render Content
+  const content = document.getElementById('mainContent');
+  if (view.type === 'overview') {
+    content.innerHTML = `<h2>ภาพรวมโครงการทั้งหมด</h2><p>แสดงผลกิจกรรมทั้งส่วนตัวและของที่ทำงานร่วมกันในหน้าเดียว</p>`;
+    // สร้างตารางภาพรวมรวมมิตร
+    content.appendChild(renderGanttView(state.projects, 'โครงการทั้งหมด'));
+  } else {
+    const proj = state.projects.find(x => x.id === view.id);
+    if (proj) {
+      content.innerHTML = `
+        <div class="toolbar">
+          <div class="proj-title"><h2>${proj.name}</h2></div>
+          <button class="primary-btn" onclick="addDept('${proj.id}')">+ เพิ่มหน่วยงาน / หมวดหมู่</button>
+        </div>
+      `;
+      content.appendChild(renderGanttView([proj], 'หน่วยงาน'));
+    }
+  }
+}
+
+function renderGanttView(projectsList, labelName) {
+  const colw = 1.3;
+  const totalDays = Math.round((new Date(Date.UTC(2575, 11, 31)).getTime() - EPOCH_T) / DAY);
+  const totalWidth = totalDays * colw;
+
+  const scrollWrap = document.createElement('div');
+  scrollWrap.className = 'gantt-scroll';
+  const inner = document.createElement('div');
+  inner.className = 'gantt-inner';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'gantt-header';
+  const yearRow = document.createElement('div');
+  yearRow.className = 'header-row';
+  yearRow.innerHTML = `<div class="row-label corner">${labelName}</div><div class="row-track" style="width:${totalWidth}px"><div class="hdr-seg year-seg" style="width:${totalWidth}px">พ.ศ. 2569 - 2575</div></div>`;
+  header.appendChild(yearRow);
+  inner.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'gantt-body';
+
+  projectsList.forEach(p => {
+    p.departments.forEach(dept => {
+      const block = document.createElement('div');
+      block.className = 'dept-block';
+
+      const label = document.createElement('div');
+      label.className = 'row-label';
+      label.textContent = projectsList.length > 1 ? `[${p.name}] ${dept.name}` : dept.name;
+      block.appendChild(label);
+
+      const rowsWrap = document.createElement('div');
+      rowsWrap.style.display = 'flex';
+      rowsWrap.style.flexDirection = 'column';
+      rowsWrap.style.flex = '1';
+
+      dept.rows.forEach(row => {
+        const track = document.createElement('div');
+        track.className = 'subrow';
+        track.style.width = totalWidth + 'px';
+
+        row.activities.forEach(act => {
+          const bar = document.createElement('div');
+          bar.className = 'act-bar';
+          bar.style.left = (act.start * colw) + 'px';
+          bar.style.width = Math.max(colw, (act.end - act.start + 1) * colw - 2) + 'px';
+          bar.style.background = act.color;
+          bar.textContent = act.label;
+          track.appendChild(bar);
+        });
+        rowsWrap.appendChild(track);
+      });
+      block.appendChild(rowsWrap);
+      body.appendChild(block);
+    });
+  });
+
+  inner.appendChild(body);
+  
+  // เส้นวันนี้
+  const todayIdx = Math.round((Date.now() - EPOCH_T) / DAY);
+  const tLine = document.createElement('div');
+  tLine.className = 'today-line';
+  tLine.style.left = (todayIdx * colw + 220) + 'px';
+  inner.appendChild(tLine);
+
+  scrollWrap.appendChild(inner);
+  return scrollWrap;
+}
+
+function addNewProjectModal() {
+  const name = prompt('ชื่อโครงการใหม่ (หากเป็นเรื่องส่วนตัว ให้ใส่คำว่า "ส่วนตัว" ไว้ในชื่อได้ครับ):');
+  if (!name) return;
+  state.projects.push({
+    id: 'proj_' + Date.now(),
+    name: name,
+    color: '#3A2E6E',
+    departments: [{ id: 'dept_1', name: 'ทั่วไป', rows: [{ id: 'r_1', name: 'แถว 1', activities: [] }] }]
+  });
+  saveState().then(() => render());
+}
+
+function addDept(projId) {
+  const name = prompt('ชื่อหน่วยงานหรือหมวดหมู่ใหม่:');
+  if (!name) return;
+  const p = state.projects.find(x => x.id === projId);
+  p.departments.push({ id: 'dept_' + Date.now(), name: name, rows: [{ id: 'r_1', name: 'แถว 1', activities: [] }] });
+  saveState().then(() => render());
+}
+
+init();
+</script>
+</body>
+</html>
