@@ -49,8 +49,14 @@ body {
   width: 42px; height: 42px; border-radius: 10px;
   background: var(--cyan);
   color: var(--indigo-deep);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+  display: flex; 
+  flex-direction: column; /* บังคับให้เนื้อหาเรียงซ้อนกันแนวตั้ง */
+  align-items: center; 
+  justify-content: center;
+  font-weight: 700; 
+  font-size: 11px; /* ลดขนาดฟอนต์ลงเล็กน้อยให้พอดีกล่อง */
+  line-height: 1.1; /* จัดระยะห่างบรรทัดให้ชิดกันสวยงาม */
+  letter-spacing: 0.5px;
 }
 .brand-title { font-weight: 700; font-size: 18px; line-height: 1.2; }
 .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
@@ -496,7 +502,7 @@ function renderTopbar() {
   bar.className = 'topbar';
   bar.innerHTML = `
     <div class="brand">
-      <div class="brand-mark">แผนPers</div>
+      <div class="brand-mark">แผน<br>Pers</div>
       <div class="brand-text">
         <div class="brand-title">แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน</div>
         <div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time กับระบบสำนักงาน · <span style="color:#34D399">✅ อัปเดตล่าสุดแล้ว</span></div>
