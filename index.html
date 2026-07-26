@@ -70,7 +70,7 @@ body {
   border: 1px solid var(--line);
   background: var(--bg);
   color: var(--ink-soft);
-  padding: 8px 32px 8px 14px; /* เพิ่มพื้นที่ด้านขวาให้ปุ่มลบและสี */
+  padding: 8px 26px 8px 14px;
   border-radius: 999px;
   font-family: inherit;
   font-size: 13.5px;
@@ -90,13 +90,8 @@ body {
   opacity: 0.6;
 }
 .tab-del:hover { opacity: 1; background: rgba(0,0,0,0.15); }
-.tab-color-btn {
-  position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
-  font-size: 13px; line-height: 1; padding: 2px 5px; border-radius: 50%;
-  opacity: 0.6; cursor: pointer;
-}
-.tab-color-btn:hover { opacity: 1; background: rgba(0,0,0,0.15); }
 
+/* ป้ายกำกับ (Tag) สำหรับโครงการ */
 .badge-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: 600; border: 1px solid rgba(0,0,0,0.1); line-height: 1; }
 .badge-tag.work { background: #E0F2FE; color: #0369A1 !important; }
 .badge-tag.personal { background: #FCE7F3; color: #BE185D !important; }
@@ -422,7 +417,7 @@ async function init() {
       await saveState();
     }
     render();
-    // Real-time sync
+    // ซิงค์ข้อมูล Real-time
     setInterval(pollRemote, 10000);
   } catch(e) {
     document.querySelector('#app').innerHTML = `<div style="padding:40px;text-align:center;color:red;font-family:sans-serif">เกิดข้อผิดพลาด:<br>${e.message}</div>`;
@@ -503,7 +498,7 @@ function renderTopbar() {
     <div class="brand">
       <div class="brand-mark">แผน</div>
       <div class="brand-text">
-        <div class="brand-title">แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน (Real-time)</div>
+        <div class="brand-title">แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน</div>
         <div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time กับระบบสำนักงาน · <span style="color:#34D399">✅ อัปเดตล่าสุดแล้ว</span></div>
       </div>
     </div>
@@ -529,7 +524,7 @@ function renderTabs() {
   lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
   wrap.appendChild(lanesTab);
 
-  // 3) รายโครงการ (พร้อมป้ายกำกับส่วนตัว/ที่ทำงาน)
+  // 3) รายโครงการ (ถอดไอคอนจานสีออกจากแท็บ, ใช้คลิกขวาเปลี่ยนสีได้)
   state.projects.forEach(p => {
     const t = document.createElement('button');
     const isActive = (view.type === 'project' && view.id === p.id);
@@ -541,7 +536,7 @@ function renderTabs() {
       t.style.color = '#fff';
     }
 
-    // เช็คเงื่อนไขป้ายกำกับ (Tag)
+    // ป้ายกำกับ ส่วนตัว / ที่ทำงาน
     const isPersonal = p.name.includes('ส่วนตัว') || p.category === 'personal';
     const tagClass = isPersonal ? 'personal' : 'work';
     const tagName = isPersonal ? 'ส่วนตัว' : 'ที่ทำงาน';
@@ -549,14 +544,7 @@ function renderTabs() {
     t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
     
     t.onclick = () => { view = { type: 'project', id: p.id }; render(); };
-    t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
-
-    const colorBtn = document.createElement('span');
-    colorBtn.className = 'tab-color-btn';
-    colorBtn.textContent = '🎨';
-    colorBtn.title = 'เปลี่ยนสีแท็บโครงการ';
-    colorBtn.onclick = (e) => { e.stopPropagation(); openProjectColorModal(p.id); };
-    t.appendChild(colorBtn);
+    t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); }; // คลิกขวาเพื่อเปลี่ยนสี
 
     const del = document.createElement('span');
     del.className = 'tab-del';
@@ -742,11 +730,13 @@ function renderProjectDetail(projectId) {
   const titleWrap = document.createElement('div');
   titleWrap.className = 'proj-title';
   titleWrap.innerHTML = `<h2>${escapeHTML(project.name)}</h2>`;
+  
   const renameBtn = document.createElement('button');
   renameBtn.className = 'ghost-btn'; renameBtn.textContent = '✎ เปลี่ยนชื่อ';
   renameBtn.onclick = () => renameProject(project.id);
   titleWrap.appendChild(renameBtn);
 
+  // ปุ่มแก้ไขสีโครงการ (ย้ายมาไว้ข้างๆ ปุ่มเปลี่ยนชื่อ ไม่บังตัวหนังสือ)
   const colorBtn = document.createElement('button');
   colorBtn.className = 'ghost-btn'; 
   colorBtn.style.borderColor = project.color || '#3A2E6E';
@@ -808,6 +798,7 @@ function renderProjectDetail(projectId) {
   return root;
 }
 
+// ฟังก์ชันแสดงแถบสีกิจกรรม (แสดงเฉพาะสีที่มีการใช้จริง)
 function renderLegend(targetProject = null) {
   const wrap = document.createElement('div');
   wrap.className = 'legend';
@@ -975,7 +966,7 @@ function renderOverview() {
   const root = document.createElement('div');
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
-  toolbar.innerHTML = `<div class="proj-title"><h2>ภาพรวมทุกโครงการ</h2></div>`;
+  toolbar.innerHTML = `<div class="proj-title"><h2>ภาพรวมทุกโครงการ (ส่วนตัว + ที่ทำงาน)</h2></div>`;
   renderToolbarControls(toolbar);
   root.appendChild(toolbar);
   root.appendChild(renderLegend());
