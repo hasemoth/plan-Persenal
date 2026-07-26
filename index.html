@@ -6,247 +6,1501 @@
 <title>แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน (Real-time)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+
 :root {
-  --ink: #16233B; --ink-soft: #4A5773; --bg: #F3F5F9; --surface: #FFFFFF;
-  --indigo: #3A2E6E; --indigo-deep: #241C4D; --indigo-soft: #EDEAFB;
-  --line: #E1E4EC; --line-soft: #EEF0F5; --cyan: #22D3EE; --danger: #E23D5B;
-  --radius: 10px; --sticky-bg: #FAFBFD;
+  --ink: #16233B;
+  --ink-soft: #4A5773;
+  --bg: #F3F5F9;
+  --surface: #FFFFFF;
+  --indigo: #3A2E6E;
+  --indigo-deep: #241C4D;
+  --indigo-soft: #EDEAFB;
+  --line: #E1E4EC;
+  --line-soft: #EEF0F5;
+  --cyan: #22D3EE;
+  --danger: #E23D5B;
+  --danger-soft: #FDEAEE;
+  --radius: 10px;
+  --sticky-bg: #FAFBFD;
 }
+
 * { box-sizing: border-box; }
-body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; margin: 0; padding: 0; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
 #app { display: flex; flex-direction: column; min-height: 100vh; }
-.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; background: linear-gradient(135deg, #1B365D, #3A2E6E); color: #fff; }
-.brand-title { font-weight: 700; font-size: 18px; }
-.brand-sub { font-size: 12px; opacity: 0.8; }
-.tabs { display: flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--surface); border-bottom: 1px solid var(--line); overflow-x: auto; }
-.tab { position: relative; border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft); padding: 8px 26px 8px 14px; border-radius: 999px; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
-.tab.active { background: var(--indigo); color: #fff; font-weight: 600; border-color: var(--indigo); }
-.badge-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; background: #E2E8F0; color: #475569; }
-.badge-tag.work { background: #E0F2FE; color: #0369A1; }
-.badge-tag.personal { background: #FCE7F3; color: #BE185D; }
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, var(--indigo-deep), var(--indigo));
+  color: #fff;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: var(--cyan);
+  color: var(--indigo-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+}
+.brand-title { font-weight: 700; font-size: 18px; line-height: 1.2; }
+.brand-sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+/* ---------- Tabs & Tags ---------- */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+.tab {
+  position: relative;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink-soft);
+  padding: 8px 32px 8px 14px; /* เพิ่มพื้นที่ด้านขวาให้ปุ่มลบและสี */
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab:hover { border-color: var(--indigo); color: var(--indigo); }
+.tab.active { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
+.tab-add { padding: 8px 16px; border-style: dashed; }
+.tab-del {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  font-size: 15px; line-height: 1; padding: 2px 5px; border-radius: 50%;
+  opacity: 0.6;
+}
+.tab-del:hover { opacity: 1; background: rgba(0,0,0,0.15); }
+.tab-color-btn {
+  position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; line-height: 1; padding: 2px 5px; border-radius: 50%;
+  opacity: 0.6; cursor: pointer;
+}
+.tab-color-btn:hover { opacity: 1; background: rgba(0,0,0,0.15); }
+
+.badge-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: 600; border: 1px solid rgba(0,0,0,0.1); line-height: 1; }
+.badge-tag.work { background: #E0F2FE; color: #0369A1 !important; }
+.badge-tag.personal { background: #FCE7F3; color: #BE185D !important; }
+
+/* ---------- Content ---------- */
 .content { padding: 18px 22px 40px; flex: 1; }
-.toolbar { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-.proj-title h2 { margin: 0; font-size: 19px; color: var(--indigo-deep); }
-.primary-btn, .ghost-btn { font-family: inherit; border-radius: 8px; cursor: pointer; font-size: 13px; padding: 7px 12px; border: 1px solid var(--line); background: #fff; }
-.primary-btn { background: var(--indigo); color: #fff; border-color: var(--indigo); font-weight: 600; }
-.gantt-scroll { overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); max-height: 72vh; }
+
+.toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+  margin-bottom: 12px;
+}
+.proj-title { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.proj-title h2 { margin: 0; font-size: 19px; font-weight: 700; color: var(--indigo-deep); }
+
+.ghost-btn, .primary-btn, .danger-btn, .icon-btn, .zoom-btn {
+  font-family: inherit;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 7px 12px;
+  color: var(--ink-soft);
+  transition: all .12s ease;
+}
+.ghost-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+.primary-btn { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
+.primary-btn:hover { background: var(--indigo-deep); }
+.danger-btn { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); font-weight: 600; }
+.danger-btn:hover { background: var(--danger); color: #fff; }
+
+.zoom-controls, .filter-controls, .mode-controls {
+  display: flex; align-items: center; gap: 6px; 
+  background: var(--surface); border: 1px solid var(--line); 
+  padding: 4px; border-radius: 999px;
+}
+.filter-controls, .mode-controls { padding: 4px 10px; font-size: 12.5px; color: var(--ink-soft); }
+.zoom-label { font-size: 12.5px; color: var(--ink-soft); padding: 0 6px 0 8px; }
+.zoom-btn { border-radius: 999px; border-color: transparent; padding: 6px 14px; }
+.zoom-btn.active { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
+.today-btn { border-color: var(--line); }
+
+.filter-controls input[type="date"] {
+  border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink); cursor: pointer;
+}
+
+/* ---------- Legend ---------- */
+.legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+.legend-label { font-size: 12.5px; color: var(--ink-soft); }
+.legend-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-soft); }
+.legend-chip i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.edit-colors-btn { font-size: 11px; padding: 4px 8px; margin-left: 8px; }
+
+/* ---------- Gantt grid ---------- */
+.gantt-scroll {
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  max-height: 72vh;
+}
 .gantt-inner { position: relative; min-width: max-content; }
 .gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
 .header-row { display: flex; }
-.row-label { position: sticky; left: 0; z-index: 10; width: 220px; min-width: 220px; background: #FAFBFD; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; padding: 6px 10px; font-size: 13px; }
-.corner { z-index: 30; font-weight: 700; color: var(--indigo-deep); background: var(--indigo-soft); }
+
+/* Sticky Left Panel */
+.row-label {
+  position: sticky; left: 0; z-index: 10;
+  width: 220px; min-width: 220px; max-width: 220px;
+  background: #FAFBFD;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-soft);
+  display: flex; align-items: stretch;
+  padding: 0; font-size: 13px;
+}
+.corner { z-index: 30; font-weight: 700; color: var(--indigo-deep); background: var(--indigo-soft); border-bottom: 1px solid var(--line); padding: 6px 10px; display: flex; align-items: center; }
+
+.dept-info {
+  flex: 1; padding: 6px 10px;
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  border-right: 1px solid var(--line-soft);
+  min-width: 0;
+}
+.dept-name { font-weight: 600; color: var(--ink); line-height: 1.2; word-break: break-word; }
+.dept-ctrls { display: flex; gap: 4px; flex-wrap: wrap; }
+.dept-ctrls .icon-btn { padding: 3px 7px; font-size: 11px; }
+
+.dept-row-names {
+  width: 76px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  background: #FAFAFD;
+}
+.row-name-cell {
+  height: 32px; border-bottom: 1px solid var(--line-soft);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6px; font-size: 11px; color: var(--ink-soft);
+  cursor: pointer; transition: all 0.15s ease;
+}
+.row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
+.row-name-cell:last-child { border-bottom: none; }
+.r-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+
 .row-track { position: relative; display: flex; }
-.hdr-seg { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; }
+.hdr-seg {
+  border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--ink-soft); flex-shrink: 0; overflow: hidden; white-space: nowrap;
+}
 .year-seg { background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 700; height: 30px; }
 .month-seg { background: #fff; height: 26px; }
+.week-seg { background: #fbfbfd; height: 22px; font-size: 10.5px; color: #98A2B8; }
+.day-seg { height: 30px; flex-direction: column; gap: 0; background: #fff; font-size: 10px; color: #98A2B8; line-height: 1.1; }
+.day-seg.weekend { background: #FBF6EE; color: #C08A2E; }
+.day-seg .day-num { font-weight: 700; font-size: 11.5px; color: var(--ink); }
+.day-seg.weekend .day-num { color: #C08A2E; }
+
 .gantt-body { position: relative; min-width: max-content; }
-.dept-block { display: flex; border-bottom: 2px solid var(--line); width: 100%; align-items: stretch; }
-.subrow { position: relative; height: 32px; border-bottom: 1px solid var(--line-soft); background-image: repeating-linear-gradient(to right, transparent, transparent 51px, var(--line-soft) 51px, var(--line-soft) 52px); }
-.act-bar { position: absolute; top: 4px; height: 24px; border-radius: 6px; color: #14213A; font-size: 11.5px; font-weight: 600; display: flex; align-items: center; padding: 0 8px; white-space: nowrap; box-shadow: 0 1px 2px rgba(20,33,58,0.25); }
-.today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--danger); z-index: 15; }
-.today-line::before { content: 'วันนี้'; position: absolute; top: 2px; left: 4px; font-size: 11px; color: var(--danger); font-weight: 700; background: rgba(255,255,255,0.8); padding: 0 4px; border-radius: 4px; }
+.dept-block { display: flex; border-bottom: 2px solid var(--line); min-width: max-content; width: 100%; align-items: stretch; }
+
+.dept-rows { display: flex; flex-direction: column; flex: 1; }
+.subrow {
+  position: relative; height: 32px; box-sizing: border-box;
+  border-bottom: 1px solid var(--line-soft); cursor: pointer;
+  background-image: repeating-linear-gradient(to right, transparent, transparent 51px, var(--line-soft) 51px, var(--line-soft) 52px);
+  z-index: 1;
+}
+.subrow:last-child { border-bottom: none; }
+.subrow:hover { background-color: #FAFAFE; }
+
+.act-bar {
+  position: absolute; top: 4px; height: 24px; border-radius: 6px;
+  color: #14213A; font-size: 11.5px; font-weight: 600;
+  display: flex; align-items: center; padding: 0 8px;
+  overflow: hidden; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(20,33,58,0.25); cursor: pointer; z-index: 2;
+  user-select: none;
+}
+.act-bar.draggable { cursor: grab; border: 1.5px dashed rgba(255,255,255,0.7); }
+.act-bar.draggable:active { cursor: grabbing; }
+.act-bar:hover { filter: brightness(1.06); box-shadow: 0 2px 6px rgba(20,33,58,0.35); z-index: 3; }
+
+.row-del-btn {
+  position: absolute; right: 4px; top: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: none; background: var(--line); color: var(--ink-soft);
+  font-size: 12px; line-height: 1; cursor: pointer; z-index: 4; opacity: 0.5;
+}
+.row-del-btn:hover { opacity: 1; background: var(--danger); color: #fff; }
+
+.gantt-grid-overlay {
+  position: absolute; top: 0; bottom: 0; right: 0;
+  left: 220px; pointer-events: none; z-index: 15;
+}
+.today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--danger); }
+.today-line::before {
+  content: 'วันนี้'; position: absolute; top: 2px; left: 4px;
+  font-size: 11px; color: var(--danger); font-weight: 700;
+  background: rgba(255,255,255,0.8); padding: 0 4px; border-radius: 4px;
+}
+
+.empty-hint { padding: 30px; text-align: center; color: var(--ink-soft); font-size: 13.5px; }
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(20,25,45,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+}
+.modal {
+  background: #fff; border-radius: 14px; padding: 22px 24px;
+  width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.modal h3 { margin: 0 0 14px; color: var(--indigo-deep); font-size: 17px; }
+.modal-desc { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 16px; }
+.field-label { display: block; font-size: 12.5px; color: var(--ink-soft); margin: 10px 0 5px; }
+.text-input {
+  width: 100%; padding: 9px 11px; border-radius: 8px;
+  border: 1px solid var(--line); font-family: inherit; font-size: 13.5px;
+}
+.text-input:focus { outline: 2px solid var(--cyan); border-color: var(--cyan); }
+.color-picker { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.color-swatch { width: 26px; height: 26px; border-radius: 7px; cursor: pointer; border: 2px solid transparent; }
+.color-swatch.selected { border-color: var(--indigo-deep); box-shadow: 0 0 0 2px #fff inset; }
+.modal-actions { display: flex; gap: 8px; margin-top: 20px; justify-content: flex-end; }
+
+@media (max-width: 720px) {
+  .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .row-label { width: 160px; min-width: 160px; max-width: 160px; }
+  .gantt-grid-overlay { left: 160px; }
+  .dept-row-names { width: 56px; }
+  .row-name-cell { font-size: 10px; padding: 0 4px; }
+}
 </style>
 </head>
 <body>
-<div id="app"><div style="padding:40px;text-align:center;">⏳ กำลังโหลดข้อมูลระบบรวม (Real-time)...</div></div>
+<div id="app">
+  <div style="padding:40px;text-align:center;color:#4A5773;font-family:sans-serif">
+    ⏳ กำลังโหลดข้อมูลระบบรวม (Real-time)...
+  </div>
+</div>
+
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec';
+/* ===================== ค่าคงที่เวลา ===================== */
 const DAY = 86400000;
-const RANGE_START_BE = 2569, RANGE_END_BE = 2575;
-const EPOCH = new Date(Date.UTC(RANGE_START_BE - 543, 0, 1));
+function beDate(beYear, month, day) { return new Date(Date.UTC(beYear - 543, month - 1, day)); }
+const RANGE_START_BE = 2569;
+const RANGE_END_BE = 2575;
+const EPOCH = beDate(RANGE_START_BE, 1, 1);
 const EPOCH_T = EPOCH.getTime();
 
 function indexFromDate(d) { return Math.round((d.getTime() - EPOCH_T) / DAY); }
 function dateFromIndex(i) { return new Date(EPOCH_T + i * DAY); }
+
 const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+const THAI_WEEKDAY_SHORT = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+
+function dateToInputStr(d) { return d.toISOString().slice(0, 10); }
+function inputStrToDate(str) { if (!str) return null; return new Date(str + 'T00:00:00Z'); }
+
+function formatDateThai(d) {
+  if (!d || isNaN(d)) return '';
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const year = d.getUTCFullYear() + 543;
+  return `${day}/${month}/${year}`;
+}
+
+function todayBangkokIndex() {
+  const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const parts = fmt.formatToParts(new Date());
+  const get = (t) => parseInt(parts.find(p => p.type === t).value, 10);
+  const y = get('year'), m = get('month'), d = get('day');
+  return indexFromDate(new Date(Date.UTC(y, m - 1, d)));
+}
+
+/* ===================== สถานะหลัก (Cloud) ===================== */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec'; 
 
 let state = null;
-let view = { type: 'overview' };
-let zoom = 'month';
+let view = { type: 'overview' }; // overview | lanes | project
+let zoom = 'month'; 
+let modalOpen = false;
+let isSaving = false;
+let dragMode = false;
+
+const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
+
+const DEFAULT_COLORS = [
+  { name: 'ฟ้า', hex: '#22D3EE' }, { name: 'เขียว', hex: '#34D399' },
+  { name: 'ชมพู', hex: '#EC4899' }, { name: 'น้ำเงิน', hex: '#3B82F6' },
+  { name: 'เหลือง', hex: '#FBBF24' }, { name: 'ม่วง', hex: '#8B5CF6' }
+];
+
+function uid(prefix) { return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function mkAct(label, colorHex, sBEy, sM, sD, eBEy, eM, eD) { return { id: uid('act'), label, color: colorHex, start: indexFromDate(beDate(sBEy, sM, sD)), end: indexFromDate(beDate(eBEy, eM, eD)) }; }
+function mkRow(acts, name = 'แถว 1') { return { id: uid('row'), name, activities: acts }; }
+function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
+function seedProject(name, depts) { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts }; }
+
+function defaultState() {
+  const projA = seedProject('โครงการตัวอย่าง', [
+    mkDept('หน่วยงาน ก.', [mkRow([], 'แถว 1')])
+  ]);
+  return { 
+    projects: [projA],
+    colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
+    viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) }
+  };
+}
 
 async function loadState() {
   try {
     const res = await fetch(SCRIPT_URL);
-    return await res.json();
-  } catch(e) { console.error(e); return null; }
+    const text = await res.text();
+    if (text.trim().startsWith('<')) {
+      alert("⚠️ การเข้าถึงถูกปฏิเสธ! โปรดรันสคริปต์ใน Google Apps Script เพื่อให้สิทธิ์ก่อน");
+      return null;
+    }
+    const parsed = JSON.parse(text);
+    if (Object.keys(parsed).length > 0) {
+      if (!parsed.colors) parsed.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
+      if (!parsed.viewRange) parsed.viewRange = { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) };
+      parsed.projects.forEach(p => {
+        if (!p.color) p.color = '#3A2E6E';
+        p.departments.forEach(d => d.rows.forEach((r, idx) => { if(!r.name) r.name = `แถว ${idx+1}`; }));
+      });
+      return parsed;
+    }
+  } catch (e) {
+    console.error('Fetch Error:', e);
+  }
+  return null;
 }
 
 async function saveState() {
-  await fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(state),
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-  });
+  if (isSaving) return;
+  isSaving = true;
+  const statusEl = document.querySelector('.brand-sub');
+  if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูลไปที่ Drive...</span>';
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(state),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    });
+    if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#34D399">✅ ข้อมูลตรงกับบนคลาวด์แล้ว</span>';
+  } catch (e) { 
+    if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ</span>';
+  }
+  isSaving = false;
+}
+
+async function persistAndRender() { 
+  render(); 
+  await saveState(); 
 }
 
 async function init() {
-  state = await loadState();
-  if (!state) { alert('โหลดข้อมูลไม่สำเร็จ'); return; }
-  render();
-  // รีเฟรชดึงข้อมูลอัตโนมัติทุก 10 วินาที เพื่อให้เป็น Real-time กับลิงก์ที่ 1
-  setInterval(async () => {
-    const fresh = await loadState();
-    if (fresh && JSON.stringify(fresh) !== JSON.stringify(state)) {
-      state = fresh;
-      render();
+  try {
+    state = await loadState();
+    if (!state || !state.projects) {
+      state = defaultState();
+      await saveState();
     }
-  }, 10000);
-}
-
-function render() {
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <div class="topbar">
-      <div>
-        <div class="brand-title">แผนการดำเนินงานรวม (ส่วนตัว & ที่ทำงาน)</div>
-        <div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time กับระบบสำนักงาน</div>
-      </div>
-    </div>
-    <div class="tabs" id="tabContainer"></div>
-    <div class="content" id="mainContent"></div>
-  `;
-
-  // Render Tabs
-  const tabContainer = document.getElementById('tabContainer');
-  const ovBtn = document.createElement('button');
-  ovBtn.className = 'tab' + (view.type === 'overview' ? ' active' : '');
-  ovBtn.textContent = '📊 ภาพรวมทั้งหมด (ส่วนตัว + ที่ทำงาน)';
-  ovBtn.onclick = () => { view = { type: 'overview' }; render(); };
-  tabContainer.appendChild(ovs = ovBtn);
-
-  state.projects.forEach(p => {
-    const btn = document.createElement('button');
-    const isAct = (view.type === 'project' && view.id === p.id);
-    btn.className = 'tab' + (isAct ? ' active' : '');
-    
-    // ตรวจสอบว่าเป็นโครงการประเภทไหน (ถ้ามีคำว่า "ส่วนตัว" ให้ติดป้ายชมพู ถ้าไม่ใช่ให้ติดป้ายฟ้าทำงาน)
-    const isPersonal = p.name.includes('ส่วนตัว') || p.category === 'personal';
-    const tagClass = isPersonal ? 'personal' : 'work';
-    const tagName = isPersonal ? 'ส่วนตัว' : 'ที่ทำงาน';
-
-    btn.innerHTML = `<span>${p.name}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
-    btn.onclick = () => { view = { type: 'project', id: p.id }; render(); };
-    tabContainer.appendChild(btn);
-  });
-
-  // ปุ่มเพิ่มโปรเจกต์ใหม่ได้ทั้ง 2 ประเภท
-  const addBtn = document.createElement('button');
-  addBtn.className = 'tab';
-  addBtn.style.borderStyle = 'dashed';
-  addBtn.textContent = '+ เพิ่มโครงการ (ส่วนตัว/ทำงาน)';
-  addBtn.onclick = addNewProjectModal;
-  tabContainer.appendChild(addBtn);
-
-  // Render Content
-  const content = document.getElementById('mainContent');
-  if (view.type === 'overview') {
-    content.innerHTML = `<h2>ภาพรวมโครงการทั้งหมด</h2><p>แสดงผลกิจกรรมทั้งส่วนตัวและของที่ทำงานร่วมกันในหน้าเดียว</p>`;
-    // สร้างตารางภาพรวมรวมมิตร
-    content.appendChild(renderGanttView(state.projects, 'โครงการทั้งหมด'));
-  } else {
-    const proj = state.projects.find(x => x.id === view.id);
-    if (proj) {
-      content.innerHTML = `
-        <div class="toolbar">
-          <div class="proj-title"><h2>${proj.name}</h2></div>
-          <button class="primary-btn" onclick="addDept('${proj.id}')">+ เพิ่มหน่วยงาน / หมวดหมู่</button>
-        </div>
-      `;
-      content.appendChild(renderGanttView([proj], 'หน่วยงาน'));
-    }
+    render();
+    // Real-time sync
+    setInterval(pollRemote, 10000);
+  } catch(e) {
+    document.querySelector('#app').innerHTML = `<div style="padding:40px;text-align:center;color:red;font-family:sans-serif">เกิดข้อผิดพลาด:<br>${e.message}</div>`;
   }
 }
 
-function renderGanttView(projectsList, labelName) {
-  const colw = 1.3;
-  const totalDays = Math.round((new Date(Date.UTC(2575, 11, 31)).getTime() - EPOCH_T) / DAY);
+async function pollRemote() {
+  if (modalOpen || isSaving || dragMode) return;
+  const loaded = await loadState();
+  if (loaded && JSON.stringify(loaded) !== JSON.stringify(state)) {
+    state = loaded;
+    render();
+  }
+}
+
+/* ===================== ฟังก์ชันแสดงผล ===================== */
+function getRenderBounds() {
+  let rStart = indexFromDate(inputStrToDate(state.viewRange.start));
+  let rEnd = indexFromDate(inputStrToDate(state.viewRange.end));
+  if (rEnd < rStart) rEnd = rStart;
+  return { rStart, rEnd, totalDays: rEnd - rStart + 1 };
+}
+
+function headerGroupsBounded(rStart, rEnd) {
+  const years = [], months = [];
+  let prevY = null, prevM = null, yStart = rStart, mStart = rStart;
+  for (let i = rStart; i <= rEnd; i++) {
+    const d = dateFromIndex(i);
+    const y = d.getUTCFullYear() + 543;
+    const m = d.getUTCMonth();
+    if (i === rStart) { prevY = y; prevM = m; }
+    
+    if (y !== prevY || i === rEnd) {
+      years.push({ label: prevY, start: yStart, end: (y !== prevY) ? i - 1 : i });
+      yStart = i; prevY = y;
+    }
+    if (m !== prevM || i === rEnd) {
+      months.push({ label: THAI_MONTHS_SHORT[prevM], start: mStart, end: (m !== prevM) ? i - 1 : i });
+      mStart = i; prevM = m;
+    }
+  }
+  return { years, months };
+}
+
+function weekSegmentsBounded(rStart, rEnd) {
+  const segs = [];
+  let wStart = rStart;
+  for (let i = rStart; i <= rEnd; i++) {
+    const dow = dateFromIndex(i).getUTCDay();
+    if (i > rStart && (dow === 0 || i === rEnd)) {
+      const end = (dow === 0 && i !== rEnd) ? i - 1 : i;
+      const ds = dateFromIndex(wStart);
+      segs.push({ start: wStart, end, label: String(ds.getUTCDate()).padStart(2, '0') + '/' + String(ds.getUTCMonth() + 1).padStart(2, '0') });
+      wStart = i;
+    }
+  }
+  return segs;
+}
+
+const app = document.getElementById('app');
+
+function render() {
+  app.innerHTML = '';
+  app.appendChild(renderTopbar());
+  app.appendChild(renderTabs());
+  const content = document.createElement('div');
+  content.className = 'content';
+  if (view.type === 'overview') content.appendChild(renderOverview());
+  else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
+  else content.appendChild(renderProjectDetail(view.id));
+  app.appendChild(content);
+}
+
+function renderTopbar() {
+  const bar = document.createElement('div');
+  bar.className = 'topbar';
+  bar.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">แผน</div>
+      <div class="brand-text">
+        <div class="brand-title">แผนการดำเนินงานรวม — ส่วนตัว & ที่ทำงาน (Real-time)</div>
+        <div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time กับระบบสำนักงาน · <span style="color:#34D399">✅ อัปเดตล่าสุดแล้ว</span></div>
+      </div>
+    </div>
+  `;
+  return bar;
+}
+
+function renderTabs() {
+  const wrap = document.createElement('div');
+  wrap.className = 'tabs';
+  
+  // 1) ภาพรวมทั้งหมด
+  const ov = document.createElement('button');
+  ov.className = 'tab' + (view.type === 'overview' ? ' active' : '');
+  ov.textContent = '📊 ภาพรวมทั้งหมด (ส่วนตัว + ที่ทำงาน)';
+  ov.onclick = () => { view = { type: 'overview' }; render(); };
+  wrap.appendChild(ov);
+
+  // 2) รายละเอียดภาพรวมโครงการ
+  const lanesTab = document.createElement('button');
+  lanesTab.className = 'tab' + (view.type === 'lanes' ? ' active' : '');
+  lanesTab.textContent = '🛣️ รายละเอียดภาพรวมโครงการ';
+  lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
+  wrap.appendChild(lanesTab);
+
+  // 3) รายโครงการ (พร้อมป้ายกำกับส่วนตัว/ที่ทำงาน)
+  state.projects.forEach(p => {
+    const t = document.createElement('button');
+    const isActive = (view.type === 'project' && view.id === p.id);
+    t.className = 'tab' + (isActive ? ' active' : '');
+    
+    if (p.color) {
+      t.style.backgroundColor = p.color;
+      t.style.borderColor = p.color;
+      t.style.color = '#fff';
+    }
+
+    // เช็คเงื่อนไขป้ายกำกับ (Tag)
+    const isPersonal = p.name.includes('ส่วนตัว') || p.category === 'personal';
+    const tagClass = isPersonal ? 'personal' : 'work';
+    const tagName = isPersonal ? 'ส่วนตัว' : 'ที่ทำงาน';
+    
+    t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
+    
+    t.onclick = () => { view = { type: 'project', id: p.id }; render(); };
+    t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
+
+    const colorBtn = document.createElement('span');
+    colorBtn.className = 'tab-color-btn';
+    colorBtn.textContent = '🎨';
+    colorBtn.title = 'เปลี่ยนสีแท็บโครงการ';
+    colorBtn.onclick = (e) => { e.stopPropagation(); openProjectColorModal(p.id); };
+    t.appendChild(colorBtn);
+
+    const del = document.createElement('span');
+    del.className = 'tab-del';
+    del.textContent = '×';
+    del.title = 'ลบโครงการนี้';
+    del.onclick = (e) => { e.stopPropagation(); deleteProject(p.id); };
+    t.appendChild(del);
+
+    wrap.appendChild(t);
+  });
+
+  const add = document.createElement('button');
+  add.className = 'tab tab-add';
+  add.textContent = '+ เพิ่มโครงการ (ส่วนตัว/ทำงาน)';
+  add.onclick = addProject;
+  wrap.appendChild(add);
+  return wrap;
+}
+
+function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+function renderToolbarControls(toolbar) {
+  const zWrap = document.createElement('div');
+  zWrap.className = 'zoom-controls';
+  zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
+  [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([key, txt]) => {
+    const b = document.createElement('button');
+    b.className = 'zoom-btn' + (zoom === key ? ' active' : '');
+    b.textContent = txt;
+    b.onclick = () => { zoom = key; render(); scrollToToday(); };
+    zWrap.appendChild(b);
+  });
+  const todayBtn = document.createElement('button');
+  todayBtn.className = 'zoom-btn today-btn';
+  todayBtn.textContent = '📍 วันนี้';
+  todayBtn.onclick = scrollToToday;
+  zWrap.appendChild(todayBtn);
+  toolbar.appendChild(zWrap);
+
+  const mWrap = document.createElement('label');
+  mWrap.className = 'mode-controls';
+  mWrap.style.cursor = 'pointer';
+  mWrap.innerHTML = `
+    <input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;">
+    <span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดลากเลื่อนวัน</span>
+  `;
+  mWrap.querySelector('input').onchange = (e) => {
+    dragMode = e.target.checked;
+    render();
+  };
+  toolbar.appendChild(mWrap);
+
+  const fWrap = document.createElement('div');
+  fWrap.className = 'filter-controls';
+  fWrap.innerHTML = `
+    <span class="zoom-label">แสดงช่วง:</span>
+    <input type="date" id="filterStart" value="${state.viewRange.start}">
+    <span style="color:var(--ink-soft); font-size:12px;">ถึง</span>
+    <input type="date" id="filterEnd" value="${state.viewRange.end}">
+  `;
+  const fBtn = document.createElement('button');
+  fBtn.className = 'ghost-btn';
+  fBtn.style.padding = '3px 8px'; fBtn.style.fontSize = '12px';
+  fBtn.textContent = 'ตกลง';
+  fBtn.onclick = async () => {
+    state.viewRange.start = document.getElementById('filterStart').value;
+    state.viewRange.end = document.getElementById('filterEnd').value;
+    await persistAndRender();
+  };
+  fWrap.appendChild(fBtn);
+  toolbar.appendChild(fWrap);
+}
+
+function scrollToToday() {
+  requestAnimationFrame(() => {
+    const el = document.querySelector('.gantt-scroll');
+    if (!el) return;
+    const { rStart } = getRenderBounds();
+    const todayIdx = todayBangkokIndex();
+    const colw = COLW[zoom];
+    el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + 220 - el.clientWidth / 2);
+  });
+}
+
+function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วยงาน / ชื่องาน') {
+  const { years, months } = headerGroupsBounded(rStart, rEnd);
+  const totalWidth = totalDays * colw;
+  const header = document.createElement('div');
+  header.className = 'gantt-header';
+
+  const yearRow = document.createElement('div');
+  yearRow.className = 'header-row year-row';
+  const yCorner = document.createElement('div');
+  yCorner.className = 'row-label corner';
+  yCorner.textContent = labelText;
+  yearRow.appendChild(yCorner);
+  const yTrack = document.createElement('div');
+  yTrack.className = 'row-track';
+  yTrack.style.width = totalWidth + 'px';
+  years.forEach(y => {
+    const seg = document.createElement('div');
+    seg.className = 'hdr-seg year-seg';
+    seg.style.width = ((y.end - y.start + 1) * colw) + 'px';
+    seg.textContent = 'พ.ศ. ' + y.label;
+    yTrack.appendChild(seg);
+  });
+  yearRow.appendChild(yTrack);
+  header.appendChild(yearRow);
+
+  if (zoom !== 'year') {
+    const monthRow = document.createElement('div');
+    monthRow.className = 'header-row month-row';
+    const mCorner = document.createElement('div');
+    mCorner.className = 'row-label corner';
+    monthRow.appendChild(mCorner);
+    const mTrack = document.createElement('div');
+    mTrack.className = 'row-track';
+    mTrack.style.width = totalWidth + 'px';
+    months.forEach(m => {
+      const seg = document.createElement('div');
+      seg.className = 'hdr-seg month-seg';
+      seg.style.width = ((m.end - m.start + 1) * colw) + 'px';
+      seg.textContent = m.label;
+      mTrack.appendChild(seg);
+    });
+    monthRow.appendChild(mTrack);
+    header.appendChild(monthRow);
+  }
+
+  if (zoom === 'week') {
+    const weekRow = document.createElement('div');
+    weekRow.className = 'header-row week-row';
+    const wCorner = document.createElement('div');
+    wCorner.className = 'row-label corner';
+    weekRow.appendChild(wCorner);
+    const wTrack = document.createElement('div');
+    wTrack.className = 'row-track';
+    wTrack.style.width = totalWidth + 'px';
+    weekSegmentsBounded(rStart, rEnd).forEach(seg0 => {
+      const seg = document.createElement('div');
+      seg.className = 'hdr-seg week-seg';
+      seg.style.width = ((seg0.end - seg0.start + 1) * colw) + 'px';
+      seg.textContent = seg0.label;
+      wTrack.appendChild(seg);
+    });
+    weekRow.appendChild(wTrack);
+    header.appendChild(weekRow);
+  }
+
+  if (zoom === 'day') {
+    const dayRow = document.createElement('div');
+    dayRow.className = 'header-row day-row';
+    const dCorner = document.createElement('div');
+    dCorner.className = 'row-label corner';
+    dayRow.appendChild(dCorner);
+    const dTrack = document.createElement('div');
+    dTrack.className = 'row-track';
+    dTrack.style.width = totalWidth + 'px';
+    for (let i = rStart; i <= rEnd; i++) {
+      const d = dateFromIndex(i);
+      const seg = document.createElement('div');
+      const dow = d.getUTCDay();
+      seg.className = 'hdr-seg day-seg' + (dow === 0 || dow === 6 ? ' weekend' : '');
+      seg.style.width = colw + 'px';
+      seg.innerHTML = `<span class="day-num">${d.getUTCDate()}</span><span class="day-dow">${THAI_WEEKDAY_SHORT[dow]}</span>`;
+      dTrack.appendChild(seg);
+    }
+    dayRow.appendChild(dTrack);
+    header.appendChild(dayRow);
+  }
+
+  return header;
+}
+
+function renderProjectDetail(projectId) {
+  const project = state.projects.find(p => p.id === projectId);
+  const root = document.createElement('div');
+  if (!project) { root.textContent = 'ไม่พบโครงการ'; return root; }
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'toolbar';
+
+  const titleWrap = document.createElement('div');
+  titleWrap.className = 'proj-title';
+  titleWrap.innerHTML = `<h2>${escapeHTML(project.name)}</h2>`;
+  const renameBtn = document.createElement('button');
+  renameBtn.className = 'ghost-btn'; renameBtn.textContent = '✎ เปลี่ยนชื่อ';
+  renameBtn.onclick = () => renameProject(project.id);
+  titleWrap.appendChild(renameBtn);
+
+  const colorBtn = document.createElement('button');
+  colorBtn.className = 'ghost-btn'; 
+  colorBtn.style.borderColor = project.color || '#3A2E6E';
+  colorBtn.style.color = project.color || '#3A2E6E';
+  colorBtn.textContent = '🎨 แก้ไขสีโครงการ';
+  colorBtn.onclick = () => openProjectColorModal(project.id);
+  titleWrap.appendChild(colorBtn);
+
+  toolbar.appendChild(titleWrap);
+  renderToolbarControls(toolbar);
+
+  const addDeptBtn = document.createElement('button');
+  addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน';
+  addDeptBtn.onclick = () => addDepartment(project.id);
+  toolbar.appendChild(addDeptBtn);
+
+  root.appendChild(toolbar);
+  root.appendChild(renderLegend(project));
+
+  const colw = COLW[zoom];
+  const { rStart, rEnd, totalDays } = getRenderBounds();
   const totalWidth = totalDays * colw;
 
   const scrollWrap = document.createElement('div');
   scrollWrap.className = 'gantt-scroll';
   const inner = document.createElement('div');
   inner.className = 'gantt-inner';
-
-  // Header
-  const header = document.createElement('div');
-  header.className = 'gantt-header';
-  const yearRow = document.createElement('div');
-  yearRow.className = 'header-row';
-  yearRow.innerHTML = `<div class="row-label corner">${labelName}</div><div class="row-track" style="width:${totalWidth}px"><div class="hdr-seg year-seg" style="width:${totalWidth}px">พ.ศ. 2569 - 2575</div></div>`;
-  header.appendChild(yearRow);
-  inner.appendChild(header);
+  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, 'หน่วยงาน / ชื่องาน'));
 
   const body = document.createElement('div');
   body.className = 'gantt-body';
 
-  projectsList.forEach(p => {
-    p.departments.forEach(dept => {
-      const block = document.createElement('div');
-      block.className = 'dept-block';
+  project.departments.forEach(dept => {
+    body.appendChild(buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd));
+  });
 
-      const label = document.createElement('div');
-      label.className = 'row-label';
-      label.textContent = projectsList.length > 1 ? `[${p.name}] ${dept.name}` : dept.name;
-      block.appendChild(label);
+  if (project.departments.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-hint';
+    empty.textContent = 'ยังไม่มีหน่วยงานในโครงการนี้ — กด "เพิ่มหน่วยงาน" ด้านบน';
+    body.appendChild(empty);
+  }
+  inner.appendChild(body);
 
-      const rowsWrap = document.createElement('div');
-      rowsWrap.style.display = 'flex';
-      rowsWrap.style.flexDirection = 'column';
-      rowsWrap.style.flex = '1';
+  const overlay = document.createElement('div');
+  overlay.className = 'gantt-grid-overlay';
+  const todayIdx = todayBangkokIndex();
+  if (todayIdx >= rStart && todayIdx <= rEnd) {
+    const tLine = document.createElement('div');
+    tLine.className = 'today-line';
+    tLine.style.left = ((todayIdx - rStart) * colw) + 'px';
+    overlay.appendChild(tLine);
+  }
+  inner.appendChild(overlay);
 
-      dept.rows.forEach(row => {
-        const track = document.createElement('div');
-        track.className = 'subrow';
-        track.style.width = totalWidth + 'px';
+  scrollWrap.appendChild(inner);
+  root.appendChild(scrollWrap);
+  setTimeout(scrollToToday, 0);
+  return root;
+}
 
-        row.activities.forEach(act => {
+function renderLegend(targetProject = null) {
+  const wrap = document.createElement('div');
+  wrap.className = 'legend';
+  wrap.innerHTML = `<span class="legend-label">สีกิจกรรม:</span>`;
+
+  const usedColorsHex = new Set();
+  if (targetProject) {
+    targetProject.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => usedColorsHex.add(a.color))));
+  } else {
+    state.projects.forEach(p => p.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => usedColorsHex.add(a.color)))));
+  }
+
+  const activeColors = state.colors.filter(c => usedColorsHex.has(c.hex));
+
+  if (activeColors.length === 0) {
+    wrap.innerHTML += `<span style="font-size:12px; color:var(--ink-soft); font-style:italic;">(ยังไม่มีการใช้สีในมุมมองนี้)</span>`;
+  } else {
+    activeColors.forEach(c => {
+      const chip = document.createElement('span');
+      chip.className = 'legend-chip';
+      chip.innerHTML = `<i style="background:${c.hex}"></i>${escapeHTML(c.name)}`;
+      wrap.appendChild(chip);
+    });
+  }
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'ghost-btn edit-colors-btn';
+  editBtn.textContent = '✎ แก้ไขสี';
+  editBtn.onclick = editColorsModal;
+  wrap.appendChild(editBtn);
+
+  return wrap;
+}
+
+function buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd) {
+  const block = document.createElement('div');
+  block.className = 'dept-block';
+
+  const labelCol = document.createElement('div');
+  labelCol.className = 'row-label';
+  
+  const deptInfo = document.createElement('div');
+  deptInfo.className = 'dept-info';
+  deptInfo.innerHTML = `
+    <div class="dept-name">${escapeHTML(dept.name)}</div>
+  `;
+  const ctrls = document.createElement('div');
+  ctrls.className = 'dept-ctrls';
+  const addRowBtn = document.createElement('button');
+  addRowBtn.className = 'icon-btn'; addRowBtn.title = 'เพิ่มแถวกิจกรรม'; addRowBtn.textContent = '+ แถว';
+  addRowBtn.onclick = () => addRow(project.id, dept.id);
+  const renameDeptBtn = document.createElement('button');
+  renameDeptBtn.className = 'icon-btn'; renameDeptBtn.title = 'แก้ไขชื่อหน่วยงาน'; renameDeptBtn.textContent = '✎';
+  renameDeptBtn.onclick = () => renameDepartment(project.id, dept.id);
+  const delDeptBtn = document.createElement('button');
+  delDeptBtn.className = 'icon-btn danger'; delDeptBtn.title = 'ลบหน่วยงาน'; delDeptBtn.textContent = '🗑';
+  delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
+  ctrls.append(addRowBtn, renameDeptBtn, delDeptBtn);
+  deptInfo.appendChild(ctrls);
+
+  const rowNamesCol = document.createElement('div');
+  rowNamesCol.className = 'dept-row-names';
+  dept.rows.forEach(row => {
+    const rCell = document.createElement('div');
+    rCell.className = 'row-name-cell';
+    rCell.title = `คลิกเพื่อเปลี่ยนชื่อแถว: ${escapeHTML(row.name)}`;
+    rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`;
+    rCell.onclick = () => renameRow(project.id, dept.id, row.id);
+    rowNamesCol.appendChild(rCell);
+  });
+
+  labelCol.appendChild(deptInfo);
+  labelCol.appendChild(rowNamesCol);
+  block.appendChild(labelCol);
+
+  const rowsWrap = document.createElement('div');
+  rowsWrap.className = 'dept-rows';
+  dept.rows.forEach(row => {
+    rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd));
+  });
+  block.appendChild(rowsWrap);
+
+  return block;
+}
+
+function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
+  const track = document.createElement('div');
+  track.className = 'subrow';
+  track.style.width = totalWidth + 'px';
+  track.onclick = (e) => {
+    if (e.target === track && project) openActivityModal(project.id, dept.id, row.id, null);
+  };
+
+  row.activities.forEach(act => {
+    const actStart = Math.max(rStart, act.start);
+    const actEnd = Math.min(rEnd, act.end);
+    if (actEnd >= rStart && actStart <= rEnd) {
+      const bar = document.createElement('div');
+      bar.className = 'act-bar' + (dragMode ? ' draggable' : '');
+      bar.style.left = ((actStart - rStart) * colw) + 'px';
+      bar.style.width = Math.max(colw, (actEnd - actStart + 1) * colw - 2) + 'px';
+      bar.style.background = act.color;
+      bar.textContent = act.label;
+      bar.title = dragMode ? act.label + ' (คลิกค้างแล้วลากเพื่อเลื่อนวัน)' : act.label + ' (คลิกเพื่อแก้ไข)';
+
+      if (dragMode) {
+        bar.onmousedown = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          
+          let startX = e.clientX;
+          let initialActStart = act.start;
+          let duration = act.end - act.start;
+          let hasMoved = false;
+
+          function onMouseMove(moveEvent) {
+            let dx = moveEvent.clientX - startX;
+            let dayShift = Math.round(dx / colw);
+            if (dayShift !== 0) {
+              hasMoved = true;
+              act.start = initialActStart + dayShift;
+              act.end = act.start + duration;
+              
+              let curStart = Math.max(rStart, act.start);
+              let curEnd = Math.min(rEnd, act.end);
+              bar.style.left = ((curStart - rStart) * colw) + 'px';
+              bar.style.width = Math.max(colw, (curEnd - curStart + 1) * colw - 2) + 'px';
+            }
+          }
+
+          function onMouseUp() {
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+            if (hasMoved) {
+              persistAndRender();
+            }
+          }
+
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        };
+      } else {
+        bar.onclick = (e) => { 
+          e.stopPropagation(); 
+          if (project) openActivityModal(project.id, dept.id, row.id, act.id); 
+        };
+      }
+
+      track.appendChild(bar);
+    }
+  });
+
+  if (project && dept.rows.length > 1) {
+    const delRowBtn = document.createElement('button');
+    delRowBtn.className = 'row-del-btn';
+    delRowBtn.textContent = '×';
+    delRowBtn.onclick = (e) => { e.stopPropagation(); deleteRow(project.id, dept.id, row.id); };
+    track.appendChild(delRowBtn);
+  }
+  return track;
+}
+
+/* ===================== หน้าภาพรวมทั้งหมด ===================== */
+function renderOverview() {
+  const root = document.createElement('div');
+  const toolbar = document.createElement('div');
+  toolbar.className = 'toolbar';
+  toolbar.innerHTML = `<div class="proj-title"><h2>ภาพรวมทุกโครงการ</h2></div>`;
+  renderToolbarControls(toolbar);
+  root.appendChild(toolbar);
+  root.appendChild(renderLegend());
+
+  const colw = COLW[zoom];
+  const { rStart, rEnd, totalDays } = getRenderBounds();
+  const totalWidth = totalDays * colw;
+
+  const scrollWrap = document.createElement('div');
+  scrollWrap.className = 'gantt-scroll';
+  const inner = document.createElement('div');
+  inner.className = 'gantt-inner';
+  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, 'ชื่อโครงการ'));
+
+  const body = document.createElement('div');
+  body.className = 'gantt-body';
+
+  function layoutLanes(acts) {
+    const sorted = [...acts].sort((a, b) => a.start - b.start);
+    const lanes = [], placed = [];
+    sorted.forEach(a => {
+      let laneIdx = lanes.findIndex(end => end < a.start);
+      if (laneIdx === -1) { laneIdx = lanes.length; lanes.push(a.end); }
+      else lanes[laneIdx] = a.end;
+      placed.push({ act: a, lane: laneIdx });
+    });
+    return { laneCount: Math.max(1, lanes.length), placed };
+  }
+
+  state.projects.forEach(p => {
+    const allActs = [];
+    p.departments.forEach(d => d.rows.forEach(r => allActs.push(...r.activities)));
+    const { laneCount, placed } = layoutLanes(allActs);
+
+    const block = document.createElement('div');
+    block.className = 'dept-block overview-block';
+    block.onclick = () => { view = { type: 'project', id: p.id }; render(); };
+
+    const label = document.createElement('div');
+    label.className = 'row-label';
+    label.innerHTML = `<div class="dept-info" style="border-right:none;"><div class="dept-name">${escapeHTML(p.name)}</div><div style="font-size:11px; color:var(--ink-soft);">${p.departments.length} หน่วยงาน · ${allActs.length} งาน</div></div>`;
+    block.appendChild(label);
+
+    const rowsWrap = document.createElement('div');
+    rowsWrap.className = 'dept-rows';
+    for (let lane = 0; lane < laneCount; lane++) {
+      const track = document.createElement('div');
+      track.className = 'subrow';
+      track.style.width = totalWidth + 'px';
+      placed.filter(pl => pl.lane === lane).forEach(pl => {
+        const act = pl.act;
+        const actStart = Math.max(rStart, act.start);
+        const actEnd = Math.min(rEnd, act.end);
+        if (actEnd >= rStart && actStart <= rEnd) {
           const bar = document.createElement('div');
           bar.className = 'act-bar';
-          bar.style.left = (act.start * colw) + 'px';
-          bar.style.width = Math.max(colw, (act.end - act.start + 1) * colw - 2) + 'px';
+          bar.style.left = ((actStart - rStart) * colw) + 'px';
+          bar.style.width = Math.max(colw, (actEnd - actStart + 1) * colw - 2) + 'px';
           bar.style.background = act.color;
           bar.textContent = act.label;
           track.appendChild(bar);
-        });
-        rowsWrap.appendChild(track);
+        }
       });
-      block.appendChild(rowsWrap);
-      body.appendChild(block);
-    });
+      rowsWrap.appendChild(track);
+    }
+    if (laneCount === 0) {
+      const track = document.createElement('div');
+      track.className = 'subrow'; track.style.width = totalWidth + 'px';
+      rowsWrap.appendChild(track);
+    }
+    block.appendChild(rowsWrap);
+    body.appendChild(block);
   });
 
+  if (state.projects.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีโครงการ — กด "เพิ่มโครงการ" ที่แถบด้านบน';
+    body.appendChild(empty);
+  }
   inner.appendChild(body);
-  
-  // เส้นวันนี้
-  const todayIdx = Math.round((Date.now() - EPOCH_T) / DAY);
-  const tLine = document.createElement('div');
-  tLine.className = 'today-line';
-  tLine.style.left = (todayIdx * colw + 220) + 'px';
-  inner.appendChild(tLine);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'gantt-grid-overlay';
+  const todayIdx = todayBangkokIndex();
+  if (todayIdx >= rStart && todayIdx <= rEnd) {
+    const tLine = document.createElement('div');
+    tLine.className = 'today-line';
+    tLine.style.left = ((todayIdx - rStart) * colw) + 'px';
+    overlay.appendChild(tLine);
+  }
+  inner.appendChild(overlay);
 
   scrollWrap.appendChild(inner);
-  return scrollWrap;
+  root.appendChild(scrollWrap);
+  setTimeout(scrollToToday, 0);
+  return root;
 }
 
-function addNewProjectModal() {
-  const name = prompt('ชื่อโครงการใหม่ (หากเป็นเรื่องส่วนตัว ให้ใส่คำว่า "ส่วนตัว" ไว้ในชื่อได้ครับ):');
-  if (!name) return;
-  state.projects.push({
-    id: 'proj_' + Date.now(),
-    name: name,
-    color: '#3A2E6E',
-    departments: [{ id: 'dept_1', name: 'ทั่วไป', rows: [{ id: 'r_1', name: 'แถว 1', activities: [] }] }]
+/* ===================== หน้าหน้ารายละเอียดภาพรวมโครงการ ===================== */
+function renderLanesOverview() {
+  const root = document.createElement('div');
+  const toolbar = document.createElement('div');
+  toolbar.className = 'toolbar';
+  toolbar.innerHTML = `<div class="proj-title"><h2>รายละเอียดภาพรวมโครงการ</h2></div>`;
+  renderToolbarControls(toolbar);
+  root.appendChild(toolbar);
+  root.appendChild(renderLegend());
+
+  const colw = COLW[zoom];
+  const { rStart, rEnd, totalDays } = getRenderBounds();
+  const totalWidth = totalDays * colw;
+
+  const scrollWrap = document.createElement('div');
+  scrollWrap.className = 'gantt-scroll';
+  const inner = document.createElement('div');
+  inner.className = 'gantt-inner';
+  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, 'โครงการ / หน่วยงาน'));
+
+  const body = document.createElement('div');
+  body.className = 'gantt-body';
+
+  state.projects.forEach((p) => {
+    const projHeaderBlock = document.createElement('div');
+    projHeaderBlock.className = 'dept-block';
+    projHeaderBlock.style.background = 'var(--indigo-soft)';
+    
+    const pLabel = document.createElement('div');
+    pLabel.className = 'row-label corner';
+    pLabel.style.width = '220px';
+    pLabel.style.minWidth = '220px';
+    pLabel.style.maxWidth = '220px';
+    pLabel.textContent = `📁 ${p.name}`;
+    projHeaderBlock.appendChild(pLabel);
+
+    const pTrackWrap = document.createElement('div');
+    pTrackWrap.className = 'subrow';
+    pTrackWrap.style.width = totalWidth + 'px';
+    pTrackWrap.style.background = 'transparent';
+    projHeaderBlock.appendChild(pTrackWrap);
+    body.appendChild(projHeaderBlock);
+
+    if (p.departments.length > 0) {
+      p.departments.forEach(dept => {
+        const deptBlock = document.createElement('div');
+        deptBlock.className = 'dept-block';
+
+        const labelCol = document.createElement('div');
+        labelCol.className = 'row-label';
+        
+        const deptInfo = document.createElement('div');
+        deptInfo.className = 'dept-info';
+        deptInfo.innerHTML = `<div class="dept-name" style="padding-left:10px;">↳ ${escapeHTML(dept.name)}</div>`;
+        
+        const rowNamesCol = document.createElement('div');
+        rowNamesCol.className = 'dept-row-names';
+        dept.rows.forEach(row => {
+          const rCell = document.createElement('div');
+          rCell.className = 'row-name-cell';
+          rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`;
+          rowNamesCol.appendChild(rCell);
+        });
+
+        labelCol.appendChild(deptInfo);
+        labelCol.appendChild(rowNamesCol);
+        deptBlock.appendChild(labelCol);
+
+        const rowsWrap = document.createElement('div');
+        rowsWrap.className = 'dept-rows';
+        dept.rows.forEach(row => {
+          const track = document.createElement('div');
+          track.className = 'subrow';
+          track.style.width = totalWidth + 'px';
+
+          row.activities.forEach(act => {
+            const actStart = Math.max(rStart, act.start);
+            const actEnd = Math.min(rEnd, act.end);
+            if (actEnd >= rStart && actStart <= rEnd) {
+              const bar = document.createElement('div');
+              bar.className = 'act-bar';
+              bar.style.left = ((actStart - rStart) * colw) + 'px';
+              bar.style.width = Math.max(colw, (actEnd - actStart + 1) * colw - 2) + 'px';
+              bar.style.background = act.color;
+              bar.textContent = act.label;
+              bar.title = `${p.name} > ${dept.name} > ${act.label}`;
+              track.appendChild(bar);
+            }
+          });
+          rowsWrap.appendChild(track);
+        });
+        deptBlock.appendChild(rowsWrap);
+        body.appendChild(deptBlock);
+      });
+    } else {
+      const emptyDept = document.createElement('div');
+      emptyDept.className = 'empty-hint';
+      emptyDept.style.padding = '10px 20px';
+      emptyDept.textContent = `(โครงการนี้ยังไม่มีหน่วยงาน)`;
+      body.appendChild(emptyDept);
+    }
   });
-  saveState().then(() => render());
+
+  if (state.projects.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีโครงการ';
+    body.appendChild(empty);
+  }
+  inner.appendChild(body);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'gantt-grid-overlay';
+  const todayIdx = todayBangkokIndex();
+  if (todayIdx >= rStart && todayIdx <= rEnd) {
+    const tLine = document.createElement('div');
+    tLine.className = 'today-line';
+    tLine.style.left = ((todayIdx - rStart) * colw) + 'px';
+    overlay.appendChild(tLine);
+  }
+  inner.appendChild(overlay);
+
+  scrollWrap.appendChild(inner);
+  root.appendChild(scrollWrap);
+  setTimeout(scrollToToday, 0);
+  return root;
 }
 
-function addDept(projId) {
-  const name = prompt('ชื่อหน่วยงานหรือหมวดหมู่ใหม่:');
-  if (!name) return;
-  const p = state.projects.find(x => x.id === projId);
-  p.departments.push({ id: 'dept_' + Date.now(), name: name, rows: [{ id: 'r_1', name: 'แถว 1', activities: [] }] });
-  saveState().then(() => render());
+/* ===================== การแก้ไขข้อมูล ===================== */
+function addProject() {
+  openTextModal('เพิ่มโครงการใหม่ (หากเป็นส่วนตัวให้ระบุคำว่า "ส่วนตัว" ในชื่อ)', 'ชื่อโครงการ', '', async (name) => {
+    if (!name) return;
+    state.projects.push(seedProject(name, [mkDept('หน่วยงานที่ 1', [mkRow([])])]));
+    await persistAndRender();
+  });
 }
+function renameProject(id) {
+  const p = state.projects.find(x => x.id === id);
+  openTextModal('เปลี่ยนชื่อโครงการ', 'ชื่อโครงการ', p.name, async (name) => {
+    if (!name) return; p.name = name; await persistAndRender();
+  });
+}
+function deleteProject(id) {
+  openConfirmModal('ลบโครงการนี้?', 'ข้อมูลทั้งหมดจะถูกลบ', async () => {
+    state.projects = state.projects.filter(p => p.id !== id);
+    if (view.type === 'project' && view.id === id) view = { type: 'overview' };
+    await persistAndRender();
+  });
+}
+
+function openProjectColorModal(projectId) {
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) return;
+
+  modalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  
+  modal.innerHTML = `
+    <h3>เลือกสีแท็บโครงการ: ${escapeHTML(p.name)}</h3>
+    <label class="field-label">เลือกสีประจำโครงการ</label>
+    <div class="color-picker" id="projColorPicker" style="margin-bottom:20px;"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  `;
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  let chosenColor = p.color || '#3A2E6E';
+  const picker = modal.querySelector('#projColorPicker');
+  
+  const allProjectColors = [
+    { hex: '#3A2E6E' }, { hex: '#241C4D' }, { hex: '#22D3EE' }, 
+    { hex: '#34D399' }, { hex: '#EC4899' }, { hex: '#3B82F6' }, 
+    { hex: '#FBBF24' }, { hex: '#8B5CF6' }, { hex: '#EF4444' }, { hex: '#6B7280' }
+  ];
+
+  allProjectColors.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch' + (c.hex === chosenColor ? ' selected' : '');
+    sw.style.background = c.hex;
+    sw.onclick = () => { 
+      chosenColor = c.hex; 
+      [...picker.children].forEach(ch => ch.classList.remove('selected')); 
+      sw.classList.add('selected'); 
+    };
+    picker.appendChild(sw);
+  });
+
+  const actions = modal.querySelector('#modalActions');
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'primary-btn'; 
+  saveBtn.textContent = 'บันทึกสี';
+  saveBtn.onclick = async () => {
+    p.color = chosenColor;
+    closeModal(overlay);
+    await persistAndRender();
+  };
+  actions.appendChild(saveBtn);
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ghost-btn'; 
+  cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay);
+  actions.appendChild(cancelBtn);
+}
+
+function addDepartment(projectId) {
+  openTextModal('เพิ่มหน่วยงาน', 'ชื่อหน่วยงาน', '', async (name) => {
+    if (!name) return;
+    state.projects.find(x => x.id === projectId).departments.push(mkDept(name, [mkRow([])]));
+    await persistAndRender();
+  });
+}
+function renameDepartment(projectId, deptId) {
+  const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId);
+  openTextModal('เปลี่ยนชื่อหน่วยงาน', 'ชื่อหน่วยงาน', d.name, async (name) => {
+    if (!name) return; d.name = name; await persistAndRender();
+  });
+}
+function deleteDepartment(projectId, deptId) {
+  openConfirmModal('ลบหน่วยงานนี้?', 'กิจกรรมทั้งหมดในหน่วยงานจะถูกลบ', async () => {
+    const p = state.projects.find(x => x.id === projectId);
+    p.departments = p.departments.filter(d => d.id !== deptId);
+    await persistAndRender();
+  });
+}
+function addRow(projectId, deptId) {
+  const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId);
+  const nextNum = d.rows.length + 1;
+  d.rows.push(mkRow([], `แถว ${nextNum}`));
+  persistAndRender();
+}
+function renameRow(projectId, deptId, rowId) {
+  const r = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId).rows.find(x => x.id === rowId);
+  openTextModal('เปลี่ยนชื่อแถว', 'ชื่อสำหรับแถวนี้ (เช่น งานเอกสาร, งานเทคนิค)', r.name, async (name) => {
+    r.name = name || `แถว`;
+    await persistAndRender();
+  });
+}
+function deleteRow(projectId, deptId, rowId) {
+  openConfirmModal('ลบแถวนี้?', 'กิจกรรมจะถูกลบ', async () => {
+    const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId);
+    d.rows = d.rows.filter(r => r.id !== rowId);
+    if (d.rows.length === 0) d.rows.push(mkRow([], 'แถว 1'));
+    await persistAndRender();
+  });
+}
+
+function openActivityModal(projectId, deptId, rowId, actId) {
+  const p = state.projects.find(x => x.id === projectId);
+  const d = p.departments.find(x => x.id === deptId);
+  const r = d.rows.find(x => x.id === rowId);
+  const existing = actId ? r.activities.find(a => a.id === actId) : null;
+
+  modalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+
+  const todayIdx = todayBangkokIndex();
+  const startD = existing ? dateFromIndex(existing.start) : dateFromIndex(todayIdx);
+  const endD = existing ? dateFromIndex(existing.end) : dateFromIndex(todayIdx);
+  const startStr = dateToInputStr(startD);
+  const endStr = dateToInputStr(endD);
+
+  modal.innerHTML = `
+    <h3>${existing ? 'แก้ไขกิจกรรม' : 'เพิ่มกิจกรรม'}</h3>
+    <label class="field-label">ชื่อกิจกรรม</label>
+    <input type="text" id="actLabel" class="text-input" value="${existing ? escapeHTML(existing.label) : ''}" placeholder="เช่น เตรียมการ, ประชุม, รายงาน">
+    
+    <label class="field-label">วันที่เริ่มต้น (วัน / เดือน / ปี พ.ศ.)</label>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <input type="date" id="actStart" class="text-input" value="${startStr}" style="flex:1;">
+      <span id="txtStartThai" style="font-size:12px; font-weight:600; color:var(--indigo); min-width:85px; text-align:right;">${formatDateThai(startD)}</span>
+    </div>
+
+    <label class="field-label">วันที่สิ้นสุด (วัน / เดือน / ปี พ.ศ.)</label>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <input type="date" id="actEnd" class="text-input" value="${endStr}" style="flex:1;">
+      <span id="txtEndThai" style="font-size:12px; font-weight:600; color:var(--indigo); min-width:85px; text-align:right;">${formatDateThai(endD)}</span>
+    </div>
+
+    <label class="field-label" style="margin-top:10px;">สี</label>
+    <div class="color-picker" id="colorPicker"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  `;
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  modal.querySelector('#actStart').oninput = (e) => {
+    const d = inputStrToDate(e.target.value);
+    modal.querySelector('#txtStartThai').textContent = formatDateThai(d);
+  };
+  modal.querySelector('#actEnd').oninput = (e) => {
+    const d = inputStrToDate(e.target.value);
+    modal.querySelector('#txtEndThai').textContent = formatDateThai(d);
+  };
+
+  let chosenColor = existing ? existing.color : state.colors[0].hex;
+  const picker = modal.querySelector('#colorPicker');
+  state.colors.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch' + (c.hex === chosenColor ? ' selected' : '');
+    sw.style.background = c.hex; sw.title = c.name;
+    sw.onclick = () => { chosenColor = c.hex; [...picker.children].forEach(ch => ch.classList.remove('selected')); sw.classList.add('selected'); };
+    picker.appendChild(sw);
+  });
+
+  const actions = modal.querySelector('#modalActions');
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
+  saveBtn.onclick = async () => {
+    const label = modal.querySelector('#actLabel').value.trim() || 'กิจกรรม';
+    let sIdx = indexFromDate(inputStrToDate(modal.querySelector('#actStart').value));
+    let eIdx = indexFromDate(inputStrToDate(modal.querySelector('#actEnd').value));
+    if (eIdx < sIdx) eIdx = sIdx;
+    
+    if (existing) {
+      existing.label = label; existing.color = chosenColor; existing.start = sIdx; existing.end = eIdx;
+    } else {
+      r.activities.push({ id: uid('act'), label, color: chosenColor, start: sIdx, end: eIdx });
+    }
+    closeModal(overlay);
+    await persistAndRender();
+  };
+  actions.appendChild(saveBtn);
+
+  if (existing) {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'danger-btn'; delBtn.textContent = 'ลบกิจกรรม';
+    delBtn.onclick = async () => {
+      r.activities = r.activities.filter(a => a.id !== existing.id);
+      closeModal(overlay); await persistAndRender();
+    };
+    actions.appendChild(delBtn);
+  }
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay);
+  actions.appendChild(cancelBtn);
+}
+
+function editColorsModal() {
+  modalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  
+  let html = `<h3>แก้ไขชื่อสี</h3><div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">`;
+  state.colors.forEach((c, idx) => {
+    html += `
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div style="width:26px; height:26px; border-radius:6px; background:${c.hex}; flex-shrink:0;"></div>
+        <input type="text" id="cname_${idx}" class="text-input" value="${escapeHTML(c.name)}">
+      </div>
+    `;
+  });
+  html += `</div><div class="modal-actions" id="modalActions"></div>`;
+  modal.innerHTML = html;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+
+  const actions = modal.querySelector('#modalActions');
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึกการตั้งค่า';
+  saveBtn.onclick = async () => {
+    state.colors.forEach((c, idx) => {
+      const val = document.getElementById(`cname_${idx}`).value.trim();
+      if(val) c.name = val;
+    });
+    closeModal(overlay); await persistAndRender();
+  };
+  actions.appendChild(saveBtn);
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay);
+  actions.appendChild(cancelBtn);
+}
+
+function openTextModal(title, fieldLabel, initial, onSave) {
+  modalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `<h3>${escapeHTML(title)}</h3><label class="field-label">${escapeHTML(fieldLabel)}</label><input type="text" id="txtInput" class="text-input" value="${escapeHTML(initial)}"><div class="modal-actions" id="modalActions"></div>`;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  const input = modal.querySelector('#txtInput');
+  setTimeout(() => input.focus(), 0);
+  const actions = modal.querySelector('#modalActions');
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
+  const doSave = () => { const v = input.value.trim(); closeModal(overlay); onSave(v); };
+  saveBtn.onclick = doSave;
+  input.onkeydown = (e) => { if (e.key === 'Enter') doSave(); };
+  actions.appendChild(saveBtn);
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay);
+  actions.appendChild(cancelBtn);
+}
+
+function openConfirmModal(title, desc, onConfirm) {
+  modalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `<h3>${escapeHTML(title)}</h3><p class="modal-desc">${escapeHTML(desc)}</p><div class="modal-actions" id="modalActions"></div>`;
+  overlay.innerHTML = '';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  
+  const actions = modal.querySelector('#modalActions');
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'danger-btn'; confirmBtn.textContent = 'ยืนยัน';
+  confirmBtn.onclick = async () => { closeModal(overlay); await onConfirm(); };
+  actions.appendChild(confirmBtn);
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay);
+  actions.appendChild(cancelBtn);
+}
+function closeModal(overlay) { modalOpen = false; overlay.remove(); }
 
 init();
 </script>
