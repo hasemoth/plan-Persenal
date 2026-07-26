@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนการดำเนินงานรวม — กบรส. & PRI & ส่วนตัว (Real-time)</title>
+<title>แผนการดำเนินงานรวม — กบรส. & PRI & ส่วนตัว (Two-Tier Navigation)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
 :root {
@@ -21,7 +21,15 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .brand-mark { width: 42px; height: 42px; border-radius: 10px; background: var(--cyan); color: var(--indigo-deep); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; line-height: 1.1; letter-spacing: 0.5px; }
 .brand-title { font-weight: 700; font-size: 18px; line-height: 1.2; }
 .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
-.tabs { display: flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--surface); border-bottom: 1px solid var(--line); overflow-x: auto; }
+
+/* --- Two-Tier Navigation --- */
+.nav-container { background: var(--surface); border-bottom: 1px solid var(--line); }
+.main-cat-bar { display: flex; align-items: center; gap: 8px; padding: 10px 18px 6px; border-bottom: 1px dashed var(--line-soft); }
+.main-cat-btn { font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 7px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft); cursor: pointer; transition: all .15s ease; display: flex; align-items: center; gap: 6px; }
+.main-cat-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+.main-cat-btn.active { background: var(--indigo-deep); border-color: var(--indigo-deep); color: #fff; }
+
+.sub-tabs-bar { display: flex; align-items: center; gap: 6px; padding: 6px 18px 10px; overflow-x: auto; background: #FAFAFD; }
 .tab { position: relative; border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft); padding: 8px 32px 8px 14px; border-radius: 999px; font-family: inherit; font-size: 13.5px; cursor: pointer; white-space: nowrap; transition: all .15s ease; display: flex; align-items: center; gap: 6px; }
 .tab:hover { border-color: var(--indigo); color: var(--indigo); }
 .tab.active { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
@@ -30,10 +38,12 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .tab-del:hover { opacity: 1; background: rgba(0,0,0,0.15); }
 .tab-color-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 13px; line-height: 1; padding: 2px 5px; border-radius: 50%; opacity: 0.6; cursor: pointer; }
 .tab-color-btn:hover { opacity: 1; background: rgba(0,0,0,0.15); }
+
 .badge-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; line-height: 1; margin-left: 4px; }
 .badge-tag.work { background: #E0F2FE; color: #0369A1 !important; border: 1px solid #BAE6FD; }
 .badge-tag.extra { background: #FEF3C7; color: #D97706 !important; border: 1px solid #FDE68A; }
 .badge-tag.personal { background: #F3E8FF; color: #7E22CE !important; border: 1px solid #E9D5FF; }
+
 .content { padding: 18px 22px 40px; flex: 1; }
 .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
 .proj-title { display: flex; align-items: center; gap: 10px; margin-right: auto; }
@@ -118,7 +128,7 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </style>
 </head>
 <body>
-<div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม (กบรส. & PRI & ส่วนตัว)...</div></div>
+<div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม...</div></div>
 
 <script>
 function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
@@ -154,8 +164,8 @@ function todayBangkokIndex() {
 }
 
 /* ===================== URL ฐานข้อมูลทั้ง 2 ฝั่ง ===================== */
-const SCRIPT_URL_WORK = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec'; // ลิงก์ที่ 1 (กบรส)[cite: 1]
-const SCRIPT_URL_EXTRA = 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec'; // ลิงก์ที่ 2 (PRI)[cite: 2]
+const SCRIPT_URL_WORK = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec';
+const SCRIPT_URL_EXTRA = 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec';
 
 async function fetchWithTimeout(url, options = {}, timeout = 5000) {
   const controller = new AbortController();
@@ -172,6 +182,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
 
 let state = null;
 let view = { type: 'overview' }; 
+let activeMainCat = 'all'; 
 let zoom = 'month'; 
 let modalOpen = false;
 let isSaving = false;
@@ -231,7 +242,6 @@ async function loadState() {
       } catch(err) { console.warn('โหลดข้อมูล PRI ช้าหรือไม่สำเร็จ'); }
     }
 
-    // โหลดโครงการส่วนตัวที่บันทึกไว้ใน LocalStorage ของเบราว์เซอร์
     try {
       const localPersonal = localStorage.getItem('gantt_personal_projects');
       if (localPersonal) {
@@ -269,7 +279,6 @@ async function saveState() {
     let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
     let personalProjects = state.projects.filter(p => p.sourceType === 'personal');
 
-    // บันทึกโครงการส่วนตัวลงใน LocalStorage
     try {
       localStorage.setItem('gantt_personal_projects', JSON.stringify(personalProjects));
     } catch(e) { console.error('บันทึกโครงการส่วนตัวลง LocalStorage ไม่สำเร็จ', e); }
@@ -284,7 +293,7 @@ async function saveState() {
       await fetch(SCRIPT_URL_EXTRA, { method: 'POST', body: JSON.stringify(stateExtra), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
     }
 
-    if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#34D399">✅ ซิงค์ข้อมูล กบรส., PRI และบันทึกโครงการส่วนตัวสำเร็จ</span>';
+    if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>';
   } catch (e) { 
     if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จบางส่วน</span>';
   }
@@ -345,7 +354,7 @@ function render() {
   const app = document.getElementById('app');
   app.innerHTML = '';
   app.appendChild(renderTopbar());
-  app.appendChild(renderTabs());
+  app.appendChild(renderTwoTierNav());
   const content = document.createElement('div');
   content.className = 'content';
   if (view.type === 'overview') content.appendChild(renderOverview());
@@ -357,68 +366,116 @@ function render() {
 function renderTopbar() {
   const bar = document.createElement('div');
   bar.className = 'topbar';
-  bar.innerHTML = `<div class="brand"><div class="brand-mark">รวม</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงานรวม (กบรส. & PRI & ส่วนตัว)</div><div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time · <span style="color:#34D399">✅ เชื่อมต่อแล้ว</span></div></div></div>`;
+  bar.innerHTML = `<div class="brand"><div class="brand-mark">รวม</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงานรวม (Two-Tier Navigation)</div><div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time · <span style="color:#34D399">✅ เชื่อมต่อแล้ว</span></div></div></div>`;
   return bar;
 }
 
-function renderTabs() {
-  const wrap = document.createElement('div');
-  wrap.className = 'tabs';
-  
-  const ov = document.createElement('button');
-  ov.className = 'tab' + (view.type === 'overview' ? ' active' : '');
-  const ovSetting = state.overviewSettings.tab1;
-  if (ovSetting.color) { ov.style.backgroundColor = ovSetting.color; ov.style.borderColor = ovSetting.color; ov.style.color = '#fff'; }
-  ov.innerHTML = `<span>${escapeHTML(ovSetting.name || '📊 ภาพรวมทั้งหมด')}</span>`;
-  ov.onclick = () => { view = { type: 'overview' }; render(); };
-  ov.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab1'); };
-  
-  const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.textContent = '✎';
-  ovEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab1'); };
-  ov.appendChild(ovEditBtn); ov.style.paddingRight = '26px'; wrap.appendChild(ov);
+function renderTwoTierNav() {
+  const navWrap = document.createElement('div');
+  navWrap.className = 'nav-container';
 
-  const lanesTab = document.createElement('button');
-  lanesTab.className = 'tab' + (view.type === 'lanes' ? ' active' : '');
-  const lanesSetting = state.overviewSettings.tab2;
-  if (lanesSetting.color) { lanesTab.style.backgroundColor = lanesSetting.color; lanesTab.style.borderColor = lanesSetting.color; lanesTab.style.color = '#fff'; }
-  lanesTab.innerHTML = `<span>${escapeHTML(lanesSetting.name || '🛣️ รายละเอียดภาพรวมโครงการ')}</span>`;
-  lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
-  lanesTab.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab2'); };
+  // --- ชั้นที่ 1: Main Category Bar ---
+  const mainBar = document.createElement('div');
+  mainBar.className = 'main-cat-bar';
 
-  const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎';
-  lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
-  lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; wrap.appendChild(lanesTab);
+  const categories = [
+    { key: 'all', label: '📊 ภาพรวม' },
+    { key: 'work', label: '🏛️ กบรส.' },
+    { key: 'extra', label: '💡 PRI' },
+    { key: 'personal', label: '👤 ส่วนตัว' }
+  ];
 
-  state.projects.forEach(p => {
-    const t = document.createElement('button');
-    t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
-    if (p.color) { t.style.backgroundColor = p.color; t.style.borderColor = p.color; t.style.color = '#fff'; }
-
-    let tagClass = 'work', tagName = 'กบรส.';
-    if (p.sourceType === 'extra') { tagClass = 'extra'; tagName = 'PRI'; }
-    else if (p.sourceType === 'personal') { tagClass = 'personal'; tagName = 'ส่วนตัว'; }
-
-    t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
-    
-    t.onclick = () => { view = { type: 'project', id: p.id }; render(); };
-    t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
-
-    const del = document.createElement('span'); del.className = 'tab-del'; del.textContent = '×';
-    del.onclick = (e) => { e.stopPropagation(); deleteProject(p.id); };
-    t.appendChild(del);
-    wrap.appendChild(t);
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'main-cat-btn' + (activeMainCat === cat.key ? ' active' : '');
+    btn.textContent = cat.label;
+    btn.onclick = () => {
+      activeMainCat = cat.key;
+      if (cat.key !== 'all') {
+        const filtered = state.projects.filter(p => (cat.key === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === cat.key));
+        if (filtered.length > 0) {
+          view = { type: 'project', id: filtered[0].id };
+        } else {
+          view = { type: 'overview' };
+        }
+      } else {
+        view = { type: 'overview' };
+      }
+      render();
+    };
+    mainBar.appendChild(btn);
   });
+  navWrap.appendChild(mainBar);
 
-  const add = document.createElement('button');
-  add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการ (กบรส.)'; add.onclick = addProject;
-  wrap.appendChild(add);
+  // --- ชั้นที่ 2: Sub-tabs / Pill Filters ---
+  const subBar = document.createElement('div');
+  subBar.className = 'sub-tabs-bar';
 
-  const addPersonal = document.createElement('button');
-  addPersonal.className = 'tab tab-add'; addPersonal.style.borderStyle = 'solid'; addPersonal.style.borderColor = '#7E22CE'; addPersonal.style.color = '#7E22CE';
-  addPersonal.textContent = '+ เพิ่มโครงการส่วนตัว'; addPersonal.onclick = addPersonalProject;
-  wrap.appendChild(addPersonal);
+  if (activeMainCat === 'all') {
+    const ov = document.createElement('button');
+    ov.className = 'tab' + (view.type === 'overview' ? ' active' : '');
+    const ovSetting = state.overviewSettings.tab1;
+    if (ovSetting.color) { ov.style.backgroundColor = ovSetting.color; ov.style.borderColor = ovSetting.color; ov.style.color = '#fff'; }
+    ov.innerHTML = `<span>${escapeHTML(ovSetting.name || '📊 ภาพรวมทั้งหมด')}</span>`;
+    ov.onclick = () => { view = { type: 'overview' }; render(); };
+    ov.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab1'); };
+    const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.textContent = '✎';
+    ovEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab1'); };
+    ov.appendChild(ovEditBtn); ov.style.paddingRight = '26px';
+    subBar.appendChild(ov);
 
-  return wrap;
+    const lanesTab = document.createElement('button');
+    lanesTab.className = 'tab' + (view.type === 'lanes' ? ' active' : '');
+    const lanesSetting = state.overviewSettings.tab2;
+    if (lanesSetting.color) { lanesTab.style.backgroundColor = lanesSetting.color; lanesTab.style.borderColor = lanesSetting.color; lanesTab.style.color = '#fff'; }
+    lanesTab.innerHTML = `<span>${escapeHTML(lanesSetting.name || '🛣️ รายละเอียดภาพรวมโครงการ')}</span>`;
+    lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
+    lanesTab.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab2'); };
+    const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎';
+    lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
+    lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px';
+    subBar.appendChild(lanesTab);
+  } else {
+    const filteredProjects = state.projects.filter(p => activeMainCat === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === activeMainCat);
+
+    filteredProjects.forEach(p => {
+      const t = document.createElement('button');
+      t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
+      if (p.color) { t.style.backgroundColor = p.color; t.style.borderColor = p.color; t.style.color = '#fff'; }
+
+      let tagClass = 'work', tagName = 'กบรส.';
+      if (p.sourceType === 'extra') { tagClass = 'extra'; tagName = 'PRI'; }
+      else if (p.sourceType === 'personal') { tagClass = 'personal'; tagName = 'ส่วนตัว'; }
+
+      t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
+      t.onclick = () => { view = { type: 'project', id: p.id }; render(); };
+      t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
+
+      const del = document.createElement('span'); del.className = 'tab-del'; del.textContent = '×';
+      del.onclick = (e) => { e.stopPropagation(); deleteProject(p.id); };
+      t.appendChild(del);
+      subBar.appendChild(t);
+    });
+
+    if (activeMainCat === 'work') {
+      const add = document.createElement('button');
+      add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการ (กบรส.)'; add.onclick = addProject;
+      subBar.appendChild(add);
+    } else if (activeMainCat === 'extra') {
+      const addExtra = document.createElement('button');
+      addExtra.className = 'tab tab-add'; addExtra.style.borderStyle = 'solid'; addExtra.style.borderColor = '#D97706'; addExtra.style.color = '#D97706';
+      addExtra.textContent = '+ เพิ่มโครงการ PRI'; addExtra.onclick = addExtraProject;
+      subBar.appendChild(addExtra);
+    } else if (activeMainCat === 'personal') {
+      const addPersonal = document.createElement('button');
+      addPersonal.className = 'tab tab-add'; addPersonal.style.borderStyle = 'solid'; addPersonal.style.borderColor = '#7E22CE'; addPersonal.style.color = '#7E22CE';
+      addPersonal.textContent = '+ เพิ่มโครงการส่วนตัว'; addPersonal.onclick = addPersonalProject;
+      subBar.appendChild(addPersonal);
+    }
+  }
+
+  navWrap.appendChild(subBar);
+  return navWrap;
 }
 
 function renderToolbarControls(toolbar) {
@@ -433,7 +490,8 @@ function renderToolbarControls(toolbar) {
   zWrap.appendChild(todayBtn); toolbar.appendChild(zWrap);
 
   const mWrap = document.createElement('label'); mWrap.className = 'mode-controls'; mWrap.style.cursor = 'pointer';
-  mWrap.innerHTML = `<input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;"><span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดลากเลื่อนวัน</span>`;
+  // เปลี่ยนชื่อป้ายกำกับให้ชัดเจนขึ้น
+  mWrap.innerHTML = `<input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;"><span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดแก้ไข/ลากเลื่อนวัน</span>`;
   mWrap.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); };
   toolbar.appendChild(mWrap);
 
@@ -542,11 +600,22 @@ function buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd) {
   const block = document.createElement('div'); block.className = 'dept-block';
   const labelCol = document.createElement('div'); labelCol.className = 'row-label';
   const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name">${escapeHTML(dept.name)}</div>`;
-  const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls';
-  const addRowBtn = document.createElement('button'); addRowBtn.className = 'icon-btn'; addRowBtn.textContent = '+ แถว'; addRowBtn.onclick = () => addRow(project.id, dept.id);
-  const renameDeptBtn = document.createElement('button'); renameDeptBtn.className = 'icon-btn'; renameDeptBtn.textContent = '✎'; renameDeptBtn.onclick = () => renameDepartment(project.id, dept.id);
-  const delDeptBtn = document.createElement('button'); delDeptBtn.className = 'icon-btn danger'; delDeptBtn.textContent = '🗑'; delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
-  ctrls.append(addRowBtn, renameDeptBtn, delDeptBtn); deptInfo.appendChild(ctrls);
+  
+  // ซ่อนปุ่มการจัดการหากไม่ได้เปิดโหมด dragMode
+  if (dragMode) {
+    const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls';
+    
+    // ปุ่มเลื่อนขึ้น-ลงหน่วยงาน
+    const moveUpBtn = document.createElement('button'); moveUpBtn.className = 'icon-btn'; moveUpBtn.textContent = '▲'; moveUpBtn.onclick = () => moveDepartmentUp(project.id, dept.id);
+    const moveDownBtn = document.createElement('button'); moveDownBtn.className = 'icon-btn'; moveDownBtn.textContent = '▼'; moveDownBtn.onclick = () => moveDepartmentDown(project.id, dept.id);
+    
+    const addRowBtn = document.createElement('button'); addRowBtn.className = 'icon-btn'; addRowBtn.textContent = '+ แถว'; addRowBtn.onclick = () => addRow(project.id, dept.id);
+    const renameDeptBtn = document.createElement('button'); renameDeptBtn.className = 'icon-btn'; renameDeptBtn.textContent = '✎'; renameDeptBtn.onclick = () => renameDepartment(project.id, dept.id);
+    const delDeptBtn = document.createElement('button'); delDeptBtn.className = 'icon-btn danger'; delDeptBtn.textContent = '🗑'; delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
+    
+    ctrls.append(moveUpBtn, moveDownBtn, addRowBtn, renameDeptBtn, delDeptBtn); 
+    deptInfo.appendChild(ctrls);
+  }
 
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
   dept.rows.forEach(row => {
@@ -600,7 +669,7 @@ function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
       track.appendChild(bar);
     }
   });
-  if (project && dept.rows.length > 1) {
+  if (project && dept.rows.length > 1 && dragMode) {
     const delRowBtn = document.createElement('button'); delRowBtn.className = 'row-del-btn'; delRowBtn.textContent = '×';
     delRowBtn.onclick = (e) => { e.stopPropagation(); deleteRow(project.id, dept.id, row.id); }; track.appendChild(delRowBtn);
   }
@@ -780,12 +849,32 @@ function openActivityModal(projectId, deptId, rowId, actId) {
 }
 function addProject() {
   openTextModal('เพิ่มโครงการใหม่ (กบรส.)', 'ชื่อโครงการ', '', async (name) => {
-    if (!name) return; state.projects.push(seedProject(name, [mkDept('หน่วยงานที่ 1', [mkRow([])])], 'work')); await persistAndRender();
+    if (!name) return;
+    const newProj = seedProject(name, [mkDept('หน่วยงานที่ 1', [mkRow([])])], 'work');
+    state.projects.push(newProj);
+    activeMainCat = 'work';
+    view = { type: 'project', id: newProj.id };
+    await persistAndRender();
+  });
+}
+function addExtraProject() {
+  openTextModal('เพิ่มโครงการใหม่ (PRI)', 'ชื่อโครงการ PRI', '', async (name) => {
+    if (!name) return;
+    const newProj = seedProject(name, [mkDept('หน่วยงาน PRI', [mkRow([])])], 'extra');
+    state.projects.push(newProj);
+    activeMainCat = 'extra';
+    view = { type: 'project', id: newProj.id };
+    await persistAndRender();
   });
 }
 function addPersonalProject() {
   openTextModal('เพิ่มโครงการส่วนตัวใหม่', 'ชื่อโครงการส่วนตัว', '', async (name) => {
-    if (!name) return; state.projects.push(seedProject(name, [mkDept('หน่วยงานส่วนตัว', [mkRow([])])], 'personal')); await persistAndRender();
+    if (!name) return;
+    const newProj = seedProject(name, [mkDept('หน่วยงานส่วนตัว', [mkRow([])])], 'personal');
+    state.projects.push(newProj);
+    activeMainCat = 'personal';
+    view = { type: 'project', id: newProj.id };
+    await persistAndRender();
   });
 }
 function renameProject(id) {
@@ -837,6 +926,31 @@ function editColorsModal() {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
   cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
+
+// ---------------- เพิ่มฟังก์ชันสลับตำแหน่งหน่วยงาน (ขยับขึ้น-ขยับลง) ---------------- 
+async function moveDepartmentUp(projectId, deptId) {
+  const p = state.projects.find(x => x.id === projectId);
+  const idx = p.departments.findIndex(x => x.id === deptId);
+  if (idx > 0) {
+    const temp = p.departments[idx - 1];
+    p.departments[idx - 1] = p.departments[idx];
+    p.departments[idx] = temp;
+    await persistAndRender();
+  }
+}
+
+async function moveDepartmentDown(projectId, deptId) {
+  const p = state.projects.find(x => x.id === projectId);
+  const idx = p.departments.findIndex(x => x.id === deptId);
+  if (idx < p.departments.length - 1) {
+    const temp = p.departments[idx + 1];
+    p.departments[idx + 1] = p.departments[idx];
+    p.departments[idx] = temp;
+    await persistAndRender();
+  }
+}
+// ------------------------------------------------------------------------------------
+
 function addDepartment(projectId) { openTextModal('เพิ่มหน่วยงาน', 'ชื่อหน่วยงาน', '', async (name) => { if (!name) return; state.projects.find(x => x.id === projectId).departments.push(mkDept(name, [mkRow([])])); await persistAndRender(); }); }
 function renameDepartment(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); openTextModal('เปลี่ยนชื่อหน่วยงาน', 'ชื่อหน่วยงาน', d.name, async (name) => { if (!name) return; d.name = name; await persistAndRender(); }); }
 function deleteDepartment(projectId, deptId) { openConfirmModal('ลบหน่วยงานนี้?', 'กิจกรรมทั้งหมดในหน่วยงานจะถูกลบ', async () => { state.projects.find(x => x.id === projectId).departments = state.projects.find(x => x.id === projectId).departments.filter(d => d.id !== deptId); await persistAndRender(); }); }
