@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนการดำเนินงาน — Gantt แบบร่วมมือ (ระบบ Cloud)</title>
+<title>แผนการดำเนินงานรวม — ส่วนตัว, ที่ทำงาน & เสริม (Real-time)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
 :root {
@@ -28,6 +28,12 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .tab-add { padding: 8px 16px; border-style: dashed; }
 .tab-del { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 15px; line-height: 1; padding: 2px 5px; border-radius: 50%; opacity: 0.6; }
 .tab-del:hover { opacity: 1; background: rgba(0,0,0,0.15); }
+.tab-color-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 13px; line-height: 1; padding: 2px 5px; border-radius: 50%; opacity: 0.6; cursor: pointer; }
+.tab-color-btn:hover { opacity: 1; background: rgba(0,0,0,0.15); }
+.badge-tag { font-size: 10.5px; padding: 2px 6px; border-radius: 4px; font-weight: 600; border: 1px solid rgba(0,0,0,0.1); line-height: 1; }
+.badge-tag.work { background: #E0F2FE; color: #0369A1 !important; }
+.badge-tag.extra { background: #FEF3C7; color: #D97706 !important; }
+.badge-tag.personal { background: #FCE7F3; color: #BE185D !important; }
 .content { padding: 18px 22px 40px; flex: 1; }
 .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
 .proj-title { display: flex; align-items: center; gap: 10px; margin-right: auto; }
@@ -112,95 +118,180 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </style>
 </head>
 <body>
-<div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบ...</div></div>
+<div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวมแบบ Multi-Cloud...</div></div>
+
 <script>
 function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
 const DAY = 86400000;
 function beDate(beYear, month, day) { return new Date(Date.UTC(beYear - 543, month - 1, day)); }
-const RANGE_START_BE = 2569, RANGE_END_BE = 2575;
-const EPOCH = beDate(RANGE_START_BE, 1, 1), EPOCH_T = EPOCH.getTime();
+const RANGE_START_BE = 2569;
+const RANGE_END_BE = 2575;
+const EPOCH = beDate(RANGE_START_BE, 1, 1);
+const EPOCH_T = EPOCH.getTime();
+
 function indexFromDate(d) { return Math.round((d.getTime() - EPOCH_T) / DAY); }
 function dateFromIndex(i) { return new Date(EPOCH_T + i * DAY); }
 const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const THAI_WEEKDAY_SHORT = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+
 function dateToInputStr(d) { return d.toISOString().slice(0, 10); }
 function inputStrToDate(str) { if (!str) return null; return new Date(str + 'T00:00:00Z'); }
 function formatDateThai(d) {
   if (!d || isNaN(d)) return '';
-  return `${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}/${d.getUTCFullYear() + 543}`;
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const year = d.getUTCFullYear() + 543;
+  return `${day}/${month}/${year}`;
 }
+
 function todayBangkokIndex() {
   const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok', year: 'numeric', month: '2-digit', day: '2-digit' });
   const parts = fmt.formatToParts(new Date());
   const get = (t) => parseInt(parts.find(p => p.type === t).value, 10);
-  return indexFromDate(new Date(Date.UTC(get('year'), get('month') - 1, get('day'))));
+  const y = get('year'), m = get('month'), d = get('day');
+  return indexFromDate(new Date(Date.UTC(y, m - 1, d)));
 }
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec'; 
-let state = null, view = { type: 'overview' }, zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
+
+/* ===================== URL ของที่ทำงานหลัก และ ที่ทำงานเสริม (เชื่อมโยงลิงก์ที่ 3 แล้ว) ===================== */
+const SCRIPT_URL_WORK = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec'; 
+const SCRIPT_URL_EXTRA = 'https://script.google.com/macros/s/AKfycbx76vNUV5HN-8IbPH97HGxVdrj63gQXQWiQIHJLq7f5uPtpHyp5dki2ylzar7imEzBp/exec'; 
+
+async function fetchWithTimeout(url, options = {}, timeout = 5000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+}
+
+let state = null;
+let view = { type: 'overview' }; 
+let zoom = 'month'; 
+let modalOpen = false;
+let isSaving = false;
+let dragMode = false;
+
 const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
+
 const DEFAULT_COLORS = [
   { name: 'ฟ้า', hex: '#22D3EE' }, { name: 'เขียว', hex: '#34D399' },
   { name: 'ชมพู', hex: '#EC4899' }, { name: 'น้ำเงิน', hex: '#3B82F6' },
   { name: 'เหลือง', hex: '#FBBF24' }, { name: 'ม่วง', hex: '#8B5CF6' }
 ];
+
 function uid(prefix) { return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function mkRow(acts, name = 'แถว 1') { return { id: uid('row'), name, activities: acts }; }
 function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
 function seedProject(name, depts) { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts }; }
+
 function defaultState() {
+  const projA = seedProject('โครงการตัวอย่าง', [ mkDept('หน่วยงาน ก.', [mkRow([], 'แถว 1')]) ]);
   return { 
-    projects: [seedProject('โครงการตัวอย่าง', [ mkDept('หน่วยงาน ก.', [mkRow([], 'แถว 1')]) ])],
+    projects: [projA],
     colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
     viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
     overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
   };
 }
+
 async function loadState() {
   try {
-    const res = await fetch(SCRIPT_URL);
-    const text = await res.text();
-    if (text.trim().startsWith('<')) { alert("⚠️ การเข้าถึงถูกปฏิเสธ!"); return null; }
-    const parsed = JSON.parse(text);
-    if (Object.keys(parsed).length > 0) {
-      if (!parsed.colors) parsed.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
-      if (!parsed.viewRange) parsed.viewRange = { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) };
-      if (!parsed.overviewSettings) parsed.overviewSettings = { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } };
-      parsed.projects.forEach(p => {
-        if (!p.color) p.color = '#3A2E6E';
-        p.departments.forEach(d => d.rows.forEach((r, idx) => { if(!r.name) r.name = `แถว ${idx+1}`; }));
-      });
-      return parsed;
+    let dataWork = { projects: [] };
+    try {
+      const resWork = await fetchWithTimeout(SCRIPT_URL_WORK, {}, 6000);
+      const textWork = await resWork.text();
+      dataWork = JSON.parse(textWork);
+    } catch(e) { console.warn('โหลดข้อมูลหลักช้าหรือไม่สำเร็จ'); }
+
+    let allProjects = [];
+    if (dataWork && dataWork.projects) {
+      dataWork.projects.forEach(p => { p.sourceType = 'work'; allProjects.push(p); });
     }
-  } catch (e) { console.error(e); }
-  return null;
+
+    if (SCRIPT_URL_EXTRA && SCRIPT_URL_EXTRA.startsWith('http')) {
+      try {
+        const resExtra = await fetchWithTimeout(SCRIPT_URL_EXTRA, {}, 6000);
+        const textExtra = await resExtra.text();
+        const dataExtra = JSON.parse(textExtra);
+        if (dataExtra && dataExtra.projects) {
+          dataExtra.projects.forEach(p => { p.sourceType = 'extra'; allProjects.push(p); });
+        }
+      } catch(err) { console.warn('โหลดข้อมูลเสริมช้าหรือไม่สำเร็จ'); }
+    }
+
+    let base = dataWork;
+    base.projects = allProjects;
+
+    if (!base.colors) base.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
+    if (!base.viewRange) base.viewRange = { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) };
+    if (!base.overviewSettings) base.overviewSettings = { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } };
+
+    base.projects.forEach(p => {
+      if (!p.color) p.color = '#3A2E6E';
+      p.departments.forEach(d => d.rows.forEach((r, idx) => { if(!r.name) r.name = `แถว ${idx+1}`; }));
+    });
+    return base;
+  } catch (e) { console.error('Fetch Error:', e); return defaultState(); }
 }
+
 async function saveState() {
   if (isSaving) return;
   isSaving = true;
   const statusEl = document.querySelector('.brand-sub');
-  if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูลไปที่ Drive...</span>';
+  if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูลไปที่ Cloud...</span>';
+  
   try {
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(state), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
-    if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#34D399">✅ ข้อมูลตรงกับบนคลาวด์แล้ว</span>';
-  } catch (e) { if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ</span>'; }
+    let workProjects = state.projects.filter(p => p.sourceType !== 'extra');
+    let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
+
+    let stateWork = JSON.parse(JSON.stringify(state));
+    stateWork.projects = workProjects;
+    await fetch(SCRIPT_URL_WORK, { method: 'POST', body: JSON.stringify(stateWork), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+
+    if (extraProjects.length > 0 && SCRIPT_URL_EXTRA && SCRIPT_URL_EXTRA.startsWith('http')) {
+      let stateExtra = JSON.parse(JSON.stringify(state));
+      stateExtra.projects = extraProjects;
+      await fetch(SCRIPT_URL_EXTRA, { method: 'POST', body: JSON.stringify(stateExtra), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+    }
+
+    if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#34D399">✅ ข้อมูลซิงค์ตรงกันแล้ว</span>';
+  } catch (e) { 
+    if (statusEl) statusEl.innerHTML = 'ระบบติดตามเวลา · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ</span>';
+  }
   isSaving = false;
 }
+
 async function persistAndRender() { render(); await saveState(); }
+
 async function init() {
-  state = await loadState() || defaultState();
-  render();
-  setInterval(async () => {
-    if (modalOpen || isSaving || dragMode) return;
-    const loaded = await loadState();
-    if (loaded && JSON.stringify(loaded) !== JSON.stringify(state)) { state = loaded; render(); }
-  }, 10000);
+  try {
+    state = await loadState();
+    if (!state || !state.projects) { state = defaultState(); await saveState(); }
+    render();
+    setInterval(pollRemote, 10000);
+  } catch(e) { document.querySelector('#app').innerHTML = `<div style="padding:40px;text-align:center;color:red;">เกิดข้อผิดพลาด:<br>${e.message}</div>`; }
 }
+
+async function pollRemote() {
+  if (modalOpen || isSaving || dragMode) return;
+  const loaded = await loadState();
+  if (loaded && JSON.stringify(loaded) !== JSON.stringify(state)) { state = loaded; render(); }
+}
+
+/* ===================== ฟังก์ชันแสดงผล ===================== */
 function getRenderBounds() {
   let rStart = indexFromDate(inputStrToDate(state.viewRange.start));
   let rEnd = indexFromDate(inputStrToDate(state.viewRange.end));
   if (rEnd < rStart) rEnd = rStart;
   return { rStart, rEnd, totalDays: rEnd - rStart + 1 };
 }
+
 function headerGroupsBounded(rStart, rEnd) {
   const years = [], months = [];
   let prevY = null, prevM = null, yStart = rStart, mStart = rStart;
@@ -212,6 +303,7 @@ function headerGroupsBounded(rStart, rEnd) {
   }
   return { years, months };
 }
+
 function weekSegmentsBounded(rStart, rEnd) {
   const segs = []; let wStart = rStart;
   for (let i = rStart; i <= rEnd; i++) {
@@ -225,6 +317,7 @@ function weekSegmentsBounded(rStart, rEnd) {
   }
   return segs;
 }
+
 function render() {
   const app = document.getElementById('app');
   app.innerHTML = '';
@@ -237,12 +330,14 @@ function render() {
   else content.appendChild(renderProjectDetail(view.id));
   app.appendChild(content);
 }
+
 function renderTopbar() {
   const bar = document.createElement('div');
   bar.className = 'topbar';
-  bar.innerHTML = `<div class="brand"><div class="brand-mark">แผน<br>งาน</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงาน (ระบบ Cloud)</div><div class="brand-sub">✅ อัปเดตข้อมูลล่าสุดบนคลาวด์แล้ว</div></div></div>`;
+  bar.innerHTML = `<div class="brand"><div class="brand-mark">แผน<br>Pers</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงานรวม (ส่วนตัว, ที่ทำงาน & เสริม)</div><div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time ทุกแหล่ง · <span style="color:#34D399">✅ อัปเดตล่าสุดแล้ว</span></div></div></div>`;
   return bar;
 }
+
 function renderTabs() {
   const wrap = document.createElement('div');
   wrap.className = 'tabs';
@@ -254,7 +349,8 @@ function renderTabs() {
   ov.innerHTML = `<span>${escapeHTML(ovSetting.name || '📊 ภาพรวมทั้งหมด')}</span>`;
   ov.onclick = () => { view = { type: 'overview' }; render(); };
   ov.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab1'); };
-  const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.style.right = '8px'; ovEditBtn.textContent = '✎';
+  
+  const ovEditBtn = document.createElement('span'); ovEditBtn.className = 'tab-color-btn'; ovEditBtn.textContent = '✎';
   ovEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab1'); };
   ov.appendChild(ovEditBtn); ov.style.paddingRight = '26px'; wrap.appendChild(ov);
 
@@ -265,7 +361,8 @@ function renderTabs() {
   lanesTab.innerHTML = `<span>${escapeHTML(lanesSetting.name || '🛣️ รายละเอียดภาพรวมโครงการ')}</span>`;
   lanesTab.onclick = () => { view = { type: 'lanes' }; render(); };
   lanesTab.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab2'); };
-  const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.style.right = '8px'; lanesEditBtn.textContent = '✎';
+
+  const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎';
   lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
   lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; wrap.appendChild(lanesTab);
 
@@ -273,7 +370,15 @@ function renderTabs() {
     const t = document.createElement('button');
     t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
     if (p.color) { t.style.backgroundColor = p.color; t.style.borderColor = p.color; t.style.color = '#fff'; }
-    t.innerHTML = `<span>${escapeHTML(p.name)}</span>`;
+
+    const isPersonal = p.name.includes('ส่วนตัว') || p.category === 'personal';
+    const isExtra = p.sourceType === 'extra' || p.name.includes('เสริม') || p.name.includes('PRI');
+    let tagClass = 'work', tagName = 'ที่ทำงาน';
+    if (isPersonal) { tagClass = 'personal'; tagName = 'ส่วนตัว'; }
+    else if (isExtra) { tagClass = 'extra'; tagName = 'ที่ทำงานเสริม'; }
+
+    t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
+    
     t.onclick = () => { view = { type: 'project', id: p.id }; render(); };
     t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
 
@@ -284,10 +389,11 @@ function renderTabs() {
   });
 
   const add = document.createElement('button');
-  add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการ'; add.onclick = addProject;
+  add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการใหม่'; add.onclick = addProject;
   wrap.appendChild(add);
   return wrap;
 }
+
 function renderToolbarControls(toolbar) {
   const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls';
   zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
@@ -295,19 +401,23 @@ function renderToolbarControls(toolbar) {
     const b = document.createElement('button'); b.className = 'zoom-btn' + (zoom === key ? ' active' : ''); b.textContent = txt;
     b.onclick = () => { zoom = key; render(); scrollToToday(); }; zWrap.appendChild(b);
   });
-  const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = scrollToToday;
+  const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้';
+  todayBtn.onclick = scrollToToday;
   zWrap.appendChild(todayBtn); toolbar.appendChild(zWrap);
 
   const mWrap = document.createElement('label'); mWrap.className = 'mode-controls'; mWrap.style.cursor = 'pointer';
   mWrap.innerHTML = `<input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;"><span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดลากเลื่อนวัน</span>`;
-  mWrap.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); }; toolbar.appendChild(mWrap);
+  mWrap.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); };
+  toolbar.appendChild(mWrap);
 
   const fWrap = document.createElement('div'); fWrap.className = 'filter-controls';
   fWrap.innerHTML = `<span class="zoom-label">แสดงช่วง:</span><input type="date" id="filterStart" value="${state.viewRange.start}"><span style="color:var(--ink-soft); font-size:12px;">ถึง</span><input type="date" id="filterEnd" value="${state.viewRange.end}">`;
   const fBtn = document.createElement('button'); fBtn.className = 'ghost-btn'; fBtn.style.padding = '3px 8px'; fBtn.style.fontSize = '12px'; fBtn.textContent = 'ตกลง';
   fBtn.onclick = async () => { state.viewRange.start = document.getElementById('filterStart').value; state.viewRange.end = document.getElementById('filterEnd').value; await persistAndRender(); };
-  fWrap.appendChild(fBtn); toolbar.appendChild(fWrap);
+  fWrap.appendChild(fBtn);
+  toolbar.appendChild(fWrap);
 }
+
 function scrollToToday() {
   requestAnimationFrame(() => {
     const el = document.querySelector('.gantt-scroll'); if (!el) return;
@@ -315,9 +425,11 @@ function scrollToToday() {
     el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + 220 - el.clientWidth / 2);
   });
 }
+
 function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วยงาน / ชื่องาน') {
   const { years, months } = headerGroupsBounded(rStart, rEnd), totalWidth = totalDays * colw;
   const header = document.createElement('div'); header.className = 'gantt-header';
+
   const yearRow = document.createElement('div'); yearRow.className = 'header-row year-row'; yearRow.innerHTML = `<div class="row-label corner">${labelText}</div>`;
   const yTrack = document.createElement('div'); yTrack.className = 'row-track'; yTrack.style.width = totalWidth + 'px';
   years.forEach(y => { const seg = document.createElement('div'); seg.className = 'hdr-seg year-seg'; seg.style.width = ((y.end - y.start + 1) * colw) + 'px'; seg.textContent = 'พ.ศ. ' + y.label; yTrack.appendChild(seg); });
@@ -329,12 +441,14 @@ function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วย
     months.forEach(m => { const seg = document.createElement('div'); seg.className = 'hdr-seg month-seg'; seg.style.width = ((m.end - m.start + 1) * colw) + 'px'; seg.textContent = m.label; mTrack.appendChild(seg); });
     monthRow.appendChild(mTrack); header.appendChild(monthRow);
   }
+
   if (zoom === 'week') {
     const weekRow = document.createElement('div'); weekRow.className = 'header-row week-row'; weekRow.innerHTML = `<div class="row-label corner"></div>`;
     const wTrack = document.createElement('div'); wTrack.className = 'row-track'; wTrack.style.width = totalWidth + 'px';
     weekSegmentsBounded(rStart, rEnd).forEach(seg0 => { const seg = document.createElement('div'); seg.className = 'hdr-seg week-seg'; seg.style.width = ((seg0.end - seg0.start + 1) * colw) + 'px'; seg.textContent = seg0.label; wTrack.appendChild(seg); });
     weekRow.appendChild(wTrack); header.appendChild(weekRow);
   }
+
   if (zoom === 'day') {
     const dayRow = document.createElement('div'); dayRow.className = 'header-row day-row'; dayRow.innerHTML = `<div class="row-label corner"></div>`;
     const dTrack = document.createElement('div'); dTrack.className = 'row-track'; dTrack.style.width = totalWidth + 'px';
@@ -347,18 +461,20 @@ function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วย
   }
   return header;
 }
+
 function renderProjectDetail(projectId) {
   const project = state.projects.find(p => p.id === projectId), root = document.createElement('div');
   if (!project) { root.textContent = 'ไม่พบโครงการ'; return root; }
+
   const toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   const titleWrap = document.createElement('div'); titleWrap.className = 'proj-title'; titleWrap.innerHTML = `<h2>${escapeHTML(project.name)}</h2>`;
   
   const renameBtn = document.createElement('button'); renameBtn.className = 'ghost-btn'; renameBtn.textContent = '✎ เปลี่ยนชื่อ'; renameBtn.onclick = () => renameProject(project.id); titleWrap.appendChild(renameBtn);
-  const colorBtn = document.createElement('button'); colorBtn.className = 'ghost-btn'; colorBtn.style.borderColor = project.color || '#3A2E6E'; colorBtn.style.color = project.color || '#3A2E6E'; colorBtn.textContent = '🎨 แก้ไขสีโครงการ'; colorBtn.onclick = () => openProjectColorModal(project.id); titleWrap.appendChild(colorBtn);
+
   toolbar.appendChild(titleWrap); renderToolbarControls(toolbar);
 
-  const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id); toolbar.appendChild(addDeptBtn);
-  root.appendChild(toolbar); root.appendChild(renderLegend(project));
+  const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id);
+  toolbar.appendChild(addDeptBtn); root.appendChild(toolbar); root.appendChild(renderLegend(project));
 
   const colw = COLW[zoom], { rStart, rEnd, totalDays } = getRenderBounds(), totalWidth = totalDays * colw;
   const scrollWrap = document.createElement('div'); scrollWrap.className = 'gantt-scroll';
@@ -375,6 +491,7 @@ function renderProjectDetail(projectId) {
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   setTimeout(scrollToToday, 0); return root;
 }
+
 function renderLegend(targetProject = null) {
   const wrap = document.createElement('div'); wrap.className = 'legend'; wrap.innerHTML = `<span class="legend-label">สีกิจกรรม:</span>`;
   const usedColorsHex = new Set(); let hasTask = false, hasOverdue = false, hasDueToday = false, todayIdx = todayBangkokIndex();
@@ -393,6 +510,7 @@ function renderLegend(targetProject = null) {
   const editBtn = document.createElement('button'); editBtn.className = 'ghost-btn edit-colors-btn'; editBtn.textContent = '✎ แก้ไขสี'; editBtn.onclick = editColorsModal; wrap.appendChild(editBtn);
   return wrap;
 }
+
 function buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd) {
   const block = document.createElement('div'); block.className = 'dept-block';
   const labelCol = document.createElement('div'); labelCol.className = 'row-label';
@@ -414,6 +532,7 @@ function buildDeptBlock(project, dept, colw, totalWidth, rStart, rEnd) {
   dept.rows.forEach(row => { rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
   block.appendChild(rowsWrap); return block;
 }
+
 function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
   const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
   track.onclick = (e) => { if (e.target === track && project) openActivityModal(project.id, dept.id, row.id, null); };
@@ -460,6 +579,7 @@ function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
   }
   return track;
 }
+
 function renderOverview() {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ')}</h2></div>`;
@@ -513,6 +633,7 @@ function renderOverview() {
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   setTimeout(scrollToToday, 0); return root;
 }
+
 function renderLanesOverview() {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(state.overviewSettings.tab2.name || 'รายละเอียดภาพรวมโครงการ')}</h2></div>`;
@@ -566,6 +687,7 @@ function renderLanesOverview() {
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   setTimeout(scrollToToday, 0); return root;
 }
+
 function openActivityModal(projectId, deptId, rowId, actId) {
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
   const existing = actId ? r.activities.find(a => a.id === actId) : null;
@@ -680,7 +802,8 @@ function editColorsModal() {
   html += `</div><div class="modal-actions" id="modalActions"></div>`; modal.innerHTML = html; overlay.appendChild(modal); document.body.appendChild(overlay);
   const actions = modal.querySelector('#modalActions'), saveBtn = document.createElement('button'); saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึกการตั้งค่า';
   saveBtn.onclick = async () => { state.colors.forEach((c, idx) => { const val = document.getElementById(`cname_${idx}`).value.trim(); if(val) c.name = val; }); closeModal(overlay); await persistAndRender(); }; actions.appendChild(saveBtn);
-  const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
+  const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก';
+  cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function addDepartment(projectId) { openTextModal('เพิ่มหน่วยงาน', 'ชื่อหน่วยงาน', '', async (name) => { if (!name) return; state.projects.find(x => x.id === projectId).departments.push(mkDept(name, [mkRow([])])); await persistAndRender(); }); }
 function renameDepartment(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); openTextModal('เปลี่ยนชื่อหน่วยงาน', 'ชื่อหน่วยงาน', d.name, async (name) => { if (!name) return; d.name = name; await persistAndRender(); }); }
