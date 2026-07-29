@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>แผนการดำเนินงานรวม — กบรส. & PRI & ส่วนตัว (ระบบ Cloud)</title>
+<!-- นำเข้าไลบรารีสำหรับหน้าต่างแก้ไขข้อความแบบ Word -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
 :root {
@@ -550,6 +552,54 @@ function renderProjectDetail(projectId) {
   if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   
+  // --- เริ่มต้นส่วนเพิ่มเติม: กล่องบันทึกข้อความแบบ Word ---
+  const notesWrap = document.createElement('div');
+  notesWrap.style.marginTop = '24px';
+  notesWrap.style.background = 'var(--surface)';
+  notesWrap.style.padding = '20px';
+  notesWrap.style.borderRadius = 'var(--radius)';
+  notesWrap.style.border = '1px solid var(--line)';
+  notesWrap.innerHTML = `
+      <h3 style="margin-top: 0; margin-bottom: 12px; color: var(--indigo-deep);">
+          📝 บันทึกรายละเอียดโครงการ
+      </h3>
+      <textarea id="proj-notes-${projectId}" style="width:100%; opacity: 0;"></textarea>
+  `;
+  root.appendChild(notesWrap);
+
+  // สั่งให้เครื่องมือทำงานหลังจากที่องค์ประกอบถูกเพิ่มลงในหน้าจอเรียบร้อยแล้ว
+  setTimeout(() => {
+      // ป้องกันการโหลดซ้อนทับกันเมื่อเปลี่ยนแท็บไปมา
+      if (tinymce.get(`proj-notes-${projectId}`)) {
+          tinymce.get(`proj-notes-${projectId}`).remove();
+      }
+      tinymce.init({
+          selector: `#proj-notes-${projectId}`,
+          plugins: 'table image link lists charmap preview searchreplace visualblocks code fullscreen media',
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | table image media link | preview fullscreen',
+          height: 450,
+          menubar: 'file edit view insert format tools table',
+          branding: false,
+          promotion: false, // <--- เพิ่มบรรทัดนี้เพื่อซ่อนปุ่ม Upgrade
+          setup: function (editor) {
+              // ดึงข้อมูลเดิมจาก state ที่โหลดไว้มาแสดง
+              editor.on('init', function() {
+                  editor.setContent(project.note || '');
+              });
+              
+              // บันทึกข้อมูลอัตโนมัติเมื่อผู้ใช้คลิกเมาส์ออกจากกล่องข้อความ
+              editor.on('blur', function () {
+                  const currentContent = editor.getContent();
+                  if (project.note !== currentContent) {
+                      project.note = currentContent;
+                      saveState(); // เรียกใช้ฟังก์ชันเซฟขึ้น Cloud ของเดิม
+                  }
+              });
+          }
+      });
+  }, 100);
+  // --- สิ้นสุดส่วนเพิ่มเติม ---
+
   restoreScrollPosition(rStart, colw);
   return root;
 }
