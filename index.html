@@ -7,6 +7,7 @@
 <!-- นำเข้าไลบรารีสำหรับหน้าต่างแก้ไขข้อความแบบ Word -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
+/* --- THEME & CSS VARIABLES --- */
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
 :root {
   --ink: #16233B; --ink-soft: #4A5773; --bg: #F3F5F9; --surface: #FFFFFF;
@@ -107,7 +108,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 
 /* Activity Bar Base Styles */
 .act-bar { position: absolute; top: 4px; height: 24px; border-radius: 6px; color: #14213A; font-size: 11.5px; font-weight: 600; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(20,33,58,0.25); cursor: pointer; z-index: 2; user-select: none; transition: transform 0.1s ease, filter 0.1s ease; overflow: hidden; }
-.act-bar.draggable { cursor: grab; }
+.act-bar.draggable { cursor: grab; touch-action: none; /* เพื่อป้องกันหน้าจอเลื่อนเวลาลากด้วยนิ้ว */ }
 .act-bar.draggable:active { cursor: grabbing; }
 .act-bar:hover { filter: brightness(1.04); box-shadow: 0 2px 6px rgba(20,33,58,0.35); z-index: 3; }
 
@@ -148,6 +149,9 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 <div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม...</div></div>
 
 <script>
+// ==========================================
+// --- CORE ENGINE & STATE MANAGEMENT ---
+// ==========================================
 function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
 
 const DAY = 86400000;
@@ -180,6 +184,7 @@ function todayBangkokIndex() {
   return indexFromDate(new Date(Date.UTC(get('year'), get('month') - 1, get('day'))));
 }
 
+// URLs
 const SCRIPT_URL_WORK = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec';
 const SCRIPT_URL_EXTRA = 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec';
 
@@ -193,8 +198,8 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
 }
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
-let userScale = 1.0; // ตัวแปรสำหรับซูมเข้า-ออกความกว้าง
-let lastScrollCenterIdx = null; // ช่วยจำจุดกึ่งกลางจอเวลาซูม
+let userScale = 1.0; 
+let lastScrollCenterIdx = null; 
 
 const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
 const DEFAULT_COLORS = [
@@ -209,6 +214,7 @@ function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
 function seedProject(name, depts, sourceType = 'work') { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts, sourceType }; }
 function defaultState() {
   return { 
+    lastModified: Date.now(),
     projects: [seedProject('โครงการ กบรส. ตัวอย่าง', [ mkDept('หน่วยงาน กบรส.', [mkRow([], 'แถว 1')]) ], 'work')],
     colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
     viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
@@ -244,6 +250,7 @@ async function loadState() {
     if (!base.colors) base.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
     if (!base.viewRange) base.viewRange = { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) };
     if (!base.overviewSettings) base.overviewSettings = { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } };
+    if (!base.lastModified) base.lastModified = Date.now();
 
     base.projects.forEach(p => {
       if (!p.color) p.color = '#3A2E6E';
@@ -258,6 +265,37 @@ async function saveState() {
   const statusEl = document.querySelector('.brand-sub');
   if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>';
   try {
+    let conflictDetected = false;
+    
+    // --- Concurrency Check: ตรวจสอบข้อมูลจาก กบรส. ---
+    try {
+      const resWork = await fetchWithTimeout(SCRIPT_URL_WORK, {}, 4000);
+      const remoteWork = JSON.parse(await resWork.text());
+      if (remoteWork.lastModified && state.lastModified && remoteWork.lastModified > state.lastModified) conflictDetected = true;
+    } catch(e) {}
+    
+    // --- Concurrency Check: ตรวจสอบข้อมูลจาก PRI ---
+    try {
+      if (SCRIPT_URL_EXTRA && SCRIPT_URL_EXTRA.startsWith('http')) {
+        const resExtra = await fetchWithTimeout(SCRIPT_URL_EXTRA, {}, 4000);
+        const remoteExtra = JSON.parse(await resExtra.text());
+        if (remoteExtra.lastModified && state.lastModified && remoteExtra.lastModified > state.lastModified) conflictDetected = true;
+      }
+    } catch(e) {}
+    
+    if (conflictDetected) {
+        const override = confirm("⚠️ ตรวจพบว่ามีข้อมูลใหม่บนระบบ (กบรส. หรือ PRI) จากผู้ใช้อื่น!\n\n• กด OK เพื่อโหลดข้อมูลล่าสุดมาใหม่\n• กด Cancel เพื่อบังคับบันทึกทับ (ข้อมูลของผู้อื่นจะหายไป)");
+        if (override) {
+            state = await loadState();
+            render();
+            if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">ดึงข้อมูลล่าสุดแล้ว โปรดแก้ไขอีกครั้ง</span>';
+            isSaving = false;
+            return;
+        }
+    }
+    
+    state.lastModified = Date.now();
+
     let workProjects = state.projects.filter(p => p.sourceType === 'work' || !p.sourceType);
     let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
     let personalProjects = state.projects.filter(p => p.sourceType === 'personal');
@@ -282,12 +320,20 @@ async function init() {
     render(); setInterval(pollRemote, 10000);
   } catch(e) {}
 }
+
 async function pollRemote() {
   if (modalOpen || isSaving || dragMode) return;
-  const loaded = await loadState(); if (loaded && JSON.stringify(loaded) !== JSON.stringify(state)) { state = loaded; render(); }
+  const loaded = await loadState(); 
+  if (loaded && loaded.lastModified !== state.lastModified && JSON.stringify(loaded) !== JSON.stringify(state)) { 
+      state = loaded; 
+      render(); 
+  }
 }
 
-// นำ userScale มาคูณความกว้าง
+// ==========================================
+// --- UI RENDER & LOGIC ---
+// ==========================================
+
 function getColWidth(zoom, totalDays) {
   const labelW = window.innerWidth <= 720 ? 160 : 220;
   const containerWidth = window.innerWidth - 44 - 2 - labelW;
@@ -327,7 +373,6 @@ function weekSegmentsBounded(rStart, rEnd) {
   return segs;
 }
 
-// ช่วยให้จุดศูนย์กลางจออยู่ที่เดิมเวลาซูม
 function reRenderWithScroll() {
     const el = document.querySelector('.gantt-scroll');
     if (el) {
@@ -411,7 +456,6 @@ function renderToolbarControls(toolbar) {
   });
   const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); }; zWrap.appendChild(todayBtn); toolbar.appendChild(zWrap);
 
-  // ปุ่มขยาย-ลด ความกว้างช่อง
   const scaleWrap = document.createElement('div'); scaleWrap.className = 'zoom-controls';
   scaleWrap.innerHTML = `<span class="zoom-label">↔️ ความกว้างช่อง:</span>
     <button class="ghost-btn" style="padding: 2px 8px; font-size: 14px; border:none; border-radius:50%;" id="btnZoomOut">-</button>
@@ -569,7 +613,6 @@ function renderProjectDetail(projectId) {
 
   // สั่งให้เครื่องมือทำงานหลังจากที่องค์ประกอบถูกเพิ่มลงในหน้าจอเรียบร้อยแล้ว
   setTimeout(() => {
-      // ป้องกันการโหลดซ้อนทับกันเมื่อเปลี่ยนแท็บไปมา
       if (tinymce.get(`proj-notes-${projectId}`)) {
           tinymce.get(`proj-notes-${projectId}`).remove();
       }
@@ -580,19 +623,16 @@ function renderProjectDetail(projectId) {
           height: 450,
           menubar: 'file edit view insert format tools table',
           branding: false,
-          promotion: false, // <--- เพิ่มบรรทัดนี้เพื่อซ่อนปุ่ม Upgrade
+          promotion: false,
           setup: function (editor) {
-              // ดึงข้อมูลเดิมจาก state ที่โหลดไว้มาแสดง
               editor.on('init', function() {
                   editor.setContent(project.note || '');
               });
-              
-              // บันทึกข้อมูลอัตโนมัติเมื่อผู้ใช้คลิกเมาส์ออกจากกล่องข้อความ
               editor.on('blur', function () {
                   const currentContent = editor.getContent();
                   if (project.note !== currentContent) {
                       project.note = currentContent;
-                      saveState(); // เรียกใช้ฟังก์ชันเซฟขึ้น Cloud ของเดิม
+                      saveState();
                   }
               });
           }
@@ -736,14 +776,26 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.appendChild(solidFill);
   bar.appendChild(textSpan);
 
+  // รองรับทั้ง เมาส์ (PC) และการสัมผัส (Mobile Touch)
   if (dragMode && project) {
-      bar.onmousedown = (e) => {
-          e.stopPropagation(); e.preventDefault();
-          let startX = e.clientX, initialActStart = act.start, duration = act.end - act.start, hasMoved = false;
-          function onMouseMove(moveEvent) {
-              let dx = moveEvent.clientX - startX, dayShift = Math.round(dx / colw);
+      const startDrag = (e) => {
+          e.stopPropagation(); 
+          
+          let clientX = e.clientX;
+          if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
+          
+          let startX = clientX, initialActStart = act.start, duration = act.end - act.start, hasMoved = false;
+          
+          function onMove(moveEvent) {
+              let curX = moveEvent.clientX;
+              if (moveEvent.touches && moveEvent.touches.length > 0) curX = moveEvent.touches[0].clientX;
+              
+              let dx = curX - startX, dayShift = Math.round(dx / colw);
               if (dayShift !== 0) {
-                  hasMoved = true; act.start = initialActStart + dayShift; act.end = act.start + duration;
+                  hasMoved = true; 
+                  act.start = initialActStart + dayShift; 
+                  act.end = act.start + duration;
+                  
                   let curStart = Math.max(rStart, act.start), curEnd = Math.min(rEnd, act.end);
                   let newOffset = (curStart - rStart) * colw;
                   let newWidth = Math.max(colw, (curEnd - curStart + 1) * colw - 2);
@@ -764,9 +816,23 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
                   bar.style.maxWidth = curSpaceToNext + 'px';
               }
           }
-          function onMouseUp() { window.removeEventListener('mousemove', onMouseMove); window.removeEventListener('mouseup', onMouseUp); if (hasMoved) persistAndRender(); }
-          window.addEventListener('mousemove', onMouseMove); window.addEventListener('mouseup', onMouseUp);
+          
+          function onEnd() { 
+              window.removeEventListener('mousemove', onMove); 
+              window.removeEventListener('mouseup', onEnd); 
+              window.removeEventListener('touchmove', onMove); 
+              window.removeEventListener('touchend', onEnd); 
+              if (hasMoved) persistAndRender(); 
+          }
+          
+          window.addEventListener('mousemove', onMove); 
+          window.addEventListener('mouseup', onEnd);
+          window.addEventListener('touchmove', onMove, { passive: false }); 
+          window.addEventListener('touchend', onEnd);
       };
+      
+      bar.onmousedown = startDrag;
+      bar.addEventListener('touchstart', startDrag, { passive: true });
   } else if (project) {
       bar.onclick = (e) => { e.stopPropagation(); openActivityModal(project.id, dept.id, row.id, act.id); };
   }
@@ -897,6 +963,10 @@ function renderLanesOverview() {
   restoreScrollPosition(rStart, colw);
   return root;
 }
+
+// ==========================================
+// --- MODAL & EVENT HANDLERS ---
+// ==========================================
 
 function openActivityModal(projectId, deptId, rowId, actId) {
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
