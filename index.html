@@ -317,9 +317,11 @@ async function saveState() {
             const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ กบรส. ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
             if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
             else { await securePost(URLS.work, stateWork, true); }
+        } else if (resWork.error) {
+            throw new Error("กบรส.: " + resWork.error);
         }
     }
-
+ 
     if ((APP_MODE === 'extra' || APP_MODE === 'all') && extraProjects.length > 0) {
       let stateExtra = JSON.parse(JSON.stringify(state)); stateExtra.projects = extraProjects;
       const resExtra = await securePost(URLS.extra, stateExtra, false);
@@ -327,6 +329,8 @@ async function saveState() {
           const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ PRI ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
           if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
           else { await securePost(URLS.extra, stateExtra, true); }
+      } else if (resExtra.error) {
+          throw new Error("PRI: " + resExtra.error);
       }
     }
 
