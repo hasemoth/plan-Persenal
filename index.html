@@ -236,20 +236,39 @@ function defaultState() {
 }
 
 async function secureFetch(url) {
-  const response = await fetch(`${url}?token=${API_TOKEN}`);
-  const data = await response.json();
-  if (data.error) throw new Error(data.error);
-  return data;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000); // ยกเลิกถ้าเกิน 20 วินาที
+  try {
+    const response = await fetch(`${url}?token=${API_TOKEN}`, { signal: controller.signal });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    return data;
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (timeout 20 วิ)');
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
-
+ 
 async function securePost(url, dataPayload, force = false) {
   const payload = { token: API_TOKEN, force: force, data: dataPayload };
-  const response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-  });
-  return await response.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000); // ยกเลิกถ้าเกิน 20 วินาที
+  try {
+    const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        signal: controller.signal
+    });
+    return await response.json();
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (timeout 20 วิ)');
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function loadUnifiedState() {
