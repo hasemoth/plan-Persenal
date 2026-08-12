@@ -335,8 +335,7 @@ async function saveState() {
     }
 
     if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>';
-  } catch (e) { if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ</span>'; }
-  isSaving = false;
+} catch (e) { if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + '</span>'; }  isSaving = false;
 }
 
 async function persistAndRender() { render(); await saveState(); }
