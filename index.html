@@ -108,7 +108,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 
 /* Activity Bar Base Styles */
 .act-bar { position: absolute; top: 4px; height: 24px; border-radius: 6px; color: #14213A; font-size: 11.5px; font-weight: 600; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(20,33,58,0.25); cursor: pointer; z-index: 2; user-select: none; transition: transform 0.1s ease, filter 0.1s ease; overflow: hidden; }
-.act-bar.draggable { cursor: grab; touch-action: none; /* เพื่อป้องกันหน้าจอเลื่อนเวลาลากด้วยนิ้ว */ }
+.act-bar.draggable { cursor: grab; touch-action: none; }
 .act-bar.draggable:active { cursor: grabbing; }
 .act-bar:hover { filter: brightness(1.04); box-shadow: 0 2px 6px rgba(20,33,58,0.35); z-index: 3; }
 
@@ -146,7 +146,23 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </style>
 </head>
 <body>
-<div id="app"><div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม...</div></div>
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">รวม</div>
+      <div class="brand-text">
+        <div class="brand-title">แผนการดำเนินงานรวม (Unified Cloud)</div>
+        <div class="brand-sub">✅ อัปเดตข้อมูลล่าสุด</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="ghost-btn" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
+      <button class="ghost-btn" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
+    </div>
+  </div>
+  <div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม...</div>
+</div>
 
 <script>
 // ==========================================
@@ -184,20 +200,17 @@ function todayBangkokIndex() {
   return indexFromDate(new Date(Date.UTC(get('year'), get('month') - 1, get('day'))));
 }
 
-// URLs
-const SCRIPT_URL_WORK = 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec';
-const SCRIPT_URL_EXTRA = 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec';
+// CONFIGURATION & SECURE APPS SCRIPT URLS
+const API_TOKEN = "MY_SECURE_TOKEN_2026_!@#"; 
+const URLS = {
+    work: 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec',
+    extra: 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec'
+};
 
-async function fetchWithTimeout(url, options = {}, timeout = 5000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  try {
-    const response = await fetch(url, { ...options, signal: controller.signal });
-    clearTimeout(id); return response;
-  } catch (error) { clearTimeout(id); throw error; }
-}
+const urlParams = new URLSearchParams(window.location.search);
+const APP_MODE = urlParams.get('mode') || 'all'; 
 
-let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
+let state = null, view = { type: 'overview' }, activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE, zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
 let userScale = 1.0; 
 let lastScrollCenterIdx = null; 
 
@@ -222,23 +235,46 @@ function defaultState() {
   };
 }
 
-async function loadState() {
+async function secureFetch(url) {
+  const response = await fetch(`${url}?token=${API_TOKEN}`);
+  const data = await response.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+async function securePost(url, dataPayload, force = false) {
+  const payload = { token: API_TOKEN, force: force, data: dataPayload };
+  const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+  });
+  return await response.json();
+}
+
+async function loadUnifiedState() {
   try {
-    let dataWork = { projects: [] };
-    try {
-      const resWork = await fetchWithTimeout(SCRIPT_URL_WORK, {}, 6000);
-      dataWork = JSON.parse(await resWork.text());
-    } catch(e) {}
-
     let allProjects = [];
-    if (dataWork && dataWork.projects) dataWork.projects.forEach(p => { if (!p.sourceType) p.sourceType = 'work'; allProjects.push(p); });
+    let latestMod = 0;
 
-    if (SCRIPT_URL_EXTRA && SCRIPT_URL_EXTRA.startsWith('http')) {
-      try {
-        const resExtra = await fetchWithTimeout(SCRIPT_URL_EXTRA, {}, 6000);
-        const dataExtra = JSON.parse(await resExtra.text());
-        if (dataExtra && dataExtra.projects) dataExtra.projects.forEach(p => { p.sourceType = 'extra'; allProjects.push(p); });
-      } catch(err) {}
+    if (APP_MODE === 'work' || APP_MODE === 'all') {
+        try {
+            const dataWork = await secureFetch(URLS.work);
+            if (dataWork && dataWork.projects) {
+                dataWork.projects.forEach(p => { p.sourceType = 'work'; allProjects.push(p); });
+                if (dataWork.lastModified > latestMod) latestMod = dataWork.lastModified;
+            }
+        } catch(e) {}
+    }
+
+    if (APP_MODE === 'extra' || APP_MODE === 'all') {
+        try {
+            const dataExtra = await secureFetch(URLS.extra);
+            if (dataExtra && dataExtra.projects) {
+                dataExtra.projects.forEach(p => { p.sourceType = 'extra'; allProjects.push(p); });
+                if (dataExtra.lastModified > latestMod) latestMod = dataExtra.lastModified;
+            }
+        } catch(err) {}
     }
 
     try {
@@ -246,11 +282,13 @@ async function loadState() {
       if (localPersonal) JSON.parse(localPersonal).forEach(p => { p.sourceType = 'personal'; allProjects.push(p); });
     } catch(e) {}
 
-    let base = dataWork || {}; base.projects = allProjects;
-    if (!base.colors) base.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
-    if (!base.viewRange) base.viewRange = { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) };
-    if (!base.overviewSettings) base.overviewSettings = { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } };
-    if (!base.lastModified) base.lastModified = Date.now();
+    let base = {
+        lastModified: latestMod || Date.now(),
+        projects: allProjects,
+        colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
+        viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
+        overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
+    };
 
     base.projects.forEach(p => {
       if (!p.color) p.color = '#3A2E6E';
@@ -265,74 +303,87 @@ async function saveState() {
   const statusEl = document.querySelector('.brand-sub');
   if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>';
   try {
-    let conflictDetected = false;
-    
-    // --- Concurrency Check: ตรวจสอบข้อมูลจาก กบรส. ---
-    try {
-      const resWork = await fetchWithTimeout(SCRIPT_URL_WORK, {}, 4000);
-      const remoteWork = JSON.parse(await resWork.text());
-      if (remoteWork.lastModified && state.lastModified && remoteWork.lastModified > state.lastModified) conflictDetected = true;
-    } catch(e) {}
-    
-    // --- Concurrency Check: ตรวจสอบข้อมูลจาก PRI ---
-    try {
-      if (SCRIPT_URL_EXTRA && SCRIPT_URL_EXTRA.startsWith('http')) {
-        const resExtra = await fetchWithTimeout(SCRIPT_URL_EXTRA, {}, 4000);
-        const remoteExtra = JSON.parse(await resExtra.text());
-        if (remoteExtra.lastModified && state.lastModified && remoteExtra.lastModified > state.lastModified) conflictDetected = true;
-      }
-    } catch(e) {}
-    
-    if (conflictDetected) {
-        const override = confirm("⚠️ ตรวจพบว่ามีข้อมูลใหม่บนระบบ (กบรส. หรือ PRI) จากผู้ใช้อื่น!\n\n• กด OK เพื่อโหลดข้อมูลล่าสุดมาใหม่\n• กด Cancel เพื่อบังคับบันทึกทับ (ข้อมูลของผู้อื่นจะหายไป)");
-        if (override) {
-            state = await loadState();
-            render();
-            if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">ดึงข้อมูลล่าสุดแล้ว โปรดแก้ไขอีกครั้ง</span>';
-            isSaving = false;
-            return;
-        }
-    }
-    
-    state.lastModified = Date.now();
-
     let workProjects = state.projects.filter(p => p.sourceType === 'work' || !p.sourceType);
     let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
     let personalProjects = state.projects.filter(p => p.sourceType === 'personal');
 
     localStorage.setItem('gantt_personal_projects', JSON.stringify(personalProjects));
+    state.lastModified = Date.now();
 
-    let stateWork = JSON.parse(JSON.stringify(state)); stateWork.projects = workProjects;
-    await fetch(SCRIPT_URL_WORK, { method: 'POST', body: JSON.stringify(stateWork), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
-
-    if (extraProjects.length > 0) {
-      let stateExtra = JSON.parse(JSON.stringify(state)); stateExtra.projects = extraProjects;
-      await fetch(SCRIPT_URL_EXTRA, { method: 'POST', body: JSON.stringify(stateExtra), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+    if (APP_MODE === 'work' || APP_MODE === 'all') {
+        let stateWork = JSON.parse(JSON.stringify(state)); stateWork.projects = workProjects;
+        const resWork = await securePost(URLS.work, stateWork, false);
+        if (resWork.error === "Conflict") {
+            const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ กบรส. ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
+            if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
+            else { await securePost(URLS.work, stateWork, true); }
+        }
     }
+
+    if ((APP_MODE === 'extra' || APP_MODE === 'all') && extraProjects.length > 0) {
+      let stateExtra = JSON.parse(JSON.stringify(state)); stateExtra.projects = extraProjects;
+      const resExtra = await securePost(URLS.extra, stateExtra, false);
+      if (resExtra.error === "Conflict") {
+          const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ PRI ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
+          if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
+          else { await securePost(URLS.extra, stateExtra, true); }
+      }
+    }
+
     if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>';
   } catch (e) { if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ</span>'; }
   isSaving = false;
 }
+
 async function persistAndRender() { render(); await saveState(); }
+
 async function init() {
   try {
-    state = await loadState(); if (!state || !state.projects) { state = defaultState(); await saveState(); }
-    render(); setInterval(pollRemote, 10000);
+    state = await loadUnifiedState(); if (!state || !state.projects) { state = defaultState(); await saveState(); }
+    render(); 
+    // Adaptive Polling
+    setInterval(async () => {
+      if (document.visibilityState !== 'visible') return;
+      if (modalOpen || isSaving || dragMode) return;
+      const loaded = await loadUnifiedState(); 
+      if (loaded && loaded.lastModified !== state.lastModified) { 
+          state = loaded; 
+          render(); 
+      }
+    }, 12000);
   } catch(e) {}
 }
 
-async function pollRemote() {
-  if (modalOpen || isSaving || dragMode) return;
-  const loaded = await loadState(); 
-  if (loaded && loaded.lastModified !== state.lastModified && JSON.stringify(loaded) !== JSON.stringify(state)) { 
-      state = loaded; 
-      render(); 
-  }
+function exportBackup() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `gantt_backup_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
 
-// ==========================================
-// --- UI RENDER & LOGIC ---
-// ==========================================
+function importBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const importedState = JSON.parse(e.target.result);
+            if (importedState && importedState.projects) {
+                state = importedState;
+                await saveState();
+                render();
+                alert("กู้คืนข้อมูลสำเร็จเรียบร้อยแล้ว!");
+            }
+        } catch (error) {
+            alert("ไฟล์ Backup ไม่ถูกต้อง หรือข้อมูลเสียหาย");
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
 
 function getColWidth(zoom, totalDays) {
   const labelW = window.innerWidth <= 720 ? 160 : 220;
@@ -385,18 +436,22 @@ function reRenderWithScroll() {
 }
 
 function render() {
-  const app = document.getElementById('app'); app.innerHTML = '';
-  app.appendChild(renderTopbar()); app.appendChild(renderTwoTierNav());
+  const app = document.getElementById('app'); 
+  const topbarHTML = app.querySelector('.topbar').outerHTML;
+  app.innerHTML = '';
+  
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = topbarHTML;
+  app.appendChild(tempDiv.firstElementChild);
+
+  app.appendChild(renderTwoTierNav());
   const content = document.createElement('div'); content.className = 'content';
   if (view.type === 'overview') content.appendChild(renderOverview());
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
   else content.appendChild(renderProjectDetail(view.id));
   app.appendChild(content);
 }
-function renderTopbar() {
-  const bar = document.createElement('div'); bar.className = 'topbar';
-  bar.innerHTML = `<div class="brand"><div class="brand-mark">รวม</div><div class="brand-text"><div class="brand-title">แผนการดำเนินงานรวม (Two-Tier Navigation)</div><div class="brand-sub">🔄 ซิงค์ข้อมูล Real-time · <span style="color:#34D399">✅ เชื่อมต่อแล้ว</span></div></div></div>`; return bar;
-}
+
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
@@ -448,6 +503,7 @@ function renderTwoTierNav() {
   }
   navWrap.appendChild(subBar); return navWrap;
 }
+
 function renderToolbarControls(toolbar) {
   const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls'; zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
   [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([key, txt]) => {
@@ -475,6 +531,7 @@ function renderToolbarControls(toolbar) {
   fBtn.onclick = async () => { state.viewRange.start = document.getElementById('filterStart').value; state.viewRange.end = document.getElementById('filterEnd').value; await persistAndRender(); };
   fWrap.appendChild(fBtn); toolbar.appendChild(fWrap);
 }
+
 function scrollToToday() {
   requestAnimationFrame(() => {
     const el = document.querySelector('.gantt-scroll'); if (!el) return;
@@ -596,7 +653,6 @@ function renderProjectDetail(projectId) {
   if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   
-  // --- เริ่มต้นส่วนเพิ่มเติม: กล่องบันทึกข้อความแบบ Word ---
   const notesWrap = document.createElement('div');
   notesWrap.style.marginTop = '24px';
   notesWrap.style.background = 'var(--surface)';
@@ -611,7 +667,6 @@ function renderProjectDetail(projectId) {
   `;
   root.appendChild(notesWrap);
 
-  // สั่งให้เครื่องมือทำงานหลังจากที่องค์ประกอบถูกเพิ่มลงในหน้าจอเรียบร้อยแล้ว
   setTimeout(() => {
       if (tinymce.get(`proj-notes-${projectId}`)) {
           tinymce.get(`proj-notes-${projectId}`).remove();
@@ -638,7 +693,6 @@ function renderProjectDetail(projectId) {
           }
       });
   }, 100);
-  // --- สิ้นสุดส่วนเพิ่มเติม ---
 
   restoreScrollPosition(rStart, colw);
   return root;
@@ -776,26 +830,21 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.appendChild(solidFill);
   bar.appendChild(textSpan);
 
-  // รองรับทั้ง เมาส์ (PC) และการสัมผัส (Mobile Touch)
   if (dragMode && project) {
       const startDrag = (e) => {
           e.stopPropagation(); 
-          
           let clientX = e.clientX;
           if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
-          
           let startX = clientX, initialActStart = act.start, duration = act.end - act.start, hasMoved = false;
           
           function onMove(moveEvent) {
               let curX = moveEvent.clientX;
               if (moveEvent.touches && moveEvent.touches.length > 0) curX = moveEvent.touches[0].clientX;
-              
               let dx = curX - startX, dayShift = Math.round(dx / colw);
               if (dayShift !== 0) {
                   hasMoved = true; 
                   act.start = initialActStart + dayShift; 
                   act.end = act.start + duration;
-                  
                   let curStart = Math.max(rStart, act.start), curEnd = Math.min(rEnd, act.end);
                   let newOffset = (curStart - rStart) * colw;
                   let newWidth = Math.max(colw, (curEnd - curStart + 1) * colw - 2);
@@ -830,7 +879,6 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
           window.addEventListener('touchmove', onMove, { passive: false }); 
           window.addEventListener('touchend', onEnd);
       };
-      
       bar.onmousedown = startDrag;
       bar.addEventListener('touchstart', startDrag, { passive: true });
   } else if (project) {
@@ -892,7 +940,6 @@ function renderOverview() {
     const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
     for (let lane = 0; lane < laneCount; lane++) {
       const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
-      
       const actsInLane = placed.filter(pl => pl.lane === lane).map(pl => pl.act);
       actsInLane.forEach(act => {
         const bar = createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, actsInLane, null, null, null);
@@ -964,10 +1011,6 @@ function renderLanesOverview() {
   return root;
 }
 
-// ==========================================
-// --- MODAL & EVENT HANDLERS ---
-// ==========================================
-
 function openActivityModal(projectId, deptId, rowId, actId) {
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
   const existing = actId ? r.activities.find(a => a.id === actId) : null;
@@ -991,7 +1034,6 @@ function openActivityModal(projectId, deptId, rowId, actId) {
     <label class="field-label">หมายเหตุ</label>
     <textarea id="actRemark" class="text-input" placeholder="รายละเอียดเพิ่มเติม...">${existing && existing.remark ? escapeHTML(existing.remark) : ''}</textarea>
     
-    <!-- Date Overlay Hack (วัน/เดือน/ปี) -->
     <label class="field-label">วันที่เริ่มต้น</label>
     <div style="display:flex; gap:6px; align-items:center;">
         <div class="date-wrapper" style="position:relative; flex:1;">
@@ -1042,7 +1084,6 @@ function openActivityModal(projectId, deptId, rowId, actId) {
       const newStartD = inputStrToDate(modal.querySelector('#actStart').value);
       modal.querySelector('#actEndDisplay').textContent = formatDisplayDate(newEndD);
       modal.querySelector('#txtEndThai').textContent = formatDateThai(newEndD); 
-      
       currentDuration = indexFromDate(newEndD) - indexFromDate(newStartD);
   };
 
