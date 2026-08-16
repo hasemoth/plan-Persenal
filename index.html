@@ -513,7 +513,18 @@ function renderEmptyCategoryState() {
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
-  const categories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+  
+  // สร้างเงื่อนไขแสดงปุ่มเฉพาะ Mode ที่กำหนด
+  let categories = [];
+  if (APP_MODE === 'all') {
+    categories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+  } else if (APP_MODE === 'work') {
+    categories = [ { key: 'work', label: '🏛️ กบรส.' } ];
+  } else if (APP_MODE === 'extra') {
+    categories = [ { key: 'extra', label: '💡 PRI' } ];
+  } else if (APP_MODE === 'personal') {
+    categories = [ { key: 'personal', label: '👤 ส่วนตัว' } ];
+  }
   categories.forEach(cat => {
     const btn = document.createElement('button'); btn.className = 'main-cat-btn' + (activeMainCat === cat.key ? ' active' : ''); btn.textContent = cat.label;
     btn.onclick = () => {
