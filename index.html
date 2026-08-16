@@ -146,18 +146,7 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </style>
 </head>
 <body>
-<!-- สร้างหน้า Login -->
-<div id="login-screen" style="display: flex; position: fixed; inset: 0; background: var(--bg); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
-    <div style="background: #fff; padding: 40px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 360px; text-align: center;">
-        <h2 style="color: var(--indigo-deep); margin-top: 0;">เข้าสู่ระบบ</h2>
-        <p style="color: var(--ink-soft); margin-bottom: 24px; font-size: 13.5px;">กรุณากรอกรหัสผ่าน (Token) เพื่อเข้าใช้งานระบบ</p>
-        <input type="password" id="tokenInput" class="text-input" placeholder="กรอกรหัสผ่านที่นี่..." style="margin-bottom: 16px; text-align: center; font-size: 16px; padding: 12px;" onkeydown="if(event.key === 'Enter') doLogin()">
-        <button class="primary-btn" style="width: 100%; padding: 12px; font-size: 15px;" onclick="doLogin()">เข้าสู่ระบบ</button>
-    </div>
-</div>
-
-<!-- เพิ่ม style="display:none;" เพื่อซ่อนระบบหลักไว้ก่อนจนกว่าจะล็อกอิน -->
-<div id="app" style="display: none;">
+<div id="app">
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark">รวม</div>
@@ -166,9 +155,9 @@ textarea.text-input { resize: vertical; min-height: 60px; }
         <div class="brand-sub">✅ อัปเดตข้อมูลล่าสุด</div>
       </div>
     </div>
-  <div style="display:flex; gap:8px;">
-      <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="doLogout()">🚪 ออกจากระบบ</button>
-      <!-- ปุ่มเดิม... -->
+    <div style="display:flex; gap:8px;">
+      <!-- แก้ไข: เพิ่ม background: transparent; เพื่อไม่ให้พื้นหลังเป็นสีขาวทับตัวหนังสือ -->
+      <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
       <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
       <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
     </div>
@@ -213,7 +202,7 @@ function todayBangkokIndex() {
 }
 
 // CONFIGURATION & SECURE APPS SCRIPT URLS
-let API_TOKEN = sessionStorage.getItem("APP_API_TOKEN") || ""; 
+const API_TOKEN = "MY_SECURE_TOKEN_2026_!@#"; 
 const URLS = {
     work: 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec',
     extra: 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec',
@@ -1317,38 +1306,7 @@ function openConfirmModal(title, desc, onConfirm) {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function closeModal(overlay) { modalOpen = false; overlay.remove(); }
-
-// --- AUTHENTICATION SYSTEM ---
-function checkLoginAndInit() {
-    if (API_TOKEN) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        init(); // เริ่มรันระบบเมื่อมี Token
-    } else {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('tokenInput').focus();
-    }
-}
-
-function doLogin() {
-    const token = document.getElementById('tokenInput').value.trim();
-    if (token) {
-        sessionStorage.setItem("APP_API_TOKEN", token);
-        API_TOKEN = token;
-        checkLoginAndInit();
-    } else {
-        alert('กรุณากรอกรหัสผ่าน');
-    }
-}
-
-function doLogout() {
-    sessionStorage.removeItem("APP_API_TOKEN");
-    location.reload();
-}
-
-// เริ่มต้นตรวจสอบสิทธิ์ตอนเปิดเว็บ
-checkLoginAndInit();
+init();
 </script>
 </body>
 </html>
