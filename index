@@ -156,8 +156,9 @@ textarea.text-input { resize: vertical; min-height: 60px; }
       </div>
     </div>
     <div style="display:flex; gap:8px;">
-      <button class="ghost-btn" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
-      <button class="ghost-btn" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
+      <!-- แก้ไข: เพิ่ม background: transparent; เพื่อไม่ให้พื้นหลังเป็นสีขาวทับตัวหนังสือ -->
+      <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
+      <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
       <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
     </div>
   </div>
@@ -238,7 +239,7 @@ function defaultState() {
 
 async function secureFetch(url) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); // ยกเลิกถ้าเกิน 20 วินาที
+  const timeoutId = setTimeout(() => controller.abort(), 20000); 
   try {
     const response = await fetch(`${url}?token=${encodeURIComponent(API_TOKEN)}`, { signal: controller.signal });
     const data = await response.json();
@@ -255,7 +256,7 @@ async function secureFetch(url) {
 async function securePost(url, dataPayload, force = false) {
   const payload = { token: API_TOKEN, force: force, data: dataPayload };
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); // ยกเลิกถ้าเกิน 20 วินาที
+  const timeoutId = setTimeout(() => controller.abort(), 20000); 
   try {
     const response = await fetch(url, {
         method: 'POST',
@@ -374,7 +375,7 @@ async function saveState() {
 
 async function persistAndRender() { render(); await saveState(); }
 
-let isPolling = false; // เพิ่มตัวแปรกันการ poll ซ้อน
+let isPolling = false; 
  
 async function init() {
   try {
@@ -384,7 +385,7 @@ async function init() {
     setInterval(async () => {
       if (document.visibilityState !== 'visible') return;
       if (modalOpen || isSaving || dragMode) return;
-      if (isPolling) return; // ถ้ารอบก่อนหน้ายังไม่เสร็จ ข้ามรอบนี้ไปเลย
+      if (isPolling) return;
       isPolling = true;
       try {
         const loaded = await loadUnifiedState(); 
@@ -395,7 +396,7 @@ async function init() {
       } finally {
         isPolling = false;
       }
-    }, 20000); // ยืดจาก 12 วินาที เป็น 20 วินาที ลดความถี่ให้เบาลง
+    }, 20000); 
   } catch(e) {}
 }
 
@@ -491,10 +492,14 @@ function render() {
 
   app.appendChild(renderTwoTierNav());
   const content = document.createElement('div'); content.className = 'content';
+  
+  // จัดการการ Render หน้า Overview ย่อยตาม Category
   if (view.type === 'overview') content.appendChild(renderOverview());
+  else if (view.type === 'category_overview') content.appendChild(renderOverview(view.category));
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else content.appendChild(renderProjectDetail(view.id));
+  
   app.appendChild(content);
 }
 
@@ -514,8 +519,8 @@ function renderTwoTierNav() {
     btn.onclick = () => {
       activeMainCat = cat.key;
       if (cat.key !== 'all') {
-        const filtered = state.projects.filter(p => (cat.key === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === cat.key));
-        if (filtered.length > 0) { view = { type: 'project', id: filtered[0].id }; } else { view = { type: 'empty' }; }
+        // เปลี่ยนแปลง: ให้แสดงหน้า Category Overview เสมอเมื่อสลับหมวดหมู่
+        view = { type: 'category_overview', category: cat.key };
       } else { view = { type: 'overview' }; }
       render();
     }; mainBar.appendChild(btn);
@@ -540,6 +545,13 @@ function renderTwoTierNav() {
     const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎'; lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
     lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; subBar.appendChild(lanesTab);
   } else {
+    // เปลี่ยนแปลง: สร้างแท็บภาพรวมหมวดหมู่ไว้ซ้ายสุดเสมอ
+    const catOverviewTab = document.createElement('button');
+    catOverviewTab.className = 'tab' + (view.type === 'category_overview' ? ' active' : '');
+    catOverviewTab.innerHTML = `<span>📊 ภาพรวมหมวดหมู่</span>`;
+    catOverviewTab.onclick = () => { view = { type: 'category_overview', category: activeMainCat }; render(); };
+    subBar.appendChild(catOverviewTab);
+
     const filteredProjects = state.projects.filter(p => activeMainCat === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === activeMainCat);
     filteredProjects.forEach(p => {
       const t = document.createElement('button'); t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
@@ -787,8 +799,30 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
 
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
   dept.rows.forEach(row => {
-    const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`;
-    rCell.onclick = () => renameRow(project.id, dept.id, row.id); rowNamesCol.appendChild(rCell);
+    const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; 
+    
+    // แสดงชื่อแถว
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'r-name-text';
+    nameSpan.textContent = row.name;
+    rCell.appendChild(nameSpan);
+
+    // แก้ไข: เพิ่มปุ่มลบแถว ตรงช่องชื่อแถว ถ้าเปิดโหมดแก้ไข และมีแถวมากกว่า 1
+    if (dragMode && project && dept.rows.length > 1) {
+        const delRowBtn = document.createElement('button');
+        delRowBtn.className = 'icon-btn danger';
+        delRowBtn.innerHTML = '🗑';
+        delRowBtn.style.cssText = 'padding: 2px 4px; font-size: 10px; margin-left: 4px; background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); border-radius: 4px;';
+        delRowBtn.title = 'ลบแถวนี้';
+        delRowBtn.onclick = (e) => {
+            e.stopPropagation();
+            deleteRow(project.id, dept.id, row.id);
+        };
+        rCell.appendChild(delRowBtn);
+    }
+    
+    rCell.onclick = () => renameRow(project.id, dept.id, row.id); 
+    rowNamesCol.appendChild(rCell);
   });
   labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); block.appendChild(labelCol);
 
@@ -950,16 +984,19 @@ function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
     if (bar) track.appendChild(bar);
   });
 
-  if (project && dept.rows.length > 1 && dragMode) {
-    const delRowBtn = document.createElement('button'); delRowBtn.className = 'row-del-btn'; delRowBtn.textContent = '×';
-    delRowBtn.onclick = (e) => { e.stopPropagation(); deleteRow(project.id, dept.id, row.id); }; track.appendChild(delRowBtn);
-  }
   return track;
 }
 
-function renderOverview() {
+// เพิ่ม: ฟังก์ชันรองรับการสร้างภาพรวมแต่ละหมวดหมู่ (categoryFilter)
+function renderOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
-  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ')}</h2></div>`;
+  
+  let title = state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ';
+  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ กบรส.';
+  if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
+  if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
+  
+  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend());
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
@@ -975,7 +1012,16 @@ function renderOverview() {
   const body = document.createElement('div'); body.className = 'gantt-body';
   const todayIdx = todayBangkokIndex();
 
-  state.projects.forEach(p => {
+  let projectsToRender = state.projects;
+  if (categoryFilter) {
+      projectsToRender = state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter);
+  }
+
+  if (projectsToRender.length === 0) {
+      const empty = document.createElement('div'); empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีโครงการในหมวดหมู่นี้'; body.appendChild(empty);
+  }
+
+  projectsToRender.forEach(p => {
     const allActs = p.departments.flatMap(d => d.rows.flatMap(r => r.activities));
     const sorted = [...allActs].sort((a, b) => a.start - b.start), lanes = [], placed = [];
     sorted.forEach(a => {
