@@ -493,75 +493,9 @@ function render() {
   const content = document.createElement('div'); content.className = 'content';
   if (view.type === 'overview') content.appendChild(renderOverview());
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
-  else if (view.type === 'work_overview') content.appendChild(renderWorkOverview()); // <- เพิ่มบรรทัดนี้
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else content.appendChild(renderProjectDetail(view.id));
   app.appendChild(content);
-
-  function renderWorkOverview() {
-  const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
-  toolbar.innerHTML = `<div class="proj-title"><h2>📊 ภาพรวมโครงการทั้งหมด (กบรส.)</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend());
-  
-  const { rStart, rEnd, totalDays } = getRenderBounds();
-  const colw = getColWidth(zoom, totalDays);
-  const totalWidth = totalDays * colw;
-
-  const scrollWrap = document.createElement('div'); scrollWrap.className = 'gantt-scroll';
-  const inner = document.createElement('div'); inner.className = 'gantt-inner'; 
-  
-  inner.appendChild(buildGridBg(colw, rStart, rEnd, totalDays, zoom));
-  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, 'ชื่อโครงการ (กบรส.)'));
-  
-  const body = document.createElement('div'); body.className = 'gantt-body';
-  const todayIdx = todayBangkokIndex();
-
-  // ดึงข้อมูลเฉพาะโครงการของ กบรส.
-  const workProjects = state.projects.filter(p => p.sourceType === 'work' || !p.sourceType);
-  
-  if (workProjects.length === 0) {
-      const empty = document.createElement('div'); empty.className = 'empty-hint'; 
-      empty.textContent = 'ยังไม่มีโครงการในหมวด กบรส.'; body.appendChild(empty);
-  }
-
-  workProjects.forEach(p => {
-    const allActs = p.departments.flatMap(d => d.rows.flatMap(r => r.activities));
-    const sorted = [...allActs].sort((a, b) => a.start - b.start), lanes = [], placed = [];
-    sorted.forEach(a => {
-      let laneIdx = lanes.findIndex(end => end < a.start);
-      if (laneIdx === -1) { laneIdx = lanes.length; lanes.push(a.end); } else { lanes[laneIdx] = a.end; }
-      placed.push({ act: a, lane: laneIdx });
-    });
-    const laneCount = Math.max(1, lanes.length);
-    const block = document.createElement('div'); block.className = 'dept-block overview-block';
-    block.style.cursor = 'pointer';
-    block.onclick = () => { view = { type: 'project', id: p.id }; render(); };
-    const label = document.createElement('div'); label.className = 'row-label';
-    label.innerHTML = `<div class="dept-info" style="border-right:none;"><div class="dept-name">${escapeHTML(p.name)}</div><div style="font-size:11px; color:var(--ink-soft);">${p.departments.length} หน่วยงาน · ${allActs.length} งาน</div></div>`;
-    block.appendChild(label);
-
-    const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-    for (let lane = 0; lane < laneCount; lane++) {
-      const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
-      const actsInLane = placed.filter(pl => pl.lane === lane).map(pl => pl.act);
-      actsInLane.forEach(act => {
-        // ใช้ createSmartActivityBar ของเดิมแสดงผลแท่งงาน
-        const bar = createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, actsInLane, null, null, null);
-        if (bar) track.appendChild(bar);
-      });
-      rowsWrap.appendChild(track);
-    }
-    block.appendChild(rowsWrap); body.appendChild(block);
-  });
-  
-  inner.appendChild(body);
-  const overlay = document.createElement('div'); overlay.className = 'gantt-grid-overlay';
-  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
-  inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
-  
-  restoreScrollPosition(rStart, colw);
-  return root;
-}
 }
 
 function renderEmptyCategoryState() {
@@ -581,12 +515,7 @@ function renderTwoTierNav() {
       activeMainCat = cat.key;
       if (cat.key !== 'all') {
         const filtered = state.projects.filter(p => (cat.key === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === cat.key));
-        // --- ส่วนที่ปรับปรุง: ให้ กบรส. เข้าหน้าภาพรวม ---
-        if (cat.key === 'work') {
-          view = { type: 'work_overview' }; 
-        } else {
-          if (filtered.length > 0) { view = { type: 'project', id: filtered[0].id }; } else { view = { type: 'empty' }; }
-        }
+        if (filtered.length > 0) { view = { type: 'project', id: filtered[0].id }; } else { view = { type: 'empty' }; }
       } else { view = { type: 'overview' }; }
       render();
     }; mainBar.appendChild(btn);
@@ -611,18 +540,7 @@ function renderTwoTierNav() {
     const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎'; lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
     lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; subBar.appendChild(lanesTab);
   } else {
-    } else {
     const filteredProjects = state.projects.filter(p => activeMainCat === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === activeMainCat);
-    
-    // --- ส่วนที่เพิ่มใหม่: สร้างแท็บภาพรวม กบรส. ไว้ซ้ายสุด ---
-    if (activeMainCat === 'work') {
-      const ovWorkBtn = document.createElement('button'); 
-      ovWorkBtn.className = 'tab' + (view.type === 'work_overview' ? ' active' : '');
-      ovWorkBtn.innerHTML = `<span>📊 ภาพรวม กบรส.</span>`; 
-      ovWorkBtn.onclick = () => { view = { type: 'work_overview' }; render(); };
-      subBar.appendChild(ovWorkBtn);
-    }
-
     filteredProjects.forEach(p => {
       const t = document.createElement('button'); t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
       if (p.color) { t.style.backgroundColor = p.color; t.style.borderColor = p.color; t.style.color = '#fff'; }
