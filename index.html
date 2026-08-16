@@ -243,10 +243,19 @@ function doLogin() {
     const config = AUTH_CONFIG[inputPwd];
 
     if (config) {
-        // หากรหัสถูกต้อง ให้ตั้งค่า Token และ Mode
+        // ตั้งค่า Token และ Mode
         API_TOKEN = config.token;
         APP_MODE = config.mode;
         activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
+        
+        // --- [ส่วนที่แก้ไขเพิ่ม] ---
+        // บังคับเปลี่ยนมุมมองหน้าจอ (View) ให้ตรงกับสิทธิ์ที่ล็อกอิน
+        if (APP_MODE !== 'all') {
+            view = { type: 'category_overview', category: APP_MODE };
+        } else {
+            view = { type: 'overview' };
+        }
+        // -----------------------
         
         // ซ่อนหน้า Login และแสดงหน้า App
         document.getElementById('login-screen').style.display = 'none';
