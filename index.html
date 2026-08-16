@@ -236,7 +236,30 @@ let API_TOKEN = "";
 let APP_MODE = "all"; 
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
+let userScale = 1.0; 
+let lastScrollCenterIdx = null; 
 
+const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
+const DEFAULT_COLORS = [
+  { name: 'ฟ้า', hex: '#22D3EE' }, { name: 'เขียว', hex: '#34D399' },
+  { name: 'ชมพู', hex: '#EC4899' }, { name: 'น้ำเงิน', hex: '#3B82F6' },
+  { name: 'เหลือง', hex: '#FBBF24' }, { name: 'ม่วง', hex: '#8B5CF6' }
+];
+
+function uid(prefix) { return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function mkRow(acts, name = 'แถว 1') { return { id: uid('row'), name, activities: acts }; }
+function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
+function seedProject(name, depts, sourceType = 'work') { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts, sourceType }; }
+function defaultState() {
+  return { 
+    lastModified: Date.now(),
+    projects: [seedProject('โครงการ กบรส. ตัวอย่าง', [ mkDept('หน่วยงาน กบรส.', [mkRow([], 'แถว 1')]) ], 'work')],
+    colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
+    viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
+    overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
+  };
+}
+  
 // ฟังก์ชันตรวจสอบรหัสผ่าน
 function doLogin() {
     const inputPwd = document.getElementById('tokenInput').value.trim();
