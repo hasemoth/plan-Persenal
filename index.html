@@ -205,7 +205,7 @@ const API_TOKEN = "MY_SECURE_TOKEN_2026_!@#";
 const URLS = {
     work: 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec',
     extra: 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec',
-    personal: 'https://script.google.com/macros/s/AKfycbw5ULSbCr2ciKGtHDqVEx-0biEA3YWkOP5Tt3oq3qWiVbFV7OZlgrGyOKJ6KTFsG23_/exec'
+    personal: 'วาง URL ของ Web App "gantt-plan ส่วนตัว" ที่เพิ่ง Deploy ตรงนี้'
 };
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -298,8 +298,11 @@ async function loadUnifiedState() {
     }
 
     try {
-      const localPersonal = localStorage.getItem('gantt_personal_projects');
-      if (localPersonal) JSON.parse(localPersonal).forEach(p => { p.sourceType = 'personal'; allProjects.push(p); });
+        const dataPersonal = await secureFetch(URLS.personal);
+        if (dataPersonal && dataPersonal.projects) {
+            dataPersonal.projects.forEach(p => { p.sourceType = 'personal'; allProjects.push(p); });
+            if (dataPersonal.lastModified > latestMod) latestMod = dataPersonal.lastModified;
+        }
     } catch(e) {}
 
     let base = {
@@ -327,8 +330,19 @@ async function saveState() {
     let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
     let personalProjects = state.projects.filter(p => p.sourceType === 'personal');
 
-    localStorage.setItem('gantt_personal_projects', JSON.stringify(personalProjects));
     state.lastModified = Date.now();
+
+    {
+        let statePersonal = JSON.parse(JSON.stringify(state)); statePersonal.projects = personalProjects;
+        const resPersonal = await securePost(URLS.personal, statePersonal, false);
+        if (resPersonal.error === "Conflict") {
+            const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ ส่วนตัว ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
+            if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
+            else { await securePost(URLS.personal, statePersonal, true); }
+        } else if (resPersonal.error) {
+            throw new Error("ส่วนตัว: " + resPersonal.error);
+        }
+    }
 
     if (APP_MODE === 'work' || APP_MODE === 'all') {
         let stateWork = JSON.parse(JSON.stringify(state)); stateWork.projects = workProjects;
@@ -426,7 +440,7 @@ function getColWidth(zoom, totalDays) {
   return baseWidth * userScale;
 }
 
-let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (!modalOpen && !dragMode) render(); }, 200); });
+let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (!modalOpen && !dragMode && state) render(); }, 200); });
 
 function getRenderBounds() {
   let rStart = indexFromDate(inputStrToDate(state.viewRange.start));
@@ -479,8 +493,16 @@ function render() {
   const content = document.createElement('div'); content.className = 'content';
   if (view.type === 'overview') content.appendChild(renderOverview());
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
+  else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else content.appendChild(renderProjectDetail(view.id));
   app.appendChild(content);
+}
+
+function renderEmptyCategoryState() {
+  const labels = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
+  const wrap = document.createElement('div'); wrap.className = 'empty-hint';
+  wrap.textContent = `ยังไม่มีโครงการในหมวด "${labels[activeMainCat] || ''}" กดปุ่ม "+ เพิ่มโครงการ" ด้านบนเพื่อเริ่มสร้างโครงการแรก`;
+  return wrap;
 }
 
 function renderTwoTierNav() {
@@ -493,7 +515,7 @@ function renderTwoTierNav() {
       activeMainCat = cat.key;
       if (cat.key !== 'all') {
         const filtered = state.projects.filter(p => (cat.key === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === cat.key));
-        if (filtered.length > 0) { view = { type: 'project', id: filtered[0].id }; } else { view = { type: 'overview' }; }
+        if (filtered.length > 0) { view = { type: 'project', id: filtered[0].id }; } else { view = { type: 'empty' }; }
       } else { view = { type: 'overview' }; }
       render();
     }; mainBar.appendChild(btn);
