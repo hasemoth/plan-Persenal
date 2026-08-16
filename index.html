@@ -239,7 +239,7 @@ async function secureFetch(url) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 20000); // ยกเลิกถ้าเกิน 20 วินาที
   try {
-    const response = await fetch(`${url}?token=${API_TOKEN}`, { signal: controller.signal });
+    const response = await fetch(`${url}?token=${encodeURIComponent(API_TOKEN)}`, { signal: controller.signal });
     const data = await response.json();
     if (data.error) throw new Error(data.error);
     return data;
