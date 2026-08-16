@@ -146,7 +146,22 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </style>
 </head>
 <body>
-<div id="app">
+<!-- หน้าจอ Login -->
+<div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; background: var(--bg);">
+  <div style="background: #fff; padding: 40px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center;">
+    <div class="brand-mark" style="margin: 0 auto 16px; width: 56px; height: 56px; font-size: 14px;">รวม</div>
+    <h2 style="margin: 0 0 8px; color: var(--indigo-deep);">เข้าสู่ระบบ</h2>
+    <p style="color: var(--ink-soft); margin: 0 0 24px; font-size: 13.5px;">กรุณากรอกรหัสผ่าน (Token) เพื่อเข้าใช้งานระบบ</p>
+    
+    <input type="password" id="tokenInput" class="text-input" placeholder="กรอกรหัสผ่าน..." style="margin-bottom: 16px; text-align: center; font-size: 16px; padding: 12px;" onkeydown="if(event.key === 'Enter') doLogin()">
+    
+    <button class="primary-btn" style="width: 100%; padding: 12px; font-size: 14.5px;" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div id="loginError" style="color: var(--danger); margin-top: 14px; font-size: 13px; font-weight: 600; display: none;">❌ รหัสผ่านไม่ถูกต้อง!</div>
+  </div>
+</div>
+
+<!-- หน้าจอหลัก (ซ่อนไว้ก่อน) -->
+<div id="app" style="display: none; flex-direction: column; min-height: 100vh;">
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark">รวม</div>
@@ -156,13 +171,12 @@ textarea.text-input { resize: vertical; min-height: 60px; }
       </div>
     </div>
     <div style="display:flex; gap:8px;">
-      <!-- แก้ไข: เพิ่ม background: transparent; เพื่อไม่ให้พื้นหลังเป็นสีขาวทับตัวหนังสือ -->
       <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
       <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
       <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
     </div>
   </div>
-  <div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบรวม...</div>
+  <div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบ...</div>
 </div>
 
 <script>
@@ -201,40 +215,49 @@ function todayBangkokIndex() {
   return indexFromDate(new Date(Date.UTC(get('year'), get('month') - 1, get('day'))));
 }
 
-// CONFIGURATION & SECURE APPS SCRIPT URLS
-const API_TOKEN = "MY_SECURE_TOKEN_2026_!@#"; 
+// ==========================================
+// --- CONFIGURATION & AUTHENTICATION ---
+// ==========================================
 const URLS = {
     work: 'https://script.google.com/macros/s/AKfycbzd4llwHPqNUyGCsUUZW7cIS8keeB9h5NinNTTRTf2sLwOpBa9JsiE3boAJlY_XOnwaKw/exec',
     extra: 'https://script.google.com/macros/s/AKfycbyP9BKc6r9MnbgNOZAu5bonhx7xuhGxD5Uf-VTmQS7xz8iOHo4NoLI4954Qkil7m5MO/exec',
     personal: 'https://script.google.com/macros/s/AKfycbw5ULSbCr2ciKGtHDqVEx-0biEA3YWkOP5Tt3oq3qWiVbFV7OZlgrGyOKJ6KTFsG23_/exec'
 };
 
-const urlParams = new URLSearchParams(window.location.search);
-const APP_MODE = urlParams.get('mode') || 'all'; 
+// ตั้งค่ารหัสผ่าน (Password) และเชื่อมโยงกับ Token จริง รวมถึงสิทธิ์การมองเห็น (Mode)
+const AUTH_CONFIG = {
+    "admin123": { mode: "all", token: "MY_SECURE_TOKEN_2026_!@#" },  // รหัสสำหรับดูทั้งหมด
+    "kbrs2026": { mode: "work", token: "MY_SECURE_TOKEN_2026_!@#" }, // รหัสสำหรับ กบรส.
+    "pri2026":  { mode: "extra", token: "MY_SECURE_TOKEN_2026_!@#" } // รหัสสำหรับ PRI
+};
 
-let state = null, view = { type: 'overview' }, activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE, zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
-let userScale = 1.0; 
-let lastScrollCenterIdx = null; 
+// ตัวแปรที่จะถูกกำหนดค่าเมื่อล็อกอินสำเร็จ
+let API_TOKEN = ""; 
+let APP_MODE = "all"; 
 
-const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
-const DEFAULT_COLORS = [
-  { name: 'ฟ้า', hex: '#22D3EE' }, { name: 'เขียว', hex: '#34D399' },
-  { name: 'ชมพู', hex: '#EC4899' }, { name: 'น้ำเงิน', hex: '#3B82F6' },
-  { name: 'เหลือง', hex: '#FBBF24' }, { name: 'ม่วง', hex: '#8B5CF6' }
-];
+let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
 
-function uid(prefix) { return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-function mkRow(acts, name = 'แถว 1') { return { id: uid('row'), name, activities: acts }; }
-function mkDept(name, rows) { return { id: uid('dept'), name, rows }; }
-function seedProject(name, depts, sourceType = 'work') { return { id: uid('proj'), name, color: '#3A2E6E', departments: depts, sourceType }; }
-function defaultState() {
-  return { 
-    lastModified: Date.now(),
-    projects: [seedProject('โครงการ กบรส. ตัวอย่าง', [ mkDept('หน่วยงาน กบรส.', [mkRow([], 'แถว 1')]) ], 'work')],
-    colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
-    viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
-    overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
-  };
+// ฟังก์ชันตรวจสอบรหัสผ่าน
+function doLogin() {
+    const inputPwd = document.getElementById('tokenInput').value.trim();
+    const config = AUTH_CONFIG[inputPwd];
+
+    if (config) {
+        // หากรหัสถูกต้อง ให้ตั้งค่า Token และ Mode
+        API_TOKEN = config.token;
+        APP_MODE = config.mode;
+        activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
+        
+        // ซ่อนหน้า Login และแสดงหน้า App
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        
+        // เรียกใช้งานระบบ
+        init();
+    } else {
+        // ถ้ารหัสผิด แจ้งเตือน
+        document.getElementById('loginError').style.display = 'block';
+    }
 }
 
 async function secureFetch(url) {
@@ -513,7 +536,13 @@ function renderEmptyCategoryState() {
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
-  const categories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+ let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+
+// ซ่อนหมวดหมู่อื่นๆ หากไม่ได้ล็อกอินด้วยสิทธิ์ 'all'
+let categories = allCategories;
+if (APP_MODE !== 'all') {
+    categories = allCategories.filter(cat => cat.key === APP_MODE);
+}
   categories.forEach(cat => {
     const btn = document.createElement('button'); btn.className = 'main-cat-btn' + (activeMainCat === cat.key ? ' active' : ''); btn.textContent = cat.label;
     btn.onclick = () => {
@@ -1306,7 +1335,6 @@ function openConfirmModal(title, desc, onConfirm) {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function closeModal(overlay) { modalOpen = false; overlay.remove(); }
-init();
 </script>
 </body>
 </html>
