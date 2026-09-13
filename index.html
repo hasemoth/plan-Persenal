@@ -551,7 +551,7 @@ function render() {
   
   // จัดการการ Render หน้า Overview ย่อยตาม Category
   if (view.type === 'overview') content.appendChild(renderOverview());
-  else if (view.type === 'category_overview') content.appendChild(renderOverview(view.category));
+  else if (view.type === 'category_overview') content.appendChild(renderLanesOverview(view.category));
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else content.appendChild(renderProjectDetail(view.id));
@@ -1127,9 +1127,13 @@ function renderOverview(categoryFilter = null) {
   return root;
 }
 
-function renderLanesOverview() {
+function renderLanesOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
-  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(state.overviewSettings.tab2.name || 'รายละเอียดภาพรวมโครงการ')}</h2></div>`;
+  let title = state.overviewSettings.tab2.name || '🛣️ รายละเอียดภาพรวมโครงการ';
+  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ กบรส.';
+  if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
+  if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
+  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend());
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
@@ -1144,7 +1148,16 @@ function renderLanesOverview() {
   
   const body = document.createElement('div'); body.className = 'gantt-body'; const todayIdx = todayBangkokIndex();
 
-  state.projects.forEach(p => {
+  let projectsToRender = state.projects;
+  if (categoryFilter) {
+      projectsToRender = state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter);
+  }
+
+  if (projectsToRender.length === 0) {
+      const empty = document.createElement('div'); empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีโครงการในหมวดหมู่นี้'; body.appendChild(empty);
+  }
+
+  projectsToRender.forEach(p => {
     const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
     const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.style.width = '220px'; pLabel.textContent = `📁 ${p.name}`;
     projHeaderBlock.appendChild(pLabel);
