@@ -76,6 +76,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
 .gantt-grid-bg { position: absolute; top: 0; bottom: 0; left: 220px; pointer-events: none; z-index: 0; overflow: hidden; }
 .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line-soft); }
+.weekend-col { position: absolute; top: 0; bottom: 0; background: rgba(100, 110, 130, 0.07); pointer-events: none; z-index: 0; }
 
 .header-row { display: flex; }
 .row-label { position: sticky; left: 0; z-index: 10; width: 220px; min-width: 220px; max-width: 220px; background: #FAFBFD; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-soft); display: flex; align-items: stretch; padding: 0; font-size: 13px; }
@@ -675,6 +676,14 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
 
     if (zoom === 'day' || zoom === 'week') {
         for (let i = rStart; i <= rEnd; i++) {
+            if (zoom === 'day') {
+                const dow = dateFromIndex(i).getUTCDay();
+                if (dow === 0 || dow === 6) {
+                    const wknd = document.createElement('div');
+                    wknd.className = 'weekend-col'; wknd.style.left = ((i - rStart) * colw) + 'px'; wknd.style.width = colw + 'px';
+                    bg.appendChild(wknd);
+                }
+            }
             const line = document.createElement('div');
             line.className = 'grid-line'; line.style.left = ((i - rStart) * colw) + 'px';
             bg.appendChild(line);
