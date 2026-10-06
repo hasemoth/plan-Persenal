@@ -225,12 +225,7 @@ const URLS = {
     personal: 'https://script.google.com/macros/s/AKfycbw5ULSbCr2ciKGtHDqVEx-0biEA3YWkOP5Tt3oq3qWiVbFV7OZlgrGyOKJ6KTFsG23_/exec'
 };
 
-// ตั้งค่ารหัสผ่าน (Password) และเชื่อมโยงกับ Token จริง รวมถึงสิทธิ์การมองเห็น (Mode)
-const AUTH_CONFIG = {
-    "admin123": { mode: "all", token: "MY_SECURE_TOKEN_2026_!@#" },  // รหัสสำหรับดูทั้งหมด
-    "had123": { mode: "work", token: "MY_SECURE_TOKEN_2026_!@#" }, // รหัสสำหรับ กบรส.
-    "pri123":  { mode: "extra", token: "MY_SECURE_TOKEN_2026_!@#" } // รหัสสำหรับ PRI
-};
+
 
 // ตัวแปรที่จะถูกกำหนดค่าเมื่อล็อกอินสำเร็จ
 let API_TOKEN = ""; 
@@ -261,36 +256,44 @@ function defaultState() {
   };
 }
   
-// ฟังก์ชันตรวจสอบรหัสผ่าน
-function doLogin() {
-    const inputPwd = document.getElementById('tokenInput').value.trim();
-    const config = AUTH_CONFIG[inputPwd];
+// ฟังก์ชันตรวจสอบรหัสผ่าน (ให้เซิร์ฟเวอร์เป็นคนตรวจ)
+async function doLogin() {
+  const pwd = document.getElementById('tokenInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
 
-    if (config) {
-        // ตั้งค่า Token และ Mode
-        API_TOKEN = config.token;
-        APP_MODE = config.mode;
-        activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
-        
-        // --- [ส่วนที่แก้ไขเพิ่ม] ---
-        // บังคับเปลี่ยนมุมมองหน้าจอ (View) ให้ตรงกับสิทธิ์ที่ล็อกอิน
-        if (APP_MODE !== 'all') {
-            view = { type: 'category_overview', category: APP_MODE };
-        } else {
-            view = { type: 'overview' };
-        }
-        // -----------------------
-        
-        // ซ่อนหน้า Login และแสดงหน้า App
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        
-        // เรียกใช้งานระบบ
-        init();
-    } else {
-        // ถ้ารหัสผิด แจ้งเตือน
-        document.getElementById('loginError').style.display = 'block';
-    }
+  if (!pwd) {
+    errEl.textContent = '❌ กรุณากรอกรหัสผ่าน';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  let data;
+  try {
+    const res = await fetch(`${URLS.work}?action=login&token=${encodeURIComponent(pwd)}`);
+    data = await res.json();
+  } catch (e) {
+    errEl.textContent = '❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่อีกครั้ง';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (!data.categories || data.categories.length === 0) {
+    errEl.textContent = '❌ รหัสผ่านไม่ถูกต้อง!';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  API_TOKEN = pwd; // ใช้รหัสที่พิมพ์เป็น token ส่งให้เซิร์ฟเวอร์ตรวจทุกครั้ง
+  APP_MODE = data.categories.length > 1 ? 'all' : data.categories[0];
+  activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
+  view = APP_MODE === 'all'
+    ? { type: 'overview' }
+    : { type: 'category_overview', category: APP_MODE };
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  init();
 }
 
 async function secureFetch(url) {
@@ -333,7 +336,7 @@ async function loadUnifiedState() {
   try {
     let allProjects = [];
     let latestMod = 0;
-    let settingsSource = null; // เก็บ settings จากเซิร์ฟเวอร์ที่ใหม่สุด
+    let settingsSource = null; // เก็บค่าตั้งค่า (ชื่อสี ฯลฯ) จากเซิร์ฟเวอร์ที่ใหม่สุด
 
     const consider = (data, type) => {
       if (!data || !data.projects) return;
@@ -345,12 +348,14 @@ async function loadUnifiedState() {
     };
 
     if (APP_MODE === 'work' || APP_MODE === 'all') {
-      try { consider(await secureFetch(URLS.work), 'work'); } catch(e) {}
+      try { consider(await secureFetch(URLS.work), 'work'); } catch (e) {}
     }
     if (APP_MODE === 'extra' || APP_MODE === 'all') {
-      try { consider(await secureFetch(URLS.extra), 'extra'); } catch(e) {}
+      try { consider(await secureFetch(URLS.extra), 'extra'); } catch (e) {}
     }
-    try { consider(await secureFetch(URLS.personal), 'personal'); } catch(e) {}
+    if (APP_MODE === 'all') {
+      try { consider(await secureFetch(URLS.personal), 'personal'); } catch (e) {}
+    }
 
     const def = defaultState();
     let base = {
@@ -361,13 +366,12 @@ async function loadUnifiedState() {
       viewRange: (settingsSource && settingsSource.viewRange) || def.viewRange,
       overviewSettings: (settingsSource && settingsSource.overviewSettings) || def.overviewSettings
     };
-    // กันกรณีข้อมูลเก่าไม่มี tab1/tab2
     base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
     base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
 
     base.projects.forEach(p => {
       if (!p.color) p.color = '#3A2E6E';
-      p.departments.forEach(d => d.rows.forEach((r, idx) => { if(!r.name) r.name = `แถว ${idx+1}`; }));
+      p.departments.forEach(d => d.rows.forEach((r, idx) => { if (!r.name) r.name = `แถว ${idx + 1}`; }));
     });
     return base;
   } catch (e) { return defaultState(); }
@@ -384,7 +388,7 @@ async function saveState() {
 
     state.lastModified = Date.now();
 
-    {
+    if (APP_MODE === 'all') {
         let statePersonal = JSON.parse(JSON.stringify(state)); statePersonal.projects = personalProjects;
         const resPersonal = await securePost(URLS.personal, statePersonal, false);
         if (resPersonal.error === "Conflict") {
