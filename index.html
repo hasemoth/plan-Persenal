@@ -408,7 +408,7 @@ async function saveState() {
         }
     }
  
-    if ((APP_MODE === 'extra' || APP_MODE === 'all') && extraProjects.length > 0) {
+    if (APP_MODE === 'extra' || APP_MODE === 'all') {
       let stateExtra = JSON.parse(JSON.stringify(state)); stateExtra.projects = extraProjects;
       const resExtra = await securePost(URLS.extra, stateExtra, false);
       if (resExtra.error === "Conflict") {
