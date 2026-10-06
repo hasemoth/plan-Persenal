@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
 /* --- THEME & CSS VARIABLES --- */
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@700&display=swap');
 :root {
   --ink: #16233B; --ink-soft: #4A5773; --bg: #F3F5F9; --surface: #FFFFFF;
   --indigo: #3A2E6E; --indigo-deep: #241C4D; --indigo-soft: #EDEAFB;
@@ -148,6 +148,49 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 .conflict-field { font-weight: 700; color: var(--indigo-deep); margin: 2px 0 6px; }
 .conflict-opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; cursor: pointer; font-size: 13px; }
 .conflict-opt input { margin-top: 3px; }
+/* --- LOGIN SCREEN --- */
+.lg-wrap { min-height: 100vh; box-sizing: border-box; background: #EEF0F4; display: flex; align-items: center; justify-content: center; padding: 40px 20px; font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif; color: #14213A; }
+.lg-card { width: 100%; max-width: 1120px; background: #FFFFFF; border-radius: 18px; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); box-shadow: 0 1px 2px rgba(20,33,58,0.06), 0 24px 60px rgba(20,33,58,0.10); }
+.lg-main { padding: 56px 56px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+.lg-brand { display: flex; align-items: center; gap: 12px; }
+.lg-mark { width: 40px; height: 40px; border-radius: 10px; background: #0E1A2E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+.lg-brand-name { font-weight: 600; font-size: 15px; }
+.lg-form { display: flex; flex-direction: column; gap: 22px; max-width: 380px; width: 100%; }
+.lg-head h1 { margin: 0 0 8px; font-family: 'Noto Serif Thai', serif; font-size: 32px; font-weight: 700; color: #0E1A2E; }
+.lg-head p { margin: 0; font-size: 14.5px; color: #4A5773; line-height: 1.6; }
+.lg-field { display: flex; flex-direction: column; gap: 8px; }
+.lg-field label { font-size: 13.5px; font-weight: 600; color: #263552; }
+.lg-input-wrap { position: relative; display: flex; align-items: center; }
+.lg-icon-left { position: absolute; left: 14px; color: #6B7891; pointer-events: none; }
+.lg-input { width: 100%; box-sizing: border-box; height: 50px; padding: 0 48px 0 44px; border: 1px solid #CBD2DE; border-radius: 10px; background: #FFFFFF; color: #14213A; font-family: inherit; font-size: 16px; }
+.lg-input:focus { outline: 2px solid #2F5DA8; outline-offset: 2px; border-color: #2F5DA8; }
+.lg-eye { position: absolute; right: 4px; width: 44px; height: 44px; border: none; background: transparent; color: #6B7891; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.lg-eye:hover { background: #F1F3F7; color: #263552; }
+.lg-eye .eye-off { display: none; }
+.lg-eye.on .eye-on { display: none; }
+.lg-eye.on .eye-off { display: block; }
+.lg-btn { height: 50px; border: none; border-radius: 10px; background: #0E1A2E; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 600; cursor: pointer; transition: background .15s ease; }
+.lg-btn:hover { background: #1B2B47; }
+.lg-btn:disabled { opacity: 0.7; cursor: wait; }
+.lg-error { padding: 10px 14px; border-radius: 10px; background: #FDEAEE; color: #B4233C; font-size: 13.5px; font-weight: 600; }
+.lg-foot { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: #6B7891; }
+.lg-preview { background: #F6F7FA; border-left: 1px solid #E3E7EE; padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.lg-pv-eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: 1.5px; color: #6B7891; }
+.lg-pv-title { font-size: 20px; font-weight: 700; color: #0E1A2E; margin-top: 6px; }
+.lg-chart { background: #FFFFFF; border: 1px solid #E3E7EE; border-radius: 12px; padding: 18px 18px 16px; }
+.lg-rows { position: relative; display: flex; flex-direction: column; gap: 10px; }
+.lg-row { display: flex; gap: 12px; align-items: center; font-size: 12.5px; }
+.lg-row-label { width: 120px; flex-shrink: 0; color: #263552; }
+.lg-months { flex: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); text-align: center; font-size: 11.5px; color: #6B7891; border-bottom: 1px solid #EEF0F5; padding-bottom: 6px; }
+.lg-track { flex: 1; position: relative; height: 22px; }
+.lg-bar { position: absolute; top: 3px; height: 16px; border-radius: 4px; }
+.lg-today { position: absolute; top: 30px; bottom: -4px; width: 2px; background: #E23D5B; left: calc(132px + (100% - 132px) * 0.52); }
+.lg-today span { position: absolute; top: -2px; left: 5px; font-size: 10.5px; font-weight: 700; color: #E23D5B; white-space: nowrap; }
+@media (max-width: 900px) {
+  .lg-card { grid-template-columns: minmax(0, 1fr); }
+  .lg-preview { display: none; }
+  .lg-main { padding: 40px 28px 32px; gap: 36px; }
+}
 @media (max-width: 720px) {
   .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
   .row-label { width: 160px; min-width: 160px; max-width: 160px; }
@@ -159,16 +202,56 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 </head>
 <body>
 <!-- หน้าจอ Login -->
-<div id="login-screen" style="display: flex; height: 100vh; align-items: center; justify-content: center; background: var(--bg);">
-  <div style="background: #fff; padding: 40px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center;">
-    <div class="brand-mark" style="margin: 0 auto 16px; width: 56px; height: 56px; font-size: 14px;">รวม</div>
-    <h2 style="margin: 0 0 8px; color: var(--indigo-deep);">เข้าสู่ระบบ</h2>
-    <p style="color: var(--ink-soft); margin: 0 0 24px; font-size: 13.5px;">กรุณากรอกรหัสผ่าน เพื่อเข้าใช้งานระบบ</p>
-    
-    <input type="password" id="tokenInput" class="text-input" placeholder="กรอกรหัสผ่าน..." style="margin-bottom: 16px; text-align: center; font-size: 16px; padding: 12px;" onkeydown="if(event.key === 'Enter') doLogin()">
-    
-    <button class="primary-btn" style="width: 100%; padding: 12px; font-size: 14.5px;" onclick="doLogin()">เข้าสู่ระบบ</button>
-    <div id="loginError" style="color: var(--danger); margin-top: 14px; font-size: 13px; font-weight: 600; display: none;">❌ รหัสผ่านไม่ถูกต้อง!</div>
+<div id="login-screen" class="lg-wrap">
+  <div class="lg-card">
+    <div class="lg-main">
+      <div class="lg-brand">
+        <div class="lg-mark">รวม</div>
+        <div class="lg-brand-name">แผนการดำเนินงานรวม</div>
+      </div>
+
+      <form class="lg-form" onsubmit="event.preventDefault(); doLogin();">
+        <div class="lg-head">
+          <h1>เข้าสู่ระบบ</h1>
+          <p>กรอกรหัสผ่านที่ได้รับจากผู้ดูแลระบบ</p>
+        </div>
+        <div class="lg-field">
+          <label for="tokenInput">รหัสผ่าน</label>
+          <div class="lg-input-wrap">
+            <svg class="lg-icon-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+            <input type="password" id="tokenInput" class="lg-input" placeholder="••••••••" autocomplete="current-password" autofocus>
+            <button type="button" class="lg-eye" id="togglePwd" aria-label="แสดงรหัสผ่าน" onclick="togglePassword()">
+              <svg class="eye-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2"></path><path d="M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div id="loginError" class="lg-error" role="alert" style="display: none;"></div>
+        <button type="submit" class="lg-btn" id="loginBtn">เข้าสู่ระบบ</button>
+      </form>
+
+      <div class="lg-foot">
+        <div>ระบบนี้ใช้สำหรับเจ้าหน้าที่ที่ได้รับสิทธิ์เท่านั้น</div>
+        <div>ลืมรหัสผ่าน? กรุณาติดต่อผู้ดูแลระบบ</div>
+      </div>
+    </div>
+
+    <div class="lg-preview" aria-hidden="true">
+      <div>
+        <div class="lg-pv-eyebrow">ตัวอย่างหน้าแผนงาน</div>
+        <div class="lg-pv-title">เห็นทุกกำหนดการในมุมมองเดียว</div>
+      </div>
+      <div class="lg-chart">
+        <div class="lg-rows">
+          <div class="lg-row"><div class="lg-row-label"></div><div class="lg-months"><span>ม.ค.</span><span>ก.พ.</span><span>มี.ค.</span><span>เม.ย.</span><span>พ.ค.</span><span>มิ.ย.</span></div></div>
+          <div class="lg-row"><div class="lg-row-label">ประชุมคณะทำงาน</div><div class="lg-track"><div class="lg-bar" style="left: 4%; width: 26%; background: #3B82F6;"></div></div></div>
+          <div class="lg-row"><div class="lg-row-label">จัดทำรายงาน</div><div class="lg-track"><div class="lg-bar" style="left: 22%; width: 34%; background: #22D3EE;"></div></div></div>
+          <div class="lg-row"><div class="lg-row-label">ส่งมอบงาน</div><div class="lg-track"><div class="lg-bar" style="left: 46%; width: 18%; background: #34D399;"></div></div></div>
+          <div class="lg-row"><div class="lg-row-label">ติดตามผล</div><div class="lg-track"><div class="lg-bar" style="left: 60%; width: 36%; background: #8B5CF6;"></div></div></div>
+          <div class="lg-today"><span>วันนี้</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -308,30 +391,52 @@ function defaultState() {
 }
   
 // ฟังก์ชันตรวจสอบรหัสผ่าน (ให้เซิร์ฟเวอร์เป็นคนตรวจ)
+function togglePassword() {
+  const inp = document.getElementById('tokenInput');
+  const btn = document.getElementById('togglePwd');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.classList.toggle('on', show);
+  btn.setAttribute('aria-label', show ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน');
+  inp.focus();
+}
+
+function setLoginBusy(busy) {
+  const btn = document.getElementById('loginBtn');
+  if (!btn) return;
+  btn.disabled = busy;
+  btn.textContent = busy ? 'กำลังตรวจสอบ...' : 'เข้าสู่ระบบ';
+}
+
 async function doLogin() {
   const pwd = document.getElementById('tokenInput').value.trim();
   const errEl = document.getElementById('loginError');
   errEl.style.display = 'none';
 
   if (!pwd) {
-    errEl.textContent = '❌ กรุณากรอกรหัสผ่าน';
+    errEl.textContent = 'กรุณากรอกรหัสผ่าน';
     errEl.style.display = 'block';
     return;
   }
 
   let data;
+  setLoginBusy(true);
   try {
     const res = await fetch(`${URLS.work}?action=login&token=${encodeURIComponent(pwd)}`);
     data = await res.json();
   } catch (e) {
-    errEl.textContent = '❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่อีกครั้ง';
+    setLoginBusy(false);
+    errEl.textContent = 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่อีกครั้ง';
     errEl.style.display = 'block';
     return;
   }
 
   if (!data.categories || data.categories.length === 0) {
-    errEl.textContent = '❌ รหัสผ่านไม่ถูกต้อง!';
+    setLoginBusy(false);
+    errEl.textContent = 'รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง';
     errEl.style.display = 'block';
+    const inp = document.getElementById('tokenInput');
+    inp.select();
     return;
   }
 
