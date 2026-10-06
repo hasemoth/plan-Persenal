@@ -85,6 +85,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .dept-name { font-weight: 600; color: var(--ink); line-height: 1.2; word-break: break-word; }
 .dept-ctrls { display: flex; gap: 4px; flex-wrap: wrap; }
 .dept-ctrls .icon-btn { padding: 3px 7px; font-size: 11px; }
+.icon-btn.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
 .dept-row-names { width: 76px; flex-shrink: 0; display: flex; flex-direction: column; background: #FAFAFD; }
 .row-name-cell { height: 32px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; padding: 0 6px; font-size: 11px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; }
 .row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
@@ -184,7 +185,11 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 // ==========================================
 // --- CORE ENGINE & STATE MANAGEMENT ---
 // ==========================================
-function escapeHTML(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+function escapeHTML(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 
 const DAY = 86400000;
 function beDate(beYear, month, day) { return new Date(Date.UTC(beYear - 543, month - 1, day)); }
@@ -229,7 +234,13 @@ const URLS = {
 
 // ตัวแปรที่จะถูกกำหนดค่าเมื่อล็อกอินสำเร็จ
 let API_TOKEN = ""; 
-let APP_MODE = "all"; 
+let APP_MODE = "all";
+let ALLOWED = [];          // หมวดที่รหัสนี้เข้าได้ เช่น ['work','extra']
+let loadedOk = {};         // หมวดไหนโหลดจากเซิร์ฟเวอร์สำเร็จ
+let serverModified = {};   // เวอร์ชัน lastModified ของแต่ละหมวดบนเซิร์ฟเวอร์
+let pendingSave = false;   // มีการบันทึกรอคิวอยู่หรือไม่
+function can(type) { return ALLOWED.includes(type); }
+function applyLoaded(res) { state = res.state; loadedOk = res.okMap; serverModified = res.modMap; }
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
 let userScale = 1.0; 
@@ -285,6 +296,7 @@ async function doLogin() {
   }
 
   API_TOKEN = pwd; // ใช้รหัสที่พิมพ์เป็น token ส่งให้เซิร์ฟเวอร์ตรวจทุกครั้ง
+  ALLOWED = data.categories;
   APP_MODE = data.categories.length > 1 ? 'all' : data.categories[0];
   activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
   view = APP_MODE === 'all'
@@ -312,8 +324,8 @@ async function secureFetch(url) {
   }
 }
  
-async function securePost(url, dataPayload, force = false) {
-  const payload = { token: API_TOKEN, force: force, data: dataPayload };
+async function securePost(url, dataPayload, force = false, baseModified) {
+  const payload = { token: API_TOKEN, force: force, baseModified: baseModified, data: dataPayload };
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 20000); 
   try {
@@ -333,99 +345,96 @@ async function securePost(url, dataPayload, force = false) {
 }
 
 async function loadUnifiedState() {
-  try {
-    let allProjects = [];
-    let latestMod = 0;
-    let settingsSource = null; // เก็บค่าตั้งค่า (ชื่อสี ฯลฯ) จากเซิร์ฟเวอร์ที่ใหม่สุด
+  let allProjects = [];
+  let latestMod = 0;
+  let settingsSource = null;
+  const okMap = {}, modMap = {};
+  const sources = [['work', URLS.work], ['extra', URLS.extra], ['personal', URLS.personal]];
 
-    const consider = (data, type) => {
-      if (!data || !data.projects) return;
-      data.projects.forEach(p => { p.sourceType = type; allProjects.push(p); });
+  for (const [type, url] of sources) {
+    if (!can(type)) continue;
+    try {
+      const data = await secureFetch(url);
+      okMap[type] = true;
+      modMap[type] = data.lastModified || 0;
+      (data.projects || []).forEach(p => { p.sourceType = type; allProjects.push(p); });
       if ((data.lastModified || 0) >= latestMod) {
         latestMod = data.lastModified || 0;
         if (data.colors || data.viewRange || data.overviewSettings) settingsSource = data;
       }
-    };
-
-    if (APP_MODE === 'work' || APP_MODE === 'all') {
-      try { consider(await secureFetch(URLS.work), 'work'); } catch (e) {}
+    } catch (e) {
+      okMap[type] = false;
+      console.warn('โหลดหมวด ' + type + ' ไม่สำเร็จ:', e);
     }
-    if (APP_MODE === 'extra' || APP_MODE === 'all') {
-      try { consider(await secureFetch(URLS.extra), 'extra'); } catch (e) {}
-    }
-    if (APP_MODE === 'all') {
-      try { consider(await secureFetch(URLS.personal), 'personal'); } catch (e) {}
-    }
+  }
 
-    const def = defaultState();
-    let base = {
-      lastModified: latestMod || Date.now(),
-      projects: allProjects,
-      colors: (settingsSource && settingsSource.colors && settingsSource.colors.length)
-                ? settingsSource.colors : def.colors,
-      viewRange: (settingsSource && settingsSource.viewRange) || def.viewRange,
-      overviewSettings: (settingsSource && settingsSource.overviewSettings) || def.overviewSettings
-    };
-    base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
-    base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
+  const def = defaultState();
+  const base = {
+    lastModified: latestMod || Date.now(),
+    projects: allProjects,
+    colors: (settingsSource && settingsSource.colors && settingsSource.colors.length) ? settingsSource.colors : def.colors,
+    viewRange: (settingsSource && settingsSource.viewRange) || def.viewRange,
+    overviewSettings: (settingsSource && settingsSource.overviewSettings) || def.overviewSettings
+  };
+  base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
+  base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
 
-    base.projects.forEach(p => {
-      if (!p.color) p.color = '#3A2E6E';
-      p.departments.forEach(d => d.rows.forEach((r, idx) => { if (!r.name) r.name = `แถว ${idx + 1}`; }));
-    });
-    return base;
-  } catch (e) { return defaultState(); }
+  base.projects.forEach(p => {
+    if (!p.color) p.color = '#3A2E6E';
+    if (!Array.isArray(p.departments)) p.departments = [];
+    p.departments.forEach(d => (d.rows || []).forEach((r, idx) => { if (!r.name) r.name = `แถว ${idx + 1}`; }));
+  });
+
+  return { state: base, okMap, modMap, complete: ALLOWED.every(t => okMap[t]) };
 }
 
 async function saveState() {
-  if (isSaving) return; isSaving = true;
-  const statusEl = document.querySelector('.brand-sub');
-  if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>';
-  try {
-    let workProjects = state.projects.filter(p => p.sourceType === 'work' || !p.sourceType);
-    let extraProjects = state.projects.filter(p => p.sourceType === 'extra');
-    let personalProjects = state.projects.filter(p => p.sourceType === 'personal');
+  if (isSaving) { pendingSave = true; return; }   // อย่าทิ้ง ให้เข้าคิวไว้
+  isSaving = true;
+  const setStatus = (html) => {
+    const el = document.querySelector('.brand-sub');
+    if (el) el.innerHTML = 'ระบบรวม · ' + html;
+  };
+  const LABELS = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
+  setStatus('<span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>');
 
+  try {
     state.lastModified = Date.now();
 
-    if (APP_MODE === 'all') {
-        let statePersonal = JSON.parse(JSON.stringify(state)); statePersonal.projects = personalProjects;
-        const resPersonal = await securePost(URLS.personal, statePersonal, false);
-        if (resPersonal.error === "Conflict") {
-            const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ ส่วนตัว ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
-            if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
-            else { await securePost(URLS.personal, statePersonal, true); }
-        } else if (resPersonal.error) {
-            throw new Error("ส่วนตัว: " + resPersonal.error);
-        }
-    }
-
-    if (APP_MODE === 'work' || APP_MODE === 'all') {
-        let stateWork = JSON.parse(JSON.stringify(state)); stateWork.projects = workProjects;
-        const resWork = await securePost(URLS.work, stateWork, false);
-        if (resWork.error === "Conflict") {
-            const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ กบรส. ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
-            if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
-            else { await securePost(URLS.work, stateWork, true); }
-        } else if (resWork.error) {
-            throw new Error("กบรส.: " + resWork.error);
-        }
-    }
- 
-    if (APP_MODE === 'extra' || APP_MODE === 'all') {
-      let stateExtra = JSON.parse(JSON.stringify(state)); stateExtra.projects = extraProjects;
-      const resExtra = await securePost(URLS.extra, stateExtra, false);
-      if (resExtra.error === "Conflict") {
-          const override = confirm("⚠️ มีการแก้ไขข้อมูลบนเซิร์ฟเวอร์ PRI ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด\nกด Cancel เพื่อบังคับบันทึกทับ");
-          if (override) { state = await loadUnifiedState(); render(); isSaving = false; return; }
-          else { await securePost(URLS.extra, stateExtra, true); }
-      } else if (resExtra.error) {
-          throw new Error("PRI: " + resExtra.error);
+    for (const type of ['personal', 'work', 'extra']) {
+      if (!can(type)) continue;   // ไม่มีสิทธิ์หมวดนี้ ข้ามไป
+      if (!loadedOk[type]) {
+        throw new Error(`ข้อมูล ${LABELS[type]} โหลดไม่สำเร็จ จึงไม่บันทึกทับ กรุณารีเฟรชหน้า`);
       }
+
+      const sub = JSON.parse(JSON.stringify(state));
+      sub.projects = state.projects.filter(p => (p.sourceType || 'work') === type);
+
+      let res = await securePost(URLS[type], sub, false, serverModified[type]);
+
+      if (res.error === 'Conflict') {
+        const reload = confirm(`⚠️ มีคนแก้ไขข้อมูล ${LABELS[type]} ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด (การแก้ไขของคุณที่ยังไม่บันทึกจะหาย)\nกด Cancel เพื่อบังคับบันทึกทับ`);
+        if (reload) {
+          applyLoaded(await loadUnifiedState());
+          pendingSave = false;
+          render();
+          setStatus('<span style="color:#FBBF24">🔄 ดึงข้อมูลล่าสุดแล้ว</span>');
+          return;
+        }
+        res = await securePost(URLS[type], sub, true);
+      }
+
+      if (res.error) throw new Error(LABELS[type] + ': ' + res.error);
+      serverModified[type] = sub.lastModified;   // จำเวอร์ชันใหม่ไว้ใช้ครั้งถัดไป
     }
 
-    if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>';
-} catch (e) { if (statusEl) statusEl.innerHTML = 'ระบบรวม · <span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + '</span>'; }  isSaving = false;
+    setStatus('<span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>');
+  } catch (e) {
+    setStatus('<span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + '</span>');
+  } finally {
+    isSaving = false;
+    if (pendingSave) { pendingSave = false; saveState(); }
+  }
 }
 
 async function persistAndRender() { render(); await saveState(); }
@@ -433,26 +442,31 @@ async function persistAndRender() { render(); await saveState(); }
 let isPolling = false; 
  
 async function init() {
-  try {
-    state = await loadUnifiedState(); if (!state || !state.projects) { state = defaultState(); await saveState(); }
-    render(); 
-    // Adaptive Polling
-    setInterval(async () => {
-      if (document.visibilityState !== 'visible') return;
-      if (modalOpen || isSaving || dragMode) return;
-      if (isPolling) return;
-      isPolling = true;
-      try {
-        const loaded = await loadUnifiedState(); 
-        if (loaded && loaded.lastModified !== state.lastModified) { 
-            state = loaded; 
-            render(); 
-        }
-      } finally {
-        isPolling = false;
+  applyLoaded(await loadUnifiedState());
+  if (!ALLOWED.every(t => loadedOk[t])) {
+    alert('⚠️ โหลดข้อมูลบางหมวดไม่สำเร็จ\nระบบจะไม่บันทึกหมวดนั้นเพื่อป้องกันข้อมูลหาย กรุณารีเฟรชหน้าอีกครั้ง');
+  }
+  render();
+
+  setInterval(async () => {
+    if (document.visibilityState !== 'visible') return;
+    if (modalOpen || isSaving || dragMode || isPolling) return;
+    if (window.tinymce && tinymce.activeEditor && tinymce.activeEditor.hasFocus()) return; // กำลังพิมพ์โน้ตอยู่
+    isPolling = true;
+    try {
+      const res = await loadUnifiedState();
+      if (!res.complete) return;                          // โหลดไม่ครบ ห้ามแทนที่ข้อมูล
+      if (modalOpen || isSaving || dragMode) return;      // ระหว่างรอ ผู้ใช้เริ่มแก้ไขแล้ว
+      const wasIncomplete = !ALLOWED.every(t => loadedOk[t]);
+      if (wasIncomplete || res.state.lastModified !== state.lastModified) {
+        applyLoaded(res);
+        render();
       }
-    }, 20000); 
-  } catch(e) {}
+    } catch (e) {
+    } finally {
+      isPolling = false;
+    }
+  }, 20000);
 }
 
 function exportBackup() {
@@ -471,13 +485,21 @@ function importBackup(event) {
     const reader = new FileReader();
     reader.onload = async function(e) {
         try {
-            const importedState = JSON.parse(e.target.result);
-            if (importedState && importedState.projects) {
-                state = importedState;
-                await saveState();
-                render();
-                alert("กู้คืนข้อมูลสำเร็จเรียบร้อยแล้ว!");
-            }
+            const imported = JSON.parse(e.target.result);
+            if (!imported || !Array.isArray(imported.projects)) throw new Error('bad');
+            const projects = imported.projects.filter(p =>
+                p && Array.isArray(p.departments) && can(p.sourceType || 'work'));
+            if (!confirm(`จะแทนที่ข้อมูลปัจจุบันด้วยไฟล์สำรอง (${projects.length} โครงการ)\nยืนยันหรือไม่?`)) return;
+            state = {
+                lastModified: state.lastModified,
+                projects: projects,
+                colors: imported.colors || state.colors,
+                viewRange: imported.viewRange || state.viewRange,
+                overviewSettings: imported.overviewSettings || state.overviewSettings
+            };
+            render();
+            await saveState();
+            alert("กู้คืนข้อมูลเรียบร้อย กรุณาตรวจสถานะการบันทึกที่แถบด้านบน");
         } catch (error) {
             alert("ไฟล์ Backup ไม่ถูกต้อง หรือข้อมูลเสียหาย");
         }
@@ -538,6 +560,7 @@ function reRenderWithScroll() {
 
 function render() {
   const app = document.getElementById('app'); 
+  if (window.tinymce) tinymce.remove();
   const topbarHTML = app.querySelector('.topbar').outerHTML;
   app.innerHTML = '';
   
@@ -571,10 +594,7 @@ function renderTwoTierNav() {
  let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
 
 // ซ่อนหมวดหมู่อื่นๆ หากไม่ได้ล็อกอินด้วยสิทธิ์ 'all'
-let categories = allCategories;
-if (APP_MODE !== 'all') {
-    categories = allCategories.filter(cat => cat.key === APP_MODE);
-}
+const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 'all' : can(cat.key));
   categories.forEach(cat => {
     const btn = document.createElement('button'); btn.className = 'main-cat-btn' + (activeMainCat === cat.key ? ' active' : ''); btn.textContent = cat.label;
     btn.onclick = () => {
@@ -664,7 +684,8 @@ function scrollToToday() {
     const { rStart, totalDays } = getRenderBounds();
     const colw = getColWidth(zoom, totalDays);
     const todayIdx = todayBangkokIndex();
-    el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + 220 - el.clientWidth / 2);
+    const labelW = window.innerWidth <= 720 ? 160 : 220;
+    el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + labelW - el.clientWidth / 2);
   });
 }
 
@@ -832,10 +853,13 @@ function renderProjectDetail(projectId) {
   return root;
 }
 
-function renderLegend(targetProject = null) {
+function renderLegend(targetProject = null, categoryFilter = null) {
   const wrap = document.createElement('div'); wrap.className = 'legend'; wrap.innerHTML = `<span class="legend-label">สีกิจกรรม:</span>`;
   const usedColorsHex = new Set(); let hasTask = false, hasOverdue = false, hasDueToday = false, todayIdx = todayBangkokIndex();
-  const targetList = targetProject ? targetProject.departments : state.projects.flatMap(p => p.departments);
+  const srcProjects = categoryFilter
+    ? state.projects.filter(p => (p.sourceType || 'work') === categoryFilter)
+    : state.projects;
+  const targetList = targetProject ? targetProject.departments : srcProjects.flatMap(p => p.departments);
   targetList.forEach(d => d.rows.forEach(r => r.activities.forEach(a => {
     usedColorsHex.add(a.color);
     if(a.type === 'task') { hasTask = true; if(!a.completed && todayIdx > a.end) hasOverdue = true; if(!a.completed && todayIdx === a.end) hasDueToday = true; }
@@ -943,9 +967,11 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.style.boxSizing = 'border-box';
   bar.style.overflow = 'hidden'; 
 
-  let rHex = parseInt(displayColor.slice(1, 3), 16) || 0;
-  let gHex = parseInt(displayColor.slice(3, 5), 16) || 0;
-  let bHex = parseInt(displayColor.slice(5, 7), 16) || 0;
+  let hex = (displayColor || '#888888').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  let rHex = parseInt(hex.slice(0, 2), 16) || 0;
+  let gHex = parseInt(hex.slice(2, 4), 16) || 0;
+  let bHex = parseInt(hex.slice(4, 6), 16) || 0;
   let lightBg = `rgba(${rHex}, ${gHex}, ${bHex}, 0.15)`;
 
   const dashedFill = document.createElement('div');
@@ -994,6 +1020,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
           let startX = clientX, initialActStart = act.start, duration = act.end - act.start, hasMoved = false;
           
           function onMove(moveEvent) {
+              if (moveEvent.touches && moveEvent.cancelable) moveEvent.preventDefault();
               let curX = moveEvent.clientX;
               if (moveEvent.touches && moveEvent.touches.length > 0) curX = moveEvent.touches[0].clientX;
               let dx = curX - startX, dayShift = Math.round(dx / colw);
@@ -1066,7 +1093,7 @@ function renderOverview(categoryFilter = null) {
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend());
+  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend(null, categoryFilter));
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -1133,7 +1160,7 @@ function renderLanesOverview(categoryFilter = null) {
   if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend());
+  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend(null, categoryFilter));
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -1323,7 +1350,17 @@ function addPersonalProject() {
   });
 }
 function renameProject(id) { const p = state.projects.find(x => x.id === id); openTextModal('เปลี่ยนชื่อโครงการ', 'ชื่อโครงการ', p.name, async (name) => { if (!name) return; p.name = name; await persistAndRender(); }); }
-function deleteProject(id) { openConfirmModal('ลบโครงการนี้?', 'ข้อมูลทั้งหมดจะถูกลบ', async () => { state.projects = state.projects.filter(p => p.id !== id); if (view.type === 'project' && view.id === id) view = { type: 'overview' }; await persistAndRender(); }); }
+function deleteProject(id) {
+  openConfirmModal('ลบโครงการนี้?', 'ข้อมูลทั้งหมดจะถูกลบ', async () => {
+    state.projects = state.projects.filter(p => p.id !== id);
+    if (view.type === 'project' && view.id === id) {
+      view = activeMainCat === 'all'
+        ? { type: 'overview' }
+        : { type: 'category_overview', category: activeMainCat };
+    }
+    await persistAndRender();
+  });
+}
 function openProjectColorModal(projectId) {
   const p = state.projects.find(x => x.id === projectId); if (!p) return;
   modalOpen = true; const overlay = document.createElement('div'); overlay.className = 'modal-overlay'; const modal = document.createElement('div'); modal.className = 'modal';
