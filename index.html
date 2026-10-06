@@ -138,6 +138,15 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 .color-swatch { width: 26px; height: 26px; border-radius: 7px; cursor: pointer; border: 2px solid transparent; }
 .color-swatch.selected { border-color: var(--indigo-deep); box-shadow: 0 0 0 2px #fff inset; }
 .modal-actions { display: flex; gap: 8px; margin-top: 24px; justify-content: flex-end; }
+/* Multi-user: toast & conflict dialog */
+.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--indigo-deep); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 70; box-shadow: 0 8px 24px rgba(20,25,45,0.3); max-width: calc(100vw - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.conflict-list { max-height: 50vh; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+.conflict-item { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #FAFBFD; }
+.conflict-ctx { font-size: 12px; color: var(--ink-soft); }
+.conflict-field { font-weight: 700; color: var(--indigo-deep); margin: 2px 0 6px; }
+.conflict-opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; cursor: pointer; font-size: 13px; }
+.conflict-opt input { margin-top: 3px; }
 @media (max-width: 720px) {
   .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
   .row-label { width: 160px; min-width: 160px; max-width: 160px; }
@@ -240,7 +249,33 @@ let loadedOk = {};         // หมวดไหนโหลดจากเซ�
 let serverModified = {};   // เวอร์ชัน lastModified ของแต่ละหมวดบนเซิร์ฟเวอร์
 let pendingSave = false;   // มีการบันทึกรอคิวอยู่หรือไม่
 function can(type) { return ALLOWED.includes(type); }
-function applyLoaded(res) { state = res.state; loadedOk = res.okMap; serverModified = res.modMap; }
+let baseSnapshot = {};     // ข้อมูลของแต่ละหมวด ณ ตอนที่โหลด/บันทึกล่าสุด (ใช้เทียบตอนรวมข้อมูล)
+let settingsBase = null;   // ค่าตั้งค่า (สี/ช่วงวันที่/แท็บ) ณ ตอนโหลด/บันทึกล่าสุด
+let settingsBaseModified = 0;
+let unsavedChanges = false; // มีการแก้ไขที่ยังบันทึกไม่สำเร็จ
+const POLL_MS = 5000;       // เช็กการอัปเดตจากผู้ใช้อื่นทุก 5 วินาที (ไม่ควรต่ำกว่า 3000)
+
+function applyLoaded(res) {
+  state = res.state;
+  loadedOk = res.okMap;
+  serverModified = res.modMap;
+  baseSnapshot = res.rawMap;
+  settingsBase = pickSettings(state);
+  settingsBaseModified = Math.max(0, ...Object.values(res.modMap));
+}
+
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+window.addEventListener('beforeunload', (e) => {
+  if (unsavedChanges || isSaving) { e.preventDefault(); e.returnValue = ''; }
+});
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
 let userScale = 1.0; 
@@ -308,11 +343,12 @@ async function doLogin() {
   init();
 }
 
-async function secureFetch(url) {
+async function secureFetch(url, params = {}) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 20000); 
   try {
-    const response = await fetch(`${url}?token=${encodeURIComponent(API_TOKEN)}`, { signal: controller.signal });
+    const qs = new URLSearchParams({ ...params, token: API_TOKEN }).toString();
+    const response = await fetch(`${url}?${qs}`, { signal: controller.signal });
     const data = await response.json();
     if (data.error) throw new Error(data.error);
     return data;
@@ -345,28 +381,28 @@ async function securePost(url, dataPayload, force = false, baseModified) {
 }
 
 async function loadUnifiedState() {
-  let allProjects = [];
-  let latestMod = 0;
-  let settingsSource = null;
-  const okMap = {}, modMap = {};
-  const sources = [['work', URLS.work], ['extra', URLS.extra], ['personal', URLS.personal]];
+  const order = ['work', 'extra', 'personal'].filter(can);
+  // โหลดทุกหมวดพร้อมกัน (เร็วกว่าโหลดทีละหมวด)
+  const results = await Promise.all(order.map(t =>
+    secureFetch(URLS[t]).then(d => ({ ok: true, d }), e => ({ ok: false, e }))));
 
-  for (const [type, url] of sources) {
-    if (!can(type)) continue;
-    try {
-      const data = await secureFetch(url);
-      okMap[type] = true;
-      modMap[type] = data.lastModified || 0;
-      (data.projects || []).forEach(p => { p.sourceType = type; allProjects.push(p); });
-      if ((data.lastModified || 0) >= latestMod) {
-        latestMod = data.lastModified || 0;
-        if (data.colors || data.viewRange || data.overviewSettings) settingsSource = data;
-      }
-    } catch (e) {
-      okMap[type] = false;
-      console.warn('โหลดหมวด ' + type + ' ไม่สำเร็จ:', e);
+  let allProjects = [], latestMod = 0, settingsSource = null;
+  const okMap = {}, modMap = {}, rawMap = {};
+
+  order.forEach((type, i) => {
+    const r = results[i];
+    if (!r.ok) { okMap[type] = false; console.warn('โหลดหมวด ' + type + ' ไม่สำเร็จ:', r.e); return; }
+    const data = r.d;
+    okMap[type] = true;
+    modMap[type] = data.lastModified || 0;
+    data.projects = normalizeProjects(data.projects, type);
+    rawMap[type] = clone(data);                 // snapshot ไว้ใช้เทียบตอนรวมข้อมูล
+    allProjects.push(...data.projects);
+    if (modMap[type] >= latestMod) {
+      latestMod = modMap[type];
+      if (data.colors || data.viewRange || data.overviewSettings) settingsSource = data;
     }
-  }
+  });
 
   const def = defaultState();
   const base = {
@@ -379,68 +415,283 @@ async function loadUnifiedState() {
   base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
   base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
 
-  base.projects.forEach(p => {
+  return { state: base, okMap, modMap, rawMap, complete: order.every(t => okMap[t]) };
+}
+
+// ==========================================
+// --- MULTI-USER MERGE (รวมการแก้ไขจากหลายคน) ---
+// ==========================================
+const CAT_LABELS = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
+const SETTING_KEYS = ['colors', 'viewRange', 'overviewSettings'];
+const FIELD_LABELS = { label: 'ชื่อกิจกรรม', dates: 'ช่วงวันที่', color: 'สี', remark: 'หมายเหตุ', completed: 'สถานะ', type: 'ประเภท', name: 'ชื่อ', note: 'บันทึกรายละเอียดโครงการ' };
+
+function clone(v) { return v === undefined ? undefined : JSON.parse(JSON.stringify(v)); }
+function isObj(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return a == null && b == null;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((x, i) => deepEqual(x, b[i]));
+  }
+  if (isObj(a) && isObj(b)) {
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    for (const k of keys) if (!deepEqual(a[k], b[k])) return false;
+    return true;
+  }
+  return false;
+}
+function pickSettings(s) { const o = {}; SETTING_KEYS.forEach(k => { o[k] = clone(s[k]); }); return o; }
+
+function normalizeProjects(list, type) {
+  list = Array.isArray(list) ? list : [];
+  list.forEach(p => {
+    p.sourceType = type;
     if (!p.color) p.color = '#3A2E6E';
     if (!Array.isArray(p.departments)) p.departments = [];
-    p.departments.forEach(d => (d.rows || []).forEach((r, idx) => { if (!r.name) r.name = `แถว ${idx + 1}`; }));
+    p.departments.forEach(d => {
+      if (!Array.isArray(d.rows)) d.rows = [];
+      d.rows.forEach((r, idx) => {
+        if (!r.name) r.name = `แถว ${idx + 1}`;
+        if (!Array.isArray(r.activities)) r.activities = [];
+      });
+    });
   });
+  return list;
+}
 
-  return { state: base, okMap, modMap, complete: ALLOWED.every(t => okMap[t]) };
+function isIdArray(...arrs) {
+  return arrs.every(a => a == null || (Array.isArray(a) && a.every(x => isObj(x) && x.id !== undefined)));
+}
+function itemName(x) { return (x && (x.name || x.label)) || '(ไม่มีชื่อ)'; }
+const rangeOf = o => (o && o.start !== undefined) ? [o.start, o.end] : undefined;
+
+// รวมข้อมูล 3 ชุด: b = ตอนที่โหลดมา, m = ของฉัน, t = ของบนเซิร์ฟเวอร์ (คนอื่นแก้)
+function merge3(b, m, t, path, ctx, res, conflicts) {
+  if (deepEqual(m, t)) return clone(m);
+  if (deepEqual(b, m)) return clone(t);      // ฉันไม่ได้แก้ -> ใช้ของคนอื่น
+  if (deepEqual(b, t)) return clone(m);      // คนอื่นไม่ได้แก้ -> ใช้ของฉัน
+  if (Array.isArray(m) && Array.isArray(t) && isIdArray(b, m, t))
+    return mergeIdArray(Array.isArray(b) ? b : [], m, t, path, ctx, res, conflicts);
+  if (isObj(m) && isObj(t)) return mergeObj(isObj(b) ? b : {}, m, t, path, ctx, res, conflicts);
+  // แก้ค่าเดียวกันทั้งสองฝั่ง -> ชนกันจริง
+  if (conflicts) conflicts.push({ path, ctx: ctx.slice(), field: path.split('/').pop(), mine: clone(m), theirs: clone(t) });
+  return clone(res[path] === 'theirs' ? t : m);
+}
+
+function mergeObj(b, m, t, path, ctx, res, conflicts) {
+  const out = {};
+  const keys = new Set([...Object.keys(b), ...Object.keys(m), ...Object.keys(t)]);
+  if (keys.has('start') || keys.has('end')) {
+    // วันเริ่ม-วันสิ้นสุดต้องไปด้วยกัน กันไม่ให้ได้ช่วงวันที่ผิด
+    const r = merge3(rangeOf(b), rangeOf(m), rangeOf(t), path + '/dates', ctx, res, conflicts);
+    if (r) { out.start = r[0]; out.end = r[1]; }
+    keys.delete('start'); keys.delete('end');
+  }
+  for (const k of keys) {
+    const v = merge3(b[k], m[k], t[k], path + '/' + k, ctx, res, conflicts);
+    if (v !== undefined) out[k] = v;
+  }
+  return out;
+}
+
+function mergeIdArray(b, m, t, path, ctx, res, conflicts) {
+  const toMap = arr => new Map(arr.map(x => [x.id, x]));
+  const bm = toMap(b), mm = toMap(m), tm = toMap(t);
+  const merged = new Map();
+  for (const id of new Set([...mm.keys(), ...tm.keys()])) {
+    const bi = bm.get(id), mi = mm.get(id), ti = tm.get(id);
+    if (mi && ti) merged.set(id, merge3(bi, mi, ti, path + '/' + id, ctx.concat(itemName(mi)), res, conflicts));
+    else if (mi) { if (!(bi && deepEqual(bi, mi))) merged.set(id, clone(mi)); }  // คนอื่นลบ: ลบตาม เว้นแต่ฉันแก้ไว้
+    else { if (!(bi && deepEqual(bi, ti))) merged.set(id, clone(ti)); }          // ฉันลบ: ลบตาม เว้นแต่คนอื่นแก้ไว้
+  }
+  // ลำดับ: ถ้าฉันเรียงใหม่ใช้ลำดับของฉัน ไม่งั้นใช้ลำดับของคนอื่น
+  const common = ids => ids.filter(id => mm.has(id) && tm.has(id) && bm.has(id));
+  const mineReordered = !deepEqual(common(b.map(x => x.id)), common(m.map(x => x.id)));
+  const primary = mineReordered ? m : t, secondary = mineReordered ? t : m;
+  const out = [], seen = new Set();
+  primary.forEach(x => { if (merged.has(x.id) && !seen.has(x.id)) { out.push(merged.get(x.id)); seen.add(x.id); } });
+  secondary.forEach((x, i) => {
+    if (seen.has(x.id) || !merged.has(x.id)) return;
+    let pos = 0;
+    for (let j = i - 1; j >= 0; j--) {
+      const k = out.findIndex(o => o.id === secondary[j].id);
+      if (k >= 0) { pos = k + 1; break; }
+    }
+    out.splice(pos, 0, merged.get(x.id)); seen.add(x.id);
+  });
+  return out;
+}
+
+function fmtConflictVal(field, v) {
+  if (v === undefined || v === null || v === '') return '<i style="color:#98A2B8">(ว่าง / ถูกลบ)</i>';
+  if (field === 'dates' && Array.isArray(v)) return escapeHTML(formatDateThai(dateFromIndex(v[0])) + ' – ' + formatDateThai(dateFromIndex(v[1])));
+  if (field === 'color' && typeof v === 'string') return `<span style="display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;background:${escapeHTML(v)}"></span> ${escapeHTML(v)}`;
+  if (typeof v === 'boolean') return v ? '✅ เสร็จแล้ว' : '⬜ ยังไม่เสร็จ';
+  if (field === 'type') return v === 'task' ? '🎯 กำหนดการที่ต้องทำให้เสร็จ' : '📝 บันทึก/กิจกรรมทั่วไป';
+  if (field === 'note') {
+    const txt = (new DOMParser().parseFromString(String(v), 'text/html').body.textContent || '').trim();
+    return escapeHTML(txt.length > 150 ? txt.slice(0, 150) + '…' : (txt || '(ว่าง)'));
+  }
+  return escapeHTML(typeof v === 'object' ? JSON.stringify(v) : String(v));
+}
+
+function askConflictResolution(type, conflicts) {
+  return new Promise(resolve => {
+    modalOpen = true;
+    const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+    const modal = document.createElement('div'); modal.className = 'modal'; modal.style.maxWidth = '640px';
+    const items = conflicts.map((c, i) => `
+      <div class="conflict-item">
+        <div class="conflict-ctx">${escapeHTML(c.ctx.join(' › ') || 'ข้อมูลโครงการ')}</div>
+        <div class="conflict-field">${escapeHTML(FIELD_LABELS[c.field] || c.field)}</div>
+        <label class="conflict-opt"><input type="radio" name="cf_${i}" value="mine" checked><span><b>ของฉัน:</b> ${fmtConflictVal(c.field, c.mine)}</span></label>
+        <label class="conflict-opt"><input type="radio" name="cf_${i}" value="theirs"><span><b>ของผู้ใช้อื่น:</b> ${fmtConflictVal(c.field, c.theirs)}</span></label>
+      </div>`).join('');
+    modal.innerHTML = `
+      <h3>⚠️ แก้ไขตรงกันกับผู้ใช้อื่น (${escapeHTML(CAT_LABELS[type] || type)})</h3>
+      <p class="modal-desc">การแก้ไขส่วนอื่นถูกรวมให้อัตโนมัติแล้ว เหลือ ${conflicts.length} รายการที่คุณและผู้ใช้อื่นแก้ไม่ตรงกัน กรุณาเลือกค่าที่จะเก็บไว้</p>
+      <div class="conflict-list">${items}</div>
+      <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+        <button class="ghost-btn" id="cfAllMine">เลือกของฉันทั้งหมด</button>
+        <button class="ghost-btn" id="cfAllTheirs">เลือกของผู้ใช้อื่นทั้งหมด</button>
+      </div>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="cfCancel">ยกเลิกการบันทึก</button>
+        <button class="primary-btn" id="cfOk">บันทึกตามที่เลือก</button>
+      </div>`;
+    overlay.appendChild(modal); document.body.appendChild(overlay);
+    const setAll = v => modal.querySelectorAll(`input[type=radio][value="${v}"]`).forEach(r => { r.checked = true; });
+    modal.querySelector('#cfAllMine').onclick = () => setAll('mine');
+    modal.querySelector('#cfAllTheirs').onclick = () => setAll('theirs');
+    modal.querySelector('#cfCancel').onclick = () => { closeModal(overlay); resolve(null); };
+    modal.querySelector('#cfOk').onclick = () => {
+      const res = {};
+      conflicts.forEach((c, i) => {
+        const r = modal.querySelector(`input[name="cf_${i}"]:checked`);
+        res[c.path] = r ? r.value : 'mine';
+      });
+      closeModal(overlay); resolve(res);
+    };
+  });
+}
+
+async function mergeWithServer(type, sub, theirsRaw) {
+  const theirs = clone(theirsRaw);
+  theirs.projects = normalizeProjects(theirs.projects, type);
+  const base = baseSnapshot[type] || { projects: [] };
+
+  // รอบแรก: หาจุดที่ชนกันจริง
+  const conflicts = [];
+  merge3(base.projects, sub.projects, theirs.projects, 'projects', [], {}, conflicts);
+  let res = {};
+  if (conflicts.length) {
+    res = await askConflictResolution(type, conflicts);
+    if (!res) throw new Error('ยกเลิกการบันทึก การแก้ไขของคุณยังไม่ถูกบันทึก');
+  }
+  // รอบสอง: รวมตามที่ผู้ใช้เลือก
+  const projects = merge3(base.projects, sub.projects, theirs.projects, 'projects', [], res, null) || [];
+  const merged = { lastModified: Math.max(Date.now(), (theirs.lastModified || 0) + 1), projects };
+  SETTING_KEYS.forEach(k => {
+    const mineChanged = !deepEqual(sub[k], settingsBase[k]);
+    const theirsNewer = (theirs.lastModified || 0) > settingsBaseModified && theirs[k];
+    merged[k] = clone(!mineChanged && theirsNewer ? theirs[k] : sub[k]);
+  });
+  return { merged, conflictCount: conflicts.length };
+}
+
+function setTypeProjects(type, list) {
+  const order = ['work', 'extra', 'personal'];
+  const byType = {};
+  order.forEach(t => { byType[t] = state.projects.filter(p => (p.sourceType || 'work') === t); });
+  byType[type] = list;
+  state.projects = order.flatMap(t => byType[t]);
+}
+
+function applyMergedLocally(type, sub, merged) {
+  // ถ้าผู้ใช้แก้อะไรเพิ่มระหว่างรอเซิร์ฟเวอร์ ให้นำมาวางต่อบนผลที่รวมแล้ว
+  const current = clone(state.projects.filter(p => (p.sourceType || 'work') === type));
+  const rebased = merge3(sub.projects, current, merged.projects, 'projects', [], {}, null) || [];
+  setTypeProjects(type, rebased);
+  SETTING_KEYS.forEach(k => { if (deepEqual(state[k], sub[k])) state[k] = clone(merged[k]); });
 }
 
 async function saveState() {
   if (isSaving) { pendingSave = true; return; }   // อย่าทิ้ง ให้เข้าคิวไว้
   isSaving = true;
+  unsavedChanges = true;
   const setStatus = (html) => {
     const el = document.querySelector('.brand-sub');
     if (el) el.innerHTML = 'ระบบรวม · ' + html;
   };
-  const LABELS = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
   setStatus('<span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>');
+  let autoMerged = false, resolvedCount = 0;
 
   try {
     state.lastModified = Date.now();
+    const settingsChanged = !deepEqual(pickSettings(state), settingsBase);
 
     for (const type of ['personal', 'work', 'extra']) {
       if (!can(type)) continue;   // ไม่มีสิทธิ์หมวดนี้ ข้ามไป
       if (!loadedOk[type]) {
-        throw new Error(`ข้อมูล ${LABELS[type]} โหลดไม่สำเร็จ จึงไม่บันทึกทับ กรุณารีเฟรชหน้า`);
+        throw new Error(`ข้อมูล ${CAT_LABELS[type]} โหลดไม่สำเร็จ จึงไม่บันทึกทับ กรุณารีเฟรชหน้า`);
       }
 
-      const sub = JSON.parse(JSON.stringify(state));
+      let sub = clone(state);
       sub.projects = state.projects.filter(p => (p.sourceType || 'work') === type);
 
+      // หมวดที่ไม่มีอะไรเปลี่ยน ไม่ต้องส่ง (ลดโอกาสชนกับคนอื่น)
+      if (!settingsChanged && baseSnapshot[type] && deepEqual(sub.projects, baseSnapshot[type].projects)) continue;
+
       let res = await securePost(URLS[type], sub, false, serverModified[type]);
-
-      if (res.error === 'Conflict') {
-        const reload = confirm(`⚠️ มีคนแก้ไขข้อมูล ${LABELS[type]} ก่อนหน้าคุณ!\n\nกด OK เพื่อดึงข้อมูลล่าสุด (การแก้ไขของคุณที่ยังไม่บันทึกจะหาย)\nกด Cancel เพื่อบังคับบันทึกทับ`);
-        if (reload) {
-          applyLoaded(await loadUnifiedState());
-          pendingSave = false;
-          render();
-          setStatus('<span style="color:#FBBF24">🔄 ดึงข้อมูลล่าสุดแล้ว</span>');
-          return;
+      let tries = 0;
+      while (res.error === 'Conflict' && tries < 3) {
+        tries++;
+        setStatus('<span style="color:#FBBF24">🔀 กำลังรวมการแก้ไขกับผู้ใช้อื่น...</span>');
+        const theirs = await secureFetch(URLS[type]);
+        const { merged, conflictCount } = await mergeWithServer(type, sub, theirs);
+        res = await securePost(URLS[type], merged, false, theirs.lastModified || 0);
+        if (!res.error) {
+          applyMergedLocally(type, sub, merged);
+          sub = merged;
+          autoMerged = true;
+          resolvedCount += conflictCount;
         }
-        res = await securePost(URLS[type], sub, true);
       }
+      if (res.error === 'Conflict') throw new Error(`ข้อมูล ${CAT_LABELS[type]} ถูกแก้ไขพร้อมกันหลายครั้ง กรุณาลองอีกครั้ง`);
+      if (res.error) throw new Error(CAT_LABELS[type] + ': ' + res.error);
 
-      if (res.error) throw new Error(LABELS[type] + ': ' + res.error);
       serverModified[type] = sub.lastModified;   // จำเวอร์ชันใหม่ไว้ใช้ครั้งถัดไป
+      baseSnapshot[type] = clone(sub);
     }
 
+    settingsBase = pickSettings(state);
+    settingsBaseModified = Math.max(settingsBaseModified, ...Object.values(serverModified));
+    unsavedChanges = false;
+
+    if (autoMerged) {
+      reRenderWithScroll();
+      showToast(resolvedCount
+        ? `🔀 รวมการแก้ไขกับผู้ใช้อื่นแล้ว (เลือกเอง ${resolvedCount} รายการ)`
+        : '🔀 รวมการแก้ไขของคุณกับผู้ใช้อื่นให้อัตโนมัติแล้ว');
+    }
     setStatus('<span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>');
   } catch (e) {
-    setStatus('<span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + '</span>');
+    setStatus('<span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + ' (จะลองใหม่เมื่อแก้ไขครั้งถัดไป)</span>');
   } finally {
     isSaving = false;
     if (pendingSave) { pendingSave = false; saveState(); }
   }
 }
 
-async function persistAndRender() { render(); await saveState(); }
+async function persistAndRender() { reRenderWithScroll(); await saveState(); }
 
 let isPolling = false; 
  
+function editorFocused() {
+  return !!(window.tinymce && tinymce.activeEditor && tinymce.activeEditor.hasFocus());
+}
+
 async function init() {
   applyLoaded(await loadUnifiedState());
   if (!ALLOWED.every(t => loadedOk[t])) {
@@ -450,23 +701,31 @@ async function init() {
 
   setInterval(async () => {
     if (document.visibilityState !== 'visible') return;
-    if (modalOpen || isSaving || dragMode || isPolling) return;
-    if (window.tinymce && tinymce.activeEditor && tinymce.activeEditor.hasFocus()) return; // กำลังพิมพ์โน้ตอยู่
+    if (modalOpen || isSaving || dragMode || isPolling || editorFocused()) return;
+    const wasIncomplete = !ALLOWED.every(t => loadedOk[t]);
+    if (unsavedChanges && !wasIncomplete) return;   // มีงานที่ยังไม่บันทึก อย่าดึงทับ
     isPolling = true;
     try {
+      if (!wasIncomplete) {
+        // เช็กแบบเบา: ถามแค่เลขเวอร์ชัน ไม่โหลดข้อมูลทั้งไฟล์
+        const vers = await Promise.all(ALLOWED.map(t =>
+          secureFetch(URLS[t], { action: 'version' }).then(r => r.lastModified, () => undefined)));
+        const changed = ALLOWED.some((t, i) =>
+          vers[i] === null || (typeof vers[i] === 'number' && vers[i] !== serverModified[t]));
+        if (!changed) return;
+      }
       const res = await loadUnifiedState();
       if (!res.complete) return;                          // โหลดไม่ครบ ห้ามแทนที่ข้อมูล
-      if (modalOpen || isSaving || dragMode) return;      // ระหว่างรอ ผู้ใช้เริ่มแก้ไขแล้ว
-      const wasIncomplete = !ALLOWED.every(t => loadedOk[t]);
-      if (wasIncomplete || res.state.lastModified !== state.lastModified) {
-        applyLoaded(res);
-        render();
-      }
+      if (modalOpen || isSaving || dragMode || editorFocused()) return;
+      if (unsavedChanges && !wasIncomplete) return;
+      applyLoaded(res);
+      reRenderWithScroll();
+      if (!wasIncomplete) showToast('🔄 มีผู้ใช้อื่นอัปเดตข้อมูล แสดงข้อมูลล่าสุดแล้ว');
     } catch (e) {
     } finally {
       isPolling = false;
     }
-  }, 20000);
+  }, POLL_MS);
 }
 
 function exportBackup() {
@@ -549,13 +808,21 @@ function weekSegmentsBounded(rStart, rEnd) {
 
 function reRenderWithScroll() {
     const el = document.querySelector('.gantt-scroll');
+    let top = 0;
+    const winY = window.scrollY;
     if (el) {
         const { rStart, totalDays } = getRenderBounds();
         const labelW = window.innerWidth <= 720 ? 160 : 220;
         const oldColw = getColWidth(zoom, totalDays);
         lastScrollCenterIdx = rStart + (el.scrollLeft - labelW + el.clientWidth / 2) / oldColw;
+        top = el.scrollTop;
     }
     render();
+    setTimeout(() => {
+        const n = document.querySelector('.gantt-scroll');
+        if (n) n.scrollTop = top;
+        window.scrollTo(0, winY);
+    }, 0);
 }
 
 function render() {
