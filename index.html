@@ -333,42 +333,37 @@ async function loadUnifiedState() {
   try {
     let allProjects = [];
     let latestMod = 0;
+    let settingsSource = null; // เก็บ settings จากเซิร์ฟเวอร์ที่ใหม่สุด
+
+    const consider = (data, type) => {
+      if (!data || !data.projects) return;
+      data.projects.forEach(p => { p.sourceType = type; allProjects.push(p); });
+      if ((data.lastModified || 0) >= latestMod) {
+        latestMod = data.lastModified || 0;
+        if (data.colors || data.viewRange || data.overviewSettings) settingsSource = data;
+      }
+    };
 
     if (APP_MODE === 'work' || APP_MODE === 'all') {
-        try {
-            const dataWork = await secureFetch(URLS.work);
-            if (dataWork && dataWork.projects) {
-                dataWork.projects.forEach(p => { p.sourceType = 'work'; allProjects.push(p); });
-                if (dataWork.lastModified > latestMod) latestMod = dataWork.lastModified;
-            }
-        } catch(e) {}
+      try { consider(await secureFetch(URLS.work), 'work'); } catch(e) {}
     }
-
     if (APP_MODE === 'extra' || APP_MODE === 'all') {
-        try {
-            const dataExtra = await secureFetch(URLS.extra);
-            if (dataExtra && dataExtra.projects) {
-                dataExtra.projects.forEach(p => { p.sourceType = 'extra'; allProjects.push(p); });
-                if (dataExtra.lastModified > latestMod) latestMod = dataExtra.lastModified;
-            }
-        } catch(err) {}
+      try { consider(await secureFetch(URLS.extra), 'extra'); } catch(e) {}
     }
+    try { consider(await secureFetch(URLS.personal), 'personal'); } catch(e) {}
 
-    try {
-        const dataPersonal = await secureFetch(URLS.personal);
-        if (dataPersonal && dataPersonal.projects) {
-            dataPersonal.projects.forEach(p => { p.sourceType = 'personal'; allProjects.push(p); });
-            if (dataPersonal.lastModified > latestMod) latestMod = dataPersonal.lastModified;
-        }
-    } catch(e) {}
-
+    const def = defaultState();
     let base = {
-        lastModified: latestMod || Date.now(),
-        projects: allProjects,
-        colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
-        viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
-        overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
+      lastModified: latestMod || Date.now(),
+      projects: allProjects,
+      colors: (settingsSource && settingsSource.colors && settingsSource.colors.length)
+                ? settingsSource.colors : def.colors,
+      viewRange: (settingsSource && settingsSource.viewRange) || def.viewRange,
+      overviewSettings: (settingsSource && settingsSource.overviewSettings) || def.overviewSettings
     };
+    // กันกรณีข้อมูลเก่าไม่มี tab1/tab2
+    base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
+    base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
 
     base.projects.forEach(p => {
       if (!p.color) p.color = '#3A2E6E';
