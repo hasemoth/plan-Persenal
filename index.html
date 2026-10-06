@@ -62,6 +62,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .zoom-label { font-size: 12.5px; color: var(--ink-soft); padding: 0 6px 0 8px; }
 .zoom-btn { border-radius: 999px; border-color: transparent; padding: 6px 14px; }
 .zoom-btn.active { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
+.zoom-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .today-btn { border-color: var(--line); }
 .filter-controls input[type="date"] { border: none; outline: none; background: transparent; font-family: inherit; font-size: 12.5px; color: var(--ink); cursor: pointer; }
 .legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -253,6 +254,9 @@ let baseSnapshot = {};     // ข้อมูลของแต่ละหม�
 let settingsBase = null;   // ค่าตั้งค่า (สี/ช่วงวันที่/แท็บ) ณ ตอนโหลด/บันทึกล่าสุด
 let settingsBaseModified = 0;
 let unsavedChanges = false; // มีการแก้ไขที่ยังบันทึกไม่สำเร็จ
+let undoStack = [], redoStack = [];  // ประวัติสำหรับ Ctrl+Z / Ctrl+Y
+let lastCommitted = null;             // ภาพข้อมูลล่าสุดที่บันทึกลงประวัติแล้ว
+const MAX_HISTORY = 50;              // ย้อนได้สูงสุด 50 ขั้น
 const POLL_MS = 5000;       // เช็กการอัปเดตจากผู้ใช้อื่นทุก 5 วินาที (ไม่ควรต่ำกว่า 3000)
 
 function applyLoaded(res) {
@@ -262,6 +266,7 @@ function applyLoaded(res) {
   baseSnapshot = res.rawMap;
   settingsBase = pickSettings(state);
   settingsBaseModified = Math.max(0, ...Object.values(res.modMap));
+  lastCommitted = snapshotState();   // ข้อมูลจากผู้อื่นไม่ถือเป็นการกระทำของเรา
 }
 
 function showToast(msg) {
@@ -614,9 +619,83 @@ function applyMergedLocally(type, sub, merged) {
   const rebased = merge3(sub.projects, current, merged.projects, 'projects', [], {}, null) || [];
   setTypeProjects(type, rebased);
   SETTING_KEYS.forEach(k => { if (deepEqual(state[k], sub[k])) state[k] = clone(merged[k]); });
+  lastCommitted = snapshotState();
 }
 
+// ==========================================
+// --- UNDO / REDO (Ctrl+Z / Ctrl+Y) ---
+// ==========================================
+function snapshotState() {
+  return { projects: clone(state.projects), ...pickSettings(state) };
+}
+
+function updateUndoButtons() {
+  const u = document.getElementById('btnUndo'), r = document.getElementById('btnRedo');
+  if (u) { u.disabled = !undoStack.length; u.title = `ย้อนกลับ (Ctrl+Z) · เหลือ ${undoStack.length} ขั้น`; }
+  if (r) { r.disabled = !redoStack.length; r.title = `ทำซ้ำ (Ctrl+Y) · เหลือ ${redoStack.length} ขั้น`; }
+}
+
+// เรียกทุกครั้งก่อนบันทึก: ถ้าข้อมูลเปลี่ยนจากครั้งก่อน ให้เก็บเป็น 1 ขั้นในประวัติ
+function recordHistory() {
+  if (!lastCommitted || !state) return;
+  const now = snapshotState();
+  if (deepEqual(now, lastCommitted)) return;
+  undoStack.push({ before: lastCommitted, after: now });
+  if (undoStack.length > MAX_HISTORY) undoStack.shift();
+  redoStack = [];
+  lastCommitted = now;
+  updateUndoButtons();
+}
+
+function stepHistory(dir) {
+  const from = dir === 'undo' ? undoStack : redoStack;
+  const to = dir === 'undo' ? redoStack : undoStack;
+  if (!state) return;
+  if (!from.length) { showToast(dir === 'undo' ? 'ไม่มีขั้นตอนให้ย้อนกลับ' : 'ไม่มีขั้นตอนให้ทำซ้ำ'); return; }
+
+  const entry = from.pop();
+  const cur = snapshotState();
+  // ย้อนเฉพาะสิ่งที่เราทำ โดยไม่ทับงานที่ผู้อื่นแก้ต่อหลังจากนั้น
+  const [b, m] = dir === 'undo' ? [entry.after, entry.before] : [entry.before, entry.after];
+  const conflicts = [];
+  merge3(b, m, cur, 'h', [], {}, conflicts);
+  const res = {};
+  conflicts.forEach(c => { res[c.path] = 'theirs'; });   // จุดที่ผู้อื่นแก้ต่อแล้ว คงไว้ตามเดิม
+  const merged = merge3(b, m, cur, 'h', [], res, null) || {};
+
+  state.projects = merged.projects || [];
+  SETTING_KEYS.forEach(k => { if (merged[k] !== undefined) state[k] = merged[k]; });
+  to.push(entry);
+  lastCommitted = snapshotState();
+
+  if (view.type === 'project' && !state.projects.some(p => p.id === view.id)) {
+    view = activeMainCat === 'all' ? { type: 'overview' } : { type: 'category_overview', category: activeMainCat };
+  }
+  reRenderWithScroll();
+  const left = dir === 'undo' ? undoStack.length : redoStack.length;
+  showToast((dir === 'undo' ? '↶ ย้อนกลับแล้ว' : '↷ ทำซ้ำแล้ว')
+    + (conflicts.length ? ` (${conflicts.length} จุดที่ผู้อื่นแก้ต่อแล้ว จึงคงไว้)` : '')
+    + ` · เหลือ ${left} ขั้น`);
+  saveState();
+}
+function undo() { stepHistory('undo'); }
+function redo() { stepHistory('redo'); }
+
+document.addEventListener('keydown', (e) => {
+  if (!state || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+  // ใช้ e.code เพื่อให้ทำงานแม้คีย์บอร์ดเป็นภาษาไทย
+  const isUndo = e.code === 'KeyZ' && !e.shiftKey;
+  const isRedo = e.code === 'KeyY' || (e.code === 'KeyZ' && e.shiftKey);
+  if (!isUndo && !isRedo) return;
+  const t = e.target;
+  // ในช่องพิมพ์ข้อความ ให้ใช้ Ctrl+Z ของช่องนั้นตามปกติ
+  if (modalOpen || (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) return;
+  e.preventDefault();
+  if (isUndo) undo(); else redo();
+});
+
 async function saveState() {
+  recordHistory();
   if (isSaving) { pendingSave = true; return; }   // อย่าทิ้ง ให้เข้าคิวไว้
   isSaving = true;
   unsavedChanges = true;
@@ -918,6 +997,13 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
 }
 
 function renderToolbarControls(toolbar) {
+  const hWrap = document.createElement('div'); hWrap.className = 'zoom-controls';
+  hWrap.innerHTML = `<button class="zoom-btn" id="btnUndo">↶ ย้อนกลับ</button><button class="zoom-btn" id="btnRedo">↷ ทำซ้ำ</button>`;
+  hWrap.querySelector('#btnUndo').onclick = undo;
+  hWrap.querySelector('#btnRedo').onclick = redo;
+  toolbar.appendChild(hWrap);
+  setTimeout(updateUndoButtons, 0);
+
   const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls'; zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
   [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([key, txt]) => {
     const b = document.createElement('button'); b.className = 'zoom-btn' + (zoom === key ? ' active' : ''); b.textContent = txt;
