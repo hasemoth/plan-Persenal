@@ -92,6 +92,10 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
 .row-name-cell:last-child { border-bottom: none; }
 .r-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.row-move { display: flex; flex-direction: column; gap: 1px; margin-right: 3px; flex-shrink: 0; }
+.row-move button { width: 14px; height: 13px; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: #fff; color: var(--ink-soft); font-size: 7px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.row-move button:hover:not(:disabled) { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.row-move button:disabled { opacity: 0.3; cursor: default; }
 .row-track { position: relative; display: flex; }
 .hdr-seg { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; overflow: hidden; white-space: nowrap; }
 .year-seg { background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 700; height: 30px; }
@@ -1349,13 +1353,27 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   }
 
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-  dept.rows.forEach(row => {
+  dept.rows.forEach((row, rIdx) => {
     const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; 
+
+    // ปุ่มเลื่อนลำดับแถว ▲▼ (เฉพาะโหมดแก้ไข และมีมากกว่า 1 แถว)
+    if (dragMode && project && dept.rows.length > 1) {
+        const mv = document.createElement('div'); mv.className = 'row-move';
+        const upBtn = document.createElement('button'); upBtn.type = 'button'; upBtn.textContent = '▲'; upBtn.title = 'เลื่อนแถวขึ้น';
+        const downBtn = document.createElement('button'); downBtn.type = 'button'; downBtn.textContent = '▼'; downBtn.title = 'เลื่อนแถวลง';
+        upBtn.disabled = rIdx === 0;
+        downBtn.disabled = rIdx === dept.rows.length - 1;
+        upBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, -1); };
+        downBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, 1); };
+        mv.append(upBtn, downBtn);
+        rCell.appendChild(mv);
+    }
     
     // แสดงชื่อแถว
     const nameSpan = document.createElement('span');
     nameSpan.className = 'r-name-text';
     nameSpan.textContent = row.name;
+    nameSpan.title = row.name;
     rCell.appendChild(nameSpan);
 
     // แก้ไข: เพิ่มปุ่มลบแถว ตรงช่องชื่อแถว ถ้าเปิดโหมดแก้ไข และมีแถวมากกว่า 1
@@ -1864,6 +1882,14 @@ function addDepartment(projectId) { openTextModal('เพิ่มหน่ว�
 function renameDepartment(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); openTextModal('เปลี่ยนชื่อหน่วยงาน', 'ชื่อหน่วยงาน', d.name, async (name) => { if (!name) return; d.name = name; await persistAndRender(); }); }
 function deleteDepartment(projectId, deptId) { openConfirmModal('ลบหน่วยงานนี้?', 'กิจกรรมทั้งหมดในหน่วยงานจะถูกลบ', async () => { state.projects.find(x => x.id === projectId).departments = state.projects.find(x => x.id === projectId).departments.filter(d => d.id !== deptId); await persistAndRender(); }); }
 function addRow(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); d.rows.push(mkRow([], `แถว ${d.rows.length + 1}`)); persistAndRender(); }
+function moveRow(projectId, deptId, rowId, dir) {
+  const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId);
+  const i = d.rows.findIndex(r => r.id === rowId);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= d.rows.length) return;
+  [d.rows[i], d.rows[j]] = [d.rows[j], d.rows[i]];
+  persistAndRender();
+}
 function renameRow(projectId, deptId, rowId) { const r = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId).rows.find(x => x.id === rowId); openTextModal('เปลี่ยนชื่อแถว', 'ชื่อสำหรับแถวนี้', r.name, async (name) => { r.name = name || 'แถว'; await persistAndRender(); }); }
 function deleteRow(projectId, deptId, rowId) { openConfirmModal('ลบแถวนี้?', 'กิจกรรมจะถูกลบ', async () => { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); d.rows = d.rows.filter(r => r.id !== rowId); if (d.rows.length === 0) d.rows.push(mkRow([], 'แถว 1')); await persistAndRender(); }); }
 function openTextModal(title, fieldLabel, initial, onSave) {
