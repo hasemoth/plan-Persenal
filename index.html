@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนการดำเนินงานรวม — กบรส. & PRI & ส่วนตัว (ระบบ Cloud)</title>
+<title>แผนการดำเนินงานรวม (ระบบ Cloud)</title>
 <!-- นำเข้าไลบรารีสำหรับหน้าต่างแก้ไขข้อความแบบ Word -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
@@ -14,6 +14,7 @@
   --indigo: #3A2E6E; --indigo-deep: #241C4D; --indigo-soft: #EDEAFB;
   --line: #E1E4EC; --line-soft: #EEF0F5; --cyan: #22D3EE; --danger: #E23D5B;
   --danger-soft: #FDEAEE; --radius: 10px; --sticky-bg: #FAFBFD;
+  --label-w: 240px; --rown-cur: 96px; /* ความกว้างคอลัมน์ชื่อ (ปรับได้โดยลากขอบหัวตาราง) */
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -37,6 +38,14 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .tab:hover { border-color: var(--indigo); color: var(--indigo); }
 .tab.active { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
 .tab-add { padding: 8px 16px; border-style: dashed; }
+/* แท็บโครงการ: ที่ไม่ได้เปิด = พื้นขาว มีจุดสีประจำโครงการ / ที่เปิดอยู่ = พื้นสีเต็ม ยกขึ้น มีวงแหวนและลูกศรชี้ลง */
+.sub-tabs-bar { padding-top: 8px; padding-bottom: 14px; }
+.proj-tab { background: #fff; color: var(--ink); border-color: var(--line); }
+.proj-tab .proj-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--pc); flex-shrink: 0; }
+.proj-tab:hover { border-color: var(--pc); color: var(--ink); background: #fff; }
+.proj-tab.active { background: var(--pc); border-color: var(--pc); color: #fff; font-weight: 700; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--pc), 0 6px 14px rgba(20,25,45,0.28); }
+.proj-tab.active .proj-dot { background: #fff; }
+.proj-tab.active::after { content: ''; position: absolute; left: 50%; bottom: -9px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--pc); border-bottom: none; }
 .tab-del { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 15px; line-height: 1; padding: 2px 5px; border-radius: 50%; opacity: 0.6; }
 .tab-del:hover { opacity: 1; background: rgba(0,0,0,0.15); }
 .tab-color-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 13px; line-height: 1; padding: 2px 5px; border-radius: 50%; opacity: 0.6; cursor: pointer; }
@@ -75,19 +84,19 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .gantt-scroll { overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); max-height: 72vh; position: relative; }
 .gantt-inner { position: relative; min-width: max-content; }
 .gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
-.gantt-grid-bg { position: absolute; top: 0; bottom: 0; left: 220px; pointer-events: none; z-index: 0; overflow: hidden; }
+.gantt-grid-bg { position: absolute; top: 0; bottom: 0; left: var(--label-w); pointer-events: none; z-index: 0; overflow: hidden; }
 .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line-soft); }
 .weekend-col { position: absolute; top: 0; bottom: 0; background: rgba(100, 110, 130, 0.07); pointer-events: none; z-index: 0; }
 
 .header-row { display: flex; }
-.row-label { position: sticky; left: 0; z-index: 10; width: 220px; min-width: 220px; max-width: 220px; background: #FAFBFD; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-soft); display: flex; align-items: stretch; padding: 0; font-size: 13px; }
+.row-label { position: sticky; left: 0; z-index: 10; width: var(--label-w); min-width: var(--label-w); max-width: var(--label-w); background: #FAFBFD; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line-soft); display: flex; align-items: stretch; padding: 0; font-size: 13px; }
 .corner { z-index: 30; font-weight: 700; color: var(--indigo-deep); background: var(--indigo-soft); border-bottom: 1px solid var(--line); padding: 6px 10px; display: flex; align-items: center; }
 .dept-info { flex: 1; padding: 6px 10px; display: flex; flex-direction: column; justify-content: center; gap: 4px; border-right: 1px solid var(--line-soft); min-width: 0; }
 .dept-name { font-weight: 600; color: var(--ink); line-height: 1.2; word-break: break-word; }
 .dept-ctrls { display: flex; gap: 4px; flex-wrap: wrap; }
 .dept-ctrls .icon-btn { padding: 3px 7px; font-size: 11px; }
 .icon-btn.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
-.dept-row-names { width: 76px; flex-shrink: 0; display: flex; flex-direction: column; background: #FAFAFD; }
+.dept-row-names { width: var(--rown-cur); flex-shrink: 0; display: flex; flex-direction: column; background: #FAFAFD; }
 .row-name-cell { height: 32px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; padding: 0 6px; font-size: 11px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; }
 .row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
 .row-name-cell:last-child { border-bottom: none; }
@@ -96,6 +105,112 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .row-move button { width: 14px; height: 13px; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: #fff; color: var(--ink-soft); font-size: 7px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .row-move button:hover:not(:disabled) { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 .row-move button:disabled { opacity: 0.3; cursor: default; }
+/* --- ซ่อน/แสดงแถว แบบ Excel --- */
+.hidden-strip { display: flex; min-width: max-content; width: 100%; height: 18px; border-bottom: 2px solid var(--line); background: repeating-linear-gradient(135deg, #F1F3F8 0 6px, #E7EAF2 6px 12px); cursor: pointer; }
+.hidden-strip .row-label { background: #EEF1F7; font-size: 11px; color: var(--ink-soft); align-items: center; padding: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 18px; }
+.hidden-strip:hover .row-label { color: var(--indigo); font-weight: 600; background: var(--indigo-soft); }
+.hidden-chip { align-self: flex-start; border: 1px dashed var(--line); background: #fff; color: var(--ink-soft); font-size: 10.5px; padding: 1px 7px; border-radius: 999px; cursor: pointer; font-family: inherit; }
+.hidden-chip:hover { border-color: var(--indigo); color: var(--indigo); }
+.ctx-menu { position: fixed; z-index: 80; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(20,25,45,0.18); padding: 4px; min-width: 190px; font-size: 13px; }
+.ctx-menu button { display: block; width: 100%; text-align: left; border: none; background: transparent; padding: 7px 10px; border-radius: 5px; cursor: pointer; font-family: inherit; font-size: 13px; color: var(--ink); }
+.ctx-menu button:hover:not(:disabled) { background: var(--indigo-soft); color: var(--indigo); }
+.ctx-menu button:disabled { color: #B5BCCB; cursor: default; }
+.ctx-menu hr { border: none; border-top: 1px solid var(--line-soft); margin: 4px 0; }
+/* --- ปรับความกว้างคอลัมน์ชื่อ --- */
+.col-resizer { position: absolute; top: 0; right: -4px; width: 8px; height: 100%; cursor: col-resize; z-index: 40; }
+.col-resizer::after { content: ''; position: absolute; top: 20%; bottom: 20%; left: 3px; width: 2px; border-radius: 2px; background: transparent; }
+.col-resizer:hover::after, body.col-resizing .col-resizer::after { background: var(--indigo); }
+body.col-resizing { cursor: col-resize; user-select: none; }
+/* --- ลากขอบหัวคอลัมน์เวลา เพื่อขยาย/ย่อแบบ Excel --- */
+.hdr-seg { position: relative; }
+.seg-resizer { position: absolute; top: 0; right: 0; width: 7px; height: 100%; cursor: col-resize; z-index: 5; }
+.seg-resizer:hover, body.col-resizing .seg-resizer.active { background: rgba(58,46,110,0.35); }
+.scale-tip { position: fixed; z-index: 90; background: var(--indigo-deep); color: #fff; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; pointer-events: none; transform: translate(10px, -130%); }
+/* --- ค้นหา / กรอง --- */
+.search-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.search-box { position: relative; display: flex; align-items: center; }
+.search-box input { height: 32px; width: 200px; padding: 0 28px 0 30px; border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 13px; background: #fff; }
+.search-box input:focus { outline: 2px solid var(--indigo); outline-offset: 1px; }
+.search-box .s-icon { position: absolute; left: 9px; color: var(--ink-soft); pointer-events: none; font-size: 13px; }
+.search-box .s-clear { position: absolute; right: 4px; width: 22px; height: 22px; border: none; background: transparent; color: var(--ink-soft); cursor: pointer; border-radius: 50%; font-size: 14px; }
+.search-box .s-clear:hover { background: var(--line-soft); }
+.search-count { font-size: 12px; color: var(--ink-soft); }
+.act-dim { opacity: 0.13; filter: grayscale(0.6); }
+.act-hit { outline: 2px solid #F59E0B; outline-offset: 1px; border-radius: 6px; z-index: 3; }
+/* --- ผู้ใช้ / ปุ่มบนแถบด้านบน --- */
+.top-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.top-btn { background: transparent !important; color: #fff !important; border-color: rgba(255,255,255,0.3) !important; }
+.top-btn:hover { background: rgba(255,255,255,0.12) !important; }
+.user-badge { font-size: 12.5px; color: #fff; opacity: 0.9; padding: 0 4px; white-space: nowrap; }
+.edited-by { font-size: 12px; color: var(--ink-soft); margin: -6px 0 10px; }
+/* --- แผงงานที่ต้องจับตา --- */
+.watch-panel { background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+.watch-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.watch-title { font-weight: 700; color: var(--indigo-deep); font-size: 15px; }
+.watch-sub { font-size: 12px; color: var(--ink-soft); font-weight: 400; margin-left: 6px; }
+.watch-toggle { border: none; background: transparent; color: var(--ink-soft); cursor: pointer; font-family: inherit; font-size: 12.5px; padding: 4px 8px; border-radius: 6px; }
+.watch-toggle:hover { background: var(--line-soft); }
+.watch-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.watch-tile { text-align: left; border: 1px solid var(--line); border-left-width: 4px; border-radius: 10px; background: #fff; padding: 10px 12px; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 2px; transition: box-shadow .15s ease; }
+.watch-tile:hover { box-shadow: 0 2px 10px rgba(20,33,58,0.08); }
+.watch-tile .wt-num { font-size: 24px; font-weight: 700; line-height: 1.1; }
+.watch-tile .wt-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.watch-tile .wt-hint { font-size: 11.5px; color: var(--ink-soft); }
+.watch-tile.t-today { border-left-color: #D97706; } .watch-tile.t-today .wt-num { color: #B45309; }
+.watch-tile.t-overdue { border-left-color: #DC2626; } .watch-tile.t-overdue .wt-num { color: #B91C1C; }
+.watch-tile.t-soon { border-left-color: #2563EB; } .watch-tile.t-soon .wt-num { color: #1D4ED8; }
+.watch-tile.t-done { border-left-color: #059669; } .watch-tile.t-done .wt-num { color: #047857; }
+.watch-tile.active { background: var(--indigo-soft); border-color: var(--indigo); }
+.watch-list { margin-top: 12px; border: 1px solid var(--line-soft); border-radius: 10px; overflow: hidden; }
+.watch-item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); cursor: pointer; background: #fff; }
+.watch-item:last-child { border-bottom: none; }
+.watch-item:hover { background: #FAFBFD; }
+.wi-main { flex: 1; min-width: 0; }
+.wi-name { font-weight: 600; font-size: 13.5px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wi-path { font-size: 12px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wi-date { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+.wi-badge { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.wi-badge.b-red { background: #FEE2E2; color: #B91C1C; } .wi-badge.b-amber { background: #FEF3C7; color: #B45309; }
+.wi-badge.b-blue { background: #DBEAFE; color: #1D4ED8; } .wi-badge.b-green { background: #D1FAE5; color: #047857; }
+.wi-done { border: 1px solid #059669; color: #047857; background: #fff; border-radius: 8px; padding: 4px 10px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.wi-done:hover { background: #059669; color: #fff; }
+.watch-empty { padding: 16px; text-align: center; color: var(--ink-soft); font-size: 13px; background: #fff; }
+.watch-more { padding: 8px 12px; font-size: 12px; color: var(--ink-soft); background: #FAFBFD; text-align: center; }
+@media (max-width: 900px) { .watch-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .wi-date { display: none; } }
+/* --- ประวัติการแก้ไข --- */
+.log-modal { max-width: 960px !important; max-height: 88vh; display: flex; flex-direction: column; }
+.log-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.log-tools .text-input { width: auto; flex: 1; min-width: 160px; }
+.log-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px; flex: 1; min-height: 200px; }
+.log-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.log-table th { position: sticky; top: 0; background: var(--indigo-soft); color: var(--indigo-deep); text-align: left; padding: 8px 10px; font-weight: 700; white-space: nowrap; }
+.log-table td { padding: 7px 10px; border-top: 1px solid var(--line-soft); vertical-align: top; }
+.log-table .l-time { white-space: nowrap; color: var(--ink-soft); }
+.log-table .l-path { color: var(--ink-soft); font-size: 11.5px; }
+.log-table .l-from { color: #B91C1C; text-decoration: line-through; }
+.log-table .l-to { color: #047857; font-weight: 600; }
+/* --- บัญชีดูอย่างเดียว (ผู้บริหาร) --- */
+body.ro label:has(#dragModeToggle), body.ro .zoom-controls:has(#btnUndo),
+body.ro .wi-done, body.ro .tab-del, body.ro .tab-add, body.ro .tab-color-btn,
+body.ro .toolbar > .primary-btn, body.ro .proj-title .ghost-btn, body.ro .edit-colors-btn,
+body.ro button[onclick*="importFile"] { display: none !important; }
+body.ro .row-name-cell { cursor: default; }
+.ro-badge { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; }
+/* --- พิมพ์ / PDF --- */
+.print-header { display: none; }
+@page { size: A3 landscape; margin: 10mm; }
+@media print {
+  body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .topbar, .nav-container, .watch-panel, .toast, .ctx-menu, #login-screen { display: none !important; }
+  .toolbar > :not(.proj-title) { display: none !important; }
+  .proj-title button { display: none !important; }
+  .content { padding: 0 !important; }
+  .print-header { display: block; font-size: 11px; color: #555; margin-bottom: 6px; }
+  .gantt-scroll { overflow: visible !important; max-height: none !important; border: none !important; }
+  .row-label, .header-row { position: static !important; }
+  .act-dim { opacity: 1; filter: none; } .act-hit { outline: none; }
+  .dept-ctrls, .row-move, .hidden-chip, .col-resizer, .icon-btn { display: none !important; }
+}
 .row-track { position: relative; display: flex; }
 .hdr-seg { border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; overflow: hidden; white-space: nowrap; }
 .year-seg { background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 700; height: 30px; }
@@ -121,7 +236,7 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 
 .row-del-btn { position: absolute; right: 4px; top: 4px; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--line); color: var(--ink-soft); font-size: 12px; line-height: 1; cursor: pointer; z-index: 4; opacity: 0.5; }
 .row-del-btn:hover { opacity: 1; background: var(--danger); color: #fff; }
-.gantt-grid-overlay { position: absolute; top: 0; bottom: 0; right: 0; left: 220px; pointer-events: none; z-index: 15; }
+.gantt-grid-overlay { position: absolute; top: 0; bottom: 0; right: 0; left: var(--label-w); pointer-events: none; z-index: 15; }
 .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--danger); }
 .today-line::before { content: 'วันนี้'; position: absolute; top: 2px; left: 4px; font-size: 11px; color: var(--danger); font-weight: 700; background: rgba(255,255,255,0.8); padding: 0 4px; border-radius: 4px; }
 .empty-hint { padding: 30px; text-align: center; color: var(--ink-soft); font-size: 13.5px; }
@@ -197,9 +312,6 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 }
 @media (max-width: 720px) {
   .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .row-label { width: 160px; min-width: 160px; max-width: 160px; }
-  .gantt-grid-overlay, .gantt-grid-bg { left: 160px; }
-  .dept-row-names { width: 56px; }
   .row-name-cell { font-size: 10px; padding: 0 4px; }
 }
 </style>
@@ -269,10 +381,14 @@ textarea.text-input { resize: vertical; min-height: 60px; }
         <div class="brand-sub">✅ อัปเดตข้อมูลล่าสุด</div>
       </div>
     </div>
-    <div style="display:flex; gap:8px;">
+    <div class="top-actions">
+      <span class="user-badge" id="userBadge"></span>
+      <button class="ghost-btn top-btn" onclick="openLogModal()">📜 ประวัติการแก้ไข</button>
+      <button class="ghost-btn top-btn" onclick="printView()">🖨 พิมพ์ / PDF</button>
       <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="exportBackup()">📥 สำรองข้อมูล (JSON)</button>
       <button class="ghost-btn" style="background:transparent; color:white; border-color:rgba(255,255,255,0.3);" onclick="document.getElementById('importFile').click()">📤 กู้คืนข้อมูล</button>
       <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
+      <button class="ghost-btn top-btn" onclick="logout()">ออกจากระบบ</button>
     </div>
   </div>
   <div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบ...</div>
@@ -333,6 +449,31 @@ const URLS = {
 let API_TOKEN = ""; 
 let APP_MODE = "all";
 let ALLOWED = [];          // หมวดที่รหัสนี้เข้าได้ เช่น ['work','extra']
+let USER_NAME = '';        // ชื่อผู้ใช้ที่ล็อกอิน (ใช้บันทึกว่าใครแก้)
+let READ_ONLY = false;     // บัญชีดูอย่างเดียว (ผู้บริหาร) ห้ามแก้ไข
+let searchQuery = '';      // คำค้นหากิจกรรม
+let onlyPending = false;   // แสดงเฉพาะงานที่ยังไม่เสร็จ
+let searchHits = 0;        // จำนวนงานที่ตรงกับคำค้นหา (นับตอนวาด)
+let watchTab = 'today';    // แท็บที่เลือกในแผงงานที่ต้องจับตา
+
+// ค่าที่เก็บเฉพาะในเบราว์เซอร์เครื่องนี้ (ไม่กระทบผู้ใช้อื่น)
+function lsGet(k, def) { try { const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); } catch (e) { return def; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+let localHidden = new Set(lsGet('gantt_local_hidden', []));   // ซ่อนเฉพาะเครื่องนี้
+let watchCollapsed = lsGet('gantt_watch_collapsed', false);
+let rowNamesW = lsGet('gantt_rownames_w', 96);                  // ความกว้างคอลัมน์ชื่อแถว
+function isHid(x) { return !!(x && (x.hidden || localHidden.has(x.id))); }
+function saveLocalHidden() { lsSet('gantt_local_hidden', [...localHidden]); }
+
+// ความกว้างคอลัมน์ชื่อ (หน่วยงาน + ชื่อแถว)
+function getRowNamesCur() { return window.innerWidth <= 720 ? Math.round(rowNamesW * 0.6) : rowNamesW; }
+function getLabelW() { return (window.innerWidth <= 720 ? 104 : 144) + getRowNamesCur(); }
+function applyLabelWidth() {
+  document.documentElement.style.setProperty('--rown-cur', getRowNamesCur() + 'px');
+  document.documentElement.style.setProperty('--label-w', getLabelW() + 'px');
+}
+applyLabelWidth();
+window.addEventListener('resize', applyLabelWidth);
 let loadedOk = {};         // หมวดไหนโหลดจากเซิร์ฟเวอร์สำเร็จ
 let serverModified = {};   // เวอร์ชัน lastModified ของแต่ละหมวดบนเซิร์ฟเวอร์
 let pendingSave = false;   // มีการบันทึกรอคิวอยู่หรือไม่
@@ -387,7 +528,7 @@ function seedProject(name, depts, sourceType = 'work') { return { id: uid('proj'
 function defaultState() {
   return { 
     lastModified: Date.now(),
-    projects: [seedProject('โครงการ กบรส. ตัวอย่าง', [ mkDept('หน่วยงาน กบรส.', [mkRow([], 'แถว 1')]) ], 'work')],
+    projects: [seedProject('โครงการ สลส. ตัวอย่าง', [ mkDept('หน่วยงาน สลส.', [mkRow([], 'แถว 1')]) ], 'work')],
     colors: JSON.parse(JSON.stringify(DEFAULT_COLORS)),
     viewRange: { start: dateToInputStr(beDate(2569,1,1)), end: dateToInputStr(beDate(2574,12,31)) },
     overviewSettings: { tab1: { name: '📊 ภาพรวมทั้งหมด', color: '' }, tab2: { name: '🛣️ รายละเอียดภาพรวมโครงการ', color: '' } }
@@ -446,6 +587,11 @@ async function doLogin() {
 
   API_TOKEN = pwd; // ใช้รหัสที่พิมพ์เป็น token ส่งให้เซิร์ฟเวอร์ตรวจทุกครั้ง
   ALLOWED = data.categories;
+  USER_NAME = data.name || 'ผู้ใช้';
+  READ_ONLY = !!data.readOnly;
+  document.body.classList.toggle('ro', READ_ONLY);
+  const badge = document.getElementById('userBadge');
+  if (badge) badge.innerHTML = '👤 ' + escapeHTML(USER_NAME) + (READ_ONLY ? '<span class="ro-badge">ดูอย่างเดียว</span>' : '');
   APP_MODE = data.categories.length > 1 ? 'all' : data.categories[0];
   activeMainCat = APP_MODE === 'all' ? 'all' : APP_MODE;
   view = APP_MODE === 'all'
@@ -535,7 +681,7 @@ async function loadUnifiedState() {
 // ==========================================
 // --- MULTI-USER MERGE (รวมการแก้ไขจากหลายคน) ---
 // ==========================================
-const CAT_LABELS = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
+const CAT_LABELS = { work: 'สลส.', extra: 'PRI', personal: 'ส่วนตัว' };
 const SETTING_KEYS = ['colors', 'viewRange', 'overviewSettings'];
 const FIELD_LABELS = { label: 'ชื่อกิจกรรม', dates: 'ช่วงวันที่', color: 'สี', remark: 'หมายเหตุ', completed: 'สถานะ', type: 'ประเภท', name: 'ชื่อ', note: 'บันทึกรายละเอียดโครงการ' };
 
@@ -596,6 +742,12 @@ function merge3(b, m, t, path, ctx, res, conflicts) {
 function mergeObj(b, m, t, path, ctx, res, conflicts) {
   const out = {};
   const keys = new Set([...Object.keys(b), ...Object.keys(m), ...Object.keys(t)]);
+  if (keys.has('updatedBy') || keys.has('updatedAt')) {
+    // ข้อมูล "แก้ล่าสุดโดย" ใช้ของฝั่งที่แก้ล่าสุด ไม่ต้องถามผู้ใช้
+    const mCh = m.updatedAt !== b.updatedAt, tCh = t.updatedAt !== b.updatedAt;
+    const src = (mCh && tCh) ? ((m.updatedAt || 0) >= (t.updatedAt || 0) ? m : t) : (mCh ? m : t);
+    ['updatedBy', 'updatedAt'].forEach(k => { if (src[k] !== undefined) out[k] = src[k]; keys.delete(k); });
+  }
   if (keys.has('start') || keys.has('end')) {
     // วันเริ่ม-วันสิ้นสุดต้องไปด้วยกัน กันไม่ให้ได้ช่วงวันที่ผิด
     const r = merge3(rangeOf(b), rangeOf(m), rangeOf(t), path + '/dates', ctx, res, conflicts);
@@ -745,8 +897,22 @@ function updateUndoButtons() {
 }
 
 // เรียกทุกครั้งก่อนบันทึก: ถ้าข้อมูลเปลี่ยนจากครั้งก่อน ให้เก็บเป็น 1 ขั้นในประวัติ
+function stampEdits() {
+  // ประทับ "แก้ล่าสุดโดย" ให้กิจกรรมที่เพิ่ม/แก้ไขตั้งแต่บันทึกครั้งก่อน
+  if (!lastCommitted || !USER_NAME) return;
+  const prev = new Map();
+  lastCommitted.projects.forEach(p => (p.departments || []).forEach(d => (d.rows || []).forEach(r => (r.activities || []).forEach(a => prev.set(a.id, a)))));
+  const strip = (a) => { const o = { ...a }; delete o.updatedBy; delete o.updatedAt; return o; };
+  const now = Date.now();
+  state.projects.forEach(p => (p.departments || []).forEach(d => (d.rows || []).forEach(r => (r.activities || []).forEach(a => {
+    const b = prev.get(a.id);
+    if (!b || !deepEqual(strip(a), strip(b))) { a.updatedBy = USER_NAME; a.updatedAt = now; }
+  }))));
+}
+
 function recordHistory() {
   if (!lastCommitted || !state) return;
+  stampEdits();
   const now = snapshotState();
   if (deepEqual(now, lastCommitted)) return;
   undoStack.push({ before: lastCommitted, after: now });
@@ -804,6 +970,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 async function saveState() {
+  if (READ_ONLY) return;   // บัญชีดูอย่างเดียว: ไม่บันทึก
   recordHistory();
   if (isSaving) { pendingSave = true; return; }   // อย่าทิ้ง ให้เข้าคิวไว้
   isSaving = true;
@@ -956,7 +1123,7 @@ function importBackup(event) {
 }
 
 function getColWidth(zoom, totalDays) {
-  const labelW = window.innerWidth <= 720 ? 160 : 220;
+  const labelW = getLabelW();
   const containerWidth = window.innerWidth - 44 - 2 - labelW;
   const minColw = COLW[zoom];
   const requiredWidth = totalDays * minColw;
@@ -1000,7 +1167,7 @@ function reRenderWithScroll() {
     const winY = window.scrollY;
     if (el) {
         const { rStart, totalDays } = getRenderBounds();
-        const labelW = window.innerWidth <= 720 ? 160 : 220;
+        const labelW = getLabelW();
         const oldColw = getColWidth(zoom, totalDays);
         lastScrollCenterIdx = rStart + (el.scrollLeft - labelW + el.clientWidth / 2) / oldColw;
         top = el.scrollTop;
@@ -1015,6 +1182,8 @@ function reRenderWithScroll() {
 
 function render() {
   const app = document.getElementById('app'); 
+  const ae = document.activeElement;
+  const keepSearch = ae && ae.id === 'actSearch' ? ae.selectionStart : null;   // กำลังพิมพ์ค้นหาอยู่
   if (window.tinymce) tinymce.remove();
   const topbarHTML = app.querySelector('.topbar').outerHTML;
   app.innerHTML = '';
@@ -1034,10 +1203,15 @@ function render() {
   else content.appendChild(renderProjectDetail(view.id));
   
   app.appendChild(content);
+  if (keepSearch !== null) {
+    const inp = document.getElementById('actSearch');
+    if (inp) { inp.focus(); try { inp.setSelectionRange(keepSearch, keepSearch); } catch (e) {} }
+  }
+  setTimeout(() => { const c = document.getElementById('searchCount'); if (c) c.textContent = searchQuery || onlyPending ? `พบ ${searchHits} งานในช่วงที่แสดง` : ''; }, 0);
 }
 
 function renderEmptyCategoryState() {
-  const labels = { work: 'กบรส.', extra: 'PRI', personal: 'ส่วนตัว' };
+  const labels = { work: 'สลส.', extra: 'PRI', personal: 'ส่วนตัว' };
   const wrap = document.createElement('div'); wrap.className = 'empty-hint';
   wrap.textContent = `ยังไม่มีโครงการในหมวด "${labels[activeMainCat] || ''}" กดปุ่ม "+ เพิ่มโครงการ" ด้านบนเพื่อเริ่มสร้างโครงการแรก`;
   return wrap;
@@ -1046,7 +1220,7 @@ function renderEmptyCategoryState() {
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
- let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ กบรส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+ let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ สลส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
 
 // ซ่อนหมวดหมู่อื่นๆ หากไม่ได้ล็อกอินด้วยสิทธิ์ 'all'
 const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 'all' : can(cat.key));
@@ -1090,15 +1264,16 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
 
     const filteredProjects = state.projects.filter(p => activeMainCat === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === activeMainCat);
     filteredProjects.forEach(p => {
-      const t = document.createElement('button'); t.className = 'tab' + (view.type === 'project' && view.id === p.id ? ' active' : '');
-      if (p.color) { t.style.backgroundColor = p.color; t.style.borderColor = p.color; t.style.color = '#fff'; }
-      let tagClass = 'work', tagName = 'กบรส.'; if (p.sourceType === 'extra') { tagClass = 'extra'; tagName = 'PRI'; } else if (p.sourceType === 'personal') { tagClass = 'personal'; tagName = 'ส่วนตัว'; }
-      t.innerHTML = `<span>${escapeHTML(p.name)}</span><span class="badge-tag ${tagClass}">${tagName}</span>`;
+      const isActive = view.type === 'project' && view.id === p.id;
+      const t = document.createElement('button'); t.className = 'tab proj-tab' + (isActive ? ' active' : '');
+      t.style.setProperty('--pc', p.color || '#3A2E6E');   // สีประจำโครงการ
+      if (isActive) t.setAttribute('aria-current', 'page');
+      t.innerHTML = `<span class="proj-dot"></span><span>${escapeHTML(p.name)}</span>`;
       t.onclick = () => { view = { type: 'project', id: p.id }; render(); }; t.oncontextmenu = (e) => { e.preventDefault(); openProjectColorModal(p.id); };
       const del = document.createElement('span'); del.className = 'tab-del'; del.textContent = '×'; del.onclick = (e) => { e.stopPropagation(); deleteProject(p.id); };
       t.appendChild(del); subBar.appendChild(t);
     });
-    if (activeMainCat === 'work') { const add = document.createElement('button'); add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการ (กบรส.)'; add.onclick = addProject; subBar.appendChild(add); }
+    if (activeMainCat === 'work') { const add = document.createElement('button'); add.className = 'tab tab-add'; add.textContent = '+ เพิ่มโครงการ (สลส.)'; add.onclick = addProject; subBar.appendChild(add); }
     else if (activeMainCat === 'extra') { const addExtra = document.createElement('button'); addExtra.className = 'tab tab-add'; addExtra.style.borderColor = '#D97706'; addExtra.style.color = '#D97706'; addExtra.textContent = '+ เพิ่มโครงการ PRI'; addExtra.onclick = addExtraProject; subBar.appendChild(addExtra); }
     else if (activeMainCat === 'personal') { const addPersonal = document.createElement('button'); addPersonal.className = 'tab tab-add'; addPersonal.style.borderColor = '#7E22CE'; addPersonal.style.color = '#7E22CE'; addPersonal.textContent = '+ เพิ่มโครงการส่วนตัว'; addPersonal.onclick = addPersonalProject; subBar.appendChild(addPersonal); }
   }
@@ -1106,6 +1281,18 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
 }
 
 function renderToolbarControls(toolbar) {
+  searchHits = 0;
+  const sWrap = document.createElement('div'); sWrap.className = 'search-controls';
+  sWrap.innerHTML = `<div class="search-box"><span class="s-icon">🔍</span><input type="search" id="actSearch" placeholder="ค้นหาชื่องาน / หมายเหตุ" value="${escapeHTML(searchQuery)}" aria-label="ค้นหางาน"><button type="button" class="s-clear" title="ล้างคำค้นหา" aria-label="ล้างคำค้นหา" style="display:${searchQuery ? 'block' : 'none'}">×</button></div>
+    <label class="mode-controls" style="cursor:pointer;"><input type="checkbox" id="onlyPending" ${onlyPending ? 'checked' : ''} style="cursor:pointer; width:15px; height:15px;"><span>เฉพาะงานที่ยังไม่เสร็จ</span></label>
+    <span class="search-count" id="searchCount"></span>`;
+  const sInp = sWrap.querySelector('#actSearch');
+  sInp.oninput = () => { clearTimeout(renderToolbarControls._t); renderToolbarControls._t = setTimeout(() => { searchQuery = sInp.value.trim(); reRenderWithScroll(); }, 250); };
+  sInp.onkeydown = (e) => { if (e.key === 'Escape') { searchQuery = ''; reRenderWithScroll(); } };
+  sWrap.querySelector('.s-clear').onclick = () => { searchQuery = ''; reRenderWithScroll(); };
+  sWrap.querySelector('#onlyPending').onchange = (e) => { onlyPending = e.target.checked; reRenderWithScroll(); };
+  toolbar.appendChild(sWrap);
+
   const hWrap = document.createElement('div'); hWrap.className = 'zoom-controls';
   hWrap.innerHTML = `<button class="zoom-btn" id="btnUndo">↶ ย้อนกลับ</button><button class="zoom-btn" id="btnRedo">↷ ทำซ้ำ</button>`;
   hWrap.querySelector('#btnUndo').onclick = undo;
@@ -1146,7 +1333,7 @@ function scrollToToday() {
     const { rStart, totalDays } = getRenderBounds();
     const colw = getColWidth(zoom, totalDays);
     const todayIdx = todayBangkokIndex();
-    const labelW = window.innerWidth <= 720 ? 160 : 220;
+    const labelW = getLabelW();
     el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + labelW - el.clientWidth / 2);
   });
 }
@@ -1193,6 +1380,7 @@ function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วย
   const header = document.createElement('div'); header.className = 'gantt-header';
 
   const yearRow = document.createElement('div'); yearRow.className = 'header-row year-row'; yearRow.innerHTML = `<div class="row-label corner">${labelText}</div>`;
+  addColResizer(yearRow.querySelector('.row-label'));
   const yTrack = document.createElement('div'); yTrack.className = 'row-track'; yTrack.style.width = totalWidth + 'px';
   years.forEach(y => { const seg = document.createElement('div'); seg.className = 'hdr-seg year-seg'; seg.style.width = ((y.end - y.start + 1) * colw) + 'px'; seg.textContent = 'พ.ศ. ' + y.label; yTrack.appendChild(seg); });
   yearRow.appendChild(yTrack); header.appendChild(yearRow);
@@ -1221,15 +1409,107 @@ function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วย
     }
     dayRow.appendChild(dTrack); header.appendChild(dayRow);
   }
+  addSegResizers(header, colw, rStart);
   return header;
 }
+
+// ==========================================
+// --- ขยาย/ย่อคอลัมน์เวลาแบบ Excel ---
+// ลากขอบขวาของหัวคอลัมน์ (เดือน/สัปดาห์/วัน/ปี) · ดับเบิลคลิก = คืนค่า 100% · Ctrl + ลูกกลิ้งเมาส์ = ซูม
+// ==========================================
+const SCALE_MIN = 0.15, SCALE_MAX = 15;
+
+// เปลี่ยนความกว้างคอลัมน์ โดยให้วันที่ anchorIdx อยู่ที่ตำแหน่งเดิมบนจอ (screenOffset = ระยะจากขอบซ้ายของกล่องตาราง)
+function setScaleAnchored(newScale, anchorIdx, screenOffset) {
+  newScale = Math.max(SCALE_MIN, Math.min(SCALE_MAX, newScale));
+  if (Math.abs(newScale - userScale) < 0.001) return;
+  const el = document.querySelector('.gantt-scroll');
+  const top = el ? el.scrollTop : 0, winY = window.scrollY;
+  userScale = newScale;
+  const { totalDays } = getRenderBounds();
+  const newColw = getColWidth(zoom, totalDays);
+  const cw = el ? el.clientWidth : window.innerWidth;
+  // restoreScrollPosition จะวาง lastScrollCenterIdx ไว้กลางจอ จึงคำนวณจุดกลางที่ทำให้ anchor อยู่ที่เดิม
+  lastScrollCenterIdx = anchorIdx + (cw / 2 - screenOffset) / newColw;
+  render();
+  const n = document.querySelector('.gantt-scroll');
+  if (n) n.scrollTop = top;
+  window.scrollTo(0, winY);
+}
+
+function showScaleTip(x, y) {
+  let tip = document.getElementById('scaleTip');
+  if (!tip) { tip = document.createElement('div'); tip.id = 'scaleTip'; tip.className = 'scale-tip'; document.body.appendChild(tip); }
+  tip.textContent = `ความกว้างช่อง ${Math.round(userScale * 100)}%`;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  clearTimeout(showScaleTip._t);
+  showScaleTip._t = setTimeout(() => tip.remove(), 900);
+}
+
+function addSegResizers(header, colw, rStart) {
+  const rows = header.querySelectorAll('.header-row');
+  const lastRow = rows[rows.length - 1];
+  if (!lastRow) return;
+  lastRow.querySelectorAll('.hdr-seg').forEach(seg => {
+    const h = document.createElement('div'); h.className = 'seg-resizer';
+    h.title = 'ลากเพื่อขยาย/ย่อความกว้างคอลัมน์ · ดับเบิลคลิกเพื่อคืนค่า 100%';
+    const startIdxOf = () => rStart + Math.round(seg.offsetLeft / colw);
+    h.onmousedown = (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const el = document.querySelector('.gantt-scroll');
+      const rect = el.getBoundingClientRect();
+      const segStart = startIdxOf();
+      const segDays = Math.max(1, Math.round(seg.offsetWidth / colw));
+      const startScale = userScale, startW = segDays * colw, startX = e.clientX;
+      const screenOffset = seg.getBoundingClientRect().left - rect.left;   // ขอบซ้ายของคอลัมน์นี้ค้างอยู่ที่เดิม
+      document.body.classList.add('col-resizing');
+      h.classList.add('active');
+      let pending = null, raf = 0;
+      const move = (ev) => {
+        const newW = Math.max(6, startW + (ev.clientX - startX));
+        pending = startScale * newW / startW;
+        showScaleTip(ev.clientX, ev.clientY);
+        if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (pending !== null) setScaleAnchored(pending, segStart, screenOffset); showScaleTip(ev.clientX, ev.clientY); });
+      };
+      const up = () => {
+        document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
+        document.body.classList.remove('col-resizing');
+      };
+      document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+    };
+    h.ondblclick = (e) => {
+      e.stopPropagation();
+      const el = document.querySelector('.gantt-scroll');
+      setScaleAnchored(1, startIdxOf(), seg.getBoundingClientRect().left - el.getBoundingClientRect().left);
+    };
+    seg.appendChild(h);
+  });
+}
+
+// Ctrl + ลูกกลิ้งเมาส์บนตาราง = ซูมเข้า/ออก ตรงตำแหน่งเมาส์ (เหมือน Excel)
+document.addEventListener('wheel', (e) => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  const el = e.target.closest && e.target.closest('.gantt-scroll');
+  if (!el || modalOpen) return;
+  e.preventDefault();
+  const rect = el.getBoundingClientRect();
+  const { rStart, totalDays } = getRenderBounds();
+  const colw = getColWidth(zoom, totalDays);
+  const offset = e.clientX - rect.left;
+  const x = offset + el.scrollLeft - getLabelW();
+  if (x < 0) return;   // อยู่บนคอลัมน์ชื่อ ไม่ต้องซูม
+  const anchorIdx = rStart + x / colw;
+  const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+  setScaleAnchored(userScale * factor, anchorIdx, offset);
+  showScaleTip(e.clientX, e.clientY);
+}, { passive: false });
 
 function restoreScrollPosition(rStart, colw) {
     if (lastScrollCenterIdx !== null) {
         setTimeout(() => {
             const el = document.querySelector('.gantt-scroll');
             if (el) {
-                const labelW = window.innerWidth <= 720 ? 160 : 220;
+                const labelW = getLabelW();
                 el.scrollLeft = Math.max(0, (lastScrollCenterIdx - rStart) * colw + labelW - el.clientWidth / 2);
                 lastScrollCenterIdx = null;
             }
@@ -1261,7 +1541,14 @@ function renderProjectDetail(projectId) {
   
   const body = document.createElement('div'); body.className = 'gantt-body';
 
-  project.departments.forEach((dept, index) => { body.appendChild(buildDeptBlock(project, dept, index, project.departments.length, colw, totalWidth, rStart, rEnd)); });
+  let hiddenRun = [];
+  const flushHidden = () => { if (hiddenRun.length) { body.appendChild(buildHiddenDeptStrip(project, hiddenRun)); hiddenRun = []; } };
+  project.departments.forEach((dept, index) => {
+    if (isHid(dept)) { hiddenRun.push(dept); return; }   // หน่วยงานที่ซ่อน: ไม่วาด แต่แสดงแถบบอกตำแหน่งแทน
+    flushHidden();
+    body.appendChild(buildDeptBlock(project, dept, index, project.departments.length, colw, totalWidth, rStart, rEnd));
+  });
+  flushHidden();
   if (project.departments.length === 0) { const empty = document.createElement('div'); empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีหน่วยงานในโครงการนี้'; body.appendChild(empty); }
   inner.appendChild(body);
 
@@ -1296,6 +1583,8 @@ function renderProjectDetail(projectId) {
           menubar: 'file edit view insert format tools table',
           branding: false,
           promotion: false,
+          readonly: READ_ONLY,
+          ...(READ_ONLY ? { toolbar: false, menubar: false, statusbar: false } : {}),
           setup: function (editor) {
               editor.on('init', function() {
                   editor.setContent(project.note || '');
@@ -1352,17 +1641,36 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
     ctrls.append(moveUpBtn, moveDownBtn, addRowBtn, renameDeptBtn, delDeptBtn); deptInfo.appendChild(ctrls);
   }
 
+  // --- ซ่อน/แสดง แบบ Excel ---
+  const visRows = dept.rows.filter(r => !isHid(r));
+  const hiddenRowCount = dept.rows.length - visRows.length;
+  const deptCtrls = deptInfo.querySelector('.dept-ctrls');
+  if (deptCtrls) {
+    const hideDeptBtn = document.createElement('button'); hideDeptBtn.className = 'icon-btn'; hideDeptBtn.textContent = 'ซ่อน'; hideDeptBtn.title = 'ซ่อนหน่วยงานนี้';
+    hideDeptBtn.onclick = () => setDeptHidden(project.id, dept.id, true);
+    deptCtrls.appendChild(hideDeptBtn);
+  }
+  if (hiddenRowCount > 0) {
+    const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'hidden-chip';
+    chip.textContent = `ซ่อนอยู่ ${hiddenRowCount} แถว · แสดง`;
+    chip.title = 'แสดง: ' + dept.rows.filter(r => isHid(r)).map(r => r.name).join(', ');
+    chip.onclick = (e) => { e.stopPropagation(); unhideAllRows(project.id, dept.id); };
+    deptInfo.appendChild(chip);
+  }
+  deptInfo.oncontextmenu = (e) => { e.preventDefault(); openDeptMenu(e, project, dept); };
+
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
   dept.rows.forEach((row, rIdx) => {
+    if (isHid(row)) return;   // แถวที่ซ่อน: ไม่วาด
     const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; 
 
     // ปุ่มเลื่อนลำดับแถว ▲▼ (เฉพาะโหมดแก้ไข และมีมากกว่า 1 แถว)
-    if (dragMode && project && dept.rows.length > 1) {
+    if (dragMode && project && visRows.length > 1) {
         const mv = document.createElement('div'); mv.className = 'row-move';
         const upBtn = document.createElement('button'); upBtn.type = 'button'; upBtn.textContent = '▲'; upBtn.title = 'เลื่อนแถวขึ้น';
         const downBtn = document.createElement('button'); downBtn.type = 'button'; downBtn.textContent = '▼'; downBtn.title = 'เลื่อนแถวลง';
-        upBtn.disabled = rIdx === 0;
-        downBtn.disabled = rIdx === dept.rows.length - 1;
+        upBtn.disabled = row === visRows[0];
+        downBtn.disabled = row === visRows[visRows.length - 1];
         upBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, -1); };
         downBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, 1); };
         mv.append(upBtn, downBtn);
@@ -1390,13 +1698,14 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
         rCell.appendChild(delRowBtn);
     }
     
+    rCell.oncontextmenu = (e) => { e.preventDefault(); openRowMenu(e, project, dept, row); };
     rCell.onclick = () => renameRow(project.id, dept.id, row.id); 
     rowNamesCol.appendChild(rCell);
   });
   labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); block.appendChild(labelCol);
 
   const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-  dept.rows.forEach(row => { rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
+  dept.rows.forEach(row => { if (isHid(row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
   block.appendChild(rowsWrap); return block;
 }
 
@@ -1436,7 +1745,11 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.style.width = 'max-content';
   bar.style.minWidth = actWidth + 'px';
   bar.style.maxWidth = spaceToNext + 'px'; 
-  bar.title = `${prefix}${act.label}${statusText}${act.remark ? '\n📝 หมายเหตุ: ' + act.remark : ''}`;
+  bar.title = `${prefix}${act.label}${statusText}${act.remark ? '\n📝 หมายเหตุ: ' + act.remark : ''}${act.updatedBy ? '\n✎ แก้ล่าสุดโดย ' + act.updatedBy + ' · ' + fmtDateTime(act.updatedAt) : ''}`;
+  const fState = activityFilterState(act);
+  if (fState === 'dim') bar.classList.add('act-dim');
+  else if (fState === 'hit') { bar.classList.add('act-hit'); searchHits++; }
+  else if (fState === 'show' && (searchQuery || onlyPending)) searchHits++;
   bar.style.background = 'transparent';
   bar.style.border = 'none'; 
   bar.style.padding = '0';
@@ -1564,12 +1877,12 @@ function renderOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   
   let title = state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ';
-  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ กบรส.';
+  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
   if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend(null, categoryFilter));
+  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -1632,11 +1945,11 @@ function renderOverview(categoryFilter = null) {
 function renderLanesOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   let title = state.overviewSettings.tab2.name || '🛣️ รายละเอียดภาพรวมโครงการ';
-  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ กบรส.';
+  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
   if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(renderLegend(null, categoryFilter));
+  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -1661,21 +1974,21 @@ function renderLanesOverview(categoryFilter = null) {
 
   projectsToRender.forEach(p => {
     const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
-    const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.style.width = '220px'; pLabel.textContent = `📁 ${p.name}`;
+    const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.textContent = `📁 ${p.name}`;
     projHeaderBlock.appendChild(pLabel);
     const pTrackWrap = document.createElement('div'); pTrackWrap.className = 'subrow'; pTrackWrap.style.width = totalWidth + 'px';
     projHeaderBlock.appendChild(pTrackWrap); body.appendChild(projHeaderBlock);
 
-    p.departments.forEach(dept => {
+    p.departments.filter(d => !isHid(d)).forEach(dept => {
       const deptBlock = document.createElement('div'); deptBlock.className = 'dept-block';
       const labelCol = document.createElement('div'); labelCol.className = 'row-label';
       const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name" style="padding-left:10px;">↳ ${escapeHTML(dept.name)}</div>`;
       const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-      dept.rows.forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; rowNamesCol.appendChild(rCell); });
+      dept.rows.filter(r => !isHid(r)).forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; rowNamesCol.appendChild(rCell); });
       labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); deptBlock.appendChild(labelCol);
 
       const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-      dept.rows.forEach(row => {
+      dept.rows.filter(r => !isHid(r)).forEach(row => {
         const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
         row.activities.forEach(act => {
           const bar = createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, row.activities, null, null, null);
@@ -1704,6 +2017,7 @@ function openActivityModal(projectId, deptId, rowId, actId) {
 
   modal.innerHTML = `
     <h3>${existing ? 'แก้ไขกิจกรรม' : 'เพิ่มกิจกรรม'}</h3>
+    ${existing && existing.updatedBy ? `<div class="edited-by">✎ แก้ล่าสุดโดย <b>${escapeHTML(existing.updatedBy)}</b> · ${escapeHTML(fmtDateTime(existing.updatedAt))}</div>` : ''}
     <label class="field-label">ชื่อกิจกรรม</label>
     <input type="text" id="actLabel" class="text-input" value="${existing ? escapeHTML(existing.label) : ''}" placeholder="เช่น ประชุม, รายงาน">
     <label class="field-label">ประเภทกิจกรรม</label>
@@ -1808,7 +2122,7 @@ async function moveDepartmentDown(projectId, deptId) {
   if (idx < p.departments.length - 1) { const temp = p.departments[idx + 1]; p.departments[idx + 1] = p.departments[idx]; p.departments[idx] = temp; await persistAndRender(); }
 }
 function addProject() {
-  openTextModal('เพิ่มโครงการใหม่ (กบรส.)', 'ชื่อโครงการ', '', async (name) => {
+  openTextModal('เพิ่มโครงการใหม่ (สลส.)', 'ชื่อโครงการ', '', async (name) => {
     if (!name) return; const newProj = seedProject(name, [mkDept('หน่วยงานที่ 1', [mkRow([])])], 'work');
     state.projects.push(newProj); activeMainCat = 'work'; view = { type: 'project', id: newProj.id }; await persistAndRender();
   });
@@ -1827,7 +2141,8 @@ function addPersonalProject() {
 }
 function renameProject(id) { const p = state.projects.find(x => x.id === id); openTextModal('เปลี่ยนชื่อโครงการ', 'ชื่อโครงการ', p.name, async (name) => { if (!name) return; p.name = name; await persistAndRender(); }); }
 function deleteProject(id) {
-  openConfirmModal('ลบโครงการนี้?', 'ข้อมูลทั้งหมดจะถูกลบ', async () => {
+  const proj = state.projects.find(p => p.id === id);
+  openTypeConfirmModal('ลบโครงการนี้?', 'หน่วยงาน แถว และกิจกรรมทั้งหมดในโครงการนี้จะถูกลบ (กด Ctrl+Z ย้อนกลับได้ก่อนรีเฟรชหน้า)', proj ? proj.name : '', async () => {
     state.projects = state.projects.filter(p => p.id !== id);
     if (view.type === 'project' && view.id === id) {
       view = activeMainCat === 'all'
@@ -1880,16 +2195,330 @@ function editColorsModal() {
 }
 function addDepartment(projectId) { openTextModal('เพิ่มหน่วยงาน', 'ชื่อหน่วยงาน', '', async (name) => { if (!name) return; state.projects.find(x => x.id === projectId).departments.push(mkDept(name, [mkRow([])])); await persistAndRender(); }); }
 function renameDepartment(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); openTextModal('เปลี่ยนชื่อหน่วยงาน', 'ชื่อหน่วยงาน', d.name, async (name) => { if (!name) return; d.name = name; await persistAndRender(); }); }
-function deleteDepartment(projectId, deptId) { openConfirmModal('ลบหน่วยงานนี้?', 'กิจกรรมทั้งหมดในหน่วยงานจะถูกลบ', async () => { state.projects.find(x => x.id === projectId).departments = state.projects.find(x => x.id === projectId).departments.filter(d => d.id !== deptId); await persistAndRender(); }); }
+function deleteDepartment(projectId, deptId) { const dd = findDept(projectId, deptId); openTypeConfirmModal('ลบหน่วยงานนี้?', 'แถวและกิจกรรมทั้งหมดในหน่วยงานนี้จะถูกลบ (กด Ctrl+Z ย้อนกลับได้ก่อนรีเฟรชหน้า)', dd ? dd.name : '', async () => { state.projects.find(x => x.id === projectId).departments = state.projects.find(x => x.id === projectId).departments.filter(d => d.id !== deptId); await persistAndRender(); }); }
 function addRow(projectId, deptId) { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); d.rows.push(mkRow([], `แถว ${d.rows.length + 1}`)); persistAndRender(); }
 function moveRow(projectId, deptId, rowId, dir) {
   const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId);
   const i = d.rows.findIndex(r => r.id === rowId);
-  const j = i + dir;
+  let j = i + dir;
+  while (j >= 0 && j < d.rows.length && isHid(d.rows[j])) j += dir;   // ข้ามแถวที่ซ่อน
   if (i < 0 || j < 0 || j >= d.rows.length) return;
   [d.rows[i], d.rows[j]] = [d.rows[j], d.rows[i]];
   persistAndRender();
 }
+// ==========================================
+// --- ซ่อน/แสดง หน่วยงานและแถว (แบบ Excel) ---
+// ==========================================
+function findDept(projectId, deptId) { return state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); }
+function findProjectDepts(projectId) { return state.projects.find(x => x.id === projectId).departments; }
+// local = true: ซ่อนเฉพาะในเครื่องนี้ (ไม่บันทึกขึ้นเซิร์ฟเวอร์ ไม่กระทบผู้ใช้อื่น)
+function setRowHidden(projectId, deptId, rowId, hidden, local = false) {
+  const d = findDept(projectId, deptId);
+  const r = d.rows.find(x => x.id === rowId);
+  if (hidden && d.rows.filter(x => !isHid(x)).length <= 1) { showToast('ต้องเหลืออย่างน้อย 1 แถว ถ้าต้องการซ่อนทั้งหมด ให้ซ่อนหน่วยงานแทน'); return; }
+  if (local) { localHidden.add(r.id); saveLocalHidden(); reRenderWithScroll(); return; }
+  if (hidden) r.hidden = true; else delete r.hidden;
+  persistAndRender();
+}
+function setDeptHidden(projectId, deptId, hidden, local = false) {
+  const d = findDept(projectId, deptId);
+  if (local) { localHidden.add(d.id); saveLocalHidden(); reRenderWithScroll(); return; }
+  if (hidden) d.hidden = true; else delete d.hidden;
+  persistAndRender();
+}
+// แสดงกลับ: ล้างทั้งการซ่อนให้ทุกคน และการซ่อนเฉพาะเครื่องนี้
+function unhideItems(items) {
+  let shared = false;
+  items.forEach(x => { if (x.hidden) { delete x.hidden; shared = true; } localHidden.delete(x.id); });
+  saveLocalHidden();
+  if (shared) persistAndRender(); else reRenderWithScroll();
+}
+function unhideAllRows(projectId, deptId) { unhideItems(findDept(projectId, deptId).rows); }
+function unhideDepts(projectId, deptIds) { unhideItems(findProjectDepts(projectId).filter(d => deptIds.includes(d.id))); }
+function unhideEverything(projectId) {
+  const depts = findProjectDepts(projectId);
+  unhideItems(depts.concat(depts.flatMap(d => d.rows)));
+}
+
+function buildHiddenDeptStrip(project, depts) {
+  const strip = document.createElement('div'); strip.className = 'hidden-strip';
+  strip.title = 'คลิกเพื่อแสดง: ' + depts.map(d => d.name).join(', ');
+  const lbl = document.createElement('div'); lbl.className = 'row-label';
+  lbl.textContent = `▸ ซ่อนอยู่ ${depts.length} หน่วยงาน (${depts.map(d => d.name).join(', ')}) · คลิกเพื่อแสดง`;
+  strip.appendChild(lbl);
+  strip.onclick = () => unhideDepts(project.id, depts.map(d => d.id));
+  return strip;
+}
+
+function closeCtxMenu() { const m = document.getElementById('ctxMenu'); if (m) m.remove(); }
+function showCtxMenu(e, items) {
+  closeCtxMenu();
+  const menu = document.createElement('div'); menu.className = 'ctx-menu'; menu.id = 'ctxMenu';
+  items.forEach(it => {
+    if (it === '-') { menu.appendChild(document.createElement('hr')); return; }
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = it.label; b.disabled = !!it.disabled;
+    b.onclick = (ev) => { ev.stopPropagation(); closeCtxMenu(); it.action(); };
+    menu.appendChild(b);
+  });
+  document.body.appendChild(menu);
+  const r = menu.getBoundingClientRect();
+  menu.style.left = Math.max(8, Math.min(e.clientX, window.innerWidth - r.width - 8)) + 'px';
+  menu.style.top = Math.max(8, Math.min(e.clientY, window.innerHeight - r.height - 8)) + 'px';
+}
+document.addEventListener('click', closeCtxMenu);
+document.addEventListener('scroll', closeCtxMenu, true);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCtxMenu(); });
+
+function openRowMenu(e, project, dept, row) {
+  const visible = dept.rows.filter(r => !isHid(r)).length;
+  const hiddenRows = dept.rows.length - visible;
+  showCtxMenu(e, [
+    { label: `ซ่อนแถว "${row.name}" (ทุกคน)`, disabled: visible <= 1, action: () => setRowHidden(project.id, dept.id, row.id, true) },
+    { label: 'ซ่อนแถวนี้เฉพาะในเครื่องของฉัน', disabled: visible <= 1, action: () => setRowHidden(project.id, dept.id, row.id, true, true) },
+    { label: hiddenRows ? `แสดงแถวที่ซ่อน (${hiddenRows})` : 'แสดงแถวที่ซ่อน', disabled: !hiddenRows, action: () => unhideAllRows(project.id, dept.id) },
+    '-',
+    { label: `ซ่อนหน่วยงาน "${dept.name}" (ทุกคน)`, action: () => setDeptHidden(project.id, dept.id, true) },
+    { label: 'ซ่อนหน่วยงานนี้เฉพาะในเครื่องของฉัน', action: () => setDeptHidden(project.id, dept.id, true, true) },
+    { label: 'แสดงทั้งหมดในโครงการนี้', action: () => unhideEverything(project.id) }
+  ]);
+}
+function openDeptMenu(e, project, dept) {
+  const hiddenRows = dept.rows.filter(r => isHid(r)).length;
+  showCtxMenu(e, [
+    { label: `ซ่อนหน่วยงาน "${dept.name}" (ทุกคน)`, action: () => setDeptHidden(project.id, dept.id, true) },
+    { label: 'ซ่อนหน่วยงานนี้เฉพาะในเครื่องของฉัน', action: () => setDeptHidden(project.id, dept.id, true, true) },
+    { label: hiddenRows ? `แสดงแถวที่ซ่อน (${hiddenRows})` : 'แสดงแถวที่ซ่อน', disabled: !hiddenRows, action: () => unhideAllRows(project.id, dept.id) },
+    '-',
+    { label: 'แสดงทั้งหมดในโครงการนี้', action: () => unhideEverything(project.id) }
+  ]);
+}
+
+// ==========================================
+// --- ฟังก์ชันใหม่: ค้นหา, แผงงาน, ประวัติ, พิมพ์, ลบแบบพิมพ์ยืนยัน ---
+// ==========================================
+function fmtDateTime(t) {
+  if (!t) return '';
+  const d = new Date(t);
+  if (isNaN(d)) return String(t);
+  const p = n => String(n).padStart(2, '0');
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Bangkok', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(d);
+  const g = k => (parts.find(x => x.type === k) || {}).value;
+  return `${g('day')}/${g('month')}/${Number(g('year')) + 543} ${g('hour')}:${g('minute')} น.`;
+}
+
+// 'show' = แสดงปกติ, 'hit' = ตรงคำค้นหา (เน้น), 'dim' = ไม่ตรงเงื่อนไข (ทำจาง)
+function activityFilterState(act) {
+  if (!searchQuery && !onlyPending) return 'show';
+  if (onlyPending && (act.type !== 'task' || act.completed)) return 'dim';
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    const text = ((act.label || '') + ' ' + (act.remark || '')).toLowerCase();
+    return text.includes(q) ? 'hit' : 'dim';
+  }
+  return 'show';
+}
+
+// --- ลากปรับความกว้างคอลัมน์ชื่อ (เก็บเฉพาะเครื่องนี้) ---
+function addColResizer(cell) {
+  if (!cell) return;
+  const h = document.createElement('div'); h.className = 'col-resizer'; h.title = 'ลากเพื่อปรับความกว้างคอลัมน์ชื่อ · ดับเบิลคลิกเพื่อคืนค่าเดิม';
+  h.onmousedown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const startX = e.clientX, startW = rowNamesW, mobileK = window.innerWidth <= 720 ? 0.6 : 1;
+    document.body.classList.add('col-resizing');
+    const move = (ev) => { rowNamesW = Math.max(50, Math.min(320, Math.round(startW + (ev.clientX - startX) / mobileK))); applyLabelWidth(); };
+    const up = () => {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
+      document.body.classList.remove('col-resizing'); lsSet('gantt_rownames_w', rowNamesW); reRenderWithScroll();
+    };
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  };
+  h.ondblclick = (e) => { e.stopPropagation(); rowNamesW = 96; lsSet('gantt_rownames_w', rowNamesW); applyLabelWidth(); reRenderWithScroll(); };
+  cell.appendChild(h);
+}
+
+// --- แผงงานที่ต้องจับตา ---
+function collectTasks(categoryFilter) {
+  const out = [];
+  state.projects.forEach(p => {
+    const cat = p.sourceType || 'work';
+    if (categoryFilter && cat !== categoryFilter) return;
+    (p.departments || []).forEach(d => (d.rows || []).forEach(r => (r.activities || []).forEach(a => {
+      if (a.type === 'task') out.push({ a, p, d, r });
+    })));
+  });
+  return out;
+}
+
+function buildWatchPanel(categoryFilter) {
+  const today = todayBangkokIndex();
+  const tdy = dateFromIndex(today);
+  const monthStart = indexFromDate(new Date(Date.UTC(tdy.getUTCFullYear(), tdy.getUTCMonth(), 1)));
+  const monthEnd = indexFromDate(new Date(Date.UTC(tdy.getUTCFullYear(), tdy.getUTCMonth() + 1, 0)));
+  const tasks = collectTasks(categoryFilter);
+  const groups = {
+    today:   tasks.filter(x => !x.a.completed && x.a.start <= today && x.a.end >= today).sort((a, b) => a.a.end - b.a.end),
+    overdue: tasks.filter(x => !x.a.completed && x.a.end < today).sort((a, b) => a.a.end - b.a.end),
+    soon:    tasks.filter(x => !x.a.completed && x.a.start > today && x.a.start <= today + 7).sort((a, b) => a.a.start - b.a.start),
+    done:    tasks.filter(x => x.a.completed && x.a.end >= monthStart && x.a.end <= monthEnd).sort((a, b) => b.a.end - a.a.end)
+  };
+  const META = {
+    today:   { cls: 't-today',   label: 'งานที่ต้องดำเนินการ', hint: 'อยู่ในช่วงวันที่ของวันนี้ แต่ยังไม่เสร็จ' },
+    overdue: { cls: 't-overdue', label: 'เลยกำหนด',            hint: 'เลยวันสิ้นสุดแล้ว แต่ยังไม่เสร็จ' },
+    soon:    { cls: 't-soon',    label: 'จะเริ่มภายใน 7 วัน',     hint: 'เตรียมการล่วงหน้า' },
+    done:    { cls: 't-done',    label: 'เสร็จแล้วเดือนนี้',       hint: 'ครบกำหนดในเดือนนี้และเสร็จแล้ว' }
+  };
+
+  const panel = document.createElement('div'); panel.className = 'watch-panel';
+  const head = document.createElement('div'); head.className = 'watch-head';
+  head.innerHTML = `<div class="watch-title">📋 งานที่ต้องจับตา<span class="watch-sub">ข้อมูล ณ ${formatDateThai(tdy)} · นับเฉพาะ "กำหนดการที่ต้องทำให้เสร็จ"</span></div>`;
+  const tog = document.createElement('button'); tog.type = 'button'; tog.className = 'watch-toggle';
+  tog.textContent = watchCollapsed ? `แสดง ▾  (ต้องดำเนินการ ${groups.today.length} · เลยกำหนด ${groups.overdue.length})` : 'ย่อ ▴';
+  tog.onclick = () => { watchCollapsed = !watchCollapsed; lsSet('gantt_watch_collapsed', watchCollapsed); reRenderWithScroll(); };
+  head.appendChild(tog); panel.appendChild(head);
+  if (watchCollapsed) return panel;
+
+  const tiles = document.createElement('div'); tiles.className = 'watch-tiles';
+  Object.keys(META).forEach(k => {
+    const t = document.createElement('button'); t.type = 'button';
+    t.className = `watch-tile ${META[k].cls}` + (watchTab === k ? ' active' : '');
+    t.innerHTML = `<span class="wt-num">${groups[k].length}</span><span class="wt-label">${META[k].label}</span><span class="wt-hint">${META[k].hint}</span>`;
+    t.onclick = () => { watchTab = k; reRenderWithScroll(); };
+    tiles.appendChild(t);
+  });
+  panel.appendChild(tiles);
+
+  const list = document.createElement('div'); list.className = 'watch-list';
+  const items = groups[watchTab] || [];
+  if (!items.length) {
+    const emptyMsg = { today: 'ไม่มีงานที่ต้องดำเนินการวันนี้', overdue: 'ไม่มีงานที่เลยกำหนด 👍', soon: 'ไม่มีงานที่จะเริ่มภายใน 7 วัน', done: 'ยังไม่มีงานที่เสร็จในเดือนนี้' };
+    list.innerHTML = `<div class="watch-empty">${emptyMsg[watchTab]}</div>`;
+  }
+  const LIMIT = 30;
+  items.slice(0, LIMIT).forEach(({ a, p, d, r }) => {
+    let badge = '';
+    if (watchTab === 'overdue') badge = `<span class="wi-badge b-red">เลย ${today - a.end} วัน</span>`;
+    else if (watchTab === 'today') badge = a.end === today ? `<span class="wi-badge b-red">ครบกำหนดวันนี้</span>` : `<span class="wi-badge b-amber">เหลือ ${a.end - today} วัน</span>`;
+    else if (watchTab === 'soon') badge = `<span class="wi-badge b-blue">อีก ${a.start - today} วัน</span>`;
+    else badge = `<span class="wi-badge b-green">เสร็จแล้ว</span>`;
+    const row = document.createElement('div'); row.className = 'watch-item'; row.title = 'คลิกเพื่อเปิดงานนี้';
+    row.innerHTML = `<div class="wi-main"><div class="wi-name">${escapeHTML(a.label)}</div><div class="wi-path">${escapeHTML(p.name)} › ${escapeHTML(d.name)} › ${escapeHTML(r.name)}${a.updatedBy ? ' · แก้ล่าสุดโดย ' + escapeHTML(a.updatedBy) : ''}</div></div>
+      <span class="wi-date">${formatDateThai(dateFromIndex(a.start))} – ${formatDateThai(dateFromIndex(a.end))}</span>${badge}`;
+    if (watchTab !== 'done') {
+      const doneBtn = document.createElement('button'); doneBtn.type = 'button'; doneBtn.className = 'wi-done'; doneBtn.textContent = '✓ เสร็จแล้ว';
+      doneBtn.onclick = (e) => { e.stopPropagation(); a.completed = true; persistAndRender(); showToast(`ทำเครื่องหมาย "${a.label}" ว่าเสร็จแล้ว (กด Ctrl+Z เพื่อย้อนกลับ)`); };
+      row.appendChild(doneBtn);
+    }
+    row.onclick = () => {
+      activeMainCat = p.sourceType || 'work';   // ไปที่หมวดของโครงการนั้น เพื่อให้เห็นแท็บโครงการ
+      view = { type: 'project', id: p.id }; render();
+      openActivityModal(p.id, d.id, r.id, a.id);
+    };
+    list.appendChild(row);
+  });
+  if (items.length > LIMIT) {
+    const more = document.createElement('div'); more.className = 'watch-more';
+    more.textContent = `และอีก ${items.length - LIMIT} งาน`;
+    list.appendChild(more);
+  }
+  panel.appendChild(list);
+  return panel;
+}
+
+// --- ประวัติการแก้ไข ---
+async function openLogModal() {
+  modalOpen = true;
+  const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+  const modal = document.createElement('div'); modal.className = 'modal log-modal';
+  const curProject = view.type === 'project' ? state.projects.find(p => p.id === view.id) : null;
+  modal.innerHTML = `<h3>📜 ประวัติการแก้ไข</h3>
+    <p class="modal-desc">บันทึกอัตโนมัติทุกครั้งที่มีการแก้ไข ว่าใครแก้อะไร เมื่อไร (แสดง 300 รายการล่าสุดต่อหมวด)</p>
+    <div class="log-tools">
+      <input type="search" class="text-input" id="logSearch" placeholder="ค้นหา ชื่อผู้แก้ / งาน / หน่วยงาน">
+      <select class="text-input" id="logProject" style="flex:0 1 260px;"><option value="">ทุกโครงการ</option></select>
+    </div>
+    <div class="log-wrap"><div class="watch-empty" id="logBody">⏳ กำลังโหลดประวัติ...</div></div>
+    <div class="modal-actions"><button class="ghost-btn" id="logClose">ปิด</button></div>`;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  modal.querySelector('#logClose').onclick = () => closeModal(overlay);
+  overlay.onclick = (e) => { if (e.target === overlay) closeModal(overlay); };
+
+  const results = await Promise.all(ALLOWED.map(t => secureFetch(URLS[t], { action: 'log', limit: 300 }).then(r => r.entries || [], () => null)));
+  let entries = results.filter(Boolean).flat().sort((a, b) => (b.time || 0) - (a.time || 0));
+  const failed = results.some(r => r === null);
+  const wrap = modal.querySelector('.log-wrap');
+  const sel = modal.querySelector('#logProject');
+  const names = [...new Set(entries.map(e => e.project).filter(Boolean))].sort();
+  names.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o); });
+  if (curProject && names.includes(curProject.name)) sel.value = curProject.name;
+
+  const draw = () => {
+    const q = modal.querySelector('#logSearch').value.trim().toLowerCase();
+    const pj = sel.value;
+    const list = entries.filter(e => (!pj || e.project === pj) &&
+      (!q || [e.user, e.action, e.project, e.dept, e.row, e.item, e.before, e.after].join(' ').toLowerCase().includes(q)));
+    if (!entries.length) {
+      wrap.innerHTML = `<div class="watch-empty">${failed ? 'โหลดประวัติไม่สำเร็จ หรือ Apps Script ยังไม่ได้อัปเดตเป็นเวอร์ชันใหม่' : 'ยังไม่มีประวัติการแก้ไข (จะเริ่มบันทึกหลังอัปเดต Apps Script)'}</div>`;
+      return;
+    }
+    if (!list.length) { wrap.innerHTML = '<div class="watch-empty">ไม่พบรายการที่ตรงกับเงื่อนไข</div>'; return; }
+    wrap.innerHTML = `<table class="log-table"><thead><tr><th>เวลา</th><th>ผู้แก้ไข</th><th>การกระทำ</th><th>รายการ</th><th>การเปลี่ยนแปลง</th></tr></thead><tbody>${
+      list.map(e => {
+        const path = [e.project, e.dept, e.row].filter(Boolean).map(escapeHTML).join(' › ');
+        const change = (e.before !== '' && e.before != null ? `<span class="l-from">${escapeHTML(e.before)}</span> → ` : '') + (e.after !== '' && e.after != null ? `<span class="l-to">${escapeHTML(e.after)}</span>` : '');
+        return `<tr><td class="l-time">${escapeHTML(fmtDateTime(e.time))}</td><td>${escapeHTML(e.user)}</td><td>${escapeHTML(e.action)}</td>
+          <td>${e.item ? `<b>${escapeHTML(e.item)}</b><br>` : ''}<span class="l-path">${path}</span></td>
+          <td>${e.field ? `<span class="l-path">${escapeHTML(e.field)}:</span> ` : ''}${change}</td></tr>`;
+      }).join('')}</tbody></table>`;
+  };
+  modal.querySelector('#logSearch').oninput = draw;
+  sel.onchange = draw;
+  draw();
+}
+
+// --- พิมพ์ / บันทึกเป็น PDF ---
+function printView() {
+  const inner = document.querySelector('.gantt-inner');
+  const scroll = document.querySelector('.gantt-scroll');
+  if (!inner || !scroll) { window.print(); return; }
+  let hdr = document.querySelector('.print-header');
+  if (!hdr) { hdr = document.createElement('div'); hdr.className = 'print-header'; scroll.parentNode.insertBefore(hdr, scroll); }
+  hdr.textContent = `พิมพ์เมื่อ ${fmtDateTime(Date.now())}${USER_NAME ? ' โดย ' + USER_NAME : ''} · ช่วงที่แสดง ${formatDateThai(inputStrToDate(state.viewRange.start))} – ${formatDateThai(inputStrToDate(state.viewRange.end))}`;
+  const pageW = 1512;   // ความกว้างที่พิมพ์ได้ของ A3 แนวนอน (px โดยประมาณ)
+  const scale = Math.min(1, pageW / inner.scrollWidth);
+  scroll.style.zoom = scale;
+  const restore = () => { scroll.style.zoom = ''; window.removeEventListener('afterprint', restore); };
+  window.addEventListener('afterprint', restore);
+  setTimeout(() => { window.print(); setTimeout(restore, 1000); }, 50);
+}
+
+// --- ลบแบบต้องพิมพ์ชื่อยืนยัน ---
+function openTypeConfirmModal(title, desc, expected, onConfirm) {
+  modalOpen = true;
+  const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+  const modal = document.createElement('div'); modal.className = 'modal';
+  modal.innerHTML = `<h3>${escapeHTML(title)}</h3><p class="modal-desc">${escapeHTML(desc)}</p>
+    <label class="field-label" for="typeConfirm">พิมพ์ <b style="color:var(--danger)">${escapeHTML(expected)}</b> เพื่อยืนยันการลบ</label>
+    <input type="text" id="typeConfirm" class="text-input" autocomplete="off">
+    <div class="modal-actions" id="modalActions"></div>`;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  const input = modal.querySelector('#typeConfirm');
+  const actions = modal.querySelector('#modalActions');
+  const okBtn = document.createElement('button'); okBtn.className = 'danger-btn'; okBtn.textContent = 'ลบถาวร'; okBtn.disabled = true; okBtn.style.opacity = '0.5';
+  input.oninput = () => { const ok = input.value.trim() === String(expected).trim(); okBtn.disabled = !ok; okBtn.style.opacity = ok ? '1' : '0.5'; };
+  okBtn.onclick = async () => { if (okBtn.disabled) return; closeModal(overlay); await onConfirm(); };
+  input.onkeydown = (e) => { if (e.key === 'Enter') okBtn.click(); };
+  actions.appendChild(okBtn);
+  const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
+  setTimeout(() => input.focus(), 0);
+}
+
+function logout() {
+  if ((unsavedChanges || isSaving) && !confirm('ยังมีการแก้ไขที่บันทึกไม่สำเร็จ ต้องการออกจากระบบหรือไม่?')) return;
+  unsavedChanges = false; isSaving = false;
+  location.reload();
+}
+
 function renameRow(projectId, deptId, rowId) { const r = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId).rows.find(x => x.id === rowId); openTextModal('เปลี่ยนชื่อแถว', 'ชื่อสำหรับแถวนี้', r.name, async (name) => { r.name = name || 'แถว'; await persistAndRender(); }); }
 function deleteRow(projectId, deptId, rowId) { openConfirmModal('ลบแถวนี้?', 'กิจกรรมจะถูกลบ', async () => { const d = state.projects.find(x => x.id === projectId).departments.find(x => x.id === deptId); d.rows = d.rows.filter(r => r.id !== rowId); if (d.rows.length === 0) d.rows.push(mkRow([], 'แถว 1')); await persistAndRender(); }); }
 function openTextModal(title, fieldLabel, initial, onSave) {
@@ -1909,6 +2538,74 @@ function openConfirmModal(title, desc, onConfirm) {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function closeModal(overlay) { modalOpen = false; overlay.remove(); }
+
+// ==========================================
+// --- บัญชีดูอย่างเดียว: ล็อกทุกฟังก์ชันที่แก้ข้อมูล ---
+// (เซิร์ฟเวอร์ก็ปฏิเสธการบันทึกของบัญชีนี้อีกชั้นหนึ่ง)
+// ==========================================
+(function lockForReadOnly() {
+  const roToast = () => showToast('บัญชีนี้ดูได้อย่างเดียว ไม่สามารถแก้ไขได้');
+  const blocked = ['addProject', 'addExtraProject', 'addPersonalProject', 'deleteProject', 'renameProject',
+    'openProjectColorModal', 'openOverviewSettingsModal', 'editColorsModal', 'addDepartment', 'renameDepartment',
+    'deleteDepartment', 'moveDepartmentUp', 'moveDepartmentDown', 'addRow', 'deleteRow', 'moveRow', 'importBackup', 'undo', 'redo'];
+  blocked.forEach(n => {
+    const f = window[n]; if (typeof f !== 'function') return;
+    window[n] = function (...a) { if (READ_ONLY) { roToast(); return; } return f.apply(this, a); };
+  });
+  // คลิกชื่อแถว / คลิกพื้นที่ว่าง: ไม่ต้องเตือนทุกครั้ง
+  const _renameRow = window.renameRow;
+  window.renameRow = function (...a) { if (READ_ONLY) return; return _renameRow.apply(this, a); };
+  // บันทึกแล้ววาดใหม่: บัญชีดูอย่างเดียววาดใหม่อย่างเดียว (เช่น เปลี่ยนช่วงวันที่ดูเฉพาะเครื่องนี้)
+  const _persist = window.persistAndRender;
+  window.persistAndRender = async function () { if (READ_ONLY) { reRenderWithScroll(); return; } return _persist(); };
+  // ซ่อนแถว/หน่วยงาน: บัญชีดูอย่างเดียวซ่อนได้เฉพาะในเครื่องของตัวเอง
+  const _setRowHidden = window.setRowHidden, _setDeptHidden = window.setDeptHidden, _unhide = window.unhideItems;
+  window.setRowHidden = function (pid, did, rid, hidden) { return _setRowHidden(pid, did, rid, hidden, READ_ONLY ? true : arguments[4]); };
+  window.setDeptHidden = function (pid, did, hidden) { return _setDeptHidden(pid, did, hidden, READ_ONLY ? true : arguments[3]); };
+  window.unhideItems = function (items) {
+    if (!READ_ONLY) return _unhide(items);
+    items.forEach(x => localHidden.delete(x.id)); saveLocalHidden(); reRenderWithScroll();
+    if (items.some(x => x.hidden)) showToast('บางรายการถูกซ่อนโดยผู้แก้ไข จึงแสดงไม่ได้');
+  };
+  // เมนูคลิกขวา: ไม่แสดงตัวเลือกที่กระทบผู้อื่น
+  const _menu = window.showCtxMenu;
+  window.showCtxMenu = function (e, items) {
+    if (READ_ONLY) items = items.filter(it => it === '-' || !/ทุกคน|แสดงทั้งหมดในโครงการ/.test(it.label));
+    return _menu(e, items);
+  };
+  // หน้าต่างกิจกรรม: เปิดดูรายละเอียดได้ แต่แก้ไม่ได้ / เพิ่มใหม่ไม่ได้
+  const _openAct = window.openActivityModal;
+  window.openActivityModal = function (pid, did, rid, aid) {
+    if (READ_ONLY && !aid) return;
+    _openAct(pid, did, rid, aid);
+    if (!READ_ONLY) return;
+    const modals = document.querySelectorAll('.modal-overlay .modal');
+    const modal = modals[modals.length - 1]; if (!modal) return;
+    const h = modal.querySelector('h3'); if (h) h.textContent = 'รายละเอียดกิจกรรม';
+    modal.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+    modal.querySelectorAll('.color-swatch').forEach(el => { el.style.pointerEvents = 'none'; });
+    const actions = modal.querySelector('#modalActions');
+    if (actions) {
+      actions.innerHTML = '';
+      const c = document.createElement('button'); c.className = 'ghost-btn'; c.textContent = 'ปิด';
+      c.onclick = () => closeModal(modal.closest('.modal-overlay')); actions.appendChild(c);
+    }
+  };
+})();
+
+// ==========================================
+// --- ลิงก์เข้าระบบอัตโนมัติ: https://.../#k=รหัสผ่าน ---
+// (ส่วนหลัง # ไม่ถูกส่งไปที่เซิร์ฟเวอร์ GitHub และจะถูกลบออกจากแถบที่อยู่ทันที)
+// ==========================================
+(function autoLoginFromLink() {
+  const m = location.hash.match(/[#&]k=([^&]+)/);
+  if (!m) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  const inp = document.getElementById('tokenInput');
+  if (!inp) return;
+  inp.value = decodeURIComponent(m[1]);
+  doLogin();
+})();
 </script>
 </body>
 </html>
