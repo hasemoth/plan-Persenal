@@ -3021,7 +3021,7 @@ function openActivityModal(projectId, deptId, rowId, actId) {
     <input type="text" id="actLabel" class="text-input" value="${existing ? escapeHTML(existing.label) : ''}" placeholder="เช่น ประชุม, รายงาน">
     <label class="field-label">ประเภทกิจกรรม</label>
     <select id="actType" class="text-input" style="margin-bottom: 10px;">
-      <option value="note" ${!existing || existing.type !== 'task' ? 'selected' : ''}>📝 บันทึกข้อความ/กิจกรรมทั่วไป</option>
+      <option value="note" ${!existing || existing.type !== 'task' ? 'selected' : ''}>📝 กิจกรรมทั่วไป/แผนการดำเนินงาน</option>
       <option value="task" ${existing && existing.type === 'task' ? 'selected' : ''}>🎯 กำหนดการที่ต้องทำให้เสร็จ</option>
       <option value="meeting" ${existing && existing.type === 'meeting' ? 'selected' : ''}>📅 นัดหมาย / ประชุม / ลงพื้นที่ (ส่งไป Google Calendar)</option>
     </select>
