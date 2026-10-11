@@ -86,6 +86,8 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
 .gantt-grid-bg { position: absolute; top: 0; bottom: 0; left: var(--label-w); pointer-events: none; z-index: 0; overflow: hidden; }
 .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line-soft); }
+.year-end-line { position: absolute; top: 0; bottom: 0; width: 2px; background: repeating-linear-gradient(to bottom, #6D5BD0 0 6px, transparent 6px 10px); opacity: 0.75; }
+.zoom-year .year-seg { border-right: 2px solid #6D5BD0; }
 .weekend-col { position: absolute; top: 0; bottom: 0; background: rgba(100, 110, 130, 0.07); pointer-events: none; z-index: 0; }
 
 .header-row { display: flex; }
@@ -189,6 +191,169 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .log-table .l-path { color: var(--ink-soft); font-size: 11.5px; }
 .log-table .l-from { color: #B91C1C; text-decoration: line-through; }
 .log-table .l-to { color: #047857; font-weight: 600; }
+/* --- นัดหมาย / ประชุม / ลงพื้นที่ --- */
+.modal-overlay .modal { max-height: calc(100vh - 32px); overflow-y: auto; }   /* หน้าต่างยาวเกินจอ ให้เลื่อนดูได้ */
+.meet-wrap { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 10px 12px 12px; margin-bottom: 10px; }
+.meet-wrap .field-label { margin-top: 8px; }
+.meet-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.meet-row .text-input { flex: 1; min-width: 110px; }
+.guest-box { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; min-height: 40px; cursor: text; }
+.guest-box:focus-within { outline: 2px solid var(--indigo); outline-offset: 1px; }
+.guest-box input { border: none; outline: none; flex: 1; min-width: 160px; font-family: inherit; font-size: 13.5px; padding: 4px; background: transparent; }
+.guest-chip { display: inline-flex; align-items: center; gap: 4px; background: #DBEAFE; color: #1E3A8A; border-radius: 999px; padding: 2px 4px 2px 10px; font-size: 12.5px; }
+.guest-chip button { border: none; background: transparent; color: #1E3A8A; cursor: pointer; font-size: 14px; line-height: 1; padding: 0 4px; border-radius: 50%; }
+.guest-chip button:hover { background: rgba(30,58,138,0.15); }
+.guest-chip.bad { background: #FEE2E2; color: #991B1B; }
+.meet-hint { font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+.meet-sync { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--indigo-deep); cursor: pointer; }
+.meet-sync input { width: 16px; height: 16px; margin-top: 2px; }
+/* โหมดนัดหมาย: จัดหน้าแบบ Google Calendar */
+.modal.gc-mode { max-width: 540px; }
+.modal.gc-mode #actLabel { font-size: 19px; font-weight: 600; border: none; border-bottom: 2px solid var(--line); border-radius: 0; padding: 8px 2px; }
+.modal.gc-mode #actLabel:focus { outline: none; border-bottom-color: var(--indigo); }
+.modal.gc-mode .gc-hide { display: none !important; }
+.meet-wrap.gc { background: transparent; border: none; padding: 0; margin: 4px 0 6px; }
+.gc-kinds { display: flex; gap: 6px; margin: 4px 0 12px 40px; flex-wrap: wrap; }
+.gc-kind { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 8px; padding: 6px 14px; font-family: inherit; font-size: 13.5px; cursor: pointer; }
+.gc-kind:hover { border-color: var(--indigo); }
+.gc-kind.on { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
+.gc-row { display: flex; gap: 14px; align-items: flex-start; padding: 7px 0; }
+.gc-ico { width: 26px; flex-shrink: 0; display: flex; justify-content: center; padding-top: 8px; color: var(--ink-soft); }
+.gc-body { flex: 1; min-width: 0; }
+.gc-when { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px 10px; align-items: center; }
+.gc-lbl { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; min-width: 42px; }
+.gc-when .gc-slot, .gc-when .date-wrapper { display: block; width: 100%; }
+.gc-when input[type=time] { width: 120px; padding: 8px 8px; }
+.modal.gc-allday .gc-when { grid-template-columns: auto minmax(0, 1fr); }
+.gc-dash { color: var(--ink-soft); }
+.gc-summary { font-size: 12.5px; color: var(--indigo); font-weight: 600; margin-top: 6px; }
+.gc-sub { display: flex; align-items: center; gap: 14px; margin-top: 6px; font-size: 13px; }
+.gc-body .text-input, .gc-body textarea { margin: 0; }
+.gc-body .color-picker { margin: 4px 0 0; }
+
+/* ===================== TO-DO BOARD ===================== */
+.td-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.td-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.td-title h2 { margin: 0; font-size: 20px; color: var(--indigo-deep); cursor: text; }
+.td-vis { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fff; }
+.td-vis button { border: none; background: transparent; padding: 6px 12px; font-family: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-soft); }
+.td-vis button.on { background: var(--indigo); color: #fff; font-weight: 600; }
+.td-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 600; }
+.td-save { font-size: 12px; color: var(--ink-soft); }
+.td-save.err { color: var(--danger); font-weight: 600; }
+.td-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.td-chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font-family: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink); }
+.td-chip.on { background: var(--indigo-soft); border-color: var(--indigo); color: var(--indigo); font-weight: 600; }
+.td-stats { margin-left: auto; display: flex; gap: 12px; font-size: 12.5px; color: var(--ink-soft); }
+.td-stats b { color: var(--ink); }
+.td-stats .red b { color: #B91C1C; } .td-stats .amber b { color: #B45309; }
+.td-board { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; padding: 2px 2px 16px; min-height: 60vh; }
+.td-col { flex: 0 0 290px; max-width: 290px; background: #F1F3F7; border-radius: 12px; display: flex; flex-direction: column; max-height: 76vh; border-top: 4px solid var(--colc, #94A3B8); }
+.td-col-h { display: flex; align-items: center; gap: 8px; padding: 10px 10px 6px 12px; }
+.td-col-name { font-weight: 700; font-size: 14px; color: var(--ink); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: text; }
+.td-count { font-size: 11.5px; background: #fff; border-radius: 999px; padding: 1px 8px; color: var(--ink-soft); font-weight: 600; }
+.td-icon-btn { border: none; background: transparent; cursor: pointer; border-radius: 6px; width: 28px; height: 28px; color: var(--ink-soft); font-size: 16px; line-height: 1; }
+.td-icon-btn:hover { background: rgba(0,0,0,0.06); }
+.td-list { padding: 4px 8px 6px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; min-height: 24px; flex: 1; }
+.td-card { background: #fff; border-radius: 10px; padding: 9px 10px; box-shadow: 0 1px 2px rgba(20,33,58,0.12); cursor: pointer; border: 1px solid transparent; }
+.td-card:hover { border-color: #C7D2FE; }
+.td-card.dragging { opacity: 0.4; }
+.td-card.done .td-card-title { color: var(--ink-soft); }
+.td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
+.td-labels { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.td-label { font-size: 10.5px; font-weight: 700; color: #fff; border-radius: 4px; padding: 1px 7px; line-height: 16px; }
+.td-card-title { font-size: 13.5px; color: var(--ink); line-height: 1.45; word-break: break-word; display: flex; gap: 6px; }
+.td-card-title .ok { color: #16A34A; flex-shrink: 0; }
+.td-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 7px; font-size: 11.5px; color: var(--ink-soft); }
+.td-b { display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px; border-radius: 4px; }
+.td-b.due-red { background: #FEE2E2; color: #B91C1C; font-weight: 700; }
+.td-b.due-amber { background: #FEF3C7; color: #92400E; font-weight: 700; }
+.td-b.due-soon { background: #FFEDD5; color: #9A3412; }
+.td-b.due-done { background: #DCFCE7; color: #166534; }
+.td-b.cl-done { background: #DCFCE7; color: #166534; font-weight: 700; }
+.td-prog { height: 4px; border-radius: 4px; background: #E5E7EB; margin-top: 7px; overflow: hidden; }
+.td-prog i { display: block; height: 100%; background: #22C55E; }
+.td-av { margin-left: auto; width: 24px; height: 24px; border-radius: 50%; background: var(--indigo); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.td-add { margin: 4px 8px 10px; }
+.td-add-btn { width: 100%; text-align: left; border: none; background: transparent; padding: 8px 8px; border-radius: 8px; color: var(--ink-soft); font-family: inherit; font-size: 13px; cursor: pointer; }
+.td-add-btn:hover { background: rgba(0,0,0,0.06); color: var(--ink); }
+.td-add textarea { width: 100%; box-sizing: border-box; border: 1px solid #A5B4FC; border-radius: 8px; padding: 8px; font-family: inherit; font-size: 13.5px; resize: none; min-height: 56px; }
+.td-add-row { display: flex; gap: 6px; margin-top: 6px; align-items: center; }
+.td-more { border: none; background: transparent; color: var(--indigo); font-family: inherit; font-size: 12.5px; cursor: pointer; padding: 6px; text-align: center; }
+.td-newcol { flex: 0 0 260px; }
+.td-newcol button { width: 100%; padding: 12px; border: 2px dashed var(--line); border-radius: 12px; background: transparent; color: var(--ink-soft); font-family: inherit; font-size: 13.5px; cursor: pointer; }
+.td-newcol button:hover { border-color: var(--indigo); color: var(--indigo); }
+.td-empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+.td-empty h3 { color: var(--indigo-deep); margin: 0 0 8px; }
+.td-tab-ico { font-size: 12px; }
+.td-modal { max-width: 620px !important; }
+.td-modal .td-title-in { width: 100%; box-sizing: border-box; font-size: 18px; font-weight: 700; border: none; border-bottom: 2px solid var(--line); padding: 6px 2px; font-family: inherit; resize: none; }
+.td-modal .td-title-in:focus { outline: none; border-bottom-color: var(--indigo); }
+.td-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+@media (max-width: 600px) { .td-grid { grid-template-columns: minmax(0, 1fr); } }
+.td-lbl-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.td-lbl-pick button { border: 2px solid transparent; color: #fff; font-weight: 700; font-size: 12px; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: inherit; opacity: 0.45; }
+.td-lbl-pick button.on { opacity: 1; border-color: #111827; }
+.td-cl-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.td-cl-item input[type=checkbox] { width: 16px; height: 16px; }
+.td-cl-item input[type=text] { flex: 1; border: 1px solid transparent; border-radius: 6px; padding: 5px 6px; font-family: inherit; font-size: 13.5px; }
+.td-cl-item input[type=text]:hover, .td-cl-item input[type=text]:focus { border-color: var(--line); }
+.td-cl-item.done input[type=text] { text-decoration: line-through; color: var(--ink-soft); }
+.td-meta { font-size: 11.5px; color: var(--ink-soft); margin-top: 10px; }
+/* ช่องติ๊ก "ทำเสร็จแล้ว" หน้าชื่อการ์ด */
+.td-tick { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; border: 2px solid #94A3B8; border-radius: 50%; background: #fff; cursor: pointer; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 900; line-height: 1; transition: all .15s; font-family: inherit; }
+.td-tick:hover:not(:disabled) { border-color: #22C55E; background: #DCFCE7; }
+.td-tick:hover:not(:disabled):not(.on)::after { content: '✓'; color: #16A34A; }
+.td-tick.on { background: #22C55E; border-color: #22C55E; }
+.td-tick.on:hover:not(:disabled) { background: #fff; border-color: #94A3B8; color: #94A3B8; }
+.td-tick:disabled { cursor: default; }
+.td-card.overdue { box-shadow: inset 3px 0 0 #E5484D, 0 1px 2px rgba(20,33,58,0.12); }
+.td-card.td-leaving { opacity: 0; transform: translateX(18px) scale(.97); transition: all .22s ease; }
+.td-clbtn { border: none; font-family: inherit; font-size: inherit; color: inherit; background: #F1F5F9; cursor: pointer; }
+.td-clbtn:hover { background: #E0E7FF; color: var(--indigo); }
+.td-cl-inline { margin-top: 7px; border-top: 1px dashed var(--line); padding-top: 6px; display: flex; flex-direction: column; gap: 3px; cursor: default; }
+.td-cl-inline label { display: flex; gap: 6px; align-items: flex-start; font-size: 12.5px; cursor: pointer; line-height: 1.4; }
+.td-cl-inline input { margin-top: 2px; flex-shrink: 0; }
+.td-cl-inline label.done span { text-decoration: line-through; color: var(--ink-soft); }
+.td-due-quick { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+.td-due-quick button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 1px 8px; font-family: inherit; font-size: 11.5px; cursor: pointer; color: var(--ink-soft); }
+.td-due-quick button:hover { border-color: var(--indigo); color: var(--indigo); }
+.td-cl-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 12px 0 5px; }
+.td-cl-head .field-label { margin: 0; flex: 1; }
+.td-mini { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; color: var(--ink); display: inline-flex; align-items: center; gap: 4px; }
+.td-mini:hover { border-color: var(--indigo); color: var(--indigo); }
+.td-tpl { border: 1px solid #C7D2FE; background: #F8FAFF; border-radius: 10px; padding: 10px; margin: 4px 0 8px; }
+.td-tpl-h { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin: 2px 0 6px; }
+.td-tpl-list { display: flex; flex-direction: column; gap: 4px; max-height: 190px; overflow-y: auto; }
+.td-tpl-item { width: 100%; text-align: left; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; font-family: inherit; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; color: var(--ink); }
+.td-tpl-item:hover { border-color: var(--indigo); background: #EEF2FF; }
+.td-tpl-item small { color: var(--ink-soft); white-space: nowrap; font-weight: 400; }
+.td-tpl-empty { font-size: 12px; color: var(--ink-soft); padding: 4px 2px; }
+.td-tpl-edit { border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; background: #FBFCFE; }
+.td-tpl-edit textarea { resize: vertical; font-size: 13px; }
+.td-mem-list { max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+.td-mem-list label { display: flex; gap: 8px; align-items: center; padding: 4px 0; cursor: pointer; font-size: 13.5px; }
+.td-who-hint { font-size: 11px; color: var(--ink-soft); margin-top: 3px; }
+.td-who-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.td-who-pick button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 12px 4px 5px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--ink); }
+.td-who-pick button .bx { width: 16px; height: 16px; border-radius: 4px; border: 2px solid #94A3B8; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.td-who-pick button.on { border-color: var(--indigo); background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 600; }
+.td-who-pick button.on .bx { background: var(--indigo); border-color: var(--indigo); }
+.td-who-pick button:disabled { cursor: default; }
+.td-avs { margin-left: auto; display: inline-flex; }
+.td-avs .td-av { margin-left: -6px; border: 2px solid #fff; }
+.td-avs .td-av:first-child { margin-left: 0; }
+.td-avs .td-av.more { background: #94A3B8; }
+.td-tpl-move { display: flex; flex-direction: column; gap: 2px; }
+.td-tpl-move button { width: 24px; height: 17px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink-soft); font-size: 9px; line-height: 1; cursor: pointer; }
+.td-tpl-move button:hover:not(:disabled) { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.td-tpl-move button:disabled { opacity: 0.3; cursor: default; }
+.td-tpl-edit.dragging { opacity: 0.4; }
+.td-tpl-edit.drop-before { box-shadow: 0 -3px 0 var(--indigo); }
+.td-tpl-grip { cursor: grab; color: #94A3B8; font-size: 16px; padding: 0 2px; user-select: none; }
+.toast .toast-act { margin-left: 12px; background: rgba(255,255,255,0.2); border: none; color: #fff; border-radius: 999px; padding: 3px 12px; font-family: inherit; font-weight: 700; cursor: pointer; }
+.toast .toast-act:hover { background: rgba(255,255,255,0.35); }
+.toast.show.has-act { pointer-events: auto; }
 /* --- บัญชีดูอย่างเดียว (ผู้บริหาร) --- */
 body.ro label:has(#dragModeToggle), body.ro .zoom-controls:has(#btnUndo),
 body.ro .wi-done, body.ro .tab-del, body.ro .tab-add, body.ro .tab-color-btn,
@@ -497,13 +662,19 @@ function applyLoaded(res) {
   lastCommitted = snapshotState();   // ข้อมูลจากผู้อื่นไม่ถือเป็นการกระทำของเรา
 }
 
-function showToast(msg) {
+function showToast(msg, actLabel, actFn) {
   let t = document.getElementById('toast');
   if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
   t.textContent = msg;
+  t.classList.toggle('has-act', typeof actFn === 'function');
+  if (typeof actFn === 'function') {
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'toast-act'; btn.textContent = actLabel || 'เลิกทำ';
+    btn.onclick = () => { t.classList.remove('show', 'has-act'); clearTimeout(showToast._timer); actFn(); };
+    t.appendChild(btn);
+  }
   t.classList.add('show');
   clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(() => t.classList.remove('show'), 3500);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), typeof actFn === 'function' ? 6500 : 3500);
 }
 
 window.addEventListener('beforeunload', (e) => {
@@ -511,7 +682,9 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
-let userScale = 1.0; 
+// ความกว้างช่องเริ่มต้นของแต่ละมุมมองเวลา (1 = 100%)
+const DEFAULT_SCALE = { day: 3.4, week: 5.0, month: 3.4, year: 1.8 };
+let userScale = DEFAULT_SCALE[zoom] || 1.0; 
 let lastScrollCenterIdx = null; 
 
 const COLW = { day: 34, week: 6, month: 1.3, year: 0.34 };
@@ -567,8 +740,14 @@ async function doLogin() {
   let data;
   setLoginBusy(true);
   try {
-    const res = await fetch(`${URLS.work}?action=login&token=${encodeURIComponent(pwd)}`);
-    data = await res.json();
+    let lastErr;
+    for (let i = 0; i < 3 && !data; i++) {
+      try {
+        const res = await fetch(`${URLS.work}?action=login&token=${encodeURIComponent(pwd)}`);
+        data = JSON.parse(await res.text());
+      } catch (err) { lastErr = err; await new Promise(r => setTimeout(r, 1200 * (i + 1))); }
+    }
+    if (!data) throw lastErr;
   } catch (e) {
     setLoginBusy(false);
     errEl.textContent = 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่อีกครั้ง';
@@ -605,15 +784,19 @@ async function doLogin() {
 
 async function secureFetch(url, params = {}) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); 
+  const timeoutId = setTimeout(() => controller.abort(), 30000); 
   try {
     const qs = new URLSearchParams({ ...params, token: API_TOKEN }).toString();
     const response = await fetch(`${url}?${qs}`, { signal: controller.signal });
-    const data = await response.json();
-    if (data.error) throw new Error(data.error);
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch (e) { throw new Error(`เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ (HTTP ${response.status}) อาจเป็นเพราะ Apps Script มีข้อผิดพลาดหรือยังไม่ได้ Deploy`); }
+    if (data.error) throw new Error(data.error === 'Unauthorized' ? 'ไม่มีสิทธิ์ (Unauthorized) — รหัสอาจถูกเปลี่ยน หรือสคริปต์ยังไม่ได้อัปเดตรายชื่อผู้ใช้' : data.error);
     return data;
   } catch (err) {
-    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (timeout 20 วิ)');
+    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (30 วินาที)');
+    if (err instanceof TypeError) throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (เครือข่ายหรือถูกบล็อก)');
     throw err;
   } finally {
     clearTimeout(timeoutId);
@@ -623,7 +806,7 @@ async function secureFetch(url, params = {}) {
 async function securePost(url, dataPayload, force = false, baseModified) {
   const payload = { token: API_TOKEN, force: force, baseModified: baseModified, data: dataPayload };
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); 
+  const timeoutId = setTimeout(() => controller.abort(), 60000);   // เผื่อเวลาส่งนัดหมายไป Google Calendar
   try {
     const response = await fetch(url, {
         method: 'POST',
@@ -633,25 +816,35 @@ async function securePost(url, dataPayload, force = false, baseModified) {
     });
     return await response.json();
   } catch (err) {
-    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (timeout 20 วิ)');
+    if (err.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์ (60 วินาที)');
     throw err;
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
+// ลองโหลดซ้ำเมื่อเซิร์ฟเวอร์ตอบช้า/ขัดข้องชั่วคราว (ไม่ลองซ้ำกรณีไม่มีสิทธิ์)
+async function fetchWithRetry(url, params = {}, tries = 3) {
+  let lastErr;
+  for (let i = 0; i < tries; i++) {
+    try { return await secureFetch(url, params); }
+    catch (e) { lastErr = e; if (/Unauthorized/.test(e.message) && i >= 1) break; await new Promise(r => setTimeout(r, 1500 * (i + 1))); }   // Unauthorized ลองซ้ำ 1 ครั้ง (อาจเป็นความขัดข้องชั่วคราวฝั่งเซิร์ฟเวอร์)
+  }
+  throw lastErr;
+}
+
 async function loadUnifiedState() {
   const order = ['work', 'extra', 'personal'].filter(can);
   // โหลดทุกหมวดพร้อมกัน (เร็วกว่าโหลดทีละหมวด)
   const results = await Promise.all(order.map(t =>
-    secureFetch(URLS[t]).then(d => ({ ok: true, d }), e => ({ ok: false, e }))));
+    fetchWithRetry(URLS[t]).then(d => ({ ok: true, d }), e => ({ ok: false, e }))));
 
   let allProjects = [], latestMod = 0, settingsSource = null;
-  const okMap = {}, modMap = {}, rawMap = {};
+  const okMap = {}, modMap = {}, rawMap = {}, errMap = {};
 
   order.forEach((type, i) => {
     const r = results[i];
-    if (!r.ok) { okMap[type] = false; console.warn('โหลดหมวด ' + type + ' ไม่สำเร็จ:', r.e); return; }
+    if (!r.ok) { okMap[type] = false; errMap[type] = (r.e && r.e.message) || String(r.e); console.warn('โหลดหมวด ' + type + ' ไม่สำเร็จ:', r.e); return; }
     const data = r.d;
     okMap[type] = true;
     modMap[type] = data.lastModified || 0;
@@ -675,7 +868,7 @@ async function loadUnifiedState() {
   base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
   base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
 
-  return { state: base, okMap, modMap, rawMap, complete: order.every(t => okMap[t]) };
+  return { state: base, okMap, modMap, rawMap, errMap, complete: order.every(t => okMap[t]) };
 }
 
 // ==========================================
@@ -981,6 +1174,7 @@ async function saveState() {
   };
   setStatus('<span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>');
   let autoMerged = false, resolvedCount = 0;
+  const calResults = [];
 
   try {
     state.lastModified = Date.now();
@@ -1015,6 +1209,7 @@ async function saveState() {
       }
       if (res.error === 'Conflict') throw new Error(`ข้อมูล ${CAT_LABELS[type]} ถูกแก้ไขพร้อมกันหลายครั้ง กรุณาลองอีกครั้ง`);
       if (res.error) throw new Error(CAT_LABELS[type] + ': ' + res.error);
+      if (res.calendar) calResults.push(res.calendar);
 
       serverModified[type] = sub.lastModified;   // จำเวอร์ชันใหม่ไว้ใช้ครั้งถัดไป
       baseSnapshot[type] = clone(sub);
@@ -1031,6 +1226,7 @@ async function saveState() {
         : '🔀 รวมการแก้ไขของคุณกับผู้ใช้อื่นให้อัตโนมัติแล้ว');
     }
     setStatus('<span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>');
+    reportCalendar(calResults);
   } catch (e) {
     setStatus('<span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + ' (จะลองใหม่เมื่อแก้ไขครั้งถัดไป)</span>');
   } finally {
@@ -1048,9 +1244,12 @@ function editorFocused() {
 }
 
 async function init() {
-  applyLoaded(await loadUnifiedState());
-  if (!ALLOWED.every(t => loadedOk[t])) {
-    alert('⚠️ โหลดข้อมูลบางหมวดไม่สำเร็จ\nระบบจะไม่บันทึกหมวดนั้นเพื่อป้องกันข้อมูลหาย กรุณารีเฟรชหน้าอีกครั้ง');
+  const first = await loadUnifiedState();
+  applyLoaded(first);
+  const failed = ALLOWED.filter(t => !loadedOk[t]);
+  if (failed.length) {
+    alert('⚠️ โหลดข้อมูลไม่สำเร็จ:\n' + failed.map(t => `• ${CAT_LABELS[t]}: ${first.errMap[t] || 'ไม่ทราบสาเหตุ'}`).join('\n')
+      + '\n\nระบบจะไม่บันทึกหมวดนี้เพื่อป้องกันข้อมูลหาย และจะลองโหลดใหม่อัตโนมัติ');
   }
   render();
 
@@ -1074,8 +1273,8 @@ async function init() {
       if (modalOpen || isSaving || dragMode || editorFocused()) return;
       if (unsavedChanges && !wasIncomplete) return;
       applyLoaded(res);
-      reRenderWithScroll();
-      if (!wasIncomplete) showToast('🔄 มีผู้ใช้อื่นอัปเดตข้อมูล แสดงข้อมูลล่าสุดแล้ว');
+      if (view.type !== 'todo') reRenderWithScroll();
+      if (!wasIncomplete && view.type !== 'todo') showToast('🔄 มีผู้ใช้อื่นอัปเดตข้อมูล แสดงข้อมูลล่าสุดแล้ว');
     } catch (e) {
     } finally {
       isPolling = false;
@@ -1200,6 +1399,7 @@ function render() {
   else if (view.type === 'category_overview') content.appendChild(renderLanesOverview(view.category));
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
+  else if (view.type === 'todo') content.appendChild(renderTodo());
   else content.appendChild(renderProjectDetail(view.id));
   
   app.appendChild(content);
@@ -1235,10 +1435,15 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
       render();
     }; mainBar.appendChild(btn);
   });
+  const todoBtn = document.createElement('button'); todoBtn.className = 'main-cat-btn' + (activeMainCat === 'todo' ? ' active' : ''); todoBtn.textContent = '✅ To-do';
+  todoBtn.onclick = () => { activeMainCat = 'todo'; view = { type: 'todo' }; render(); };
+  mainBar.appendChild(todoBtn);
   navWrap.appendChild(mainBar);
 
   const subBar = document.createElement('div'); subBar.className = 'sub-tabs-bar';
-  if (activeMainCat === 'all') {
+  if (activeMainCat === 'todo') {
+    renderTodoTabs(subBar);
+  } else if (activeMainCat === 'all') {
     const ov = document.createElement('button'); ov.className = 'tab' + (view.type === 'overview' ? ' active' : '');
     const ovSetting = state.overviewSettings.tab1;
     if (ovSetting.color) { ov.style.backgroundColor = ovSetting.color; ov.style.borderColor = ovSetting.color; ov.style.color = '#fff'; }
@@ -1303,7 +1508,7 @@ function renderToolbarControls(toolbar) {
   const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls'; zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
   [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([key, txt]) => {
     const b = document.createElement('button'); b.className = 'zoom-btn' + (zoom === key ? ' active' : ''); b.textContent = txt;
-    b.onclick = () => { zoom = key; userScale = 1.0; lastScrollCenterIdx = null; render(); scrollToToday(); }; zWrap.appendChild(b);
+    b.onclick = () => { zoom = key; userScale = DEFAULT_SCALE[key] || 1.0; lastScrollCenterIdx = null; render(); scrollToToday(); }; zWrap.appendChild(b);
   });
   const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); }; zWrap.appendChild(todayBtn); toolbar.appendChild(zWrap);
 
@@ -1313,7 +1518,7 @@ function renderToolbarControls(toolbar) {
     <span style="font-size: 11px; color: var(--ink-soft); min-width: 35px; text-align:center; display:inline-block; font-weight:600;">${Math.round(userScale * 100)}%</span>
     <button class="ghost-btn" style="padding: 2px 8px; font-size: 14px; border:none; border-radius:50%;" id="btnZoomIn">+</button>`;
   scaleWrap.querySelector('#btnZoomOut').onclick = () => { if (userScale > 0.3) { userScale = Math.round((userScale - 0.2) * 10) / 10; reRenderWithScroll(); } };
-  scaleWrap.querySelector('#btnZoomIn').onclick = () => { if (userScale < 5.0) { userScale = Math.round((userScale + 0.2) * 10) / 10; reRenderWithScroll(); } };
+  scaleWrap.querySelector('#btnZoomIn').onclick = () => { if (userScale < SCALE_MAX) { userScale = Math.round((userScale + 0.2) * 10) / 10; reRenderWithScroll(); } };
   toolbar.appendChild(scaleWrap);
 
   const mWrap = document.createElement('label'); mWrap.className = 'mode-controls'; mWrap.style.cursor = 'pointer';
@@ -1345,7 +1550,7 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
 
     if (zoom === 'day' || zoom === 'week') {
         for (let i = rStart; i <= rEnd; i++) {
-            if (zoom === 'day') {
+            if (zoom === 'day' || zoom === 'week') {
                 const dow = dateFromIndex(i).getUTCDay();
                 if (dow === 0 || dow === 6) {
                     const wknd = document.createElement('div');
@@ -1371,13 +1576,22 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
             line.className = 'grid-line'; line.style.left = ((m.start - rStart) * colw) + 'px';
             bg.appendChild(line);
         });
+        // เส้นสิ้นสุดปี (ระหว่าง 31 ธ.ค. กับ 1 ม.ค.)
+        for (let i = rStart + 1; i <= rEnd + 1; i++) {
+            const d = dateFromIndex(i);
+            if (d.getUTCMonth() !== 0 || d.getUTCDate() !== 1) continue;
+            const yl = document.createElement('div'); yl.className = 'year-end-line';
+            yl.style.left = ((i - rStart) * colw - 1) + 'px';
+            yl.title = 'สิ้นปี พ.ศ. ' + (d.getUTCFullYear() - 1 + 543);
+            bg.appendChild(yl);
+        }
     }
     return bg;
 }
 
 function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วยงาน / ชื่องาน') {
   const { years, months } = headerGroupsBounded(rStart, rEnd), totalWidth = totalDays * colw;
-  const header = document.createElement('div'); header.className = 'gantt-header';
+  const header = document.createElement('div'); header.className = 'gantt-header' + (zoom === 'year' ? ' zoom-year' : '');
 
   const yearRow = document.createElement('div'); yearRow.className = 'header-row year-row'; yearRow.innerHTML = `<div class="row-label corner">${labelText}</div>`;
   addColResizer(yearRow.querySelector('.row-label'));
@@ -1452,7 +1666,7 @@ function addSegResizers(header, colw, rStart) {
   if (!lastRow) return;
   lastRow.querySelectorAll('.hdr-seg').forEach(seg => {
     const h = document.createElement('div'); h.className = 'seg-resizer';
-    h.title = 'ลากเพื่อขยาย/ย่อความกว้างคอลัมน์ · ดับเบิลคลิกเพื่อคืนค่า 100%';
+    h.title = 'ลากเพื่อขยาย/ย่อความกว้างคอลัมน์ · ดับเบิลคลิกเพื่อคืนค่าเริ่มต้น';
     const startIdxOf = () => rStart + Math.round(seg.offsetLeft / colw);
     h.onmousedown = (e) => {
       e.preventDefault(); e.stopPropagation();
@@ -1480,7 +1694,7 @@ function addSegResizers(header, colw, rStart) {
     h.ondblclick = (e) => {
       e.stopPropagation();
       const el = document.querySelector('.gantt-scroll');
-      setScaleAnchored(1, startIdxOf(), seg.getBoundingClientRect().left - el.getBoundingClientRect().left);
+      setScaleAnchored(DEFAULT_SCALE[zoom] || 1, startIdxOf(), seg.getBoundingClientRect().left - el.getBoundingClientRect().left);
     };
     seg.appendChild(h);
   });
@@ -1738,6 +1952,13 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
       }
   }
 
+  if (act.type === 'meeting') {
+    prefix = (MEETING_ICONS[act.meetingKind] || '📅') + ' ' + (act.allDay === false && act.startTime ? act.startTime + ' ' : '');
+    statusText = ` (${MEETING_KIND_LABELS[act.meetingKind] || 'นัดหมาย'}${act.allDay === false ? ' ' + (act.startTime || '') + '–' + (act.endTime || '') + ' น.' : ' ทั้งวัน'})`
+      + (act.location ? '\n📍 ' + act.location : '')
+      + (act.guests && act.guests.length ? '\n👥 ' + act.guests.join(', ') : '')
+      + (act.calSync ? '\n🗓 อยู่ใน Google Calendar' : '');
+  }
   const bar = document.createElement('div');
   bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '');
   bar.style.position = 'absolute';
@@ -2008,6 +2229,13 @@ function renderLanesOverview(categoryFilter = null) {
   return root;
 }
 
+// หาแถวจากข้อมูลชุดล่าสุด (ข้อมูลอาจถูกโหลดใหม่จากผู้อื่นระหว่างที่เปิดหน้าต่างค้างไว้)
+function findLiveRow(projectId, deptId, rowId) {
+  const p = state.projects.find(x => x.id === projectId); if (!p) return null;
+  const d = p.departments.find(x => x.id === deptId); if (!d) return null;
+  return d.rows.find(x => x.id === rowId) || null;
+}
+
 function openActivityModal(projectId, deptId, rowId, actId) {
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
   const existing = actId ? r.activities.find(a => a.id === actId) : null;
@@ -2024,7 +2252,9 @@ function openActivityModal(projectId, deptId, rowId, actId) {
     <select id="actType" class="text-input" style="margin-bottom: 10px;">
       <option value="note" ${!existing || existing.type !== 'task' ? 'selected' : ''}>📝 บันทึกข้อความ/กิจกรรมทั่วไป</option>
       <option value="task" ${existing && existing.type === 'task' ? 'selected' : ''}>🎯 กำหนดการที่ต้องทำให้เสร็จ</option>
+      <option value="meeting" ${existing && existing.type === 'meeting' ? 'selected' : ''}>📅 นัดหมาย / ประชุม / ลงพื้นที่ (ส่งไป Google Calendar)</option>
     </select>
+    ${meetingFormHTML(existing)}
     <div id="taskStatusWrap" style="display: ${existing && existing.type === 'task' ? 'flex' : 'none'}; align-items: center; gap: 8px; margin-bottom: 10px; background: var(--indigo-soft); padding: 10px; border-radius: 8px;">
       <input type="checkbox" id="actCompleted" ${existing && existing.completed ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
       <label for="actCompleted" style="font-weight: 600; color: var(--indigo-deep); cursor: pointer;">ทำกิจกรรมนี้เสร็จเรียบร้อยแล้ว ✅</label>
@@ -2062,7 +2292,8 @@ function openActivityModal(projectId, deptId, rowId, actId) {
   `;
   overlay.appendChild(modal); document.body.appendChild(overlay);
 
-  modal.querySelector('#actType').addEventListener('change', (e) => { modal.querySelector('#taskStatusWrap').style.display = e.target.value === 'task' ? 'flex' : 'none'; });
+  modal.querySelector('#actType').addEventListener('change', (e) => { modal.querySelector('#taskStatusWrap').style.display = e.target.value === 'task' ? 'flex' : 'none'; setMeetingLayout(modal, e.target.value === 'meeting'); });
+  initMeetingForm(modal, existing);
   
   let currentDuration = existing ? (existing.end - existing.start) : 0;
   
@@ -2096,18 +2327,26 @@ function openActivityModal(projectId, deptId, rowId, actId) {
   const actions = modal.querySelector('#modalActions');
   const saveBtn = document.createElement('button'); saveBtn.className = 'primary-btn'; saveBtn.textContent = 'บันทึก';
   saveBtn.onclick = async () => {
+    if (!validateMeetingForm(modal)) return;
     const label = modal.querySelector('#actLabel').value.trim() || 'กิจกรรม', type = modal.querySelector('#actType').value, completed = modal.querySelector('#actCompleted').checked, remark = modal.querySelector('#actRemark').value.trim();
     let sIdx = indexFromDate(inputStrToDate(modal.querySelector('#actStart').value)), eIdx = indexFromDate(inputStrToDate(modal.querySelector('#actEnd').value));
     if (eIdx < sIdx) eIdx = sIdx;
-    if (existing) { existing.label = label; existing.color = chosenColor; existing.start = sIdx; existing.end = eIdx; existing.type = type; existing.completed = completed; existing.remark = remark; }
-    else { r.activities.push({ id: uid('act'), label, color: chosenColor, start: sIdx, end: eIdx, type, completed, remark }); }
+    const liveRow = findLiveRow(projectId, deptId, rowId) || r;
+    const target = existing ? (liveRow.activities.find(a => a.id === existing.id) || existing) : null;
+    if (target) { const existing = target; existing.label = label; existing.color = chosenColor; existing.start = sIdx; existing.end = eIdx; existing.type = type; existing.completed = completed; existing.remark = remark; }
+    else { liveRow.activities.push({ id: uid('act'), label, color: chosenColor, start: sIdx, end: eIdx, type, completed, remark }); }
+    applyMeetingFields(target || liveRow.activities[liveRow.activities.length - 1], modal, type);
     closeModal(overlay); await persistAndRender();
   };
   actions.appendChild(saveBtn);
 
   if (existing) {
     const delBtn = document.createElement('button'); delBtn.className = 'danger-btn'; delBtn.textContent = 'ลบกิจกรรม';
-    delBtn.onclick = async () => { r.activities = r.activities.filter(a => a.id !== existing.id); closeModal(overlay); await persistAndRender(); };
+    delBtn.onclick = async () => {
+      const row = findLiveRow(projectId, deptId, rowId) || r;
+      row.activities = row.activities.filter(a => a.id !== existing.id);
+      closeModal(overlay); await persistAndRender();
+    };
     actions.appendChild(delBtn);
   }
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
@@ -2538,6 +2777,1093 @@ function openConfirmModal(title, desc, onConfirm) {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 function closeModal(overlay) { modalOpen = false; overlay.remove(); }
+
+// ==========================================
+// --- นัดหมาย / ประชุม / ลงพื้นที่ (ส่งไป Google Calendar) ---
+// ==========================================
+const MEETING_ICONS = { meeting: '🤝', field: '🚗', appointment: '📅' };
+const MEETING_KIND_LABELS = { meeting: 'ประชุม', field: 'ลงพื้นที่', appointment: 'นัดหมาย' };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const GC_ICONS = {
+  clock: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>',
+  people: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.5 3.3-5.5 6.5-5.5s5.9 2 6.5 5.5"></path><circle cx="17" cy="9" r="2.8"></circle><path d="M16 14.6c2.8.2 4.9 2 5.5 5.4"></path></svg>',
+  video: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="2"></rect><path d="M15 10l6-3v10l-6-3"></path></svg>',
+  pin: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>',
+  text: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 11h16M4 16h10"></path></svg>',
+  palette: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z"></path><circle cx="7.5" cy="11" r="1"></circle><circle cx="10" cy="7" r="1"></circle><circle cx="14.5" cy="7" r="1"></circle></svg>',
+  cal: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>'
+};
+
+function meetingFormHTML(a) {
+  const isMeet = a && a.type === 'meeting';
+  const kind = (a && a.meetingKind) || 'meeting';
+  const allDay = a ? a.allDay !== false : false;
+  const opt = (v, t) => `<option value="${v}" ${kind === v ? 'selected' : ''}>${t}</option>`;
+  const kbtn = (v, t) => `<button type="button" class="gc-kind ${kind === v ? 'on' : ''}" data-kind="${v}">${t}</button>`;
+  const row = (icon, body, title) => `<div class="gc-row"><div class="gc-ico" title="${title}">${GC_ICONS[icon]}</div><div class="gc-body">${body}</div></div>`;
+  return `
+  <div id="meetWrap" class="meet-wrap gc" style="display:${isMeet ? 'block' : 'none'};">
+    <select id="meetKind" style="display:none;">${opt('meeting', 'ประชุม')}${opt('field', 'ลงพื้นที่')}${opt('appointment', 'นัดหมาย')}</select>
+    <div class="gc-kinds">${kbtn('meeting', '🤝 ประชุม')}${kbtn('field', '🚗 ลงพื้นที่')}${kbtn('appointment', '📅 นัดหมาย')}</div>
+    ${row('clock', `
+      <div class="gc-when">
+        <span class="gc-lbl">เริ่ม</span>
+        <span class="gc-slot" data-slot="startDate"></span>
+        <input type="time" id="meetStart" class="text-input" value="${escapeHTML((a && a.startTime) || '09:00')}" aria-label="เวลาเริ่ม">
+        <span class="gc-lbl">สิ้นสุด</span>
+        <span class="gc-slot" data-slot="endDate"></span>
+        <input type="time" id="meetEnd" class="text-input" value="${escapeHTML((a && a.endTime) || '10:00')}" aria-label="เวลาสิ้นสุด">
+      </div>
+      <div class="gc-sub"><label style="display:flex; gap:6px; align-items:center; cursor:pointer;"><input type="checkbox" id="meetAllDay" ${allDay ? 'checked' : ''}> ทั้งวัน</label></div>
+      <div class="gc-summary" id="gcSummary"></div>`, 'วันและเวลา')}
+    ${row('people', `<div class="guest-box" id="guestBox"><input type="email" id="guestInput" placeholder="เพิ่มผู้เข้าร่วม (อีเมล) แล้วกด Enter"></div>
+      <div class="meet-hint">วางหลายอีเมลพร้อมกันได้ · ผู้เข้าร่วมจะได้รับคำเชิญทางอีเมลและเห็นนัดหมายในปฏิทินของตัวเอง</div>`, 'ผู้เข้าร่วม')}
+    ${row('video', `<input type="url" id="meetLink" class="text-input" value="${escapeHTML((a && a.meetLink) || '')}" placeholder="เพิ่มลิงก์ประชุมออนไลน์ (Google Meet / Zoom / Teams)">`, 'ประชุมออนไลน์')}
+    ${row('pin', `<input type="text" id="meetLoc" class="text-input" value="${escapeHTML((a && a.location) || '')}" placeholder="เพิ่มสถานที่">`, 'สถานที่')}
+    ${row('text', `<span class="gc-slot" data-slot="remark"></span>`, 'รายละเอียด')}
+    ${row('palette', `<span class="gc-slot" data-slot="color"></span>`, 'สีกิจกรรม')}
+    ${row('cal', `<label class="meet-sync" style="margin-top:6px;"><input type="checkbox" id="meetSync" ${!a || a.calSync !== false ? 'checked' : ''}><span>ส่งไปที่ Google Calendar และส่งคำเชิญทางอีเมล<br><span style="font-weight:400; font-size:11.5px; color:var(--ink-soft);">แก้ไขหรือลบกิจกรรมนี้ภายหลัง ปฏิทินจะอัปเดตตามอัตโนมัติ</span></span></label>`, 'Google Calendar')}
+  </div>`;
+}
+
+// สลับหน้าต่างระหว่างแบบปกติ กับแบบ Google Calendar (ย้ายช่องวันที่/รายละเอียด/สี เข้ามาในแถวที่มีไอคอน)
+function setMeetingLayout(modal, on) {
+  const wrap = modal.querySelector('#meetWrap'); if (!wrap) return;
+  const startWrap = modal.querySelector('#actStart').closest('.date-wrapper');
+  const endWrap = modal.querySelector('#actEnd').closest('.date-wrapper');
+  const remark = modal.querySelector('#actRemark'), picker = modal.querySelector('#colorPicker');
+  if (!modal._gcHome) {
+    modal._gcHome = {
+      startRow: startWrap.parentElement, endRow: endWrap.parentElement,
+      remarkLabel: remark.previousElementSibling, colorLabel: picker.previousElementSibling
+    };
+  }
+  const h = modal._gcHome;
+  const slot = (n) => wrap.querySelector(`.gc-slot[data-slot="${n}"]`);
+  const hideEls = [h.startRow, h.endRow, h.startRow.previousElementSibling, h.endRow.previousElementSibling, h.remarkLabel, h.colorLabel];
+  modal.classList.toggle('gc-mode', on);
+  wrap.style.display = on ? 'block' : 'none';
+  if (on) {
+    slot('startDate').appendChild(startWrap); slot('endDate').appendChild(endWrap);
+    slot('remark').appendChild(remark); slot('color').appendChild(picker);
+    remark.placeholder = 'เพิ่มรายละเอียด / วาระการประชุม';
+    hideEls.forEach(el => el && el.classList.add('gc-hide'));
+  } else {
+    h.startRow.insertBefore(startWrap, h.startRow.firstChild);
+    h.endRow.insertBefore(endWrap, h.endRow.firstChild);
+    h.remarkLabel.after(remark); h.colorLabel.after(picker);
+    remark.placeholder = 'รายละเอียดเพิ่มเติม...';
+    hideEls.forEach(el => el && el.classList.remove('gc-hide'));
+  }
+  updateMeetingSummary(modal);
+}
+
+// ข้อความสรุปวันเวลาแบบอ่านง่าย เช่น "วันจันทร์ที่ 12 ต.ค. 2569 · 09:00–10:00 น."
+function updateMeetingSummary(modal) {
+  const el = modal.querySelector('#gcSummary'); if (!el) return;
+  const s = inputStrToDate(modal.querySelector('#actStart').value), e = inputStrToDate(modal.querySelector('#actEnd').value);
+  if (!s || !e) { el.textContent = ''; return; }
+  const DOW = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+  const d = (x) => `${x.getUTCDate()} ${THAI_MONTHS_SHORT[x.getUTCMonth()]} ${x.getUTCFullYear() + 543}`;
+  const allDay = modal.querySelector('#meetAllDay').checked;
+  const st = modal.querySelector('#meetStart').value, et = modal.querySelector('#meetEnd').value;
+  const same = s.getTime() === e.getTime();
+  if (allDay) el.textContent = same ? `วัน${DOW[s.getUTCDay()]}ที่ ${d(s)} · ทั้งวัน` : `${d(s)} – ${d(e)} · ทั้งวัน (${Math.round((e - s) / DAY) + 1} วัน)`;
+  else el.textContent = same ? `วัน${DOW[s.getUTCDay()]}ที่ ${d(s)} · ${st}–${et} น.` : `${d(s)} ${st} น. – ${d(e)} ${et} น.`;
+}
+
+function initMeetingForm(modal, a) {
+  const box = modal.querySelector('#guestBox'), input = modal.querySelector('#guestInput');
+  if (!box) return;
+  const guests = new Set(((a && a.guests) || []).map(x => String(x).toLowerCase()));
+  const draw = () => {
+    box.querySelectorAll('.guest-chip').forEach(c => c.remove());
+    [...guests].forEach(g => {
+      const chip = document.createElement('span'); chip.className = 'guest-chip' + (EMAIL_RE.test(g) ? '' : ' bad');
+      chip.textContent = g;
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'ลบ ' + g);
+      x.onclick = (e) => { e.stopPropagation(); guests.delete(g); draw(); };
+      chip.appendChild(x); box.insertBefore(chip, input);
+    });
+    box.dataset.guests = JSON.stringify([...guests]);
+  };
+  const addFrom = (text) => {
+    String(text || '').split(/[\s,;]+/).map(t => t.trim().toLowerCase()).filter(Boolean).forEach(t => guests.add(t));
+    input.value = ''; draw();
+  };
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ',' || e.key === ';') { e.preventDefault(); addFrom(input.value); }
+    else if (e.key === 'Backspace' && !input.value && guests.size) { guests.delete([...guests].pop()); draw(); }
+  });
+  input.addEventListener('blur', () => { if (input.value.trim()) addFrom(input.value); });
+  input.addEventListener('paste', (e) => { const t = (e.clipboardData || window.clipboardData).getData('text'); if (/[\s,;]/.test(t)) { e.preventDefault(); addFrom(t); } });
+  box.addEventListener('click', () => input.focus());
+
+  // ปุ่มเลือกรูปแบบ ประชุม / ลงพื้นที่ / นัดหมาย
+  const kindSel = modal.querySelector('#meetKind');
+  modal.querySelectorAll('.gc-kind').forEach(b => b.addEventListener('click', () => {
+    kindSel.value = b.dataset.kind;
+    modal.querySelectorAll('.gc-kind').forEach(x => x.classList.toggle('on', x === b));
+  }));
+
+  const allDay = modal.querySelector('#meetAllDay'), st = modal.querySelector('#meetStart'), et = modal.querySelector('#meetEnd');
+  const sync = () => {
+    st.style.display = et.style.display = allDay.checked ? 'none' : '';
+    modal.classList.toggle('gc-allday', allDay.checked);
+    updateMeetingSummary(modal);
+  };
+  allDay.addEventListener('change', sync);
+  // เวลาเริ่มเปลี่ยน -> เลื่อนเวลาสิ้นสุดตามให้ระยะเวลาเท่าเดิม (เหมือน Google Calendar)
+  let lastStart = st.value;
+  st.addEventListener('change', () => {
+    const toMin = (t) => { const m = /^(\d{1,2}):(\d{2})$/.exec(t || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null; };
+    const a0 = toMin(lastStart), a1 = toMin(st.value), b0 = toMin(et.value);
+    if (a0 !== null && a1 !== null && b0 !== null && modal.querySelector('#actStart').value === modal.querySelector('#actEnd').value) {
+      const nb = Math.min(23 * 60 + 59, a1 + Math.max(15, b0 - a0));
+      et.value = String(Math.floor(nb / 60)).padStart(2, '0') + ':' + String(nb % 60).padStart(2, '0');
+    }
+    lastStart = st.value; updateMeetingSummary(modal);
+  });
+  ['#meetEnd', '#actStart', '#actEnd'].forEach(sel => { const el = modal.querySelector(sel); el.addEventListener('input', () => updateMeetingSummary(modal)); el.addEventListener('change', () => updateMeetingSummary(modal)); });
+  draw();
+  sync();
+  setMeetingLayout(modal, modal.querySelector('#actType').value === 'meeting');
+}
+
+function readGuests(modal) {
+  const box = modal.querySelector('#guestBox'), input = modal.querySelector('#guestInput');
+  let list = [];
+  try { list = JSON.parse(box.dataset.guests || '[]'); } catch (e) {}
+  if (input && input.value.trim()) list = list.concat(input.value.split(/[\s,;]+/).map(t => t.trim().toLowerCase()).filter(Boolean));
+  return [...new Set(list)];
+}
+
+function validateMeetingForm(modal) {
+  if (modal.querySelector('#actType').value !== 'meeting') return true;
+  const bad = readGuests(modal).filter(g => !EMAIL_RE.test(g));
+  if (bad.length) { alert('อีเมลไม่ถูกต้อง:\n' + bad.join('\n') + '\n\nกรุณาแก้ไขหรือลบออกก่อนบันทึก'); return false; }
+  const allDay = modal.querySelector('#meetAllDay').checked;
+  const s = modal.querySelector('#actStart').value, e = modal.querySelector('#actEnd').value;
+  if (!allDay && s === e && modal.querySelector('#meetEnd').value <= modal.querySelector('#meetStart').value) {
+    alert('เวลาสิ้นสุดต้องหลังเวลาเริ่ม'); return false;
+  }
+  return true;
+}
+
+function applyMeetingFields(a, modal, type) {
+  if (!a) return;
+  const keys = ['meetingKind', 'allDay', 'startTime', 'endTime', 'location', 'meetLink', 'guests', 'calSync'];
+  if (type !== 'meeting') { keys.forEach(k => delete a[k]); return; }
+  a.meetingKind = modal.querySelector('#meetKind').value;
+  a.allDay = modal.querySelector('#meetAllDay').checked;
+  a.startTime = modal.querySelector('#meetStart').value || '09:00';
+  a.endTime = modal.querySelector('#meetEnd').value || '10:00';
+  a.location = modal.querySelector('#meetLoc').value.trim();
+  a.meetLink = modal.querySelector('#meetLink').value.trim();
+  a.guests = readGuests(modal);
+  a.calSync = modal.querySelector('#meetSync').checked;
+  a.completed = false;
+}
+
+function reportCalendar(results) {
+  if (!results.length) return;
+  const sum = results.reduce((t, r) => ({ c: t.c + (r.created || 0), u: t.u + (r.updated || 0), d: t.d + (r.deleted || 0), i: t.i + (r.invited || 0), e: t.e.concat(r.errors || []) }), { c: 0, u: 0, d: 0, i: 0, e: [] });
+  if (sum.e.length) { alert('ส่งนัดหมายไป Google Calendar ไม่สำเร็จบางรายการ:\n\n' + sum.e.join('\n') + '\n\n(ข้อมูลในระบบบันทึกเรียบร้อยแล้ว)'); return; }
+  const parts = [];
+  if (sum.c) parts.push(`สร้างนัดหมาย ${sum.c} รายการ`);
+  if (sum.u) parts.push(`อัปเดต ${sum.u} รายการ`);
+  if (sum.d) parts.push(`ยกเลิก ${sum.d} รายการ`);
+  if (sum.i) parts.push(`ส่งคำเชิญ ${sum.i} คน`);
+  if (parts.length) showToast('🗓 Google Calendar: ' + parts.join(' · '));
+}
+
+// =====================================================================
+// --- TO-DO BOARD (บอร์ดงานแบบ Kanban) ---
+// บอร์ด 🔒 เฉพาะฉัน: เห็นและแก้ได้เฉพาะเจ้าของ / บอร์ด 👥 ทุกคน: ทุกคนเห็น (บัญชีดูอย่างเดียวแก้ไม่ได้)
+// เซิร์ฟเวอร์ (Apps Script) เป็นผู้บังคับสิทธิ์ ไม่ใช่แค่ซ่อนบนหน้าจอ
+// =====================================================================
+const TD_COLORS = { red: '#E5484D', orange: '#F76B15', yellow: '#D4A106', green: '#30A46C', sky: '#0EA5E9', blue: '#3E63DD', purple: '#8E4EC6', pink: '#D6409F', gray: '#64748B' };
+const TD_DEFAULT_LABELS = [
+  { key: 'red', name: 'ด่วน' }, { key: 'orange', name: 'สำคัญ' }, { key: 'yellow', name: 'รอข้อมูล' },
+  { key: 'green', name: 'พร้อมดำเนินการ' }, { key: 'blue', name: 'HAD' }, { key: 'purple', name: 'รอผู้บริหาร' }
+];
+const todo = { loaded: false, loading: false, boards: [], base: {}, ver: {}, sentVer: {}, me: '', users: [], dirty: new Set(), saving: new Set(), timers: {}, status: {},
+  activeId: lsGet('todo_active', null), filter: { q: '', mine: false, due: false, label: '' }, showAll: {}, expanded: new Set(), drag: null, addingCol: null, pollTimer: null };
+const TD_VIS = {
+  private: { ico: '🔒', name: 'เฉพาะฉัน', desc: 'เห็นเฉพาะคุณ' },
+  members: { ico: '🤝', name: 'เฉพาะคนที่เลือก', desc: 'เห็นเฉพาะคุณและคนที่เลือก' },
+  shared: { ico: '👥', name: 'ทุกคน', desc: 'ทุกคนที่เข้าระบบเห็นบอร์ดนี้' }
+};
+
+function tdUid(p) { return uid(p); }
+function tdBoard() { return todo.boards.find(b => b.id === todo.activeId) || todo.boards[0] || null; }
+function tdVis(b) { return b && TD_VIS[b.visibility] ? b.visibility : 'private'; }
+function tdCanEdit(b) {
+  if (!b) return false;
+  const v = tdVis(b);
+  if (v === 'private') return !b.owner || b.owner === todo.me;
+  if (READ_ONLY) return false;
+  return v === 'shared' || b.owner === todo.me || (b.members || []).includes(todo.me);
+}
+function tdLive(b) { return (b && todo.boards.find(x => x.id === b.id)) || b; }
+// ผู้รับผิดชอบที่เลือกได้ = เฉพาะคนที่เห็นบอร์ดนี้ และเป็นผู้ปฏิบัติงาน (เซิร์ฟเวอร์ตัดบัญชีกลาง/ผู้ดูแล/ดูอย่างเดียวออกแล้ว)
+function tdAssignees(b) {
+  const W = todo.users.length ? todo.users : null;
+  const v = tdVis(b);
+  if (v === 'private') return [b.owner || todo.me].filter(Boolean);
+  if (v === 'members') return [b.owner, ...(b.members || [])].filter((n, i, a) => n && a.indexOf(n) === i && (!W || W.includes(n)));
+  return (W || []).slice();
+}
+// คอลัมน์ปลายทางเมื่อติ๊ก "เสร็จ" = คอลัมน์งานเสร็จตัวแรกที่ไม่ใช่ "ยกเลิก"
+function tdDoneCol(b) { const d = b.columns.filter(c => c.isDone); return d.find(c => !/ยกเลิก|cancel/i.test(c.name)) || d[0] || null; }
+function tdBackCol(b, card) { return b.columns.find(x => x.id === card.fromCol && !x.isDone) || b.columns.find(x => !x.isDone) || null; }
+function tdCardEl(id) { return document.querySelector(`.td-card[data-id="${id}"]`); }
+
+// ติ๊กเสร็จ -> ย้ายไปบนสุดของคอลัมน์งานเสร็จ / เอาติ๊กออก -> ย้ายกลับคอลัมน์เดิม (มีปุ่มเลิกทำ)
+function tdSetDone(b, cardId, done, cardEl) {
+  b = tdLive(b);
+  const f = tdFindCard(b, cardId); if (!f) return;
+  const target = done ? tdDoneCol(b) : tdBackCol(b, f.card);
+  if (!target) { showToast(done ? 'ยังไม่มีคอลัมน์ "งานเสร็จ" — ตั้งได้ที่ปุ่ม ⋯ ของคอลัมน์' : 'ไม่มีคอลัมน์สำหรับย้ายกลับ'); return; }
+  if (target.id === f.col.id) return;
+  const prev = { colId: f.col.id, index: f.col.cards.indexOf(f.card), card: clone(f.card) };
+  const go = () => {
+    const live = tdLive(b); const g = tdFindCard(live, cardId); if (!g) return;
+    const to = live.columns.find(c => c.id === target.id); if (!to) return;
+    g.col.cards.splice(g.col.cards.indexOf(g.card), 1);
+    if (done) { g.card.fromCol = g.col.id; g.card.doneAt = Date.now(); g.card.doneBy = todo.me; }
+    else { delete g.card.doneAt; delete g.card.doneBy; }
+    to.cards.unshift(g.card);
+    tdChanged(live);
+    showToast(done ? `✔ เสร็จแล้ว — ย้ายไป "${to.name}"` : `↺ ย้ายกลับไป "${to.name}"`, 'เลิกทำ', () => tdRestoreCard(live, cardId, prev));
+  };
+  if (cardEl) { cardEl.classList.add('td-leaving'); setTimeout(go, 220); } else go();
+}
+function tdRestoreCard(b, cardId, prev) {
+  b = tdLive(b);
+  const g = tdFindCard(b, cardId); if (g) g.col.cards.splice(g.col.cards.indexOf(g.card), 1);
+  const col = b.columns.find(c => c.id === prev.colId) || b.columns[0]; if (!col) return;
+  col.cards.splice(Math.min(prev.index, col.cards.length), 0, prev.card);
+  tdChanged(b);
+}
+// แปลง checklist ใน Trello เป็น Template (ชื่อเดียวกันใช้ชุดที่มีรายการมากที่สุด)
+function tdTrelloTemplates(j) {
+  const by = {};
+  (j.checklists || []).forEach(c => {
+    const name = String(c.name || '').trim();
+    const items = (c.checkItems || []).slice().sort((a, b) => (a.pos || 0) - (b.pos || 0)).map(i => String(i.name || '').trim()).filter(Boolean);
+    if (!name || !items.length || /^(checklist|รายการตรวจสอบ)$/i.test(name)) return;
+    if (!by[name] || by[name].length < items.length) by[name] = items;
+  });
+  return Object.keys(by).map(name => ({ id: tdUid('tpl'), name, items: by[name] }));
+}
+function tdIsOwner(b) { return b && (!b.owner || b.owner === todo.me); }
+function tdLabelColor(b, key) { return TD_COLORS[key] || TD_COLORS.gray; }
+function tdTodayStr() { const d = dateFromIndex(todayBangkokIndex()); return dateToInputStr(d); }
+function tdDayDiff(dateStr) { if (!dateStr) return null; return Math.round((inputStrToDate(dateStr) - inputStrToDate(tdTodayStr())) / DAY); }
+function tdFmtDate(dateStr) { const d = inputStrToDate(dateStr); return d ? `${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]}` : ''; }
+function tdInitial(name) { return (String(name || '?').trim().replace(/^(นางสาว|นาง|นาย|ดร\.|Mrs\.?\s+|Mr\.?\s+|Ms\.?\s+|Miss\s+|Dr\.?\s+)\s*/i, '')[0] || '?').toUpperCase(); }
+// ผู้รับผิดชอบ (หลายคนได้) — รองรับข้อมูลเก่าที่เก็บเป็นชื่อเดียว
+function tdWho(card) { return Array.isArray(card.assignees) ? card.assignees : (card.assignee ? [card.assignee] : []); }
+const TD_AV_COLORS = ['#3E63DD', '#30A46C', '#E5484D', '#8E4EC6', '#F76B15', '#0EA5E9', '#D6409F', '#AD7F58'];
+function tdAvColor(name) { let h = 0; for (const ch of String(name)) h = (h * 31 + ch.codePointAt(0)) >>> 0; return TD_AV_COLORS[h % TD_AV_COLORS.length]; }
+
+function tdNewBoard(name, visibility, members) {
+  return { id: tdUid('board'), name: name || 'บอร์ดใหม่', visibility: TD_VIS[visibility] ? visibility : 'private', owner: todo.me,
+    ...(visibility === 'members' ? { members: members || [] } : {}), templates: [],
+    labels: TD_DEFAULT_LABELS.map(l => ({ ...l })),
+    columns: [
+      { id: tdUid('col'), name: 'To do', color: '#94A3B8', cards: [] },
+      { id: tdUid('col'), name: 'กำลังทำ', color: '#3E63DD', cards: [] },
+      { id: tdUid('col'), name: 'ติดตาม', color: '#D4A106', cards: [] },
+      { id: tdUid('col'), name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, cards: [] },
+      { id: tdUid('col'), name: 'ยกเลิก', color: '#64748B', isDone: true, cards: [] }
+    ] };
+}
+
+async function todoPost(body) {
+  const controller = new AbortController(); const t = setTimeout(() => controller.abort(), 60000);
+  try {
+    const r = await fetch(URLS.work, { method: 'POST', body: JSON.stringify({ token: API_TOKEN, ...body }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: controller.signal });
+    return JSON.parse(await r.text());
+  } finally { clearTimeout(t); }
+}
+
+async function loadTodos(silent) {
+  if (todo.loading) return false;
+  todo.loading = true;
+  let changed = false;
+  try {
+    const data = await fetchWithRetry(URLS.work, { action: 'todos' });
+    todo.me = data.me || USER_NAME; todo.users = data.users || [];
+    const incoming = data.boards || [];
+    const next = [];
+    incoming.forEach(sb => {
+      const local = todo.boards.find(b => b.id === sb.id);
+      if (local && (todo.dirty.has(sb.id) || todo.saving.has(sb.id))) { next.push(local); return; }   // มีงานที่ยังไม่บันทึก: เก็บของเราไว้
+      if (!local || local.rev !== sb.rev) changed = true;
+      next.push(sb); todo.base[sb.id] = clone(sb);
+    });
+    todo.boards.forEach(b => { if (!incoming.some(x => x.id === b.id) && (todo.dirty.has(b.id) || todo.saving.has(b.id))) next.push(b); });
+    if (next.length !== todo.boards.length) changed = true;
+    todo.boards = next;
+    todo.loaded = true;
+    if (!todo.boards.some(b => b.id === todo.activeId)) todo.activeId = todo.boards[0] ? todo.boards[0].id : null;
+  } catch (e) {
+    if (!silent) showToast('โหลด To-do ไม่สำเร็จ: ' + e.message);
+  } finally { todo.loading = false; }
+  return changed;
+}
+
+function tdChanged(b, full) {
+  todo.ver[b.id] = (todo.ver[b.id] || 0) + 1;
+  todo.dirty.add(b.id);
+  todo.status[b.id] = 'pending';
+  clearTimeout(todo.timers[b.id]);
+  todo.timers[b.id] = setTimeout(() => tdSave(b.id), 600);
+  if (full) render(); else tdRefreshBoard();
+}
+
+async function tdSave(id) {
+  if (todo.saving.has(id)) { clearTimeout(todo.timers[id]); todo.timers[id] = setTimeout(() => tdSave(id), 700); return; }
+  const b = todo.boards.find(x => x.id === id); if (!b) return;
+  todo.saving.add(id); todo.status[id] = 'saving'; tdUpdateSaveLabel();
+  try {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const sentVer = todo.ver[id] || 0;
+      const payload = clone(b);
+      const res = await todoPost({ action: 'todoSave', board: payload, baseRev: typeof b.rev === 'number' ? b.rev : undefined });
+      if (res.error === 'Conflict' && res.board) {
+        // มีคนแก้บอร์ดนี้พร้อมกัน: รวมการแก้ไขอัตโนมัติ (ส่วนที่แก้ตรงกัน ใช้ของเรา)
+        const merged = merge3(todo.base[id] || { columns: [], labels: [] }, clone(b), res.board, 'b', [], {}, null);
+        Object.keys(b).forEach(k => delete b[k]); Object.assign(b, merged, { rev: res.board.rev });
+        todo.base[id] = clone(res.board);
+        continue;
+      }
+      if (res.error) throw new Error(res.error);
+      b.rev = res.rev; b.owner = res.owner; b.visibility = res.visibility; b.createdAt = res.createdAt;
+      if (Array.isArray(res.members)) b.members = res.members; else if (res.visibility !== 'members') delete b.members;
+      todo.base[id] = clone(b);
+      if ((todo.ver[id] || 0) === sentVer) todo.dirty.delete(id);
+      todo.status[id] = 'ok';
+      if (attempt > 0) { showToast('🔀 รวมการแก้ไขกับผู้ใช้อื่นในบอร์ดนี้แล้ว'); tdRefreshBoard(); }
+      return;
+    }
+    throw new Error('มีการแก้ไขพร้อมกันหลายครั้ง กรุณาลองอีกครั้ง');
+  } catch (e) {
+    todo.status[id] = 'err:' + (e.message || e);
+  } finally {
+    todo.saving.delete(id); tdUpdateSaveLabel();
+    if (todo.dirty.has(id) && todo.status[id] === 'ok') tdSave(id);
+  }
+}
+
+function tdUpdateSaveLabel() {
+  const el = document.getElementById('tdSave'); const b = tdBoard(); if (!el || !b) return;
+  const st = todo.status[b.id] || 'ok';
+  el.classList.toggle('err', st.startsWith('err'));
+  el.textContent = st === 'saving' || st === 'pending' ? '⏳ กำลังบันทึก…' : st.startsWith('err') ? '❌ บันทึกไม่สำเร็จ: ' + st.slice(4) : '✓ บันทึกแล้ว';
+}
+
+function tdStartPolling() {
+  if (todo.pollTimer) return;
+  todo.pollTimer = setInterval(async () => {
+    if (view.type !== 'todo' || document.visibilityState !== 'visible' || modalOpen || todo.drag || todo.dirty.size || todo.saving.size) return;
+    const ae = document.activeElement;
+    if (ae && ae.closest && ae.closest('.td-add, .td-tools')) return;
+    if (await loadTodos(true)) render();
+  }, 8000);
+}
+
+// ---------- แท็บบอร์ด (แถบที่สอง) ----------
+function renderTodoTabs(subBar) {
+  if (!todo.loaded) return;
+  todo.boards.forEach(b => {
+    const t = document.createElement('button');
+    const active = tdBoard() && tdBoard().id === b.id;
+    t.className = 'tab' + (active ? ' active' : ''); t.style.paddingRight = '14px';
+    const v = tdVis(b);
+    t.innerHTML = `<span class="td-tab-ico">${TD_VIS[v].ico}</span><span>${escapeHTML(b.name)}</span>`;
+    t.title = v === 'shared' ? `บอร์ดทีม (ทุกคนเห็น) · เจ้าของ: ${b.owner || '-'}` : v === 'members' ? `บอร์ดเฉพาะกลุ่ม · เจ้าของ: ${b.owner || '-'} · สมาชิก: ${(b.members || []).join(', ')}` : 'บอร์ดส่วนตัว (เห็นเฉพาะคุณ)';
+    t.onclick = () => { todo.activeId = b.id; lsSet('todo_active', b.id); render(); };
+    subBar.appendChild(t);
+  });
+  const add = document.createElement('button'); add.className = 'tab tab-add'; add.textContent = '+ บอร์ดใหม่'; add.onclick = tdOpenNewBoard; subBar.appendChild(add);
+}
+
+// ---------- หน้า To-do ----------
+function renderTodo() {
+  const root = document.createElement('div');
+  tdStartPolling();
+  if (!todo.loaded) {
+    root.innerHTML = '<div class="td-empty">⏳ กำลังโหลด To-do...</div>';
+    loadTodos(false).then(() => render());
+    return root;
+  }
+  const b = tdBoard();
+  if (!b) {
+    root.innerHTML = `<div class="td-empty"><h3>ยังไม่มีบอร์ด To-do</h3><p>สร้างบอร์ดสำหรับงานของคุณ หรือนำเข้าบอร์ดเดิมจาก Trello</p></div>`;
+    const btn = document.createElement('button'); btn.className = 'primary-btn'; btn.textContent = '+ สร้างบอร์ดแรก'; btn.onclick = tdOpenNewBoard;
+    root.querySelector('.td-empty').appendChild(btn);
+    return root;
+  }
+  const edit = tdCanEdit(b), owner = tdIsOwner(b);
+  const head = document.createElement('div'); head.className = 'td-head';
+  const title = document.createElement('div'); title.className = 'td-title';
+  const h = document.createElement('h2'); h.textContent = b.name; h.title = edit ? 'คลิกเพื่อเปลี่ยนชื่อบอร์ด' : '';
+  if (edit) h.onclick = () => openTextModal('เปลี่ยนชื่อบอร์ด', 'ชื่อบอร์ด', b.name, (v) => { if (v) { b.name = v; tdChanged(b, true); } });
+  title.appendChild(h);
+  if (owner) {
+    const vis = document.createElement('div'); vis.className = 'td-vis';
+    const cur = tdVis(b);
+    vis.innerHTML = Object.entries(TD_VIS).map(([k, v]) => `<button type="button" data-v="${k}" class="${cur === k ? 'on' : ''}" title="${v.desc}">${v.ico} ${v.name}</button>`).join('');
+    vis.querySelectorAll('button').forEach(btn => btn.onclick = () => {
+      const v = btn.dataset.v;
+      if (v !== 'private' && READ_ONLY) { showToast('บัญชีดูอย่างเดียวสร้างได้เฉพาะบอร์ดส่วนตัว'); return; }
+      if (v === 'members') { tdOpenMembers(b); return; }
+      if (v === cur) return;
+      const msg = v === 'shared' ? 'เปลี่ยนเป็น "ทุกคน"?\nทุกคนที่เข้าระบบจะเห็นและแก้ไขบอร์ดนี้ได้' : 'เปลี่ยนเป็น "เฉพาะฉัน"?\nคนอื่นจะไม่เห็นบอร์ดนี้อีก';
+      if (!confirm(msg)) return;
+      b.visibility = v; tdChanged(b, true);
+    });
+    title.appendChild(vis);
+    if (cur === 'members') {
+      const mm = document.createElement('button'); mm.type = 'button'; mm.className = 'td-mini';
+      mm.textContent = `🤝 สมาชิก ${(b.members || []).length} คน ✎`; mm.title = (b.members || []).join(', ');
+      mm.onclick = () => tdOpenMembers(b); title.appendChild(mm);
+    }
+  } else {
+    const badge = document.createElement('span'); badge.className = 'td-badge';
+    const v = tdVis(b);
+    badge.textContent = `${TD_VIS[v].ico} ${v === 'members' ? 'บอร์ดเฉพาะกลุ่ม' : 'บอร์ดทีม'} · เจ้าของ: ${b.owner || '-'}${edit ? '' : ' · ดูอย่างเดียว'}`; title.appendChild(badge);
+  }
+  const save = document.createElement('span'); save.className = 'td-save'; save.id = 'tdSave'; title.appendChild(save);
+  head.appendChild(title);
+  const right = document.createElement('div'); right.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap;';
+  if (edit) { const tb = document.createElement('button'); tb.className = 'ghost-btn'; tb.textContent = '📋 Template รายการย่อย'; tb.onclick = () => tdOpenTemplates(b); right.appendChild(tb); }
+  if (edit) { const lb = document.createElement('button'); lb.className = 'ghost-btn'; lb.textContent = '🏷 จัดการป้าย'; lb.onclick = () => tdOpenLabels(b); right.appendChild(lb); }
+  if (owner) { const db = document.createElement('button'); db.className = 'ghost-btn'; db.textContent = '🗑 ลบบอร์ด'; db.onclick = () => tdDeleteBoard(b); right.appendChild(db); }
+  head.appendChild(right);
+  root.appendChild(head);
+
+  const tools = document.createElement('div'); tools.className = 'td-tools';
+  tools.innerHTML = `<div class="search-box"><span class="s-icon">🔍</span><input type="search" id="tdSearch" placeholder="ค้นหาการ์ด" value="${escapeHTML(todo.filter.q)}" aria-label="ค้นหาการ์ด"></div>
+    <button type="button" class="td-chip ${todo.filter.mine ? 'on' : ''}" data-f="mine">👤 งานของฉัน</button>
+    <button type="button" class="td-chip ${todo.filter.due ? 'on' : ''}" data-f="due">⏰ ใกล้/เลยกำหนด</button>
+    <select id="tdLabelFilter" class="td-chip" aria-label="กรองตามป้าย"><option value="">🏷 ทุกป้าย</option>${(b.labels || []).map(l => `<option value="${l.key}" ${todo.filter.label === l.key ? 'selected' : ''}>${escapeHTML(l.name)}</option>`).join('')}</select>
+    <div class="td-stats" id="tdStats"></div>`;
+  const qIn = tools.querySelector('#tdSearch');
+  qIn.oninput = () => { clearTimeout(qIn._t); qIn._t = setTimeout(() => { todo.filter.q = qIn.value.trim(); tdRefreshBoard(); }, 200); };
+  tools.querySelectorAll('.td-chip[data-f]').forEach(c => c.onclick = () => { todo.filter[c.dataset.f] = !todo.filter[c.dataset.f]; c.classList.toggle('on'); tdRefreshBoard(); });
+  tools.querySelector('#tdLabelFilter').onchange = (e) => { todo.filter.label = e.target.value; tdRefreshBoard(); };
+  root.appendChild(tools);
+
+  const area = document.createElement('div'); area.id = 'tdBoardArea'; root.appendChild(area);
+  setTimeout(() => { tdRefreshBoard(); tdUpdateSaveLabel(); }, 0);
+  return root;
+}
+
+function tdMatch(card, col) {
+  const f = todo.filter;
+  if (f.mine && !tdWho(card).includes(todo.me)) return false;
+  if (f.label && !(card.labels || []).includes(f.label)) return false;
+  if (f.due) { const d = tdDayDiff(card.due); if (d === null || d > 3 || col.isDone) return false; }
+  if (f.q) {
+    const q = f.q.toLowerCase();
+    const text = [card.title, card.note, ...(card.checklist || []).map(i => i.text)].join(' ').toLowerCase();
+    if (!text.includes(q)) return false;
+  }
+  return true;
+}
+
+function tdRefreshBoard() {
+  const area = document.getElementById('tdBoardArea'); const b = tdBoard();
+  if (!area || !b) return;
+  const edit = tdCanEdit(b);
+  const keepScroll = area.querySelector('.td-board') ? area.querySelector('.td-board').scrollLeft : 0;
+  area.innerHTML = '';
+  const board = document.createElement('div'); board.className = 'td-board';
+  let total = 0, overdue = 0, todayN = 0;
+  b.columns.forEach((col, ci) => {
+    col.cards = col.cards || [];
+    col.cards.forEach(c => { if (!col.isDone) { total++; const d = tdDayDiff(c.due); if (d !== null && d < 0) overdue++; if (d === 0) todayN++; } });
+    board.appendChild(tdRenderColumn(b, col, ci, edit));
+  });
+  if (edit) {
+    const nc = document.createElement('div'); nc.className = 'td-newcol';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = '+ เพิ่มคอลัมน์';
+    btn.onclick = () => openTextModal('เพิ่มคอลัมน์', 'ชื่อคอลัมน์', '', (v) => { if (!v) return; b.columns.push({ id: tdUid('col'), name: v, color: '#94A3B8', cards: [] }); tdChanged(b); });
+    nc.appendChild(btn); board.appendChild(nc);
+  }
+  area.appendChild(board);
+  board.scrollLeft = keepScroll;
+  const st = document.getElementById('tdStats');
+  if (st) st.innerHTML = `<span>งานค้าง <b>${total}</b></span><span class="red">เลยกำหนด <b>${overdue}</b></span><span class="amber">ครบวันนี้ <b>${todayN}</b></span>`;
+}
+
+function tdRenderColumn(b, col, ci, edit) {
+  const el = document.createElement('div'); el.className = 'td-col'; el.style.setProperty('--colc', col.color || '#94A3B8');
+  const visible = col.cards.filter(c => tdMatch(c, col));
+  const head = document.createElement('div'); head.className = 'td-col-h';
+  head.innerHTML = `<div class="td-col-name" title="${escapeHTML(col.name)}">${col.isDone ? '✔ ' : ''}${escapeHTML(col.name)}</div><span class="td-count">${visible.length === col.cards.length ? col.cards.length : visible.length + '/' + col.cards.length}</span>`;
+  if (edit) {
+    head.querySelector('.td-col-name').onclick = () => openTextModal('เปลี่ยนชื่อคอลัมน์', 'ชื่อคอลัมน์', col.name, (v) => { if (v) { col.name = v; tdChanged(b); } });
+    const m = document.createElement('button'); m.className = 'td-icon-btn'; m.type = 'button'; m.textContent = '⋯'; m.setAttribute('aria-label', 'เมนูคอลัมน์');
+    m.onclick = (e) => { e.stopPropagation(); tdColumnMenu(e, b, col, ci); };
+    head.appendChild(m);
+  }
+  el.appendChild(head);
+
+  const list = document.createElement('div'); list.className = 'td-list'; list.dataset.col = col.id;
+  const LIMIT = 15;
+  const shown = col.isDone && !todo.showAll[col.id] && !todo.filter.q ? visible.slice(0, LIMIT) : visible;
+  shown.forEach(card => list.appendChild(tdRenderCard(b, col, card, edit)));
+  if (shown.length < visible.length) {
+    const more = document.createElement('button'); more.className = 'td-more'; more.type = 'button';
+    more.textContent = `แสดงทั้งหมด (${visible.length} การ์ด)`; more.onclick = () => { todo.showAll[col.id] = true; tdRefreshBoard(); };
+    list.appendChild(more);
+  }
+  if (edit) tdMakeDropZone(list, b, col);
+  el.appendChild(list);
+
+  if (edit) {
+    const add = document.createElement('div'); add.className = 'td-add';
+    if (todo.addingCol === col.id) {
+      add.innerHTML = `<textarea placeholder="ชื่องาน… (Enter = เพิ่ม, Shift+Enter = ขึ้นบรรทัดใหม่)" aria-label="ชื่องานใหม่"></textarea><div class="td-add-row"><button type="button" class="primary-btn">เพิ่มการ์ด</button><button type="button" class="td-icon-btn" aria-label="ยกเลิก">✕</button></div>`;
+      const ta = add.querySelector('textarea');
+      const commit = () => {
+        const v = ta.value.trim(); if (!v) return;
+        col.cards.push({ id: tdUid('card'), title: v, labels: [], checklist: [], createdBy: todo.me, createdAt: Date.now() });
+        tdChanged(b); setTimeout(() => { const t2 = document.querySelector(`.td-list[data-col="${col.id}"]`); if (t2) t2.scrollTop = t2.scrollHeight; const n = document.querySelector('.td-add textarea'); if (n) n.focus(); }, 0);
+      };
+      ta.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commit(); } if (e.key === 'Escape') { todo.addingCol = null; tdRefreshBoard(); } };
+      add.querySelector('.primary-btn').onclick = commit;
+      add.querySelector('.td-icon-btn').onclick = () => { todo.addingCol = null; tdRefreshBoard(); };
+      setTimeout(() => ta.focus(), 0);
+    } else {
+      add.innerHTML = '<button type="button" class="td-add-btn">+ เพิ่มการ์ด</button>';
+      add.querySelector('button').onclick = () => { todo.addingCol = col.id; tdRefreshBoard(); };
+    }
+    el.appendChild(add);
+  }
+  return el;
+}
+
+function tdRenderCard(b, col, card, edit) {
+  const d = tdDayDiff(card.due);
+  const el = document.createElement('div');
+  el.className = 'td-card' + (col.isDone ? ' done' : '') + (!col.isDone && d !== null && d < 0 ? ' overdue' : '');
+  el.dataset.id = card.id;
+  const labels = (card.labels || []).map(k => (b.labels || []).find(l => l.key === k)).filter(Boolean);
+  const cl = card.checklist || [], clDone = cl.filter(i => i.done).length;
+  let dueHtml = '';
+  if (card.due) {
+    let cls = '', txt = tdFmtDate(card.due);
+    if (col.isDone) cls = 'due-done';
+    else if (d < 0) { cls = 'due-red'; txt += ` · เลย ${-d} วัน`; }
+    else if (d === 0) { cls = 'due-amber'; txt = 'วันนี้'; }
+    else if (d <= 3) { cls = 'due-soon'; txt += ` · อีก ${d} วัน`; }
+    dueHtml = `<span class="td-b ${cls}" title="กำหนดส่ง">🕘 ${txt}</span>`;
+  }
+  // ช่องติ๊ก: การ์ดที่ไม่มีรายการย่อย และการ์ดทุกใบในคอลัมน์งานเสร็จ
+  const showTick = !cl.length || col.isDone;
+  const tick = showTick ? `<button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${col.isDone ? 'เอาติ๊กออก = ย้ายกลับไปทำต่อ' : 'ติ๊กเมื่อทำเสร็จ = ย้ายไปงานเสร็จแล้ว'}" aria-label="${col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : ''}</button>` : '';
+  const exp = cl.length && todo.expanded.has(card.id);
+  const who = tdWho(card);
+  el.innerHTML = `${labels.length ? `<div class="td-labels">${labels.map(l => `<span class="td-label" style="background:${tdLabelColor(b, l.key)}">${escapeHTML(l.name)}</span>`).join('')}</div>` : ''}
+    <div class="td-card-title">${tick}<span>${escapeHTML(card.title)}</span></div>
+    ${(dueHtml || cl.length || card.note || who.length) ? `<div class="td-badges">${dueHtml}
+      ${cl.length ? `<button type="button" class="td-b td-clbtn ${clDone === cl.length ? 'cl-done' : ''}" title="${exp ? 'ซ่อนรายการย่อย' : 'ดู/ติ๊กรายการย่อยบนการ์ด'}">☑ ${clDone}/${cl.length} ${exp ? '▴' : '▾'}</button>` : ''}
+      ${card.note ? '<span class="td-b" title="มีรายละเอียด">≡</span>' : ''}
+      ${who.length ? `<span class="td-avs" title="ผู้รับผิดชอบ: ${escapeHTML(who.join(', '))}">${who.slice(0, 3).map(n => `<span class="td-av" style="background:${tdAvColor(n)}">${escapeHTML(tdInitial(n))}</span>`).join('')}${who.length > 3 ? `<span class="td-av more">+${who.length - 3}</span>` : ''}</span>` : ''}</div>` : ''}
+    ${exp ? `<div class="td-cl-inline">${cl.map((it, i) => `<label class="${it.done ? 'done' : ''}"><input type="checkbox" data-i="${i}" ${it.done ? 'checked' : ''} ${edit ? '' : 'disabled'}><span>${escapeHTML(it.text)}</span></label>`).join('')}</div>` : ''}
+    ${cl.length && !col.isDone ? `<div class="td-prog"><i style="width:${Math.round(clDone / cl.length * 100)}%"></i></div>` : ''}`;
+  el.onclick = () => tdOpenCard(b, card.id);
+  const tk = el.querySelector('.td-tick');
+  if (tk && edit) tk.onclick = (e) => { e.stopPropagation(); tdSetDone(b, card.id, !col.isDone, el); };
+  else if (tk) tk.onclick = (e) => e.stopPropagation();
+  const clb = el.querySelector('.td-clbtn');
+  if (clb) clb.onclick = (e) => { e.stopPropagation(); if (todo.expanded.has(card.id)) todo.expanded.delete(card.id); else todo.expanded.add(card.id); tdRefreshBoard(); };
+  const inl = el.querySelector('.td-cl-inline');
+  if (inl) {
+    inl.onclick = (e) => e.stopPropagation();
+    inl.querySelectorAll('input').forEach(inp => inp.onchange = () => {
+      const was = cl.every(i => i.done);
+      cl[+inp.dataset.i].done = inp.checked;
+      card.updatedBy = todo.me; card.updatedAt = Date.now();
+      tdChanged(b);
+      // ติ๊กรายการสุดท้ายครบ -> ย้ายไปงานเสร็จอัตโนมัติ (กดเลิกทำได้)
+      if (!was && cl.every(i => i.done) && !col.isDone) tdSetDone(b, card.id, true, tdCardEl(card.id));
+    });
+  }
+  if (edit) {
+    el.draggable = true;
+    el.addEventListener('dragstart', (e) => { todo.drag = { cardId: card.id, from: col.id }; el.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', card.id); } catch (x) {} });
+    el.addEventListener('dragend', () => { el.classList.remove('dragging'); document.querySelectorAll('.td-ph').forEach(p => p.remove()); setTimeout(() => { todo.drag = null; }, 0); });
+  }
+  return el;
+}
+
+function tdMakeDropZone(list, b, col) {
+  const ph = () => { let p = list.querySelector('.td-ph'); if (!p) { p = document.createElement('div'); p.className = 'td-ph'; } return p; };
+  list.addEventListener('dragover', (e) => {
+    if (!todo.drag) return;
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.td-ph').forEach(p => { if (p.parentElement !== list) p.remove(); });
+    const cards = [...list.querySelectorAll('.td-card:not(.dragging)')];
+    const after = cards.find(c => { const r = c.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
+    const p = ph();
+    if (after) list.insertBefore(p, after); else { const more = list.querySelector('.td-more'); list.insertBefore(p, more || null); }
+  });
+  list.addEventListener('drop', (e) => {
+    if (!todo.drag) return;
+    e.preventDefault();
+    const p = list.querySelector('.td-ph');
+    const nextEl = p ? p.nextElementSibling : null;
+    const beforeId = nextEl && nextEl.classList.contains('td-card') ? nextEl.dataset.id : null;
+    const from = b.columns.find(c => c.id === todo.drag.from);
+    const idx = from.cards.findIndex(c => c.id === todo.drag.cardId);
+    if (idx < 0) return;
+    const [card] = from.cards.splice(idx, 1);
+    let to = col.cards.findIndex(c => c.id === beforeId);
+    if (to < 0) to = beforeId === null && p && list.querySelector('.td-more') ? Math.min(col.cards.length, 15) : col.cards.length;
+    col.cards.splice(to, 0, card);
+    if (col.isDone && !from.isDone) { card.doneAt = Date.now(); card.doneBy = todo.me; card.fromCol = from.id; }
+    if (!col.isDone) { delete card.doneAt; delete card.doneBy; }
+    todo.drag = null;
+    tdChanged(b);
+  });
+}
+
+function tdColumnMenu(e, b, col, ci) {
+  showCtxMenu(e, [
+    { label: '✎ เปลี่ยนชื่อคอลัมน์', action: () => openTextModal('เปลี่ยนชื่อคอลัมน์', 'ชื่อคอลัมน์', col.name, (v) => { if (v) { col.name = v; tdChanged(b); } }) },
+    { label: col.isDone ? '↺ ยกเลิกการเป็นคอลัมน์ "งานเสร็จ"' : '✔ ตั้งเป็นคอลัมน์ "งานเสร็จ"', action: () => { col.isDone = !col.isDone; if (!col.isDone) delete col.isDone; tdChanged(b); } },
+    { label: '🎨 เปลี่ยนสีหัวคอลัมน์', action: () => tdPickColumnColor(b, col) },
+    '-',
+    { label: '← ย้ายไปซ้าย', disabled: ci === 0, action: () => { b.columns.splice(ci - 1, 0, b.columns.splice(ci, 1)[0]); tdChanged(b); } },
+    { label: '→ ย้ายไปขวา', disabled: ci === b.columns.length - 1, action: () => { b.columns.splice(ci + 1, 0, b.columns.splice(ci, 1)[0]); tdChanged(b); } },
+    '-',
+    { label: '🗑 ลบคอลัมน์', action: () => {
+      if (col.cards.length && !confirm(`คอลัมน์ "${col.name}" มี ${col.cards.length} การ์ด จะถูกลบทั้งหมด ยืนยันหรือไม่?`)) return;
+      b.columns = b.columns.filter(c => c.id !== col.id); tdChanged(b);
+    } }
+  ]);
+}
+
+function tdPickColumnColor(b, col) {
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<h3>สีหัวคอลัมน์ "${escapeHTML(col.name)}"</h3><div class="color-picker">${Object.values(TD_COLORS).map(c => `<div class="color-swatch ${col.color === c ? 'selected' : ''}" data-c="${c}" style="background:${c}"></div>`).join('')}</div><div class="modal-actions"><button class="ghost-btn">ปิด</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  m.querySelectorAll('.color-swatch').forEach(sw => sw.onclick = () => { col.color = sw.dataset.c; closeModal(ov); tdChanged(b); });
+  m.querySelector('.ghost-btn').onclick = () => closeModal(ov);
+}
+
+function tdFindCard(b, cardId) {
+  for (const col of b.columns) { const c = (col.cards || []).find(x => x.id === cardId); if (c) return { col, card: c }; }
+  return null;
+}
+
+function tdOpenCard(b, cardId) {
+  b = tdLive(b);
+  const found = tdFindCard(b, cardId); if (!found) return;
+  const edit = tdCanEdit(b);
+  const work = clone(found.card); work.labels = work.labels || []; work.checklist = work.checklist || [];
+  const colId = found.col.id;
+  const clWasComplete = work.checklist.length > 0 && work.checklist.every(i => i.done);
+  const people = tdAssignees(b);
+  let whoSel = tdWho(work).slice();
+  whoSel.forEach(n => { if (!people.includes(n)) people.push(n); });
+  const v = tdVis(b);
+  const whoHint = v === 'private' ? 'บอร์ดส่วนตัว: มีเฉพาะคุณ' : v === 'members' ? 'เฉพาะสมาชิกของบอร์ดนี้' : 'ผู้ปฏิบัติงานทุกคน';
+  const dueBtns = [['วันนี้', 0], ['พรุ่งนี้', 1], ['+3 วัน', 3], ['+7 วัน', 7], ['ล้าง', 'x']];
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal td-modal';
+  m.innerHTML = `
+    <textarea class="td-title-in" id="tdcTitle" rows="1" aria-label="ชื่องาน">${escapeHTML(work.title)}</textarea>
+    <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+      <div><label class="field-label" for="tdcCol">อยู่ในคอลัมน์</label><select id="tdcCol" class="text-input">${b.columns.map(c => `<option value="${c.id}" ${c.id === colId ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select></div>
+      <div><label class="field-label" for="tdcDue">กำหนดส่ง</label><input type="date" id="tdcDue" class="text-input" value="${escapeHTML(work.due || '')}">
+        ${edit ? `<div class="td-due-quick">${dueBtns.map(([t, n]) => `<button type="button" data-d="${n}">${t}</button>`).join('')}</div>` : ''}</div>
+    </div>
+    <label class="field-label">ผู้รับผิดชอบ <span style="font-weight:400;">(ติ๊กได้หลายคน · ${whoHint})</span></label>
+    <div class="td-who-pick" id="tdcWho">${people.length ? people.map(u => `<button type="button" data-u="${escapeHTML(u)}" class="${whoSel.includes(u) ? 'on' : ''}" ${edit ? '' : 'disabled'}><span class="bx">${whoSel.includes(u) ? '✓' : ''}</span>${escapeHTML(u)}</button>`).join('') : '<span class="td-who-hint">ไม่มีรายชื่อ</span>'}</div>
+    <label class="field-label">ป้าย</label>
+    <div class="td-lbl-pick" id="tdcLabels">${(b.labels || []).map(l => `<button type="button" data-k="${l.key}" class="${work.labels.includes(l.key) ? 'on' : ''}" style="background:${tdLabelColor(b, l.key)}">${escapeHTML(l.name)}</button>`).join('')}</div>
+    <div class="td-cl-head"><label class="field-label">รายการย่อย <span id="tdcClPct" style="font-weight:400;"></span></label>
+      ${edit ? '<button type="button" class="td-mini" id="tdcTplBtn">📋 ใช้ Template / คัดลอก</button><button type="button" class="td-mini" id="tdcTplSave">💾 บันทึกเป็น Template</button>' : ''}</div>
+    <div id="tdcTpl" class="td-tpl" hidden></div>
+    <div class="td-prog" style="margin:0 0 6px;"><i id="tdcClBar" style="width:0%"></i></div>
+    <div id="tdcCl"></div>
+    ${edit ? '<input type="text" id="tdcClNew" class="text-input" placeholder="+ เพิ่มรายการย่อย แล้วกด Enter" style="margin-top:4px;">' : ''}
+    <label class="field-label" for="tdcNote">รายละเอียด</label>
+    <textarea id="tdcNote" class="text-input" rows="4" placeholder="รายละเอียด / ลิงก์เอกสาร / หมายเหตุ">${escapeHTML(work.note || '')}</textarea>
+    <div class="td-meta">${work.createdBy ? 'สร้างโดย ' + escapeHTML(work.createdBy) : ''}${work.createdAt ? ' · ' + escapeHTML(fmtDateTime(work.createdAt)) : ''}${work.updatedBy ? ' · แก้ล่าสุดโดย ' + escapeHTML(work.updatedBy) + ' ' + escapeHTML(fmtDateTime(work.updatedAt)) : ''}${work.doneAt ? ' · เสร็จเมื่อ ' + escapeHTML(fmtDateTime(work.doneAt)) + (work.doneBy ? ' โดย ' + escapeHTML(work.doneBy) : '') : ''}</div>
+    ${edit ? '<div style="font-size:11px; color:var(--ink-soft); margin-top:4px;">Ctrl+Enter = บันทึก · Esc = ปิด</div>' : ''}
+    <div class="modal-actions" id="tdcActions"></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  const ta = m.querySelector('#tdcTitle'); const fit = () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }; ta.oninput = fit; setTimeout(fit, 0);
+  ta.onkeydown = (e) => { if (e.key === 'Enter' && !(e.ctrlKey || e.metaKey)) e.preventDefault(); };
+  const dueIn = m.querySelector('#tdcDue');
+  m.querySelectorAll('#tdcWho button').forEach(btn => btn.onclick = () => {
+    if (!edit) return;
+    const u = btn.dataset.u, on = !whoSel.includes(u);
+    whoSel = on ? [...whoSel, u] : whoSel.filter(x => x !== u);
+    btn.classList.toggle('on', on); btn.querySelector('.bx').textContent = on ? '✓' : '';
+  });
+  m.querySelectorAll('.td-due-quick button').forEach(btn => btn.onclick = () => {
+    dueIn.value = btn.dataset.d === 'x' ? '' : dateToInputStr(dateFromIndex(todayBangkokIndex() + Number(btn.dataset.d)));
+  });
+  m.querySelectorAll('#tdcLabels button').forEach(btn => btn.onclick = () => {
+    if (!edit) return; const k = btn.dataset.k;
+    work.labels = work.labels.includes(k) ? work.labels.filter(x => x !== k) : [...work.labels, k]; btn.classList.toggle('on');
+  });
+  const drawCl = () => {
+    const box = m.querySelector('#tdcCl'); box.innerHTML = '';
+    work.checklist.forEach((it, i) => {
+      const row = document.createElement('div'); row.className = 'td-cl-item' + (it.done ? ' done' : '');
+      row.innerHTML = `<input type="checkbox" ${it.done ? 'checked' : ''} aria-label="ทำเสร็จ"><input type="text" value="${escapeHTML(it.text)}" aria-label="รายการย่อย"><button type="button" class="td-icon-btn" aria-label="ลบรายการ">✕</button>`;
+      row.querySelector('input[type=checkbox]').onchange = (e) => { it.done = e.target.checked; drawCl(); };
+      const tx = row.querySelector('input[type=text]');
+      tx.oninput = (e) => { it.text = e.target.value; };
+      tx.onkeydown = (e) => { if (e.key === 'Enter' && clNew) { e.preventDefault(); clNew.focus(); } };
+      row.querySelector('button').onclick = () => { work.checklist.splice(i, 1); drawCl(); };
+      box.appendChild(row);
+    });
+    const n = work.checklist.length, dn = work.checklist.filter(x => x.done).length;
+    m.querySelector('#tdcClBar').style.width = n ? Math.round(dn / n * 100) + '%' : '0%';
+    m.querySelector('#tdcClPct').textContent = n ? `${dn}/${n} (${Math.round(dn / n * 100)}%)` : '';
+    if (!edit) box.querySelectorAll('input,button').forEach(x => x.disabled = true);
+  };
+  const clNew = m.querySelector('#tdcClNew');
+  drawCl();
+  if (clNew) clNew.onkeydown = (e) => { if (e.key === 'Enter' && clNew.value.trim()) { e.preventDefault(); work.checklist.push({ id: tdUid('cli'), text: clNew.value.trim(), done: false }); clNew.value = ''; drawCl(); } };
+
+  // ----- Template / คัดลอกรายการย่อย -----
+  const tplBox = m.querySelector('#tdcTpl');
+  const addItems = (items, from) => {
+    const have = new Set(work.checklist.map(i => i.text.trim()));
+    let n = 0;
+    items.forEach(t => { t = String(t || '').trim(); if (t && !have.has(t)) { work.checklist.push({ id: tdUid('cli'), text: t, done: false }); have.add(t); n++; } });
+    drawCl(); tplBox.hidden = true;
+    showToast(n ? `เพิ่มรายการย่อย ${n} รายการจาก "${from}"` : 'รายการเหล่านี้มีอยู่ในการ์ดแล้ว');
+  };
+  const drawPick = () => {
+    const tpls = [];
+    todo.boards.forEach(bb => (bb.templates || []).forEach(t => tpls.push({ t, board: bb })));
+    tpls.sort((x, y) => (x.board.id === b.id ? 0 : 1) - (y.board.id === b.id ? 0 : 1));
+    const src = [];
+    todo.boards.forEach(bb => bb.columns.forEach(c => (c.cards || []).forEach(cd => { if (cd.id !== cardId && (cd.checklist || []).length) src.push({ cd, board: bb }); })));
+    src.sort((x, y) => (x.board.id === b.id ? 0 : 1) - (y.board.id === b.id ? 0 : 1));
+    tplBox.innerHTML = `<div class="td-tpl-h">📋 Template</div>
+      <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)}${x.board.id !== b.id ? ` <small>· ${escapeHTML(x.board.name)}</small>` : ''}</span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — กด "💾 บันทึกเป็น Template" หรือปุ่ม "📋 Template รายการย่อย" ที่หัวบอร์ด</div>'}</div>
+      <div class="td-tpl-h" style="margin-top:10px;">คัดลอกรายการจากการ์ด…</div>
+      <input type="search" class="text-input" id="tplQ" placeholder="🔍 พิมพ์ชื่อการ์ด เช่น งบกลาง">
+      <div class="td-tpl-list" id="tplSrc" style="margin-top:6px;"></div>`;
+    tplBox.querySelectorAll('[data-t]').forEach(x => x.onclick = () => { const it = tpls[+x.dataset.t]; addItems(it.t.items, it.t.name); });
+    const q = tplBox.querySelector('#tplQ'), list = tplBox.querySelector('#tplSrc');
+    const drawSrc = () => {
+      const kw = q.value.trim().toLowerCase();
+      const hits = src.filter(x => !kw || x.cd.title.toLowerCase().includes(kw)).slice(0, 60);
+      list.innerHTML = hits.length ? hits.map((x, i) => `<button type="button" class="td-tpl-item" data-s="${i}"><span>${escapeHTML(x.cd.title)}${x.board.id !== b.id ? ` <small>· ${escapeHTML(x.board.name)}</small>` : ''}</span><small>${x.cd.checklist.length} รายการ</small></button>`).join('')
+        : '<div class="td-tpl-empty">ไม่พบการ์ดที่มีรายการย่อย</div>';
+      list.querySelectorAll('[data-s]').forEach(el => el.onclick = () => { const x = hits[+el.dataset.s]; addItems(x.cd.checklist.map(i => i.text), x.cd.title); });
+    };
+    q.oninput = drawSrc; q.onkeydown = (e) => { if (e.key === 'Enter') e.preventDefault(); };
+    drawSrc();
+  };
+  const drawSave = () => {
+    const items = work.checklist.map(i => i.text.trim()).filter(Boolean);
+    tplBox.innerHTML = `<div class="td-tpl-h">💾 บันทึกรายการย่อย ${items.length} รายการนี้เป็น Template (ติ๊กเสร็จจะไม่ถูกบันทึก)</div>
+      <div style="display:flex; gap:6px;"><input class="text-input" id="tplName" placeholder="ชื่อ Template เช่น หนังสือส่งออก + ได้รับข้อมูล"><button type="button" class="primary-btn" id="tplSaveOk">บันทึก</button></div>`;
+    const nm = tplBox.querySelector('#tplName'); nm.value = ta.value.trim();
+    const doSave = () => {
+      const name = nm.value.trim(); if (!name) { nm.focus(); return; }
+      const live = tdLive(b); live.templates = live.templates || [];
+      const ex = live.templates.find(t => t.name === name);
+      if (ex) { if (!confirm(`มี Template "${name}" อยู่แล้ว\nแทนที่ด้วยรายการชุดนี้หรือไม่?`)) return; ex.items = items; }
+      else live.templates.push({ id: tdUid('tpl'), name, items });
+      tplBox.hidden = true; tdChanged(live); showToast(`💾 บันทึก Template "${name}" แล้ว`);
+    };
+    tplBox.querySelector('#tplSaveOk').onclick = doSave;
+    nm.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); doSave(); } };
+    setTimeout(() => { nm.focus(); nm.select(); }, 0);
+  };
+  const toggleTpl = (mode) => {
+    if (!tplBox.hidden && tplBox.dataset.mode === mode) { tplBox.hidden = true; return; }
+    tplBox.dataset.mode = mode; tplBox.hidden = false;
+    if (mode === 'pick') { drawPick(); setTimeout(() => { const q = tplBox.querySelector('#tplQ'); if (q) q.focus(); }, 0); } else drawSave();
+  };
+  if (edit) {
+    m.querySelector('#tdcTplBtn').onclick = () => toggleTpl('pick');
+    m.querySelector('#tdcTplSave').onclick = () => {
+      if (!work.checklist.some(i => i.text.trim())) { showToast('ยังไม่มีรายการย่อยให้บันทึก — เพิ่มรายการก่อน'); return; }
+      toggleTpl('save');
+    };
+  }
+
+  // ----- ปุ่มด้านล่าง -----
+  const actions = m.querySelector('#tdcActions');
+  const close = document.createElement('button'); close.className = 'ghost-btn'; close.textContent = edit ? 'ยกเลิก' : 'ปิด'; close.onclick = () => closeModal(ov);
+  let ok = null;
+  if (edit) {
+    const applyEdits = () => {
+      if (clNew && clNew.value.trim()) work.checklist.push({ id: tdUid('cli'), text: clNew.value.trim(), done: false });
+      b = tdLive(b);
+      const f = tdFindCard(b, cardId); if (!f) return null;
+      const target = f.card;
+      target.title = ta.value.trim() || target.title;
+      target.due = dueIn.value || ''; if (!target.due) delete target.due;
+      delete target.assignee;
+      const order = people.filter(u => whoSel.includes(u));
+      if (order.length) target.assignees = order; else delete target.assignees;
+      target.labels = work.labels; target.checklist = work.checklist.filter(i => i.text.trim());
+      target.note = m.querySelector('#tdcNote').value.trim(); if (!target.note) delete target.note;
+      target.updatedBy = todo.me; target.updatedAt = Date.now();
+      const newCol = m.querySelector('#tdcCol').value;
+      let col = f.col;
+      if (newCol !== f.col.id) {
+        const nc = b.columns.find(c => c.id === newCol);
+        if (nc) {
+          f.col.cards = f.col.cards.filter(c => c.id !== cardId);
+          nc.cards.unshift(target);
+          if (nc.isDone && !f.col.isDone) { target.doneAt = Date.now(); target.doneBy = todo.me; target.fromCol = f.col.id; }
+          if (!nc.isDone) { delete target.doneAt; delete target.doneBy; }
+          col = nc;
+        }
+      }
+      return { target, col };
+    };
+    const del = document.createElement('button'); del.className = 'danger-btn'; del.textContent = '🗑 ลบ';
+    del.onclick = () => {
+      b = tdLive(b); const f = tdFindCard(b, cardId); closeModal(ov); if (!f) return;
+      const prev = { colId: f.col.id, index: f.col.cards.indexOf(f.card), card: clone(f.card) };
+      f.col.cards.splice(prev.index, 1); tdChanged(b);
+      showToast('🗑 ลบการ์ดแล้ว', 'เลิกทำ', () => tdRestoreCard(b, cardId, prev));
+    };
+    const dup = document.createElement('button'); dup.className = 'ghost-btn'; dup.textContent = '📄 ทำสำเนา'; dup.style.marginRight = 'auto';
+    dup.title = 'บันทึกการแก้ไข แล้วสร้างการ์ดใหม่ที่เหมือนกัน (รายการย่อยยังไม่ติ๊ก)';
+    dup.onclick = () => {
+      const r = applyEdits(); closeModal(ov); if (!r) return;
+      const copy = clone(r.target); copy.id = tdUid('card'); copy.title = r.target.title + ' (สำเนา)';
+      copy.checklist = (copy.checklist || []).map(i => ({ ...i, id: tdUid('cli'), done: false }));
+      ['doneAt', 'doneBy', 'fromCol', 'updatedBy', 'updatedAt'].forEach(k => delete copy[k]);
+      copy.createdBy = todo.me; copy.createdAt = Date.now();
+      let col = r.col; if (col.isDone) col = tdBackCol(b, r.target) || col;
+      const idx = col.cards.indexOf(r.target); col.cards.splice(idx >= 0 ? idx + 1 : 0, 0, copy);
+      tdChanged(b); showToast(`📄 ทำสำเนาไว้ที่ "${col.name}" แล้ว`);
+    };
+    ok = document.createElement('button'); ok.className = 'primary-btn'; ok.textContent = 'บันทึก';
+    ok.onclick = () => {
+      const r = applyEdits(); closeModal(ov); if (!r) return;
+      tdChanged(b);
+      const cl = r.target.checklist || [];
+      if (!r.col.isDone && cl.length && cl.every(i => i.done) && !clWasComplete) tdSetDone(b, cardId, true, tdCardEl(cardId));
+    };
+    actions.append(del, dup, close, ok);
+  } else {
+    m.querySelectorAll('input,select,textarea').forEach(x => x.disabled = true);
+    actions.append(close);
+  }
+  // คีย์ลัด: Ctrl+Enter บันทึก / Esc ปิด
+  const onKey = (e) => {
+    if (!ov.isConnected) { document.removeEventListener('keydown', onKey); return; }
+    if (e.key === 'Escape') { if (!tplBox.hidden) { tplBox.hidden = true; return; } closeModal(ov); document.removeEventListener('keydown', onKey); }
+    else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && ok) { e.preventDefault(); document.removeEventListener('keydown', onKey); ok.click(); }
+  };
+  document.addEventListener('keydown', onKey);
+}
+
+// ---------- จัดการ Template รายการย่อยของบอร์ด ----------
+function tdOpenTemplates(b) {
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal td-modal';
+  const work = clone(tdLive(b).templates || []).map(t => ({ ...t, items: (t.items || []).slice() }));
+  const draw = () => {
+    m.innerHTML = `<h3>📋 Template รายการย่อย</h3>
+      <p class="modal-desc">ชุดขั้นตอนที่ใช้บ่อย เช่น หนังสือส่งออก + ได้รับข้อมูล / การประชุม / แต่งตั้งคำสั่ง — เปิดการ์ดแล้วกด "📋 ใช้ Template / คัดลอก" เพื่อเติมรายการทั้งชุดในคลิกเดียว</p>
+      <div id="tplWrap">${work.map((t, i) => `<div class="td-tpl-edit" data-i="${i}"><div style="display:flex; gap:6px; align-items:center;"><span class="td-tpl-grip" draggable="true" title="ลากเพื่อจัดลำดับ">⋮⋮</span><div class="td-tpl-move"><button type="button" data-up="${i}" ${i === 0 ? 'disabled' : ''} aria-label="เลื่อนขึ้น" title="เลื่อนขึ้น">▲</button><button type="button" data-down="${i}" ${i === work.length - 1 ? 'disabled' : ''} aria-label="เลื่อนลง" title="เลื่อนลง">▼</button></div><input class="text-input" data-n="${i}" value="${escapeHTML(t.name)}" placeholder="ชื่อ Template" style="font-weight:700;"><button type="button" class="td-icon-btn" data-del="${i}" aria-label="ลบ Template">✕</button></div><textarea class="text-input" data-t="${i}" rows="${Math.min(10, Math.max(3, t.items.length))}" placeholder="พิมพ์รายการละ 1 บรรทัด">${escapeHTML(t.items.join('\n'))}</textarea></div>`).join('') || '<div class="td-tpl-empty" style="padding:10px 2px;">ยังไม่มี Template</div>'}</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;"><button type="button" class="td-mini" id="tplAdd">+ เพิ่ม Template</button><label class="td-mini" style="cursor:pointer;">📥 ดึง Template จากไฟล์ Trello (JSON)<input type="file" accept=".json,application/json" id="tplFile" hidden></label></div>
+      <div class="modal-actions"><button class="ghost-btn" id="tplCancel">ยกเลิก</button><button class="primary-btn" id="tplOk">บันทึก</button></div>`;
+    m.querySelectorAll('[data-n]').forEach(x => x.oninput = () => { work[+x.dataset.n].name = x.value; });
+    m.querySelectorAll('textarea[data-t]').forEach(x => x.oninput = () => { work[+x.dataset.t].items = x.value.split('\n'); });
+    m.querySelectorAll('[data-del]').forEach(x => x.onclick = () => { work.splice(+x.dataset.del, 1); draw(); });
+    const move = (i, j) => { if (j < 0 || j >= work.length) return; work.splice(j, 0, work.splice(i, 1)[0]); draw(); };
+    m.querySelectorAll('[data-up]').forEach(x => x.onclick = () => move(+x.dataset.up, +x.dataset.up - 1));
+    m.querySelectorAll('[data-down]').forEach(x => x.onclick = () => move(+x.dataset.down, +x.dataset.down + 1));
+    // ลากที่ ⋮⋮ เพื่อย้ายตำแหน่ง
+    let dragI = null;
+    const blocks = [...m.querySelectorAll('.td-tpl-edit')];
+    blocks.forEach(blk => {
+      const grip = blk.querySelector('.td-tpl-grip');
+      grip.addEventListener('dragstart', (e) => { dragI = +blk.dataset.i; blk.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', 'tpl'); e.dataTransfer.setDragImage(blk, 20, 20); } catch (x) {} });
+      grip.addEventListener('dragend', () => { blk.classList.remove('dragging'); blocks.forEach(b2 => b2.classList.remove('drop-before')); dragI = null; });
+      blk.addEventListener('dragover', (e) => { if (dragI === null) return; e.preventDefault(); blocks.forEach(b2 => b2.classList.remove('drop-before')); blk.classList.add('drop-before'); });
+      blk.addEventListener('drop', (e) => { if (dragI === null) return; e.preventDefault(); let to = +blk.dataset.i; if (dragI < to) to--; const from = dragI; dragI = null; move(from, to); });
+    });
+    m.querySelector('#tplAdd').onclick = () => { work.push({ id: tdUid('tpl'), name: '', items: [] }); draw(); const ins = m.querySelectorAll('[data-n]'); ins[ins.length - 1].focus(); };
+    m.querySelector('#tplFile').onchange = async (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      try {
+        const got = tdTrelloTemplates(JSON.parse(await file.text()));
+        let n = 0; got.forEach(t => { if (!work.some(w => w.name.trim() === t.name)) { work.push(t); n++; } });
+        draw(); showToast(n ? `ดึง Template จาก Trello ได้ ${n} ชุด` : 'ไม่พบ Template ใหม่ในไฟล์ (checklist ที่ชื่อ "Checklist/รายการตรวจสอบ" จะไม่ถูกดึง)');
+      } catch (err) { alert('อ่านไฟล์ Trello ไม่ได้: ' + err.message); }
+    };
+    m.querySelector('#tplCancel').onclick = () => closeModal(ov);
+    m.querySelector('#tplOk').onclick = () => {
+      const live = tdLive(b);
+      live.templates = work.map(t => ({ id: t.id || tdUid('tpl'), name: String(t.name || '').trim(), items: t.items.map(x => String(x).trim()).filter(Boolean) })).filter(t => t.name && t.items.length);
+      closeModal(ov); tdChanged(live); showToast(`บันทึก Template แล้ว (${live.templates.length} ชุด)`);
+    };
+  };
+  draw();
+  ov.appendChild(m); document.body.appendChild(ov);
+}
+
+// ---------- เลือกคนที่เห็นบอร์ด (บอร์ดเฉพาะกลุ่ม) ----------
+function tdMemberPickHTML(selected, exclude) {
+  const pool = todo.users.filter(u => u !== exclude);
+  return pool.length ? pool.map(u => `<label><input type="checkbox" value="${escapeHTML(u)}" ${selected.includes(u) ? 'checked' : ''}> ${escapeHTML(u)}</label>`).join('')
+    : '<div class="td-tpl-empty">ไม่พบรายชื่อผู้ปฏิบัติงาน (ตรวจว่า Deploy สคริปต์ work เวอร์ชันล่าสุดแล้ว)</div>';
+}
+function tdOpenMembers(b) {
+  b = tdLive(b);
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<h3>🤝 เลือกคนที่เห็นบอร์ดนี้</h3>
+    <p class="modal-desc">เฉพาะคุณและคนที่เลือกเท่านั้นที่เห็นและแก้ไขบอร์ด "${escapeHTML(b.name)}" ได้ และรายชื่อนี้จะเป็นตัวเลือก "ผู้รับผิดชอบ" ของการ์ดในบอร์ด</p>
+    <div class="td-mem-list">${tdMemberPickHTML(b.members || [], b.owner)}</div>
+    <div class="modal-actions"><button class="ghost-btn" id="memCancel">ยกเลิก</button><button class="primary-btn" id="memOk">บันทึก</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  m.querySelector('#memCancel').onclick = () => closeModal(ov);
+  m.querySelector('#memOk').onclick = () => {
+    const list = [...m.querySelectorAll('.td-mem-list input:checked')].map(x => x.value);
+    if (!list.length) { alert('กรุณาเลือกอย่างน้อย 1 คน\n(ถ้าไม่ต้องการให้ใครเห็น ให้เลือก "🔒 เฉพาะฉัน")'); return; }
+    const live = tdLive(b); live.members = list; live.visibility = 'members';
+    closeModal(ov); tdChanged(live, true); showToast(`🤝 บอร์ดนี้เห็นเฉพาะคุณและอีก ${list.length} คน`);
+  };
+}
+
+function tdOpenLabels(b) {
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  const work = clone(b.labels || []);
+  const draw = () => {
+    m.innerHTML = `<h3>🏷 จัดการป้ายของบอร์ด</h3><p class="modal-desc">ตั้งชื่อป้ายให้สื่อความหมาย เช่น ด่วน / รอข้อมูล / รอผู้บริหาร</p>
+      <div id="lblRows">${work.map((l, i) => `<div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;"><span style="width:28px; height:28px; border-radius:6px; background:${TD_COLORS[l.key] || TD_COLORS.gray}; flex-shrink:0;"></span><input class="text-input" data-i="${i}" value="${escapeHTML(l.name)}"><button type="button" class="td-icon-btn" data-del="${i}" aria-label="ลบป้าย">✕</button></div>`).join('')}</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">${Object.keys(TD_COLORS).filter(k => !work.some(l => l.key === k)).map(k => `<button type="button" class="td-chip" data-add="${k}"><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:${TD_COLORS[k]};"></span> เพิ่มป้าย</button>`).join('')}</div>
+      <div class="modal-actions"><button class="ghost-btn" id="lblCancel">ยกเลิก</button><button class="primary-btn" id="lblOk">บันทึก</button></div>`;
+    m.querySelectorAll('input[data-i]').forEach(inp => inp.oninput = () => { work[+inp.dataset.i].name = inp.value; });
+    m.querySelectorAll('[data-del]').forEach(x => x.onclick = () => { work.splice(+x.dataset.del, 1); draw(); });
+    m.querySelectorAll('[data-add]').forEach(x => x.onclick = () => { work.push({ key: x.dataset.add, name: 'ป้ายใหม่' }); draw(); });
+    m.querySelector('#lblCancel').onclick = () => closeModal(ov);
+    m.querySelector('#lblOk').onclick = () => {
+      b.labels = work.filter(l => l.name.trim()).map(l => ({ key: l.key, name: l.name.trim() }));
+      const keys = new Set(b.labels.map(l => l.key));
+      b.columns.forEach(c => (c.cards || []).forEach(card => { card.labels = (card.labels || []).filter(k => keys.has(k)); }));
+      closeModal(ov); tdChanged(b, true);
+    };
+  };
+  draw();
+  ov.appendChild(m); document.body.appendChild(ov);
+}
+
+function tdDeleteBoard(b) {
+  openTypeConfirmModal('ลบบอร์ดนี้?', 'คอลัมน์และการ์ดทั้งหมดในบอร์ดนี้จะถูกลบถาวร', b.name, async () => {
+    todo.boards = todo.boards.filter(x => x.id !== b.id); todo.dirty.delete(b.id);
+    todo.activeId = todo.boards[0] ? todo.boards[0].id : null; render();
+    try { const r = await todoPost({ action: 'todoDelete', boardId: b.id }); if (r.error) throw new Error(r.error); showToast('ลบบอร์ดแล้ว'); }
+    catch (e) { showToast('ลบบอร์ดไม่สำเร็จ: ' + e.message); await loadTodos(true); render(); }
+  });
+}
+
+function tdOpenNewBoard() {
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  const opt = (k, desc) => {
+    const dis = READ_ONLY && k !== 'private';
+    return `<label style="display:flex; gap:8px; align-items:flex-start; margin:6px 0; cursor:${dis ? 'not-allowed' : 'pointer'}; opacity:${dis ? 0.5 : 1};"><input type="radio" name="nbVis" value="${k}" ${k === 'private' ? 'checked' : ''} ${dis ? 'disabled' : ''} style="margin-top:3px;"><span><b>${TD_VIS[k].ico} ${TD_VIS[k].name}</b><br><span style="font-size:12px; color:var(--ink-soft);">${desc}</span></span></label>`;
+  };
+  m.innerHTML = `<h3>+ สร้างบอร์ดใหม่</h3>
+    <label class="field-label" for="nbName">ชื่อบอร์ด</label><input id="nbName" class="text-input" placeholder="เช่น เงินกู้ต่างประเทศ">
+    <label class="field-label">ใครเห็นบอร์ดนี้</label>
+    ${opt('private', 'คนอื่นมองไม่เห็นบอร์ดนี้เลย เหมาะกับงานส่วนตัว')}
+    ${opt('members', 'เลือกคนที่เห็นและช่วยกันอัปเดต เหมาะกับงานเฉพาะเรื่อง')}
+    <div class="td-mem-list" id="nbMem" hidden>${tdMemberPickHTML([], todo.me)}</div>
+    ${opt('shared', 'ทุกคนที่เข้าระบบเห็นและช่วยกันอัปเดตได้ เหมาะกับงานทีม')}
+    <label class="field-label">นำเข้าจาก Trello (ไม่บังคับ)</label>
+    <input type="file" id="nbFile" accept=".json,application/json" class="text-input">
+    <div style="font-size:11.5px; color:var(--ink-soft); margin-top:4px;">ใน Trello: เมนูบอร์ด ⋯ → พิมพ์ ส่งออก และแชร์ → ส่งออกเป็น JSON แล้วเลือกไฟล์ที่ได้ (ดึงคอลัมน์ การ์ด ป้าย รายการย่อย และ Template มาให้)</div>
+    <div class="modal-actions"><button class="ghost-btn" id="nbCancel">ยกเลิก</button><button class="primary-btn" id="nbOk">สร้างบอร์ด</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  setTimeout(() => m.querySelector('#nbName').focus(), 0);
+  m.querySelectorAll('input[name=nbVis]').forEach(r => r.onchange = () => { m.querySelector('#nbMem').hidden = m.querySelector('input[name=nbVis]:checked').value !== 'members'; });
+  m.querySelector('#nbCancel').onclick = () => closeModal(ov);
+  m.querySelector('#nbOk').onclick = async () => {
+    const vis = m.querySelector('input[name=nbVis]:checked').value;
+    const members = [...m.querySelectorAll('#nbMem input:checked')].map(x => x.value);
+    if (vis === 'members' && !members.length) { alert('กรุณาเลือกคนที่เห็นบอร์ดนี้อย่างน้อย 1 คน'); return; }
+    let name = m.querySelector('#nbName').value.trim();
+    const file = m.querySelector('#nbFile').files[0];
+    let b;
+    if (file) {
+      try { b = tdFromTrello(JSON.parse(await file.text()), vis); }
+      catch (e) { alert('อ่านไฟล์ Trello ไม่ได้: ' + e.message); return; }
+      if (name) b.name = name;
+      if (vis === 'members') b.members = members;
+    } else {
+      b = tdNewBoard(name || 'บอร์ดใหม่', vis, members);
+    }
+    todo.boards.push(b); todo.activeId = b.id; lsSet('todo_active', b.id);
+    closeModal(ov); tdChanged(b, true);
+    if (file) showToast(`นำเข้าจาก Trello แล้ว: ${b.columns.length} คอลัมน์ · ${b.columns.reduce((t, c) => t + c.cards.length, 0)} การ์ด · ${(b.templates || []).length} Template`);
+  };
+}
+
+// แปลงไฟล์ JSON ที่ส่งออกจาก Trello เป็นบอร์ดของระบบ
+function tdFromTrello(j, vis) {
+  if (!j || !Array.isArray(j.lists) || !Array.isArray(j.cards)) throw new Error('ไม่ใช่ไฟล์ส่งออกของ Trello');
+  const baseColor = (c) => { const k = String(c || '').replace(/_(dark|light)$/, ''); return k === 'lime' ? 'green' : k === 'black' ? 'gray' : (TD_COLORS[k] ? k : null); };
+  const labels = [];
+  const labelKeyById = {};
+  (j.labels || []).forEach(l => {
+    const key = baseColor(l.color); if (!key) return;
+    let entry = labels.find(x => x.key === key);
+    if (!entry) { entry = { key, name: l.name || (TD_DEFAULT_LABELS.find(d => d.key === key) || {}).name || key }; labels.push(entry); }
+    else if (l.name && entry.name === key) entry.name = l.name;
+    labelKeyById[l.id] = key;
+  });
+  if (!labels.length) TD_DEFAULT_LABELS.forEach(l => labels.push({ ...l }));
+  const checklists = {};
+  (j.checklists || []).forEach(c => { checklists[c.id] = c; });
+  const lists = j.lists.filter(l => !l.closed).sort((a, b) => (a.pos || 0) - (b.pos || 0));
+  const isDoneName = (n) => /done|เสร็จ|ยกเลิก|cancel/i.test(n || '');
+  const colorFor = (n) => /done|เสร็จ/i.test(n) ? '#30A46C' : /ยกเลิก|cancel/i.test(n) ? '#64748B' : /doing|กำลัง/i.test(n) ? '#3E63DD' : /ติดตาม/i.test(n) ? '#D4A106' : '#94A3B8';
+  const columns = lists.map(l => ({ id: tdUid('col'), _tid: l.id, name: l.name, color: colorFor(l.name), ...(isDoneName(l.name) ? { isDone: true } : {}), cards: [] }));
+  const colByTid = {}; columns.forEach(c => { colByTid[c._tid] = c; });
+  j.cards.filter(c => !c.closed && colByTid[c.idList]).sort((a, b) => (a.pos || 0) - (b.pos || 0)).forEach(c => {
+    const items = [];
+    (c.idChecklists || []).forEach(id => { const cl = checklists[id]; if (cl) (cl.checkItems || []).slice().sort((a, b) => (a.pos || 0) - (b.pos || 0)).forEach(it => items.push({ id: tdUid('cli'), text: it.name, done: it.state === 'complete' })); });
+    let due;
+    if (c.due) { const d = new Date(c.due); const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d); due = parts; }
+    const card = { id: tdUid('card'), title: c.name || '(ไม่มีชื่อ)', labels: [...new Set((c.idLabels || []).map(id => labelKeyById[id]).filter(Boolean))], checklist: items, createdBy: todo.me, createdAt: Date.now() };
+    if (due) card.due = due;
+    if (c.desc) card.note = c.desc;
+    colByTid[c.idList].cards.push(card);
+  });
+  columns.forEach(c => delete c._tid);
+  if (!columns.length) throw new Error('ไม่พบรายการ (list) ในไฟล์');
+  return { id: tdUid('board'), name: j.name || 'บอร์ดจาก Trello', visibility: TD_VIS[vis] ? vis : 'private', owner: todo.me, labels, columns, templates: tdTrelloTemplates(j) };
+}
 
 // ==========================================
 // --- บัญชีดูอย่างเดียว: ล็อกทุกฟังก์ชันที่แก้ข้อมูล ---
