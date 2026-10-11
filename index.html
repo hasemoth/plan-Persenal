@@ -78,10 +78,37 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 .legend-label { font-size: 12.5px; color: var(--ink-soft); }
 .legend-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-soft); }
 .legend-chip i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+/* --- หมวดของแถว (กรองแสดงเฉพาะหมวด) --- */
+.rowcat-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: -2px 0 12px; }
+.rc-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 12px 4px 8px; font-family: inherit; font-size: 12.5px; color: var(--ink); cursor: pointer; }
+.rc-chip .bx { width: 15px; height: 15px; border-radius: 4px; border: 2px solid var(--rc, #94A3B8); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.rc-chip.on { border-color: var(--rc, var(--indigo)); background: color-mix(in srgb, var(--rc, #6366F1) 10%, #fff); font-weight: 600; }
+.rc-chip.on .bx { background: var(--rc, var(--indigo)); }
+.rc-chip small { color: var(--ink-soft); font-weight: 400; }
+.rc-clear { border: none; background: transparent; color: var(--danger); font-family: inherit; font-size: 12.5px; cursor: pointer; padding: 4px 6px; }
+.rc-empty { font-size: 12px; color: var(--ink-soft); font-style: italic; }
+.rc-filter-note { font-size: 12px; color: var(--indigo-deep); background: var(--indigo-soft); border-radius: 8px; padding: 6px 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.rc-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.rc-row .rc-dot { width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0; cursor: pointer; border: 2px solid rgba(0,0,0,0.08); }
+.rc-move { display: flex; flex-direction: column; gap: 2px; }
+.rc-move button { width: 22px; height: 15px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink-soft); font-size: 8px; line-height: 1; cursor: pointer; }
+.rc-move button:disabled { opacity: 0.3; cursor: default; }
+.rc-assign { max-height: 300px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; }
+.rc-assign table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rc-assign td { padding: 6px 10px; border-bottom: 1px solid var(--line-soft); }
+.rc-assign tr:last-child td { border-bottom: none; }
+.rc-assign select { width: 100%; }
+.rc-pal { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.rc-pal span { width: 22px; height: 22px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; }
+.rc-pal span.sel { border-color: #111827; }
 .edit-colors-btn { font-size: 11px; padding: 4px 8px; margin-left: 8px; }
 
 /* Grid Background System */
 .gantt-scroll { overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); max-height: 72vh; position: relative; }
+/* ความสูงตาราง: ย่อ (เดิม) / เต็มจอ / แสดงทุกแถว */
+body.gh-full .gantt-scroll { max-height: calc(100vh - 16px); }
+body.gh-all .gantt-scroll { max-height: none; }
+.gh-ctrl .zoom-btn { padding: 4px 10px; }
 .gantt-inner { position: relative; min-width: max-content; }
 .gantt-header { position: sticky; top: 0; z-index: 20; background: var(--sticky-bg); }
 .gantt-grid-bg { position: absolute; top: 0; bottom: 0; left: var(--label-w); pointer-events: none; z-index: 0; overflow: hidden; }
@@ -228,6 +255,36 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .gc-dash { color: var(--ink-soft); }
 .gc-summary { font-size: 12.5px; color: var(--indigo); font-weight: 600; margin-top: 6px; }
 .gc-sub { display: flex; align-items: center; gap: 14px; margin-top: 6px; font-size: 13px; }
+/* --- การทำซ้ำ (แบบ Google Calendar) --- */
+.recur-wrap { margin-top: 12px; }
+.modal.gc-mode .recur-wrap { margin-top: 8px; }
+.recur-head { display: flex; align-items: center; gap: 8px; }
+.recur-head .recur-ico { font-size: 16px; }
+.recur-head select { flex: 1; }
+.recur-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-top: 8px; background: #FBFCFE; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.recur-box[hidden] { display: none; }
+.recur-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.recur-line label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.recur-box .text-input { width: auto; padding: 5px 8px; margin: 0; }
+.rc-num { width: 64px !important; }
+.rc-dows { display: inline-flex; gap: 4px; }
+.rc-dows button { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: #fff; font-family: inherit; font-size: 12px; cursor: pointer; color: var(--ink); }
+.rc-dows button.on { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 700; }
+.rc-quick { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.rc-quick button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 9px; font-family: inherit; font-size: 11.5px; cursor: pointer; color: var(--ink-soft); }
+.rc-quick button:hover { border-color: var(--indigo); color: var(--indigo); }
+.rc-thai { font-size: 12px; color: var(--indigo); font-weight: 600; }
+.rc-preview { border-top: 1px dashed var(--line); padding-top: 8px; font-size: 12.5px; color: var(--ink-soft); }
+.rc-preview b { color: var(--indigo-deep); }
+.rc-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; max-height: 96px; overflow-y: auto; }
+.rc-chips span { background: #EEF2FF; color: var(--indigo-deep); border-radius: 6px; padding: 2px 7px; font-size: 11.5px; }
+.rc-chips span.sh { background: #FEF3C7; color: #92400E; }
+.rc-chips span.more { background: transparent; color: var(--ink-soft); }
+.rc-series-note { font-size: 12px; background: #EEF2FF; color: var(--indigo-deep); border-radius: 8px; padding: 6px 10px; margin-top: 8px; }
+.scope-opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+.scope-opt:hover { border-color: var(--indigo); background: var(--indigo-soft); }
+.scope-opt input { margin-top: 3px; }
+.scope-opt small { display: block; color: var(--ink-soft); font-size: 12px; }
 .gc-body .text-input, .gc-body textarea { margin: 0; }
 .gc-body .color-picker { margin: 4px 0 0; }
 
@@ -334,6 +391,13 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .td-mem-list { max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
 .td-mem-list label { display: flex; gap: 8px; align-items: center; padding: 4px 0; cursor: pointer; font-size: 13.5px; }
 .td-who-hint { font-size: 11px; color: var(--ink-soft); margin-top: 3px; }
+/* --- บอร์ดงานจากแผนงาน (เชื่อมกับ "กำหนดการที่ต้องทำให้เสร็จ") --- */
+.td-sep { align-self: center; font-size: 12px; color: var(--ink-soft); padding: 0 4px 0 10px; border-left: 1px solid var(--line); margin-left: 6px; white-space: nowrap; }
+.tab.td-proj-tab .td-cnt { display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 6px; border-radius: 999px; background: #FEE2E2; color: #B91C1C; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
+.tab.td-proj-tab.active .td-cnt { background: rgba(255,255,255,0.25); color: #fff; }
+.td-link-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #ECFDF5; color: #047857; font-weight: 600; }
+.td-path { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+.td-card .td-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
 .td-who-pick { display: flex; flex-wrap: wrap; gap: 6px; }
 .td-who-pick button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 12px 4px 5px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--ink); }
 .td-who-pick button .bx { width: 16px; height: 16px; border-radius: 4px; border: 2px solid #94A3B8; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; flex-shrink: 0; }
@@ -385,12 +449,34 @@ body.ro .row-name-cell { cursor: default; }
 .day-seg.weekend { background: #FBF6EE; color: #C08A2E; }
 .day-seg .day-num { font-weight: 700; font-size: 11.5px; color: var(--ink); }
 .day-seg.weekend .day-num { color: #C08A2E; }
+/* --- มุมมองเวลาแบบ Google Calendar --- */
+.gcal .day-seg { height: 42px; gap: 1px; }
+.gcal .day-seg .day-dow { font-size: 11px; color: #6B7488; }
+.gcal .day-seg .day-num { font-size: 15px; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+.gcal .day-seg.weekend { background: #F3F4F7; }
+.gcal .day-seg.weekend .day-num, .gcal .day-seg.weekend .day-dow { color: #8A93A6; }
+.gcal .day-seg.today .day-num { background: var(--indigo); color: #fff; }
+.gcal .day-seg.today .day-dow { color: var(--indigo); font-weight: 700; }
+.gcal-month .day-seg .day-num { font-size: 12.5px; width: 22px; height: 22px; }
+.day-seg.day-full { flex-direction: row; gap: 10px; justify-content: flex-start; padding-left: 16px; position: relative; }
+.day-seg.day-full .day-full-txt { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink); font-weight: 600; }
+.hour-track { height: 24px; background-color: #fff; border-bottom: 1px solid var(--line-soft); overflow: hidden; }
+.hour-track .hr-lbl { position: absolute; top: 0; height: 100%; display: flex; align-items: center; padding-left: 4px; font-size: 10.5px; color: #8A93A6; box-sizing: border-box; white-space: nowrap; }
+.hour-track .hr-wknd { position: absolute; top: 0; height: 100%; background: rgba(100, 110, 130, 0.08); }
+.week-seg.wk-num { font-size: 10.5px; color: #8A93A6; }
+.grid-line.month-line { background: #C9CEDA; }
+.today-col { position: absolute; top: 0; bottom: 0; background: rgba(79, 70, 229, 0.05); pointer-events: none; }
+.weekend-col.gc { background: rgba(100, 110, 130, 0.09); }
+.nav-step { min-width: 30px; font-size: 16px !important; font-weight: 700; padding: 4px 8px !important; }
 .gantt-body { position: relative; min-width: max-content; }
 .dept-block { display: flex; border-bottom: 2px solid var(--line); min-width: max-content; width: 100%; align-items: stretch; }
 .dept-rows { display: flex; flex-direction: column; flex: 1; }
 
 .subrow { position: relative; height: 32px; box-sizing: border-box; border-bottom: 1px solid var(--line-soft); cursor: pointer; z-index: 1; }
 .subrow:last-child { border-bottom: none; }
+/* คลิกค้างแล้วลากเพื่อเลื่อนดูวัน (แบบ Google Maps) */
+.gantt-scroll .subrow, .gantt-header .row-track { cursor: grab; }
+body.gantt-panning, body.gantt-panning * { cursor: grabbing !important; user-select: none !important; }
 .subrow:hover { background-color: rgba(237, 234, 251, 0.3); }
 
 /* Activity Bar Base Styles */
@@ -580,6 +666,8 @@ function indexFromDate(d) { return Math.round((d.getTime() - EPOCH_T) / DAY); }
 function dateFromIndex(i) { return new Date(EPOCH_T + i * DAY); }
 const THAI_MONTHS_SHORT = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 const THAI_WEEKDAY_SHORT = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+const THAI_WEEKDAY_FULL = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+const THAI_MONTHS_FULL = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
 function dateToInputStr(d) { return d.toISOString().slice(0, 10); }
 function inputStrToDate(str) { if (!str) return null; return new Date(str + 'T00:00:00Z'); }
@@ -628,6 +716,155 @@ let localHidden = new Set(lsGet('gantt_local_hidden', []));   // ซ่อนเ
 let watchCollapsed = lsGet('gantt_watch_collapsed', false);
 let rowNamesW = lsGet('gantt_rownames_w', 96);                  // ความกว้างคอลัมน์ชื่อแถว
 function isHid(x) { return !!(x && (x.hidden || localHidden.has(x.id))); }
+
+// ==========================================
+// --- หมวดของแถว (เช่น แผนการดำเนินงาน / การลงพื้นที่) ---
+// รายชื่อหมวดและการจัดหมวดของแถวบันทึกในโครงการ (ทุกคนเห็นเหมือนกัน)
+// ส่วนการติ๊กกรองเป็นของแต่ละเครื่อง (ไม่กระทบคนอื่น)
+// ==========================================
+const RC_COLORS = ['#3B82F6', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899', '#64748B', '#A16207', '#0F766E'];
+const RC_NONE = '__none__';
+function rcList(project) { return (project && project.rowCats) || []; }
+function rcGetFilter(project) { const v = lsGet('rowcat_filter_' + project.id, []); return Array.isArray(v) ? v : []; }
+function rcSetFilter(project, arr) { lsSet('rowcat_filter_' + project.id, arr); }
+// คืนรายการหมวดที่ติ๊กไว้ (ตัดหมวดที่ถูกลบไปแล้วออก) — ว่าง = แสดงทั้งหมด
+function rcActive(project) {
+  if (!project) return [];
+  const ids = new Set(rcList(project).map(c => c.id)); ids.add(RC_NONE);
+  return rcGetFilter(project).filter(id => ids.has(id));
+}
+function rcRowOut(project, row) {
+  const act = rcActive(project); if (!act.length) return false;
+  const cat = row.cat && rcList(project).some(c => c.id === row.cat) ? row.cat : RC_NONE;
+  return !act.includes(cat);
+}
+function rcOf(project, row) { return row && row.cat ? rcList(project).find(c => c.id === row.cat) || null : null; }
+
+function renderRowCatBar(project) {
+  const wrap = document.createElement('div'); wrap.className = 'rowcat-bar';
+  wrap.innerHTML = '<span class="legend-label">หมวด:</span>';
+  const cats = rcList(project), act = rcActive(project);
+  const allRows = project.departments.flatMap(d => d.rows);
+  const count = (id) => allRows.filter(r => (id === RC_NONE ? !rcOf(project, r) : r.cat === id)).length;
+  if (!cats.length) {
+    const e = document.createElement('span'); e.className = 'rc-empty'; e.textContent = 'ยังไม่มีหมวด — กด "⚙ จัดการหมวด" เพื่อเพิ่ม เช่น แผนการดำเนินงาน / การลงพื้นที่'; wrap.appendChild(e);
+  }
+  const mk = (id, name, color) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rc-chip' + (act.includes(id) ? ' on' : '');
+    b.style.setProperty('--rc', color);
+    b.innerHTML = `<span class="bx">${act.includes(id) ? '✓' : ''}</span>${escapeHTML(name)} <small>(${count(id)})</small>`;
+    b.title = act.includes(id) ? 'คลิกเพื่อเอาออกจากตัวกรอง' : 'คลิกเพื่อแสดงเฉพาะหมวดนี้ (เลือกได้หลายหมวด)';
+    b.onclick = () => { const cur = rcActive(project); rcSetFilter(project, cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]); reRenderWithScroll(); };
+    wrap.appendChild(b);
+  };
+  cats.forEach(c => mk(c.id, c.name, c.color));
+  if (cats.length && count(RC_NONE)) mk(RC_NONE, 'ไม่ระบุหมวด', '#94A3B8');
+  if (act.length) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => { rcSetFilter(project, []); reRenderWithScroll(); }; wrap.appendChild(c); }
+  if (!READ_ONLY) { const m = document.createElement('button'); m.type = 'button'; m.className = 'ghost-btn edit-colors-btn'; m.textContent = '⚙ จัดการหมวด'; m.onclick = () => openRowCatManager(project.id); wrap.appendChild(m); }
+  return wrap;
+}
+
+// หน้าต่างจัดการหมวด: เพิ่ม / ลบ / แก้ชื่อ / สี / ลำดับ + กำหนดหมวดให้แถว (ตามชื่อแถว)
+function openRowCatManager(projectId) {
+  const project = state.projects.find(p => p.id === projectId); if (!project) return;
+  const cats = clone(rcList(project));
+  // แถวในโครงการ จัดกลุ่มตามชื่อ
+  const groups = new Map();
+  project.departments.forEach(d => d.rows.forEach(r => {
+    const k = String(r.name || '').trim(); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r);
+  }));
+  const assign = new Map();   // ชื่อแถว -> id หมวด ('' = ไม่ระบุ, '*' = หลายหมวด/ไม่เปลี่ยน)
+  groups.forEach((rows, k) => { const set = new Set(rows.map(r => r.cat || '')); assign.set(k, set.size === 1 ? [...set][0] : '*'); });
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal'; m.style.maxWidth = '640px';
+  let palFor = -1;
+  const draw = () => {
+    m.innerHTML = `<h3>⚙ จัดการหมวดของแถว</h3>
+      <p class="modal-desc">สร้างหมวด แล้วกำหนดว่าแถวไหนอยู่หมวดอะไร จากนั้นติ๊กหมวดที่แถบ "หมวด:" เพื่อแสดงเฉพาะหมวดนั้น</p>
+      <label class="field-label">1) รายชื่อหมวด</label>
+      <div id="rcRows">${cats.map((c, i) => `<div class="rc-row">
+          <div class="rc-move"><button type="button" data-up="${i}" ${i === 0 ? 'disabled' : ''} title="เลื่อนขึ้น">▲</button><button type="button" data-down="${i}" ${i === cats.length - 1 ? 'disabled' : ''} title="เลื่อนลง">▼</button></div>
+          <span class="rc-dot" data-pal="${i}" style="background:${c.color}" title="เปลี่ยนสี"></span>
+          <input class="text-input" data-n="${i}" value="${escapeHTML(c.name)}" placeholder="ชื่อหมวด">
+          <button type="button" class="td-icon-btn" data-del="${i}" aria-label="ลบหมวด" title="ลบหมวด">✕</button></div>
+          ${palFor === i ? `<div class="rc-pal" style="margin:-2px 0 10px 64px;">${RC_COLORS.map(col => `<span data-col="${col}" class="${col === c.color ? 'sel' : ''}" style="background:${col}"></span>`).join('')}</div>` : ''}`).join('') || '<div class="rc-empty" style="padding:4px 0 8px;">ยังไม่มีหมวด</div>'}</div>
+      <button type="button" class="td-mini" id="rcAdd">+ เพิ่มหมวด</button>
+      <label class="field-label" style="margin-top:16px;">2) กำหนดหมวดให้แถว <span style="font-weight:400;">(แถวชื่อเดียวกันทุกหน่วยงานจะได้หมวดเดียวกัน)</span></label>
+      <div class="rc-assign"><table>${[...groups.keys()].map((k, gi) => `<tr><td>${escapeHTML(k || '(ไม่มีชื่อ)')} <small style="color:var(--ink-soft);">· ${groups.get(k).length} แถว</small></td><td style="width:45%;"><select class="text-input" data-g="${gi}">
+          ${assign.get(k) === '*' ? '<option value="*" selected>(หลายหมวด – ไม่เปลี่ยน)</option>' : ''}
+          <option value="" ${assign.get(k) === '' ? 'selected' : ''}>— ไม่ระบุหมวด —</option>
+          ${cats.map(c => `<option value="${c.id}" ${assign.get(k) === c.id ? 'selected' : ''}>${escapeHTML(c.name.trim() || '(หมวดใหม่ ยังไม่ตั้งชื่อ)')}</option>`).join('')}
+        </select></td></tr>`).join('')}</table></div>
+      <div class="modal-actions"><button class="ghost-btn" id="rcCancel">ยกเลิก</button><button class="primary-btn" id="rcOk">บันทึก</button></div>`;
+    m.querySelectorAll('[data-n]').forEach(x => x.oninput = () => {
+      const c = cats[+x.dataset.n]; c.name = x.value;
+      m.querySelectorAll(`option[value="${c.id}"]`).forEach(o => { o.textContent = c.name.trim() || '(หมวดใหม่ ยังไม่ตั้งชื่อ)'; });   // อัปเดตตัวเลือกในตารางด้านล่างทันที
+    });
+    m.querySelectorAll('[data-del]').forEach(x => x.onclick = () => {
+      const c = cats[+x.dataset.del];
+      const used = project.departments.flatMap(d => d.rows).filter(r => r.cat === c.id).length;
+      if (used && !confirm(`หมวด "${c.name}" ใช้อยู่ ${used} แถว\nลบหมวดแล้ว แถวเหล่านั้นจะเป็น "ไม่ระบุหมวด" (แถวและกิจกรรมไม่ถูกลบ)`)) return;
+      cats.splice(+x.dataset.del, 1); assign.forEach((v, k) => { if (v === c.id) assign.set(k, ''); }); palFor = -1; draw();
+    });
+    const move = (i, j) => { if (j < 0 || j >= cats.length) return; cats.splice(j, 0, cats.splice(i, 1)[0]); palFor = -1; draw(); };
+    m.querySelectorAll('[data-up]').forEach(x => x.onclick = () => move(+x.dataset.up, +x.dataset.up - 1));
+    m.querySelectorAll('[data-down]').forEach(x => x.onclick = () => move(+x.dataset.down, +x.dataset.down + 1));
+    m.querySelectorAll('[data-pal]').forEach(x => x.onclick = () => { palFor = palFor === +x.dataset.pal ? -1 : +x.dataset.pal; draw(); });
+    m.querySelectorAll('[data-col]').forEach(x => x.onclick = () => { cats[palFor].color = x.dataset.col; palFor = -1; draw(); });
+    m.querySelector('#rcAdd').onclick = () => {
+      cats.push({ id: uid('rc'), name: '', color: RC_COLORS[cats.length % RC_COLORS.length] }); palFor = -1; draw();
+      const ins = m.querySelectorAll('[data-n]'); ins[ins.length - 1].focus();
+    };
+    const keys = [...groups.keys()];
+    m.querySelectorAll('select[data-g]').forEach(x => x.onchange = () => assign.set(keys[+x.dataset.g], x.value));
+    m.querySelector('#rcCancel').onclick = () => closeModal(ov);
+    m.querySelector('#rcOk').onclick = async () => {
+      const live = state.projects.find(p => p.id === projectId); if (!live) { closeModal(ov); return; }
+      const clean = cats.map(c => ({ id: c.id, name: String(c.name || '').trim(), color: c.color })).filter(c => c.name);
+      const valid = new Set(clean.map(c => c.id));
+      live.rowCats = clean;
+      live.departments.forEach(d => d.rows.forEach(r => {
+        const a = assign.get(String(r.name || '').trim());
+        if (a !== undefined && a !== '*') { if (a && valid.has(a)) r.cat = a; else delete r.cat; }
+        if (r.cat && !valid.has(r.cat)) delete r.cat;
+      }));
+      if (!clean.length) delete live.rowCats;
+      closeModal(ov); showToast('บันทึกหมวดแล้ว'); await persistAndRender();
+    };
+  };
+  draw();
+  ov.appendChild(m); document.body.appendChild(ov);
+}
+
+// ตั้งหมวดให้แถวเดียว (จากเมนูคลิกขวา)
+function openRowCatPicker(projectId, deptId, rowId) {
+  const project = state.projects.find(p => p.id === projectId); if (!project) return;
+  const row = project.departments.find(d => d.id === deptId)?.rows.find(r => r.id === rowId); if (!row) return;
+  const cats = rcList(project);
+  if (!cats.length) { openRowCatManager(projectId); return; }
+  const same = project.departments.flatMap(d => d.rows).filter(r => r.id !== rowId && String(r.name).trim() === String(row.name).trim()).length;
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<h3>🏷 หมวดของแถว "${escapeHTML(row.name)}"</h3>
+    <div class="rowcat-bar" style="margin:10px 0;">
+      <button type="button" class="rc-chip ${!rcOf(project, row) ? 'on' : ''}" data-c="" style="--rc:#94A3B8"><span class="bx">${!rcOf(project, row) ? '✓' : ''}</span>ไม่ระบุหมวด</button>
+      ${cats.map(c => `<button type="button" class="rc-chip ${row.cat === c.id ? 'on' : ''}" data-c="${c.id}" style="--rc:${c.color}"><span class="bx">${row.cat === c.id ? '✓' : ''}</span>${escapeHTML(c.name)}</button>`).join('')}
+    </div>
+    ${same ? `<label style="display:flex; gap:8px; align-items:center; font-size:13px; cursor:pointer;"><input type="checkbox" id="rcSame" checked> ใช้กับแถวชื่อ "${escapeHTML(row.name)}" ในหน่วยงานอื่นด้วย (อีก ${same} แถว)</label>` : ''}
+    <div class="modal-actions"><button class="ghost-btn" id="rcpCancel">ยกเลิก</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  m.querySelector('#rcpCancel').onclick = () => closeModal(ov);
+  m.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+    const v = b.dataset.c, all = m.querySelector('#rcSame') && m.querySelector('#rcSame').checked;
+    const live = state.projects.find(p => p.id === projectId); if (!live) { closeModal(ov); return; }
+    live.departments.forEach(d => d.rows.forEach(r => {
+      if (r.id === rowId || (all && String(r.name).trim() === String(row.name).trim())) { if (v) r.cat = v; else delete r.cat; }
+    }));
+    closeModal(ov); await persistAndRender();
+  });
+}
 function saveLocalHidden() { lsSet('gantt_local_hidden', [...localHidden]); }
 
 // ความกว้างคอลัมน์ชื่อ (หน่วยงาน + ชื่อแถว)
@@ -683,7 +920,8 @@ window.addEventListener('beforeunload', (e) => {
 
 let state = null, view = { type: 'overview' }, activeMainCat = 'all', zoom = 'month', modalOpen = false, isSaving = false, dragMode = false;
 // ความกว้างช่องเริ่มต้นของแต่ละมุมมองเวลา (1 = 100%)
-const DEFAULT_SCALE = { day: 3.4, week: 5.0, month: 3.4, year: 1.8 };
+const DEFAULT_SCALE = { day: 1, week: 1, month: 1, year: 1 };   // 100% = พอดีหน้าจอแบบ Google Calendar
+const VIEW_DAYS = { day: 1, week: 7, month: 30, year: 365 };       // จำนวนวันที่เห็นเต็มจอในแต่ละมุมมอง
 let userScale = DEFAULT_SCALE[zoom] || 1.0; 
 let lastScrollCenterIdx = null; 
 
@@ -1274,6 +1512,7 @@ async function init() {
       if (unsavedChanges && !wasIncomplete) return;
       applyLoaded(res);
       if (view.type !== 'todo') reRenderWithScroll();
+      else if (String(todo.activeId || '').startsWith('proj:') && !(document.activeElement && document.activeElement.id === 'tdSearch')) render();
       if (!wasIncomplete && view.type !== 'todo') showToast('🔄 มีผู้ใช้อื่นอัปเดตข้อมูล แสดงข้อมูลล่าสุดแล้ว');
     } catch (e) {
     } finally {
@@ -1323,12 +1562,53 @@ function importBackup(event) {
 
 function getColWidth(zoom, totalDays) {
   const labelW = getLabelW();
-  const containerWidth = window.innerWidth - 44 - 2 - labelW;
-  const minColw = COLW[zoom];
-  const requiredWidth = totalDays * minColw;
-  let baseWidth = minColw;
-  if (requiredWidth < containerWidth && requiredWidth > 0) baseWidth = containerWidth / totalDays;
-  return baseWidth * userScale;
+  // ใช้ความกว้างหน้าต่าง (คงที่) ไม่ใช่ความกว้างตารางเดิม เพราะแถบเลื่อนแนวตั้งที่มี/ไม่มี ทำให้ค่าเปลี่ยนไปมา
+  const containerWidth = Math.max(300, window.innerWidth - 46 - 17 - labelW);
+  let base = containerWidth / (VIEW_DAYS[zoom] || 30);
+  if (totalDays * base < containerWidth && totalDays > 0) base = containerWidth / totalDays;
+  let w = base * userScale;
+  const MAX_W = 15000000;   // กันตารางกว้างเกินที่เบราว์เซอร์รองรับ (กรณีช่วงหลายปีในมุมมองวัน)
+  if (totalDays * w > MAX_W) w = MAX_W / totalDays;
+  return w;
+}
+
+// ส่วนของวันที่ผ่านไปแล้ว (0–1) ตามเวลาไทย ใช้วางเส้น "วันนี้" ตรงเวลาปัจจุบัน
+function nowDayFrac() {
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+  const g = (t) => Number((parts.find(x => x.type === t) || {}).value || 0);
+  return (g('hour') + g('minute') / 60) / 24;
+}
+
+// วันแรกของช่วงที่กำลังดู (วัน / สัปดาห์เริ่มวันอาทิตย์ / วันที่ 1 ของเดือน / 1 ม.ค.)
+function viewPeriodStart(idx) {
+  const d = dateFromIndex(idx);
+  if (zoom === 'day') return idx;
+  if (zoom === 'week') return idx - d.getUTCDay();
+  if (zoom === 'month') return idx - (d.getUTCDate() - 1);
+  return indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), 0, 1)));
+}
+function viewPeriodShift(p, dir) {
+  if (zoom === 'day') return p + dir;
+  if (zoom === 'week') return p + 7 * dir;
+  const d = dateFromIndex(p);
+  if (zoom === 'month') return indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + dir, 1)));
+  return indexFromDate(new Date(Date.UTC(d.getUTCFullYear() + dir, 0, 1)));
+}
+// ปุ่ม ‹ › เลื่อนไปช่วงก่อนหน้า/ถัดไป
+function stepView(dir) {
+  const el = document.querySelector('.gantt-scroll'); if (!el) return;
+  const { rStart, rEnd, totalDays } = getRenderBounds();
+  const colw = getColWidth(zoom, totalDays);
+  // กดต่อเนื่องระหว่างที่ยังเลื่อนอยู่: นับต่อจากเป้าหมายเดิม
+  const busy = stepView._t && Date.now() - stepView._t < 700;
+  const curPx = busy ? (stepView._target - rStart) * colw : el.scrollLeft;
+  const p = viewPeriodStart(rStart + Math.floor((curPx + 3) / colw));   // +3px กันการปัดเศษพิกเซล
+  let target;
+  if (dir < 0 && curPx - (p - rStart) * colw > 3) target = p;   // ยังไม่ชิดต้นช่วง: ชิดต้นช่วงปัจจุบันก่อน
+  else target = viewPeriodShift(p, dir);
+  target = Math.max(rStart, Math.min(rEnd, target));
+  stepView._t = Date.now(); stepView._target = target;
+  el.scrollTo({ left: Math.max(0, (target - rStart) * colw), behavior: 'smooth' });
 }
 
 let resizeTimer; window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (!modalOpen && !dragMode && state) render(); }, 200); });
@@ -1485,6 +1765,13 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
   navWrap.appendChild(subBar); return navWrap;
 }
 
+function ganttHeightMode() { const v = lsGet('gantt_height_mode', 'compact'); return ['compact', 'full', 'all'].includes(v) ? v : 'compact'; }
+function applyGanttHeightMode() { const m = ganttHeightMode(); document.body.classList.toggle('gh-full', m === 'full'); document.body.classList.toggle('gh-all', m === 'all'); }
+function setGanttHeightMode(m) {
+  lsSet('gantt_height_mode', m); applyGanttHeightMode();
+  const el = document.querySelector('.gantt-scroll');
+  if (el && m !== 'compact') requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: 'smooth' }));   // เลื่อนหน้าให้ตารางอยู่บนสุด
+}
 function renderToolbarControls(toolbar) {
   searchHits = 0;
   const sWrap = document.createElement('div'); sWrap.className = 'search-controls';
@@ -1510,7 +1797,9 @@ function renderToolbarControls(toolbar) {
     const b = document.createElement('button'); b.className = 'zoom-btn' + (zoom === key ? ' active' : ''); b.textContent = txt;
     b.onclick = () => { zoom = key; userScale = DEFAULT_SCALE[key] || 1.0; lastScrollCenterIdx = null; render(); scrollToToday(); }; zWrap.appendChild(b);
   });
-  const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); }; zWrap.appendChild(todayBtn); toolbar.appendChild(zWrap);
+  const prevBtn = document.createElement('button'); prevBtn.className = 'zoom-btn nav-step'; prevBtn.textContent = '‹'; prevBtn.title = 'ช่วงก่อนหน้า'; prevBtn.onclick = () => stepView(-1); zWrap.appendChild(prevBtn);
+  const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); }; zWrap.appendChild(todayBtn);
+  const nextBtn = document.createElement('button'); nextBtn.className = 'zoom-btn nav-step'; nextBtn.textContent = '›'; nextBtn.title = 'ช่วงถัดไป'; nextBtn.onclick = () => stepView(1); zWrap.appendChild(nextBtn); toolbar.appendChild(zWrap);
 
   const scaleWrap = document.createElement('div'); scaleWrap.className = 'zoom-controls';
   scaleWrap.innerHTML = `<span class="zoom-label">↔️ ความกว้างช่อง:</span>
@@ -1520,6 +1809,16 @@ function renderToolbarControls(toolbar) {
   scaleWrap.querySelector('#btnZoomOut').onclick = () => { if (userScale > 0.3) { userScale = Math.round((userScale - 0.2) * 10) / 10; reRenderWithScroll(); } };
   scaleWrap.querySelector('#btnZoomIn').onclick = () => { if (userScale < SCALE_MAX) { userScale = Math.round((userScale + 0.2) * 10) / 10; reRenderWithScroll(); } };
   toolbar.appendChild(scaleWrap);
+
+  // ความสูงตาราง
+  const ghWrap = document.createElement('div'); ghWrap.className = 'zoom-controls gh-ctrl';
+  ghWrap.innerHTML = '<span class="zoom-label">↕ ความสูงตาราง:</span>';
+  [['compact', 'ย่อ', 'แบบเดิม (ประมาณ 3/4 ของจอ)'], ['full', 'เต็มจอ', 'สูงเต็มหน้าจอ หัวตารางยังค้างอยู่ด้านบนเวลาเลื่อน'], ['all', 'แสดงทุกแถว', 'ขยายลงด้านล่างจนเห็นครบทุกแถว (เลื่อนทั้งหน้าแทน)']].forEach(([k, t, tip]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'zoom-btn' + (ganttHeightMode() === k ? ' active' : ''); b.textContent = t; b.title = tip;
+    b.onclick = () => { setGanttHeightMode(k); ghWrap.querySelectorAll('.zoom-btn').forEach(x => x.classList.toggle('active', x === b)); };
+    ghWrap.appendChild(b);
+  });
+  toolbar.appendChild(ghWrap);
 
   const mWrap = document.createElement('label'); mWrap.className = 'mode-controls'; mWrap.style.cursor = 'pointer';
   mWrap.innerHTML = `<input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;"><span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดแก้ไข/ลากเลื่อนวัน</span>`;
@@ -1539,7 +1838,8 @@ function scrollToToday() {
     const colw = getColWidth(zoom, totalDays);
     const todayIdx = todayBangkokIndex();
     const labelW = getLabelW();
-    el.scrollLeft = Math.max(0, (todayIdx - rStart) * colw + labelW - el.clientWidth / 2);
+    el.scrollLeft = Math.max(0, (viewPeriodStart(todayIdx) - rStart) * colw);
+    fillHourLabels(); stickBarLabels();
   });
 }
 
@@ -1547,35 +1847,30 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
     const bg = document.createElement('div');
     bg.className = 'gantt-grid-bg';
     bg.style.width = (totalDays * colw) + 'px';
+    const todayIdx = todayBangkokIndex();
+    const addLine = (i, cls) => { const line = document.createElement('div'); line.className = 'grid-line' + (cls ? ' ' + cls : ''); line.style.left = ((i - rStart) * colw) + 'px'; bg.appendChild(line); };
 
-    if (zoom === 'day' || zoom === 'week') {
-        for (let i = rStart; i <= rEnd; i++) {
-            if (zoom === 'day' || zoom === 'week') {
-                const dow = dateFromIndex(i).getUTCDay();
-                if (dow === 0 || dow === 6) {
-                    const wknd = document.createElement('div');
-                    wknd.className = 'weekend-col'; wknd.style.left = ((i - rStart) * colw) + 'px'; wknd.style.width = colw + 'px';
-                    bg.appendChild(wknd);
-                }
-            }
-            const line = document.createElement('div');
-            line.className = 'grid-line'; line.style.left = ((i - rStart) * colw) + 'px';
-            bg.appendChild(line);
+    if (zoom === 'day' || zoom === 'week' || zoom === 'month') {
+        if (zoom === 'day') {   // เส้นรายชั่วโมง (วาดด้วยพื้นหลัง ไม่ต้องสร้างเส้นทีละชั่วโมง)
+            bg.style.backgroundImage = 'linear-gradient(to right, rgba(148,163,184,0.16) 1px, transparent 1px)';
+            bg.style.backgroundSize = (colw / 24) + 'px 100%';
         }
-    } else if (zoom === 'month') {
-        const weeks = weekSegmentsBounded(rStart, rEnd);
-        weeks.forEach(w => {
-            const line = document.createElement('div');
-            line.className = 'grid-line'; line.style.left = ((w.start - rStart) * colw) + 'px';
-            bg.appendChild(line);
-        });
+        for (let i = rStart; i <= rEnd; i++) {
+            const d = dateFromIndex(i), dow = d.getUTCDay();
+            if (dow === 0 || dow === 6) {
+                const wknd = document.createElement('div');
+                wknd.className = 'weekend-col gc'; wknd.style.left = ((i - rStart) * colw) + 'px'; wknd.style.width = colw + 'px';
+                bg.appendChild(wknd);
+            }
+            addLine(i, d.getUTCDate() === 1 && zoom !== 'day' ? 'month-line' : '');
+        }
+        if (zoom !== 'day' && todayIdx >= rStart && todayIdx <= rEnd) {
+            const tc = document.createElement('div'); tc.className = 'today-col';
+            tc.style.left = ((todayIdx - rStart) * colw) + 'px'; tc.style.width = colw + 'px'; bg.appendChild(tc);
+        }
     } else if (zoom === 'year') {
-        const { months } = headerGroupsBounded(rStart, rEnd);
-        months.forEach(m => {
-            const line = document.createElement('div');
-            line.className = 'grid-line'; line.style.left = ((m.start - rStart) * colw) + 'px';
-            bg.appendChild(line);
-        });
+        weekSegmentsBounded(rStart, rEnd).forEach(w => addLine(w.start));          // เส้นแบ่งสัปดาห์
+        headerGroupsBounded(rStart, rEnd).months.forEach(m => addLine(m.start, 'month-line'));   // เส้นแบ่งเดือน
         // เส้นสิ้นสุดปี (ระหว่าง 31 ธ.ค. กับ 1 ม.ค.)
         for (let i = rStart + 1; i <= rEnd + 1; i++) {
             const d = dateFromIndex(i);
@@ -1589,39 +1884,100 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
     return bg;
 }
 
+// ป้ายชั่วโมงบนหัวตาราง (มุมมองวัน): สร้างเฉพาะช่วงที่มองเห็น เพื่อไม่ให้หน้าเว็บหนัก
+function fillHourLabels() {
+  const el = document.querySelector('.gantt-scroll'); if (!el) return;
+  const tr = el.querySelector('.hour-track'); if (!tr) return;
+  const colw = Number(tr.dataset.colw), rStart = Number(tr.dataset.rstart), total = Number(tr.dataset.total);
+  const labelW = getLabelW();
+  const d0 = Math.max(0, Math.floor((el.scrollLeft - labelW) / colw) - 1);
+  const d1 = Math.min(total - 1, Math.ceil((el.scrollLeft + el.clientWidth) / colw) + 1);
+  const key = d0 + ':' + d1;
+  if (tr.dataset.key === key) return;
+  tr.dataset.key = key;
+  const hw = colw / 24;
+  const step = hw >= 40 ? 1 : hw >= 20 ? 2 : hw >= 13 ? 3 : 6;
+  let html = '';
+  for (let d = d0; d <= d1; d++) {
+    const dow = dateFromIndex(rStart + d).getUTCDay();
+    if (dow === 0 || dow === 6) html += `<span class="hr-wknd" style="left:${d * colw}px;width:${colw}px"></span>`;
+    for (let h = 0; h < 24; h += step) html += `<span class="hr-lbl" style="left:${(d * 24 + h) * hw}px;width:${hw * step}px">${String(h).padStart(2, '0')}:00</span>`;
+  }
+  tr.innerHTML = html;
+}
+// ชื่อกิจกรรมที่เริ่มก่อนช่วงที่มองเห็น: เลื่อนชื่อมาไว้ขอบซ้ายของจอ (แบบ Google Calendar) จะได้เห็นว่าแถบนั้นคืออะไร
+function stickBarLabels() {
+  const el = document.querySelector('.gantt-scroll'); if (!el) return;
+  const viewL = el.scrollLeft, viewR = viewL + el.clientWidth;
+  el.querySelectorAll('.act-bar').forEach(bar => {
+    const t = bar.querySelector('.act-txt'); if (!t) return;
+    const left = parseFloat(bar.style.left) || 0, w = bar.offsetWidth;
+    let shift = 0;
+    if (left < viewL && left + w > viewL && left < viewR) shift = Math.min(viewL - left, Math.max(0, w - 90));
+    const v = shift > 0 ? `translateX(${shift}px)` : '';
+    if (t.style.transform !== v) { t.style.transform = v; t.style.width = shift > 0 ? `calc(100% - ${shift}px)` : '100%'; }
+  });
+}
+document.addEventListener('scroll', (e) => {
+  if (!e.target.classList || !e.target.classList.contains('gantt-scroll')) return;
+  if (fillHourLabels._raf) return;
+  fillHourLabels._raf = requestAnimationFrame(() => { fillHourLabels._raf = 0; if (zoom === 'day') fillHourLabels(); stickBarLabels(); });
+}, true);
+
 function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วยงาน / ชื่องาน') {
   const { years, months } = headerGroupsBounded(rStart, rEnd), totalWidth = totalDays * colw;
-  const header = document.createElement('div'); header.className = 'gantt-header' + (zoom === 'year' ? ' zoom-year' : '');
+  const header = document.createElement('div');
+  header.className = 'gantt-header gcal' + (zoom === 'year' ? ' zoom-year' : '') + (zoom === 'month' ? ' gcal-month' : '');
+  const todayIdx = todayBangkokIndex();
+  const mkRow = (cls) => { const r = document.createElement('div'); r.className = 'header-row ' + cls; r.innerHTML = `<div class="row-label corner"></div>`; const t = document.createElement('div'); t.className = 'row-track'; t.style.width = totalWidth + 'px'; r.appendChild(t); header.appendChild(r); return t; };
 
+  // แถวปี
   const yearRow = document.createElement('div'); yearRow.className = 'header-row year-row'; yearRow.innerHTML = `<div class="row-label corner">${labelText}</div>`;
   addColResizer(yearRow.querySelector('.row-label'));
   const yTrack = document.createElement('div'); yTrack.className = 'row-track'; yTrack.style.width = totalWidth + 'px';
   years.forEach(y => { const seg = document.createElement('div'); seg.className = 'hdr-seg year-seg'; seg.style.width = ((y.end - y.start + 1) * colw) + 'px'; seg.textContent = 'พ.ศ. ' + y.label; yTrack.appendChild(seg); });
   yearRow.appendChild(yTrack); header.appendChild(yearRow);
 
-  if (zoom !== 'year') {
-    const monthRow = document.createElement('div'); monthRow.className = 'header-row month-row'; monthRow.innerHTML = `<div class="row-label corner"></div>`;
-    const mTrack = document.createElement('div'); mTrack.className = 'row-track'; mTrack.style.width = totalWidth + 'px';
-    months.forEach(m => { const seg = document.createElement('div'); seg.className = 'hdr-seg month-seg'; seg.style.width = ((m.end - m.start + 1) * colw) + 'px'; seg.textContent = m.label; mTrack.appendChild(seg); });
-    monthRow.appendChild(mTrack); header.appendChild(monthRow);
-  }
+  // แถวเดือน (ทุกมุมมอง)
+  const mTrack = mkRow('month-row');
+  months.forEach(m => {
+    const seg = document.createElement('div'); seg.className = 'hdr-seg month-seg'; seg.style.width = ((m.end - m.start + 1) * colw) + 'px';
+    seg.textContent = zoom === 'year' ? m.label : `${THAI_MONTHS_FULL[dateFromIndex(m.start).getUTCMonth()]} ${dateFromIndex(m.start).getUTCFullYear() + 543}`;
+    mTrack.appendChild(seg);
+  });
 
-  if (zoom === 'week') {
-    const weekRow = document.createElement('div'); weekRow.className = 'header-row week-row'; weekRow.innerHTML = `<div class="row-label corner"></div>`;
-    const wTrack = document.createElement('div'); wTrack.className = 'row-track'; wTrack.style.width = totalWidth + 'px';
-    weekSegmentsBounded(rStart, rEnd).forEach(seg0 => { const seg = document.createElement('div'); seg.className = 'hdr-seg week-seg'; seg.style.width = ((seg0.end - seg0.start + 1) * colw) + 'px'; seg.textContent = seg0.label; wTrack.appendChild(seg); });
-    weekRow.appendChild(wTrack); header.appendChild(weekRow);
-  }
-
-  if (zoom === 'day') {
-    const dayRow = document.createElement('div'); dayRow.className = 'header-row day-row'; dayRow.innerHTML = `<div class="row-label corner"></div>`;
-    const dTrack = document.createElement('div'); dTrack.className = 'row-track'; dTrack.style.width = totalWidth + 'px';
+  if (zoom === 'year') {
+    // ปี: หน่วยย่อยเป็นสัปดาห์ (แสดงวันที่ต้นสัปดาห์)
+    const wTrack = mkRow('week-row');
+    weekSegmentsBounded(rStart, rEnd).forEach(w => {
+      const seg = document.createElement('div'); seg.className = 'hdr-seg week-seg wk-num'; seg.style.width = ((w.end - w.start + 1) * colw) + 'px';
+      const ds = dateFromIndex(w.start), de = dateFromIndex(w.end);
+      seg.textContent = ds.getUTCDate();
+      seg.title = `สัปดาห์ ${ds.getUTCDate()} ${THAI_MONTHS_SHORT[ds.getUTCMonth()]} – ${de.getUTCDate()} ${THAI_MONTHS_SHORT[de.getUTCMonth()]}`;
+      if (todayIdx >= w.start && todayIdx <= w.end) seg.style.cssText += 'background:#EEF0FF;color:var(--indigo);font-weight:700;';
+      wTrack.appendChild(seg);
+    });
+  } else {
+    // วัน / สัปดาห์ / เดือน: หน่วยย่อยเป็นวัน
+    const dTrack = mkRow('day-row');
     for (let i = rStart; i <= rEnd; i++) {
       const d = dateFromIndex(i), dow = d.getUTCDay();
-      const seg = document.createElement('div'); seg.className = 'hdr-seg day-seg' + (dow === 0 || dow === 6 ? ' weekend' : ''); seg.style.width = colw + 'px';
-      seg.innerHTML = `<span class="day-num">${d.getUTCDate()}</span><span class="day-dow">${THAI_WEEKDAY_SHORT[dow]}</span>`; dTrack.appendChild(seg);
+      const seg = document.createElement('div');
+      seg.className = 'hdr-seg day-seg' + (dow === 0 || dow === 6 ? ' weekend' : '') + (i === todayIdx ? ' today' : '') + (zoom === 'day' ? ' day-full' : '');
+      seg.style.width = colw + 'px';
+      if (zoom === 'day') seg.innerHTML = `<span class="day-full-txt"><span class="day-num">${d.getUTCDate()}</span>วัน${THAI_WEEKDAY_FULL[dow]} ${d.getUTCDate()} ${THAI_MONTHS_FULL[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}</span>`;
+      else seg.innerHTML = `<span class="day-dow">${THAI_WEEKDAY_SHORT[dow]}.</span><span class="day-num">${d.getUTCDate()}</span>`;
+      dTrack.appendChild(seg);
     }
-    dayRow.appendChild(dTrack); header.appendChild(dayRow);
+    if (zoom === 'day') {
+      // วัน: หน่วยย่อยเป็นชั่วโมง
+      const hTrack = mkRow('hour-row');
+      hTrack.classList.add('hour-track');
+      hTrack.dataset.colw = colw; hTrack.dataset.rstart = rStart; hTrack.dataset.total = totalDays;
+      hTrack.style.backgroundImage = 'linear-gradient(to right, var(--line-soft) 1px, transparent 1px)';
+      hTrack.style.backgroundSize = (colw / 24) + 'px 100%';
+      setTimeout(fillHourLabels, 30);
+    }
   }
   addSegResizers(header, colw, rStart);
   return header;
@@ -1661,7 +2017,7 @@ function showScaleTip(x, y) {
 }
 
 function addSegResizers(header, colw, rStart) {
-  const rows = header.querySelectorAll('.header-row');
+  const rows = header.querySelectorAll('.header-row:not(.hour-row)');
   const lastRow = rows[rows.length - 1];
   if (!lastRow) return;
   lastRow.querySelectorAll('.hdr-seg').forEach(seg => {
@@ -1700,6 +2056,58 @@ function addSegResizers(header, colw, rStart) {
   });
 }
 
+// ==========================================
+// --- คลิกซ้ายค้างแล้วลากบนพื้นที่ว่างของตาราง = เลื่อนดูวัน ---
+// ลากไปซ้าย = ดูวันถัดไป · ลากไปขวา = ดูวันก่อนหน้า (ลากขึ้น/ลงได้ด้วย)
+// ไม่ทำงานบนแถบกิจกรรม ชื่อแถว ปุ่ม และขอบปรับความกว้าง
+// ==========================================
+(function enableGanttPan() {
+  let pan = null, suppressClick = false;
+  document.addEventListener('mousedown', (e) => {
+    if (e.button !== 0 || modalOpen) return;
+    const t = e.target;
+    if (!t.closest) return;
+    const el = t.closest('.gantt-scroll'); if (!el) return;
+    const onEmptyRow = t.classList.contains('subrow');
+    const onHeader = !!t.closest('.gantt-header .row-track');
+    if (!onEmptyRow && !onHeader) return;
+    if (t.closest('.act-bar, .seg-resizer, .col-resizer, button, input, select, textarea, a')) return;
+    pan = { el, x: e.clientX, y: e.clientY, left: el.scrollLeft, top: el.scrollTop, winY: window.scrollY, moved: false };
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!pan) return;
+    const dx = e.clientX - pan.x, dy = e.clientY - pan.y;
+    if (!pan.moved) {
+      if (Math.abs(dx) < 5 && Math.abs(dy) < 5) return;   // ขยับน้อย = ยังถือว่าเป็นการคลิก
+      pan.moved = true; document.body.classList.add('gantt-panning');
+      closeCtxMenu();
+    }
+    e.preventDefault();
+    if (!pan.el.isConnected) {   // ตารางถูกวาดใหม่ระหว่างลาก (เช่น มีข้อมูลอัปเดต): ลากต่อบนตารางใหม่
+      const n = document.querySelector('.gantt-scroll'); if (!n) return;
+      pan.el = n; pan.left = n.scrollLeft + dx; pan.top = n.scrollTop + dy;
+    }
+    pan.el.scrollLeft = pan.left - dx;
+    const maxTop = pan.el.scrollHeight - pan.el.clientHeight;
+    if (maxTop > 0) pan.el.scrollTop = pan.top - dy;          // ตารางมีแถบเลื่อนแนวตั้งของตัวเอง
+    else window.scrollTo(window.scrollX, pan.winY - dy);       // ไม่มี: เลื่อนทั้งหน้าแทน
+  });
+  const end = () => {
+    if (!pan) return;
+    if (pan.moved) {
+      suppressClick = true; setTimeout(() => { suppressClick = false; }, 0);
+      document.body.classList.remove('gantt-panning');
+      const el = pan.el;   // จำตำแหน่งกลางจอไว้ เพื่อให้วาดใหม่แล้วยังอยู่ที่เดิม
+      try { const { rStart, totalDays } = getRenderBounds(); lastScrollCenterIdx = rStart + (el.scrollLeft - getLabelW() + el.clientWidth / 2) / getColWidth(zoom, totalDays); } catch (x) {}
+    }
+    pan = null;
+  };
+  document.addEventListener('mouseup', end);
+  window.addEventListener('blur', end);
+  // หลังจากลากเลื่อน ไม่ให้นับเป็นการคลิก (เช่น เปิดหน้าต่างเพิ่มกิจกรรม)
+  document.addEventListener('click', (e) => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); suppressClick = false; } }, true);
+})();
+
 // Ctrl + ลูกกลิ้งเมาส์บนตาราง = ซูมเข้า/ออก ตรงตำแหน่งเมาส์ (เหมือน Excel)
 document.addEventListener('wheel', (e) => {
   if (!(e.ctrlKey || e.metaKey)) return;
@@ -1727,6 +2135,7 @@ function restoreScrollPosition(rStart, colw) {
                 el.scrollLeft = Math.max(0, (lastScrollCenterIdx - rStart) * colw + labelW - el.clientWidth / 2);
                 lastScrollCenterIdx = null;
             }
+            stickBarLabels();
         }, 0);
     } else {
         setTimeout(scrollToToday, 0);
@@ -1742,6 +2151,18 @@ function renderProjectDetail(projectId) {
   toolbar.appendChild(titleWrap); renderToolbarControls(toolbar);
   const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id);
   toolbar.appendChild(addDeptBtn); root.appendChild(toolbar); root.appendChild(renderLegend(project));
+  root.appendChild(renderRowCatBar(project));
+  const rcAct = rcActive(project);
+  if (rcAct.length) {
+    const all = project.departments.flatMap(d => d.rows).filter(r => !isHid(r));
+    const shown = all.filter(r => !rcRowOut(project, r)).length;
+    const names = rcAct.map(id => id === RC_NONE ? 'ไม่ระบุหมวด' : (rcList(project).find(c => c.id === id) || {}).name).join(', ');
+    const note = document.createElement('div'); note.className = 'rc-filter-note';
+    note.innerHTML = `<span>🔎 แสดงเฉพาะหมวด: <b>${escapeHTML(names)}</b> · ${shown} จาก ${all.length} แถว</span>`;
+    const clr = document.createElement('button'); clr.type = 'button'; clr.className = 'rc-clear'; clr.textContent = '✕ แสดงทั้งหมด';
+    clr.onclick = () => { rcSetFilter(project, []); reRenderWithScroll(); }; note.appendChild(clr);
+    root.appendChild(note);
+  }
 
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -1759,6 +2180,7 @@ function renderProjectDetail(projectId) {
   const flushHidden = () => { if (hiddenRun.length) { body.appendChild(buildHiddenDeptStrip(project, hiddenRun)); hiddenRun = []; } };
   project.departments.forEach((dept, index) => {
     if (isHid(dept)) { hiddenRun.push(dept); return; }   // หน่วยงานที่ซ่อน: ไม่วาด แต่แสดงแถบบอกตำแหน่งแทน
+    if (rcAct.length && !dept.rows.some(r => !isHid(r) && !rcRowOut(project, r))) return;   // กรองหมวด: หน่วยงานที่ไม่มีแถวในหมวดที่เลือก ไม่ต้องแสดง
     flushHidden();
     body.appendChild(buildDeptBlock(project, dept, index, project.departments.length, colw, totalWidth, rStart, rEnd));
   });
@@ -1768,7 +2190,7 @@ function renderProjectDetail(projectId) {
 
   const overlay = document.createElement('div'); overlay.className = 'gantt-grid-overlay';
   const todayIdx = todayBangkokIndex();
-  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
+  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart + nowDayFrac()) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   
   const notesWrap = document.createElement('div');
@@ -1876,7 +2298,10 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
   dept.rows.forEach((row, rIdx) => {
     if (isHid(row)) return;   // แถวที่ซ่อน: ไม่วาด
-    const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; 
+    if (rcRowOut(project, row)) return;   // ไม่อยู่ในหมวดที่ติ๊กกรอง
+    const rCell = document.createElement('div'); rCell.className = 'row-name-cell';
+    const rc = rcOf(project, row);
+    if (rc) { rCell.style.boxShadow = `inset 3px 0 0 ${rc.color}`; rCell.dataset.cat = rc.name; }
 
     // ปุ่มเลื่อนลำดับแถว ▲▼ (เฉพาะโหมดแก้ไข และมีมากกว่า 1 แถว)
     if (dragMode && project && visRows.length > 1) {
@@ -1919,7 +2344,7 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); block.appendChild(labelCol);
 
   const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-  dept.rows.forEach(row => { if (isHid(row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
+  dept.rows.forEach(row => { if (isHid(row) || rcRowOut(project, row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
   block.appendChild(rowsWrap); return block;
 }
 
@@ -1928,8 +2353,15 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   const actEnd = Math.min(rEnd, act.end);
   if (actEnd < rStart || actStart > rEnd) return null;
 
-  const actStartOffset = (actStart - rStart) * colw;
-  const actWidth = Math.max(colw, (actEnd - actStart + 1) * colw - 2);
+  let actStartOffset = (actStart - rStart) * colw;
+  let actWidth = Math.max(colw, (actEnd - actStart + 1) * colw - 2);
+  if (zoom === 'day' && act.type === 'meeting' && !act.allDay && act.startTime) {
+    const hm = (t) => { const [h, m] = String(t || '').split(':').map(Number); return ((h || 0) + (m || 0) / 60) / 24; };
+    const s0 = act.start >= rStart ? hm(act.startTime) : 0;
+    const e0 = act.end <= rEnd ? Math.max(hm(act.endTime || act.startTime), act.start === act.end ? s0 + 1 / 48 : 0) : 1;
+    actStartOffset = (actStart - rStart + s0) * colw;
+    actWidth = Math.max(colw / 24, (actEnd - actStart + e0 - s0) * colw - 2);
+  }
 
   const sortedActs = [...rowActivities].sort((a, b) => a.start - b.start || a.end - b.end);
   const myIndex = sortedActs.findIndex(a => a.id === act.id);
@@ -1959,6 +2391,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
       + (act.guests && act.guests.length ? '\n👥 ' + act.guests.join(', ') : '')
       + (act.calSync ? '\n🗓 อยู่ใน Google Calendar' : '');
   }
+  if (act.seriesId) { prefix = '🔁 ' + prefix; statusText += '\n🔁 ' + recDescribe(act.rec); }
   const bar = document.createElement('div');
   bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '');
   bar.style.position = 'absolute';
@@ -2005,7 +2438,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   solidFill.style.zIndex = '1';
   solidFill.style.boxSizing = 'border-box';
 
-  const textSpan = document.createElement('span');
+  const textSpan = document.createElement('span'); textSpan.className = 'act-txt';
   textSpan.style.position = 'relative';
   textSpan.style.zIndex = '2';
   textSpan.style.padding = '0 8px';
@@ -2156,7 +2589,7 @@ function renderOverview(categoryFilter = null) {
   });
   inner.appendChild(body);
   const overlay = document.createElement('div'); overlay.className = 'gantt-grid-overlay';
-  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
+  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart + nowDayFrac()) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   
   restoreScrollPosition(rStart, colw);
@@ -2222,7 +2655,7 @@ function renderLanesOverview(categoryFilter = null) {
   });
   inner.appendChild(body);
   const overlay = document.createElement('div'); overlay.className = 'gantt-grid-overlay';
-  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart) * colw) + 'px'; overlay.appendChild(tLine); }
+  if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart + nowDayFrac()) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
   
   restoreScrollPosition(rStart, colw);
@@ -2230,6 +2663,344 @@ function renderLanesOverview(categoryFilter = null) {
 }
 
 // หาแถวจากข้อมูลชุดล่าสุด (ข้อมูลอาจถูกโหลดใหม่จากผู้อื่นระหว่างที่เปิดหน้าต่างค้างไว้)
+// =====================================================================
+// --- กิจกรรมที่เกิดซ้ำ (แบบ Google Calendar) ---
+// สร้างเป็นกิจกรรมแยกทีละครั้ง (ติ๊กเสร็จ / ส่ง Calendar / แสดงใน To-do ได้ทีละครั้ง) โดยผูกกันด้วย seriesId
+// =====================================================================
+const RC_MAX = 500;
+function rcDim(y, m) { return new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); }
+function rcIdx(y, m, d) { return indexFromDate(new Date(Date.UTC(y, m, d))); }
+function rcNthDow(y, m, dow, nth) {
+  const dim = rcDim(y, m);
+  if (nth > 0) {
+    const first = new Date(Date.UTC(y, m, 1)).getUTCDay();
+    const day = 1 + ((dow - first + 7) % 7) + (nth - 1) * 7;
+    return day <= dim ? rcIdx(y, m, day) : null;
+  }
+  const lastDow = new Date(Date.UTC(y, m, dim)).getUTCDay();
+  return rcIdx(y, m, dim - ((lastDow - dow + 7) % 7));
+}
+function rcAnchorInfo(idx) {
+  const d = dateFromIndex(idx), y = d.getUTCFullYear(), m = d.getUTCMonth(), day = d.getUTCDate();
+  const nth = Math.ceil(day / 7);
+  return { y, m, day, dow: d.getUTCDay(), nth: nth >= 5 ? -1 : nth, isLast: day + 7 > rcDim(y, m) };
+}
+const RC_NTH_TXT = (n) => n === -1 ? 'สุดท้าย' : 'ที่ ' + n;
+const RC_FREQ_TXT = { day: 'วัน', week: 'สัปดาห์', month: 'เดือน', year: 'ปี' };
+const RC_WEEKEND_TXT = { fri: 'ถ้าตรงเสาร์–อาทิตย์ เลื่อนเป็นวันศุกร์ก่อนหน้า', mon: 'ถ้าตรงเสาร์–อาทิตย์ เลื่อนเป็นวันจันทร์ถัดไป', skip: 'ข้ามวันเสาร์–อาทิตย์' };
+
+// สร้างรายการวันที่จากกฎ: [{ start, base, shifted }]
+function recGenerate(rule, startIdx) {
+  const out = []; let produced = 0, stop = false;
+  const until = typeof rule.until === 'number' ? rule.until : Infinity;
+  const count = rule.count > 0 ? rule.count : Infinity;
+  const interval = Math.max(1, rule.interval || 1);
+  const push = (base) => {
+    if (base === null || base < startIdx) return;
+    if (base > until || produced >= count || out.length >= RC_MAX) { stop = true; return; }
+    let st = base; const dow = dateFromIndex(base).getUTCDay();
+    if (dow === 6 || dow === 0) {
+      if (rule.weekend === 'fri') st = base - (dow === 6 ? 1 : 2);
+      else if (rule.weekend === 'mon') st = base + (dow === 6 ? 2 : 1);
+      else if (rule.weekend === 'skip') return;
+    }
+    if (out.length && out[out.length - 1].start >= st) return;   // เลื่อนแล้วชนกับครั้งก่อน
+    out.push({ start: st, base, shifted: st !== base }); produced++;
+  };
+  const a = rcAnchorInfo(startIdx);
+  for (let k = 0; k < 20000 && !stop; k++) {
+    if (rule.freq === 'day') push(startIdx + k * interval);
+    else if (rule.freq === 'week') {
+      const ws = startIdx - a.dow + k * 7 * interval;
+      if (ws > until) break;
+      const days = (rule.byDays && rule.byDays.length ? rule.byDays : [a.dow]).slice().sort((x, y) => x - y);
+      for (const dw of days) { push(ws + dw); if (stop) break; }
+    } else if (rule.freq === 'month') {
+      const mm = a.m + k * interval, yy = a.y + Math.floor(mm / 12), m2 = ((mm % 12) + 12) % 12;
+      if (rcIdx(yy, m2, 1) > until) break;
+      if (rule.monthMode === 'nth') push(rcNthDow(yy, m2, rule.nthDow, rule.nth));
+      else if (rule.monthMode === 'last') push(rcIdx(yy, m2, rcDim(yy, m2)));
+      else push(rcIdx(yy, m2, Math.min(rule.monthDay || a.day, rcDim(yy, m2))));
+    } else if (rule.freq === 'year') {
+      const yy = a.y + k * interval, ym = rule.yMonth != null ? rule.yMonth : a.m;
+      if (rcIdx(yy, 0, 1) > until) break;
+      push(rcIdx(yy, ym, Math.min(rule.yDay || a.day, rcDim(yy, ym))));
+    } else break;
+  }
+  return out;
+}
+
+function recDescribe(rule) {
+  if (!rule) return 'ไม่เกิดซ้ำ';
+  const n = Math.max(1, rule.interval || 1), every = n === 1 ? 'ทุก' : `ทุก ${n} `;
+  let t;
+  if (rule.preset === 'weekdays') t = 'ทุกวันทำการ (จันทร์–ศุกร์)';
+  else if (rule.freq === 'day') t = n === 1 ? 'ทุกวัน' : `ทุก ${n} วัน`;
+  else if (rule.freq === 'week') t = `${every}สัปดาห์ ในวัน${(rule.byDays || []).map(d => THAI_WEEKDAY_FULL[d]).join(', ')}`;
+  else if (rule.freq === 'month') t = `${every}เดือน ` + (rule.monthMode === 'nth' ? `วัน${THAI_WEEKDAY_FULL[rule.nthDow]}${RC_NTH_TXT(rule.nth)}` : rule.monthMode === 'last' ? 'วันสุดท้ายของเดือน' : `วันที่ ${rule.monthDay}`);
+  else t = `${every}ปี วันที่ ${rule.yDay} ${THAI_MONTHS_FULL[rule.yMonth]}`;
+  if (rule.weekend && rule.weekend !== 'none') t += ' · ' + RC_WEEKEND_TXT[rule.weekend];
+  if (rule.count) t += ` · ${rule.count} ครั้ง`;
+  else if (typeof rule.until === 'number') t += ` · ถึง ${formatDateThai(dateFromIndex(rule.until))}`;
+  return t;
+}
+
+function recurFormHTML(a) {
+  const dows = THAI_WEEKDAY_SHORT.map((t, i) => `<button type="button" data-dw="${i}" title="${THAI_WEEKDAY_FULL[i]}">${t}</button>`).join('');
+  return `<div id="recurWrap" class="recur-wrap">
+    <label class="field-label" style="margin-top:0;">การทำซ้ำ</label>
+    <div class="recur-head"><span class="recur-ico">🔁</span><select id="rcPreset" class="text-input" style="margin:0;"></select></div>
+    <div id="rcCustom" class="recur-box" hidden>
+      <div class="recur-line">ทำซ้ำทุก <input type="number" id="rcInterval" class="text-input rc-num" min="1" max="99" value="1">
+        <select id="rcFreq" class="text-input"><option value="day">วัน</option><option value="week">สัปดาห์</option><option value="month">เดือน</option><option value="year">ปี</option></select></div>
+      <div class="recur-line" id="rcDowLine">ในวัน <span class="rc-dows">${dows}</span></div>
+      <div class="recur-line" id="rcMonLine" style="flex-direction:column; align-items:flex-start; gap:6px;">
+        <label><input type="radio" name="rcMon" value="date" checked> วันที่ <input type="number" id="rcMonthDay" class="text-input rc-num" min="1" max="31"> ของเดือน</label>
+        <label><input type="radio" name="rcMon" value="nth"> <span id="rcNthTxt"></span></label>
+        <label><input type="radio" name="rcMon" value="last"> วันสุดท้ายของเดือน</label>
+      </div>
+    </div>
+    <div id="rcOpts" class="recur-box" hidden>
+      <div class="recur-line"><b>สิ้นสุด</b>
+        <label><input type="radio" name="rcEnd" value="until" checked> ในวันที่ <input type="date" id="rcUntil" class="text-input"></label>
+        <span class="rc-thai" id="rcUntilThai"></span></div>
+      <div class="recur-line" style="padding-left:44px;"><span class="rc-quick"><button type="button" data-q="ce">สิ้นปีนี้</button><button type="button" data-q="fy">สิ้นปีงบประมาณ (30 ก.ย.)</button><button type="button" data-q="6m">6 เดือน</button><button type="button" data-q="1y">1 ปี</button></span></div>
+      <div class="recur-line" style="padding-left:44px;"><label><input type="radio" name="rcEnd" value="count"> หลังจาก <input type="number" id="rcCount" class="text-input rc-num" min="1" max="${RC_MAX}" value="12"> ครั้ง</label></div>
+      <div class="recur-line"><b>ถ้าตรงเสาร์–อาทิตย์</b>
+        <select id="rcWeekend" class="text-input"><option value="none">ไม่ต้องเลื่อน</option><option value="fri">เลื่อนเป็นวันศุกร์ก่อนหน้า</option><option value="mon">เลื่อนเป็นวันจันทร์ถัดไป</option><option value="skip">ข้ามครั้งนั้นไป</option></select></div>
+      <div class="rc-preview" id="rcPreview"></div>
+    </div>
+    ${a && a.seriesId ? `<div class="rc-series-note">🔁 กิจกรรมนี้อยู่ในชุดที่เกิดซ้ำ: ${escapeHTML(recDescribe(a.rec))}<br>เมื่อบันทึกหรือลบ ระบบจะถามว่าจะใช้กับรายการนี้ รายการถัดไป หรือทั้งชุด</div>` : ''}
+  </div>`;
+}
+
+function initRecurForm(modal, existing) {
+  const $ = (q) => modal.querySelector(q);
+  const sel = $('#rcPreset'), custom = $('#rcCustom'), opts = $('#rcOpts');
+  const startIn = $('#actStart');
+  const origStart = existing ? existing.start : null;
+  const rec0 = existing && existing.seriesId ? existing.rec : null;
+  const anchorIdx = () => {
+    const v = indexFromDate(inputStrToDate(startIn.value));
+    return rec0 && v === origStart && typeof existing.recBase === 'number' ? existing.recBase : v;
+  };
+  const presets = (A) => [
+    ['none', 'ไม่เกิดซ้ำ'],
+    ['daily', 'รายวัน'],
+    ['weekdays', 'ทุกวันทำการ (จันทร์–ศุกร์)'],
+    ['weekly', `รายสัปดาห์ ทุกวัน${THAI_WEEKDAY_FULL[A.dow]}`],
+    ['monthlyDate', `รายเดือน ทุกวันที่ ${A.day}`],
+    ['monthlyNth', `รายเดือน ทุกวัน${THAI_WEEKDAY_FULL[A.dow]}${RC_NTH_TXT(A.nth)}`],
+    ...(A.isLast && A.nth !== -1 ? [['monthlyLastDow', `รายเดือน ทุกวัน${THAI_WEEKDAY_FULL[A.dow]}สุดท้าย`]] : []),
+    ['monthlyLast', 'รายเดือน วันสุดท้ายของเดือน'],
+    ['yearly', `รายปี ทุกวันที่ ${A.day} ${THAI_MONTHS_FULL[A.m]}`],
+    ['custom', 'กำหนดเอง…']
+  ];
+  let selDows = new Set();
+  const fillPresets = () => {
+    const A = rcAnchorInfo(anchorIdx()), cur = sel.value || (rec0 ? rec0.preset : 'none');
+    sel.innerHTML = presets(A).map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+    sel.value = [...sel.options].some(o => o.value === cur) ? cur : 'none';
+    $('#rcNthTxt').textContent = `ทุกวัน${THAI_WEEKDAY_FULL[A.dow]}${RC_NTH_TXT(A.nth)}ของเดือน`;
+    if (!$('#rcMonthDay').value) $('#rcMonthDay').value = A.day;
+    if (!selDows.size) selDows.add(A.dow);
+  };
+  const setUntil = (idx) => { $('#rcUntil').value = dateToInputStr(dateFromIndex(idx)); $('#rcUntilThai').textContent = formatDateThai(dateFromIndex(idx)); };
+  // ค่าเริ่มต้น / ค่าเดิม
+  if (rec0) {
+    if (rec0.byDays) selDows = new Set(rec0.byDays);
+    $('#rcInterval').value = rec0.interval || 1; $('#rcFreq').value = rec0.freq || 'day';
+    if (rec0.monthDay) $('#rcMonthDay').value = rec0.monthDay;
+    if (rec0.monthMode) modal.querySelector(`input[name=rcMon][value="${rec0.monthMode}"]`).checked = true;
+    if (rec0.count) { modal.querySelector('input[name=rcEnd][value=count]').checked = true; $('#rcCount').value = rec0.count; }
+    setUntil(typeof rec0.until === 'number' ? rec0.until : anchorIdx() + 364);
+    $('#rcWeekend').value = rec0.weekend || 'none';
+  } else {
+    const A = rcAnchorInfo(anchorIdx());
+    setUntil(rcIdx(A.y + 1, A.m, A.day) - 1);
+  }
+  fillPresets();
+  if (rec0) sel.value = rec0.preset || 'custom';
+
+  const drawDows = () => modal.querySelectorAll('.rc-dows button').forEach(b => b.classList.toggle('on', selDows.has(+b.dataset.dw)));
+  modal.querySelectorAll('.rc-dows button').forEach(b => b.onclick = () => {
+    const d = +b.dataset.dw; if (selDows.has(d) && selDows.size > 1) selDows.delete(d); else selDows.add(d); drawDows(); update();
+  });
+
+  const getRule = () => {
+    const preset = sel.value; if (preset === 'none') return null;
+    const A = rcAnchorInfo(anchorIdx());
+    let r;
+    if (preset === 'daily') r = { freq: 'day', interval: 1 };
+    else if (preset === 'weekdays') r = { freq: 'week', interval: 1, byDays: [1, 2, 3, 4, 5] };
+    else if (preset === 'weekly') r = { freq: 'week', interval: 1, byDays: [A.dow] };
+    else if (preset === 'monthlyDate') r = { freq: 'month', interval: 1, monthMode: 'date', monthDay: A.day };
+    else if (preset === 'monthlyNth') r = { freq: 'month', interval: 1, monthMode: 'nth', nth: A.nth, nthDow: A.dow };
+    else if (preset === 'monthlyLastDow') r = { freq: 'month', interval: 1, monthMode: 'nth', nth: -1, nthDow: A.dow };
+    else if (preset === 'monthlyLast') r = { freq: 'month', interval: 1, monthMode: 'last' };
+    else if (preset === 'yearly') r = { freq: 'year', interval: 1, yMonth: A.m, yDay: A.day };
+    else {
+      const freq = $('#rcFreq').value, interval = Math.min(99, Math.max(1, parseInt($('#rcInterval').value, 10) || 1));
+      r = { freq, interval };
+      if (freq === 'week') r.byDays = [...selDows].sort((x, y) => x - y);
+      if (freq === 'month') {
+        const mode = modal.querySelector('input[name=rcMon]:checked').value;
+        r.monthMode = mode;
+        if (mode === 'date') r.monthDay = Math.min(31, Math.max(1, parseInt($('#rcMonthDay').value, 10) || A.day));
+        if (mode === 'nth') { r.nth = A.nth; r.nthDow = A.dow; }
+      }
+      if (freq === 'year') { r.yMonth = A.m; r.yDay = A.day; }
+    }
+    r.preset = preset;
+    if (modal.querySelector('input[name=rcEnd]:checked').value === 'count') r.count = Math.min(RC_MAX, Math.max(1, parseInt($('#rcCount').value, 10) || 1));
+    else { const u = $('#rcUntil').value; r.until = u ? indexFromDate(inputStrToDate(u)) : anchorIdx() + 364; }
+    r.weekend = $('#rcWeekend').value;
+    return r;
+  };
+
+  const update = () => {
+    const preset = sel.value;
+    custom.hidden = preset !== 'custom';
+    opts.hidden = preset === 'none';
+    const f = $('#rcFreq').value;
+    $('#rcDowLine').style.display = f === 'week' ? 'flex' : 'none';
+    $('#rcMonLine').style.display = f === 'month' ? 'flex' : 'none';
+    drawDows();
+    const rule = getRule(); const pv = $('#rcPreview');
+    if (!rule) { pv.innerHTML = ''; return; }
+    const occ = recGenerate(rule, anchorIdx());
+    const fmt = (i) => { const d = dateFromIndex(i); return `${THAI_WEEKDAY_SHORT[d.getUTCDay()]}. ${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]} ${String((d.getUTCFullYear() + 543) % 100).padStart(2, '0')}`; };
+    const shown = occ.slice(0, 24);
+    pv.innerHTML = `จะสร้าง <b>${occ.length} รายการ</b>${occ.length >= RC_MAX ? ` (สูงสุด ${RC_MAX})` : ''}${occ.some(o => o.shifted) ? ` · เลื่อนวัน ${occ.filter(o => o.shifted).length} ครั้ง` : ''}
+      <div class="rc-chips">${shown.map(o => `<span class="${o.shifted ? 'sh' : ''}" title="${o.shifted ? 'เลื่อนจาก ' + fmt(o.base) : ''}">${fmt(o.start)}${o.shifted ? ' ↩' : ''}</span>`).join('')}${occ.length > shown.length ? `<span class="more">… ถึง ${fmt(occ[occ.length - 1].start)}</span>` : ''}</div>`;
+  };
+
+  sel.onchange = update;
+  ['#rcInterval', '#rcFreq', '#rcMonthDay', '#rcCount', '#rcWeekend'].forEach(q => { $(q).addEventListener('input', update); $(q).addEventListener('change', update); });
+  modal.querySelectorAll('input[name=rcMon], input[name=rcEnd]').forEach(x => x.onchange = update);
+  $('#rcUntil').addEventListener('input', () => { if ($('#rcUntil').value) { $('#rcUntilThai').textContent = formatDateThai(inputStrToDate($('#rcUntil').value)); modal.querySelector('input[name=rcEnd][value=until]').checked = true; } update(); });
+  $('#rcCount').addEventListener('focus', () => { modal.querySelector('input[name=rcEnd][value=count]').checked = true; update(); });
+  modal.querySelectorAll('.rc-quick button').forEach(b => b.onclick = () => {
+    const A = rcAnchorInfo(anchorIdx());
+    const q = b.dataset.q;
+    const idx = q === 'ce' ? rcIdx(A.y, 11, 31) : q === 'fy' ? rcIdx(A.m >= 9 ? A.y + 1 : A.y, 8, 30) : q === '6m' ? rcIdx(A.y, A.m + 6, A.day) - 1 : rcIdx(A.y + 1, A.m, A.day) - 1;
+    setUntil(idx); modal.querySelector('input[name=rcEnd][value=until]').checked = true; update();
+  });
+  startIn.addEventListener('input', () => { fillPresets(); update(); });
+  update();
+  return { getRule, original: rec0 };
+}
+
+// ถามขอบเขต: เฉพาะรายการนี้ / รายการนี้และรายการถัดไป / ทุกรายการในชุด
+function askSeriesScope(title, allowOne, verb = 'บันทึก') {
+  return new Promise((resolve) => {
+    const ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.style.zIndex = 120;
+    const m = document.createElement('div'); m.className = 'modal'; m.style.maxWidth = '420px';
+    const opt = (v, t, sub, on) => `<label class="scope-opt"><input type="radio" name="scope" value="${v}" ${on ? 'checked' : ''}><span>${t}<small>${sub}</small></span></label>`;
+    m.innerHTML = `<h3>🔁 ${escapeHTML(title)}</h3>
+      ${allowOne ? opt('one', 'เฉพาะรายการนี้', 'รายการอื่นในชุดไม่เปลี่ยน', true) : ''}
+      ${opt('following', 'รายการนี้และรายการถัดไป', 'รายการก่อนหน้านี้ไม่เปลี่ยน', !allowOne)}
+      ${opt('all', 'ทุกรายการในชุด', 'รวมรายการที่ผ่านมาแล้ว (รายการที่ติ๊กเสร็จแล้วจะคงสถานะไว้)', false)}
+      ${!allowOne ? '<div style="font-size:12px; color:var(--ink-soft); margin-top:-2px;">มีการเปลี่ยนรูปแบบการทำซ้ำ จึงต้องใช้กับหลายรายการ</div>' : ''}
+      <div class="modal-actions"><button class="ghost-btn" id="scCancel">ยกเลิก</button><button class="primary-btn" id="scOk">${verb}</button></div>`;
+    ov.appendChild(m); document.body.appendChild(ov);
+    const done = (v) => { ov.remove(); resolve(v); };
+    m.querySelector('#scCancel').onclick = () => done(null);
+    m.querySelector('#scOk').onclick = () => done(m.querySelector('input[name=scope]:checked').value);
+  });
+}
+
+function rcSortedMembers(row, sid) { return row.activities.filter(a => a.seriesId === sid).sort((a, b) => a.start - b.start); }
+// ตัดชุดเดิมให้จบก่อนวันที่กำหนด (กรณีแก้/ลบ "รายการนี้และรายการถัดไป")
+function rcTrimBefore(row, sid, beforeIdx) {
+  rcSortedMembers(row, sid).forEach(a => { if (a.start < beforeIdx && a.rec) { a.rec = { ...a.rec, until: beforeIdx - 1 }; delete a.rec.count; } });
+}
+
+function deleteRecurring(row, existing, scope) {
+  const sid = existing.seriesId;
+  if (scope === 'one') row.activities = row.activities.filter(a => a.id !== existing.id);
+  else if (scope === 'following') { row.activities = row.activities.filter(a => !(a.seriesId === sid && a.start >= existing.start)); rcTrimBefore(row, sid, existing.start); }
+  else { const root = existing.seriesRoot || sid; row.activities = row.activities.filter(a => (a.seriesRoot || a.seriesId) !== root); }
+}
+
+async function saveRecurring({ liveRow, existing, rule, sIdx, eIdx, label, type, completed, remark, color, modal }) {
+  const dur = eIdx - sIdx;
+  const tmpl = { label, color, type, remark };
+  applyMeetingFields(tmpl, modal, type);
+  const stamp = (obj) => { Object.keys(tmpl).forEach(k => { obj[k] = clone(tmpl[k]); }); ['meetingKind', 'allDay', 'startTime', 'endTime', 'location', 'meetLink', 'guests', 'calSync'].forEach(k => { if (!(k in tmpl)) delete obj[k]; }); return obj; };
+  const checkCount = (occ) => {
+    if (!occ.length) { alert('ไม่มีวันที่ตรงกับรูปแบบการทำซ้ำนี้ กรุณาตรวจสอบวันสิ้นสุด'); return false; }
+    if (type === 'meeting' && tmpl.calSync && occ.length > 1) {
+      if (occ.length > 100) { alert(`นัดหมายที่ส่งไป Google Calendar สร้างได้ครั้งละไม่เกิน 100 รายการ (ตอนนี้ ${occ.length} รายการ)\nกรุณาลดช่วงเวลา หรือเอาติ๊ก "ส่งไปที่ Google Calendar" ออก`); return false; }
+      if (!confirm(`จะสร้างนัดหมาย ${occ.length} รายการใน Google Calendar\nและผู้เข้าร่วมจะได้รับคำเชิญแยกทีละรายการ ดำเนินการต่อหรือไม่?`)) return false;
+    }
+    if (occ.length >= RC_MAX) showToast(`สร้างได้สูงสุด ${RC_MAX} รายการต่อชุด`);
+    return true;
+  };
+  // สร้างชุดใหม่ โดยใช้ id / สถานะเสร็จเดิม ถ้าวันตรงกัน (Calendar จะไม่สร้างนัดซ้ำ)
+  let root = existing && existing.seriesId ? (existing.seriesRoot || existing.seriesId) : null;   // ชุดที่แยกจาก "รายการนี้และถัดไป" ยังนับเป็นชุดเดียวกันตอนลบทั้งชุด
+  const build = (occ, sid, reuseByStart, keepId, keepCompleted) => occ.map((o, i) => {
+    const old = reuseByStart.get(o.start);
+    const obj = stamp(old ? { ...old } : {});
+    obj.id = old ? old.id : (i === 0 && keepId ? keepId : uid('act'));
+    obj.start = o.start; obj.end = o.start + dur; obj.seriesId = sid; obj.seriesRoot = root; obj.rec = clone(rule); obj.recBase = o.base;
+    obj.completed = old ? !!old.completed : (i === 0 && keepCompleted !== undefined ? keepCompleted : false);
+    return obj;
+  });
+
+  // 1) กิจกรรมใหม่ / กิจกรรมเดิมที่ยังไม่เคยทำซ้ำ -> สร้างชุดใหม่
+  if (!existing || !existing.seriesId) {
+    const occ = recGenerate(rule, sIdx);
+    if (!checkCount(occ)) return false;
+    if (existing) liveRow.activities = liveRow.activities.filter(a => a.id !== existing.id);
+    const nsid = uid('ser'); root = nsid;
+    const items = build(occ, nsid, new Map(), existing ? existing.id : null, existing ? completed : undefined);
+    liveRow.activities.push(...items);
+    showToast(`🔁 สร้างกิจกรรมที่เกิดซ้ำ ${items.length} รายการ`);
+    return true;
+  }
+
+  // 2) แก้กิจกรรมในชุดเดิม
+  const sid = existing.seriesId;
+  const target = liveRow.activities.find(a => a.id === existing.id) || existing;
+  const ruleChanged = JSON.stringify(rule) !== JSON.stringify(existing.rec || null);
+  const scope = await askSeriesScope('แก้ไขกิจกรรมที่เกิดซ้ำ', !ruleChanged);
+  if (!scope) return false;
+
+  if (scope === 'one') {
+    stamp(target); target.start = sIdx; target.end = eIdx; target.completed = completed;
+    return true;
+  }
+  const members = rcSortedMembers(liveRow, sid);
+  const replaced = scope === 'all' ? members : members.filter(a => a.start >= existing.start);
+  const replacedIds = new Set(replaced.map(a => a.id));
+
+  if (!rule) {   // เปลี่ยนเป็น "ไม่เกิดซ้ำ": เหลือเฉพาะรายการนี้ (รายการที่ติ๊กเสร็จแล้วเก็บไว้)
+    liveRow.activities = liveRow.activities.filter(a => !replacedIds.has(a.id) || a.id === target.id || (scope === 'all' && a.completed));
+    liveRow.activities.forEach(a => { if (a.seriesId === sid && (a.id === target.id || scope === 'all')) { delete a.seriesId; delete a.seriesRoot; delete a.rec; delete a.recBase; } });
+    stamp(target); target.start = sIdx; target.end = eIdx; target.completed = completed;
+    if (scope === 'following') rcTrimBefore(liveRow, sid, existing.start);
+    return true;
+  }
+
+  let genStart;
+  if (scope === 'following') genStart = sIdx !== existing.start ? sIdx : (typeof existing.recBase === 'number' ? existing.recBase : existing.start);
+  else { const first = members[0]; genStart = (typeof first.recBase === 'number' ? first.recBase : first.start) + (sIdx - existing.start); }
+  const occ = recGenerate(rule, genStart);
+  if (!checkCount(occ)) return false;
+  const reuse = new Map(replaced.map(a => [a.start, a]));
+  // รายการนี้: ถ้าวันยังตรงกับชุดใหม่ ให้คงสถานะตามที่ติ๊กในหน้าต่าง
+  const items = build(occ, scope === 'all' ? sid : uid('ser'), reuse);
+  const me = items.find(a => a.id === target.id); if (me) me.completed = completed;
+  const newIds = new Set(items.map(a => a.id));
+  // รายการเดิมที่ติ๊กเสร็จแล้วแต่ไม่อยู่ในชุดใหม่: เก็บไว้ (แยกออกจากชุด)
+  const keepDone = replaced.filter(a => a.completed && !newIds.has(a.id)).map(a => { const c = { ...a }; delete c.seriesId; delete c.seriesRoot; delete c.rec; delete c.recBase; return c; });
+  liveRow.activities = liveRow.activities.filter(a => !replacedIds.has(a.id)).concat(items, keepDone);
+  if (scope === 'following') rcTrimBefore(liveRow, sid, existing.start);
+  showToast(`🔁 อัปเดตกิจกรรมที่เกิดซ้ำ ${items.length} รายการ`);
+  return true;
+}
+
 function findLiveRow(projectId, deptId, rowId) {
   const p = state.projects.find(x => x.id === projectId); if (!p) return null;
   const d = p.departments.find(x => x.id === deptId); if (!d) return null;
@@ -2286,6 +3057,8 @@ function openActivityModal(projectId, deptId, rowId, actId) {
         <span id="txtEndThai" style="font-size:12px; font-weight:600; color:var(--indigo); min-width:85px; text-align:right;">${formatDateThai(endD)}</span>
     </div>
     
+    <div id="recurHome">${recurFormHTML(existing)}</div>
+
     <label class="field-label" style="margin-top:10px;">สีกิจกรรม</label>
     <div class="color-picker" id="colorPicker"></div>
     <div class="modal-actions" id="modalActions"></div>
@@ -2294,6 +3067,7 @@ function openActivityModal(projectId, deptId, rowId, actId) {
 
   modal.querySelector('#actType').addEventListener('change', (e) => { modal.querySelector('#taskStatusWrap').style.display = e.target.value === 'task' ? 'flex' : 'none'; setMeetingLayout(modal, e.target.value === 'meeting'); });
   initMeetingForm(modal, existing);
+  const recur = initRecurForm(modal, existing);
   
   let currentDuration = existing ? (existing.end - existing.start) : 0;
   
@@ -2332,6 +3106,13 @@ function openActivityModal(projectId, deptId, rowId, actId) {
     let sIdx = indexFromDate(inputStrToDate(modal.querySelector('#actStart').value)), eIdx = indexFromDate(inputStrToDate(modal.querySelector('#actEnd').value));
     if (eIdx < sIdx) eIdx = sIdx;
     const liveRow = findLiveRow(projectId, deptId, rowId) || r;
+    // --- กิจกรรมที่เกิดซ้ำ ---
+    const rule = recur.getRule();
+    if (rule || (existing && existing.seriesId)) {
+      const done = await saveRecurring({ modal, overlay, liveRow, existing, rule, sIdx, eIdx, label, type, completed, remark, color: chosenColor });
+      if (done) { closeModal(overlay); await persistAndRender(); }
+      return;
+    }
     const target = existing ? (liveRow.activities.find(a => a.id === existing.id) || existing) : null;
     if (target) { const existing = target; existing.label = label; existing.color = chosenColor; existing.start = sIdx; existing.end = eIdx; existing.type = type; existing.completed = completed; existing.remark = remark; }
     else { liveRow.activities.push({ id: uid('act'), label, color: chosenColor, start: sIdx, end: eIdx, type, completed, remark }); }
@@ -2344,7 +3125,13 @@ function openActivityModal(projectId, deptId, rowId, actId) {
     const delBtn = document.createElement('button'); delBtn.className = 'danger-btn'; delBtn.textContent = 'ลบกิจกรรม';
     delBtn.onclick = async () => {
       const row = findLiveRow(projectId, deptId, rowId) || r;
-      row.activities = row.activities.filter(a => a.id !== existing.id);
+      if (existing.seriesId) {
+        const scope = await askSeriesScope('ลบกิจกรรมที่เกิดซ้ำ', true, 'ลบ');
+        if (!scope) return;
+        deleteRecurring(row, existing, scope);
+      } else {
+        row.activities = row.activities.filter(a => a.id !== existing.id);
+      }
       closeModal(overlay); await persistAndRender();
     };
     actions.appendChild(delBtn);
@@ -2511,7 +3298,9 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCtxMe
 function openRowMenu(e, project, dept, row) {
   const visible = dept.rows.filter(r => !isHid(r)).length;
   const hiddenRows = dept.rows.length - visible;
+  const rc = rcOf(project, row);
   showCtxMenu(e, [
+    ...(READ_ONLY ? [] : [{ label: `🏷 หมวด: ${rc ? rc.name : 'ไม่ระบุ'} — เปลี่ยน`, action: () => openRowCatPicker(project.id, dept.id, row.id) }, '-']),
     { label: `ซ่อนแถว "${row.name}" (ทุกคน)`, disabled: visible <= 1, action: () => setRowHidden(project.id, dept.id, row.id, true) },
     { label: 'ซ่อนแถวนี้เฉพาะในเครื่องของฉัน', disabled: visible <= 1, action: () => setRowHidden(project.id, dept.id, row.id, true, true) },
     { label: hiddenRows ? `แสดงแถวที่ซ่อน (${hiddenRows})` : 'แสดงแถวที่ซ่อน', disabled: !hiddenRows, action: () => unhideAllRows(project.id, dept.id) },
@@ -2816,6 +3605,7 @@ function meetingFormHTML(a) {
         <input type="time" id="meetEnd" class="text-input" value="${escapeHTML((a && a.endTime) || '10:00')}" aria-label="เวลาสิ้นสุด">
       </div>
       <div class="gc-sub"><label style="display:flex; gap:6px; align-items:center; cursor:pointer;"><input type="checkbox" id="meetAllDay" ${allDay ? 'checked' : ''}> ทั้งวัน</label></div>
+      <div class="gc-slot" data-slot="recur"></div>
       <div class="gc-summary" id="gcSummary"></div>`, 'วันและเวลา')}
     ${row('people', `<div class="guest-box" id="guestBox"><input type="email" id="guestInput" placeholder="เพิ่มผู้เข้าร่วม (อีเมล) แล้วกด Enter"></div>
       <div class="meet-hint">วางหลายอีเมลพร้อมกันได้ · ผู้เข้าร่วมจะได้รับคำเชิญทางอีเมลและเห็นนัดหมายในปฏิทินของตัวเอง</div>`, 'ผู้เข้าร่วม')}
@@ -2847,12 +3637,14 @@ function setMeetingLayout(modal, on) {
   if (on) {
     slot('startDate').appendChild(startWrap); slot('endDate').appendChild(endWrap);
     slot('remark').appendChild(remark); slot('color').appendChild(picker);
+    const rw = modal.querySelector('#recurWrap'); if (rw && slot('recur')) slot('recur').appendChild(rw);
     remark.placeholder = 'เพิ่มรายละเอียด / วาระการประชุม';
     hideEls.forEach(el => el && el.classList.add('gc-hide'));
   } else {
     h.startRow.insertBefore(startWrap, h.startRow.firstChild);
     h.endRow.insertBefore(endWrap, h.endRow.firstChild);
     h.remarkLabel.after(remark); h.colorLabel.after(picker);
+    const rw = modal.querySelector('#recurWrap'), rh = modal.querySelector('#recurHome'); if (rw && rh) rh.appendChild(rw);
     remark.placeholder = 'รายละเอียดเพิ่มเติม...';
     hideEls.forEach(el => el && el.classList.remove('gc-hide'));
   }
@@ -3109,7 +3901,7 @@ async function loadTodos(silent) {
     if (next.length !== todo.boards.length) changed = true;
     todo.boards = next;
     todo.loaded = true;
-    if (!todo.boards.some(b => b.id === todo.activeId)) todo.activeId = todo.boards[0] ? todo.boards[0].id : null;
+    if (!String(todo.activeId || '').startsWith('proj:') && !todo.boards.some(b => b.id === todo.activeId)) todo.activeId = todo.boards[0] ? todo.boards[0].id : null;
   } catch (e) {
     if (!silent) showToast('โหลด To-do ไม่สำเร็จ: ' + e.message);
   } finally { todo.loading = false; }
@@ -3178,10 +3970,11 @@ function tdStartPolling() {
 
 // ---------- แท็บบอร์ด (แถบที่สอง) ----------
 function renderTodoTabs(subBar) {
-  if (!todo.loaded) return;
+  if (!todo.loaded && !String(todo.activeId || '').startsWith('proj:')) return;
+  const projMode = String(todo.activeId || '').startsWith('proj:');
   todo.boards.forEach(b => {
     const t = document.createElement('button');
-    const active = tdBoard() && tdBoard().id === b.id;
+    const active = !projMode && tdBoard() && tdBoard().id === b.id;
     t.className = 'tab' + (active ? ' active' : ''); t.style.paddingRight = '14px';
     const v = tdVis(b);
     t.innerHTML = `<span class="td-tab-ico">${TD_VIS[v].ico}</span><span>${escapeHTML(b.name)}</span>`;
@@ -3190,10 +3983,138 @@ function renderTodoTabs(subBar) {
     subBar.appendChild(t);
   });
   const add = document.createElement('button'); add.className = 'tab tab-add'; add.textContent = '+ บอร์ดใหม่'; add.onclick = tdOpenNewBoard; subBar.appendChild(add);
+  // บอร์ดจากแผนงาน: โครงการที่มีกิจกรรม "กำหนดการที่ต้องทำให้เสร็จ"
+  const projs = tdProjList();
+  if (projs.length) {
+    const sep = document.createElement('span'); sep.className = 'td-sep'; sep.textContent = 'จากแผนงาน:'; subBar.appendChild(sep);
+    const today = todayBangkokIndex();
+    projs.forEach(({ p, tasks }) => {
+      const open = tasks.filter(x => !x.a.completed), late = open.filter(x => x.a.end < today).length;
+      const t = document.createElement('button');
+      t.className = 'tab td-proj-tab' + (todo.activeId === 'proj:' + p.id ? ' active' : ''); t.style.paddingRight = '14px';
+      t.innerHTML = `<span class="td-tab-ico">📊</span><span>${escapeHTML(p.name)}</span>${late ? `<span class="td-cnt" title="เลยกำหนด ${late} งาน">${late}</span>` : ''}`;
+      t.title = `งาน "กำหนดการที่ต้องทำให้เสร็จ" ของ ${p.name} · ค้าง ${open.length} งาน${late ? ' · เลยกำหนด ' + late : ''}\nติ๊กเสร็จที่นี่ = ติ๊กในแผนงานด้วย`;
+      t.onclick = () => { todo.activeId = 'proj:' + p.id; lsSet('todo_active', todo.activeId); render(); };
+      subBar.appendChild(t);
+    });
+  }
+}
+
+// รายชื่อโครงการที่มีงาน "กำหนดการที่ต้องทำให้เสร็จ" (เฉพาะหมวดที่ผู้ใช้มีสิทธิ์ ซึ่งโหลดมาแล้ว)
+function tdProjList() {
+  if (!state || !state.projects) return [];
+  const all = collectTasks();
+  return state.projects.map(p => ({ p, tasks: all.filter(x => x.p.id === p.id) })).filter(x => x.tasks.length);
+}
+
+// ติ๊กเสร็จ / ยกเลิกเสร็จ ของงานในแผนงาน (ข้อมูลชุดเดียวกับหน้าแผนงาน จึงเชื่อมกันทันที)
+function tdSetTaskDone(pid, aid, done, cardEl) {
+  const find = () => { const x = collectTasks().find(t => t.p.id === pid && t.a.id === aid); return x ? x.a : null; };
+  const a0 = find(); if (!a0 || READ_ONLY) return;
+  const prev = { completed: !!a0.completed, completedAt: a0.completedAt, completedBy: a0.completedBy };
+  const go = async () => {
+    const a = find(); if (!a) return;
+    a.completed = done;
+    if (done) { a.completedAt = Date.now(); a.completedBy = USER_NAME; } else { delete a.completedAt; delete a.completedBy; }
+    a.updatedBy = USER_NAME; a.updatedAt = Date.now();
+    showToast(done ? `✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)` : `↺ "${a.label}" กลับไปเป็นงานค้าง`, 'เลิกทำ', async () => {
+      const b = find(); if (!b) return;
+      b.completed = prev.completed;
+      ['completedAt', 'completedBy'].forEach(k => { if (prev[k] === undefined) delete b[k]; else b[k] = prev[k]; });
+      await persistAndRender();
+    });
+    await persistAndRender();
+  };
+  if (cardEl) { cardEl.classList.add('td-leaving'); setTimeout(go, 220); } else go();
+}
+
+// หน้าบอร์ดของโครงการ: จัดคอลัมน์ตามสถานะวันที่อัตโนมัติ
+function renderProjTodo(pid) {
+  const root = document.createElement('div');
+  const entry = tdProjList().find(x => x.p.id === pid);
+  if (!entry) {
+    root.innerHTML = '<div class="td-empty"><h3>โครงการนี้ไม่มีงาน "กำหนดการที่ต้องทำให้เสร็จ"</h3><p>เพิ่มกิจกรรมประเภทนี้ในแผนงาน แล้วงานจะมาแสดงที่นี่อัตโนมัติ</p></div>';
+    return root;
+  }
+  const { p, tasks } = entry;
+  const today = todayBangkokIndex();
+  const edit = !READ_ONLY;
+  const head = document.createElement('div'); head.className = 'td-head';
+  head.innerHTML = `<div class="td-title"><h2 style="cursor:default;">📊 ${escapeHTML(p.name)}</h2><span class="td-link-badge">🔗 เชื่อมกับแผนงาน · ติ๊กเสร็จที่นี่ = ติ๊กในแผนงานด้วย</span></div>`;
+  const right = document.createElement('div'); right.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap;';
+  const go = document.createElement('button'); go.className = 'ghost-btn'; go.textContent = '↗ เปิดหน้าแผนงานของโครงการ';
+  go.onclick = () => { activeMainCat = p.sourceType || 'work'; view = { type: 'project', id: p.id }; render(); };
+  right.appendChild(go); head.appendChild(right); root.appendChild(head);
+
+  const tools = document.createElement('div'); tools.className = 'td-tools';
+  tools.innerHTML = `<div class="search-box"><span class="s-icon">🔍</span><input type="search" id="tdSearch" placeholder="ค้นหางาน / หน่วยงาน" value="${escapeHTML(todo.filter.q)}" aria-label="ค้นหางาน"></div><div class="td-stats" id="tdStats"></div>`;
+  root.appendChild(tools);
+  const area = document.createElement('div'); root.appendChild(area);
+
+  const draw = () => {
+    const q = todo.filter.q.toLowerCase();
+    const match = (x) => !q || [x.a.label, x.d.name, x.r.name].join(' ').toLowerCase().includes(q);
+    const list = tasks.filter(match);
+    const cols = [
+      { key: 'late', name: 'เลยกำหนด', color: '#E5484D', items: list.filter(x => !x.a.completed && x.a.end < today).sort((a, b) => a.a.end - b.a.end) },
+      { key: 'now', name: 'ต้องดำเนินการ', color: '#F59E0B', items: list.filter(x => !x.a.completed && x.a.start <= today && x.a.end >= today).sort((a, b) => a.a.end - b.a.end) },
+      { key: 'next', name: 'ยังไม่ถึงกำหนดเริ่ม', color: '#94A3B8', items: list.filter(x => !x.a.completed && x.a.start > today).sort((a, b) => a.a.start - b.a.start) },
+      { key: 'done', name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, items: list.filter(x => x.a.completed).sort((a, b) => (b.a.completedAt || 0) - (a.a.completedAt || 0) || b.a.end - a.a.end) }
+    ];
+    area.innerHTML = '';
+    const board = document.createElement('div'); board.className = 'td-board';
+    cols.forEach(col => {
+      const el = document.createElement('div'); el.className = 'td-col'; el.style.setProperty('--colc', col.color);
+      el.innerHTML = `<div class="td-col-h"><div class="td-col-name" style="cursor:default;">${col.isDone ? '✔ ' : ''}${col.name}</div><span class="td-count">${col.items.length}</span></div>`;
+      const ul = document.createElement('div'); ul.className = 'td-list';
+      const key = 'proj-' + pid + '-' + col.key;
+      const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
+      if (!col.items.length) ul.innerHTML = '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
+      shown.forEach(({ a, d, r }) => {
+        const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '');
+        let badge;
+        if (col.isDone) badge = `<span class="td-b due-done">✔ ${a.completedAt ? 'เสร็จ ' + escapeHTML(fmtDateTime(a.completedAt)) : 'เสร็จแล้ว'}</span>`;
+        else if (col.key === 'late') badge = `<span class="td-b due-red">เลย ${today - a.end} วัน</span>`;
+        else if (col.key === 'now') badge = a.end === today ? '<span class="td-b due-amber">ครบกำหนดวันนี้</span>' : `<span class="td-b due-soon">เหลือ ${a.end - today} วัน</span>`;
+        else badge = `<span class="td-b">อีก ${a.start - today} วันเริ่ม</span>`;
+        card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${col.isDone ? 'เอาติ๊กออก = กลับเป็นงานค้าง' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)'}" aria-label="${col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : ''}</button><span>${escapeHTML(a.label)}</span></div>
+          <div class="td-path">${escapeHTML(d.name)} › ${escapeHTML(r.name)}</div>
+          <div class="td-badges"><span class="td-b" title="ช่วงวันที่ในแผนงาน">🗓 ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.start))))}${a.end !== a.start ? ' – ' + escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.end)))) : ''}</span>${badge}
+          ${col.isDone && a.completedBy ? `<span class="td-avs" title="ติ๊กเสร็จโดย ${escapeHTML(a.completedBy)}"><span class="td-av" style="background:${tdAvColor(a.completedBy)}">${escapeHTML(tdInitial(a.completedBy))}</span></span>` : ''}</div>`;
+        card.style.borderLeft = `3px solid ${a.color || '#94A3B8'}`;
+        const tk = card.querySelector('.td-tick');
+        tk.onclick = (e) => { e.stopPropagation(); if (edit) tdSetTaskDone(pid, a.id, !col.isDone, card); };
+        card.onclick = () => openActivityModal(p.id, d.id, r.id, a.id);
+        card.title = 'คลิกเพื่อเปิดรายละเอียดงานในแผนงาน';
+        ul.appendChild(card);
+      });
+      if (shown.length < col.items.length) {
+        const more = document.createElement('button'); more.className = 'td-more'; more.type = 'button';
+        more.textContent = `แสดงทั้งหมด (${col.items.length} งาน)`; more.onclick = () => { todo.showAll[key] = true; draw(); };
+        ul.appendChild(more);
+      }
+      el.appendChild(ul); board.appendChild(el);
+    });
+    area.appendChild(board);
+    const st = root.querySelector('#tdStats');
+    st.innerHTML = `<span>งานค้าง <b>${cols[0].items.length + cols[1].items.length + cols[2].items.length}</b></span><span class="red">เลยกำหนด <b>${cols[0].items.length}</b></span><span class="amber">ครบวันนี้ <b>${cols[1].items.filter(x => x.a.end === today).length}</b></span>`;
+  };
+  const qIn = tools.querySelector('#tdSearch');
+  qIn.oninput = () => { clearTimeout(qIn._t); qIn._t = setTimeout(() => { todo.filter.q = qIn.value.trim(); draw(); }, 200); };
+  draw();
+  const note = document.createElement('div'); note.className = 'td-meta';
+  note.textContent = 'งานในบอร์ดนี้มาจากกิจกรรมประเภท "กำหนดการที่ต้องทำให้เสร็จ" ในแผนงานโดยอัตโนมัติ · เพิ่ม / แก้วันที่ / ลบงาน ทำที่หน้าแผนงาน หรือคลิกที่การ์ด';
+  root.appendChild(note);
+  return root;
 }
 
 // ---------- หน้า To-do ----------
 function renderTodo() {
+  if (String(todo.activeId || '').startsWith('proj:')) {
+    tdStartPolling();
+    if (!todo.loaded) loadTodos(true).then(() => render());   // โหลดแท็บบอร์ดปกติไว้ด้วย
+    return renderProjTodo(todo.activeId.slice(5));
+  }
   const root = document.createElement('div');
   tdStartPolling();
   if (!todo.loaded) {
@@ -3873,7 +4794,7 @@ function tdFromTrello(j, vis) {
   const roToast = () => showToast('บัญชีนี้ดูได้อย่างเดียว ไม่สามารถแก้ไขได้');
   const blocked = ['addProject', 'addExtraProject', 'addPersonalProject', 'deleteProject', 'renameProject',
     'openProjectColorModal', 'openOverviewSettingsModal', 'editColorsModal', 'addDepartment', 'renameDepartment',
-    'deleteDepartment', 'moveDepartmentUp', 'moveDepartmentDown', 'addRow', 'deleteRow', 'moveRow', 'importBackup', 'undo', 'redo'];
+    'deleteDepartment', 'moveDepartmentUp', 'moveDepartmentDown', 'addRow', 'deleteRow', 'moveRow', 'importBackup', 'undo', 'redo', 'openRowCatManager', 'openRowCatPicker'];
   blocked.forEach(n => {
     const f = window[n]; if (typeof f !== 'function') return;
     window[n] = function (...a) { if (READ_ONLY) { roToast(); return; } return f.apply(this, a); };
@@ -3923,6 +4844,8 @@ function tdFromTrello(j, vis) {
 // --- ลิงก์เข้าระบบอัตโนมัติ: https://.../#k=รหัสผ่าน ---
 // (ส่วนหลัง # ไม่ถูกส่งไปที่เซิร์ฟเวอร์ GitHub และจะถูกลบออกจากแถบที่อยู่ทันที)
 // ==========================================
+applyGanttHeightMode();   // ความสูงตารางที่เลือกไว้ครั้งก่อน
+
 (function autoLoginFromLink() {
   const m = location.hash.match(/[#&]k=([^&]+)/);
   if (!m) return;
