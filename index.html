@@ -257,6 +257,17 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .nt-allday { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 600; color: var(--ink); }
 .nt-times { align-items: center; gap: 8px; color: var(--ink-soft); }
 .nt-times input.t24 { width: 84px; padding: 7px 8px; text-align: center; margin: 0; font-variant-numeric: tabular-nums; cursor: pointer; }
+.eg-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
+.eg-bar:empty { display: none; }
+.eg-lab { font-size: 12.5px; color: var(--ink-soft); }
+.eg-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 3px 11px 3px 6px; font-family: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink); }
+.eg-chip .bx { width: 15px; height: 15px; border-radius: 4px; border: 2px solid #94A3B8; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #fff; }
+.eg-chip.on { border-color: var(--indigo); background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 600; }
+.eg-chip.on .bx { background: var(--indigo); border-color: var(--indigo); }
+.eg-chip small { color: var(--ink-soft); font-weight: 400; }
+.eg-manage { border: none; background: transparent; color: var(--indigo); font-family: inherit; font-size: 12.5px; cursor: pointer; padding: 3px 4px; }
+.eg-manage:hover { text-decoration: underline; }
+.eg-count { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
 .t24-pop { position: fixed; z-index: 400; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgba(20,33,58,0.22); max-height: 260px; overflow-y: auto; min-width: 150px; padding: 4px 0; font-size: 13.5px; }
 .t24-pop div { padding: 7px 14px; cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .t24-pop div small { color: var(--ink-soft); margin-left: 6px; }
@@ -1016,6 +1027,7 @@ async function doLogin() {
   API_TOKEN = pwd; // ใช้รหัสที่พิมพ์เป็น token ส่งให้เซิร์ฟเวอร์ตรวจทุกครั้ง
   ALLOWED = data.categories;
   USER_NAME = data.name || 'ผู้ใช้';
+  myEmailGroups = null; _egLoading = null;   // กลุ่มอีเมลเป็นของแต่ละผู้ใช้: โหลดใหม่เมื่อเปลี่ยนผู้ใช้
   READ_ONLY = !!data.readOnly;
   document.body.classList.toggle('ro', READ_ONLY);
   const badge = document.getElementById('userBadge');
@@ -3702,7 +3714,7 @@ function meetingFormHTML(a) {
       <div class="gc-sub"><label style="display:flex; gap:6px; align-items:center; cursor:pointer;"><input type="checkbox" id="meetAllDay" ${allDay ? 'checked' : ''}> ทั้งวัน</label></div>
       <div class="gc-slot" data-slot="recur"></div>
       <div class="gc-summary" id="gcSummary"></div>`, 'วันและเวลา')}
-    ${row('people', `<div class="guest-box" id="guestBox"><input type="email" id="guestInput" placeholder="เพิ่มผู้เข้าร่วม (อีเมล) แล้วกด Enter"></div>
+    ${row('people', `<div class="eg-bar" id="egBar"></div><div class="guest-box" id="guestBox"><input type="email" id="guestInput" placeholder="เพิ่มผู้เข้าร่วม (อีเมล) แล้วกด Enter"></div>
       <div class="meet-hint">วางหลายอีเมลพร้อมกันได้ · ผู้เข้าร่วมจะได้รับคำเชิญทางอีเมลและเห็นนัดหมายในปฏิทินของตัวเอง</div>`, 'ผู้เข้าร่วม')}
     ${row('video', `<input type="url" id="meetLink" class="text-input" value="${escapeHTML((a && a.meetLink) || '')}" placeholder="เพิ่มลิงก์ประชุมออนไลน์ (Google Meet / Zoom / Teams)">`, 'ประชุมออนไลน์')}
     ${row('pin', `<input type="text" id="meetLoc" class="text-input" value="${escapeHTML((a && a.location) || '')}" placeholder="เพิ่มสถานที่">`, 'สถานที่')}
@@ -3774,6 +3786,37 @@ function initMeetingForm(modal, a) {
       chip.appendChild(x); box.insertBefore(chip, input);
     });
     box.dataset.guests = JSON.stringify([...guests]);
+    drawGroups();
+  };
+  // --- กลุ่มอีเมล: ติ๊กกลุ่ม = เพิ่มสมาชิกทั้งกลุ่มเป็นผู้เข้าร่วม ---
+  const egBar = modal.querySelector('#egBar');
+  const drawGroups = () => {
+    if (!egBar) return;
+    if (myEmailGroups === null) { loadMyEmailGroups().then(() => { if (egBar.isConnected) drawGroups(); }); }
+    const groups = (myEmailGroups || []).filter(g => g.name && g.emails && g.emails.length);
+    egBar.innerHTML = '';
+    const lab = document.createElement('span'); lab.className = 'eg-lab'; lab.textContent = 'กลุ่ม:'; egBar.appendChild(lab);
+    groups.forEach(g => {
+      const on = g.emails.every(e => guests.has(e));
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'eg-chip' + (on ? ' on' : '');
+      b.innerHTML = `<span class="bx">${on ? '✓' : ''}</span>${escapeHTML(g.name)} <small>(${g.emails.length})</small>`;
+      b.title = (on ? 'คลิกเพื่อเอาสมาชิกกลุ่มนี้ออก\n' : 'คลิกเพื่อเพิ่มสมาชิกทั้งกลุ่ม\n') + g.emails.join('\n');
+      b.onclick = () => {
+        if (on) {
+          // เอาออกเฉพาะคนที่ไม่ได้อยู่ในกลุ่มอื่นที่ติ๊กไว้
+          const keep = new Set(groups.filter(x => x !== g && x.emails.every(e => guests.has(e))).flatMap(x => x.emails));
+          g.emails.forEach(e => { if (!keep.has(e)) guests.delete(e); });
+        } else g.emails.forEach(e => guests.add(e));
+        draw();
+      };
+      egBar.appendChild(b);
+    });
+    {
+      const m = document.createElement('button'); m.type = 'button'; m.className = 'eg-manage';
+      m.textContent = groups.length ? '⚙ จัดการกลุ่ม' : '+ สร้างกลุ่มอีเมล (เช่น สลส.)';
+      m.onclick = () => openEmailGroupManager([...guests], () => draw());
+      egBar.appendChild(m);
+    }
   };
   const addFrom = (text) => {
     String(text || '').split(/[\s,;]+/).map(t => t.trim().toLowerCase()).filter(Boolean).forEach(t => guests.add(t));
@@ -3817,6 +3860,83 @@ function initMeetingForm(modal, a) {
   draw();
   sync();
   setMeetingLayout(modal, modal.querySelector('#actType').value === 'meeting');
+}
+
+// --- จัดการกลุ่มอีเมล (ชื่อกลุ่ม + สมาชิก) บันทึกในข้อมูลกลาง ทุกคนใช้ร่วมกัน ---
+// กลุ่มอีเมลส่วนตัวของผู้ใช้แต่ละคน: เก็บที่เซิร์ฟเวอร์แยกตามผู้ใช้ (คนอื่นมองไม่เห็น) และสำรองไว้ในเครื่อง
+let myEmailGroups = null, myPrefsOnServer = false, _egLoading = null;
+function loadMyEmailGroups() {
+  if (_egLoading) return _egLoading;
+  const key = 'email_groups_' + USER_NAME;
+  _egLoading = (async () => {
+    try {
+      const d = await fetchWithRetry(URLS.work, { action: 'prefs' });
+      if (d && d.prefsOk) { myPrefsOnServer = true; myEmailGroups = Array.isArray(d.emailGroups) ? d.emailGroups : []; lsSet(key, myEmailGroups); return; }
+    } catch (e) {}
+    myPrefsOnServer = false;
+    const local = lsGet(key, []); myEmailGroups = Array.isArray(local) ? local : [];
+  })();
+  return _egLoading;
+}
+async function saveMyEmailGroups(list) {
+  myEmailGroups = list; lsSet('email_groups_' + USER_NAME, list);
+  if (!myPrefsOnServer) { showToast('บันทึกกลุ่มไว้ในเครื่องนี้แล้ว (Deploy สคริปต์ work เวอร์ชันล่าสุด เพื่อใช้ได้ทุกเครื่อง)'); return; }
+  try {
+    const r = await todoPost({ action: 'prefsSave', emailGroups: list });
+    if (r.error) throw new Error(r.error);
+    showToast(`บันทึกกลุ่มอีเมลของคุณแล้ว (${list.length} กลุ่ม)`);
+  } catch (e) { showToast('บันทึกกลุ่มขึ้นเซิร์ฟเวอร์ไม่สำเร็จ (เก็บไว้ในเครื่องนี้แล้ว): ' + e.message); }
+}
+
+function openEmailGroupManager(currentGuests, onDone) {
+  const parentOpen = modalOpen;
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.style.zIndex = 130;
+  const m = document.createElement('div'); m.className = 'modal'; m.style.maxWidth = '600px';
+  const work = clone(myEmailGroups || []).map(g => ({ id: g.id || uid('eg'), name: g.name || '', text: (g.emails || []).join('\n') }));
+  const parse = (t) => [...new Set(String(t || '').split(/[\s,;]+/).map(x => x.trim().toLowerCase()).filter(Boolean))];
+  const draw = () => {
+    m.innerHTML = `<h3>👥 กลุ่มอีเมลผู้เข้าร่วม</h3>
+      <p class="modal-desc">🔒 กลุ่มส่วนตัวของ <b>${escapeHTML(USER_NAME)}</b> — ผู้ใช้อื่นมองไม่เห็นและแก้ไม่ได้ · ใส่อีเมลบรรทัดละ 1 อีเมล หรือคั่นด้วยจุลภาค · ในหน้าต่างนัดหมาย ติ๊กชื่อกลุ่มเพื่อเพิ่มสมาชิกทั้งหมดในครั้งเดียว</p>
+      <div>${work.map((g, i) => {
+        const em = parse(g.text), bad = em.filter(x => !EMAIL_RE.test(x));
+        return `<div class="td-tpl-edit"><div style="display:flex; gap:6px; align-items:center;">
+          <div class="td-tpl-move"><button type="button" data-up="${i}" ${i === 0 ? 'disabled' : ''} title="เลื่อนขึ้น">▲</button><button type="button" data-down="${i}" ${i === work.length - 1 ? 'disabled' : ''} title="เลื่อนลง">▼</button></div>
+          <input class="text-input" data-n="${i}" value="${escapeHTML(g.name)}" placeholder="ชื่อกลุ่ม เช่น สลส." style="font-weight:700;">
+          <span class="eg-count" id="egc${i}">${em.length} คน${bad.length ? ` · <b style="color:var(--danger)">อีเมลผิด ${bad.length}</b>` : ''}</span>
+          <button type="button" class="td-icon-btn" data-del="${i}" aria-label="ลบกลุ่ม" title="ลบกลุ่ม">✕</button></div>
+          <textarea class="text-input" data-t="${i}" rows="${Math.min(8, Math.max(3, em.length + 1))}" placeholder="อีเมลสมาชิก บรรทัดละ 1 อีเมล">${escapeHTML(g.text)}</textarea></div>`;
+      }).join('') || '<div class="td-tpl-empty" style="padding:8px 2px;">ยังไม่มีกลุ่ม</div>'}</div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;"><button type="button" class="td-mini" id="egAdd">+ เพิ่มกลุ่ม</button>
+        ${currentGuests && currentGuests.length ? `<button type="button" class="td-mini" id="egFromCur">+ สร้างกลุ่มจากผู้เข้าร่วมตอนนี้ (${currentGuests.length} คน)</button>` : ''}
+</div>
+      <div class="modal-actions"><button class="ghost-btn" id="egCancel">ยกเลิก</button><button class="primary-btn" id="egOk">บันทึก</button></div>`;
+    m.querySelectorAll('[data-n]').forEach(x => x.oninput = () => { work[+x.dataset.n].name = x.value; });
+    m.querySelectorAll('textarea[data-t]').forEach(x => x.oninput = () => {
+      const i = +x.dataset.t; work[i].text = x.value;
+      const em = parse(x.value), bad = em.filter(e => !EMAIL_RE.test(e));
+      m.querySelector('#egc' + i).innerHTML = `${em.length} คน${bad.length ? ` · <b style="color:var(--danger)">อีเมลผิด ${bad.length}</b>` : ''}`;
+    });
+    m.querySelectorAll('[data-del]').forEach(x => x.onclick = () => { if (confirm(`ลบกลุ่ม "${work[+x.dataset.del].name || ''}"?`)) { work.splice(+x.dataset.del, 1); draw(); } });
+    const move = (i, j) => { if (j < 0 || j >= work.length) return; work.splice(j, 0, work.splice(i, 1)[0]); draw(); };
+    m.querySelectorAll('[data-up]').forEach(x => x.onclick = () => move(+x.dataset.up, +x.dataset.up - 1));
+    m.querySelectorAll('[data-down]').forEach(x => x.onclick = () => move(+x.dataset.down, +x.dataset.down + 1));
+    m.querySelector('#egAdd').onclick = () => { work.push({ id: uid('eg'), name: '', text: '' }); draw(); const ins = m.querySelectorAll('[data-n]'); ins[ins.length - 1].focus(); };
+    const fc = m.querySelector('#egFromCur');
+    if (fc) fc.onclick = () => { work.push({ id: uid('eg'), name: '', text: currentGuests.join('\n') }); draw(); const ins = m.querySelectorAll('[data-n]'); ins[ins.length - 1].focus(); };
+    const done = () => { ov.remove(); modalOpen = parentOpen; };
+    m.querySelector('#egCancel').onclick = done;
+    m.querySelector('#egOk').onclick = async () => {
+      const clean = work.map(g => ({ id: g.id, name: g.name.trim(), emails: parse(g.text) })).filter(g => g.name && g.emails.length);
+      const bad = clean.flatMap(g => g.emails.filter(e => !EMAIL_RE.test(e)));
+      if (bad.length) { alert('อีเมลไม่ถูกต้อง:\n' + bad.join('\n') + '\n\nกรุณาแก้ไขก่อนบันทึก'); return; }
+      const names = clean.map(g => g.name); const dup = names.find((n, i) => names.indexOf(n) !== i);
+      if (dup) { alert(`มีชื่อกลุ่ม "${dup}" ซ้ำกัน`); return; }
+      done(); await saveMyEmailGroups(clean); if (onDone) onDone();
+    };
+  };
+  draw();
+  ov.appendChild(m); document.body.appendChild(ov);
 }
 
 function readGuests(modal) {
