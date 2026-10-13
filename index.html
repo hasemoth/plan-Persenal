@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แผนการดำเนินงานรวม (ระบบ Cloud)</title>
+<title>ระบบบริหารจัดการ</title>
 <!-- นำเข้าไลบรารีสำหรับหน้าต่างแก้ไขข้อความแบบ Word -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
@@ -22,7 +22,9 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: var(--b
 #app { display: flex; flex-direction: column; min-height: 100vh; }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 22px; background: linear-gradient(135deg, var(--indigo-deep), var(--indigo)); color: #fff; }
 .brand { display: flex; align-items: center; gap: 12px; }
-.brand-mark { width: 42px; height: 42px; border-radius: 10px; background: var(--cyan); color: var(--indigo-deep); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; line-height: 1.1; letter-spacing: 0.5px; }
+.brand-mark { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 10px rgba(8, 10, 40, 0.35)); }
+.brand-mark svg { width: 42px; height: 42px; display: block; }
+.brand-title { letter-spacing: 0.2px; }
 .brand-title { font-weight: 700; font-size: 18px; line-height: 1.2; }
 .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
 
@@ -268,6 +270,91 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .eg-manage { border: none; background: transparent; color: var(--indigo); font-family: inherit; font-size: 12.5px; cursor: pointer; padding: 3px 4px; }
 .eg-manage:hover { text-decoration: underline; }
 .eg-count { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+.ov-more { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 18px; padding: 0 6px; margin-right: 6px; border-radius: 999px; background: #fff; color: var(--indigo); border: 1.5px solid var(--indigo); font-size: 11px; font-weight: 800; line-height: 1; vertical-align: middle; cursor: default; text-shadow: none; box-shadow: 0 1px 3px rgba(79,70,229,0.3); position: relative; z-index: 3; }
+.ov-more:hover { background: var(--indigo); color: #fff; }
+.act-bar.has-more { box-shadow: 3px -3px 0 -1px rgba(255,255,255,0.9), 3px -3px 0 0 rgba(79,70,229,0.45), 0 1px 2px rgba(20,33,58,0.25); }
+.ov-pop { position: fixed; z-index: 300; width: 360px; max-width: calc(100vw - 16px); background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 34px rgba(20,33,58,0.22); padding: 10px 0 6px; font-size: 12.5px; }
+.ov-pop-h { padding: 0 14px; font-weight: 700; font-size: 13.5px; color: var(--indigo-deep); }
+.ov-pop-sub { padding: 2px 14px 6px; font-size: 11.5px; color: var(--ink-soft); border-bottom: 1px solid var(--line-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ov-pop-list { max-height: 320px; overflow-y: auto; padding-top: 4px; }
+.ov-it { display: flex; align-items: center; gap: 8px; padding: 6px 14px; cursor: pointer; }
+.ov-it:hover { background: var(--indigo-soft); }
+.ov-it.done .ov-name { color: var(--ink-soft); text-decoration: line-through; }
+.ov-ck { width: 17px; height: 17px; border-radius: 50%; border: 2px solid #94A3B8; background: #fff; flex-shrink: 0; padding: 0; cursor: pointer; color: #fff; font-size: 10px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; font-family: inherit; }
+.ov-ck:hover:not(:disabled) { border-color: #22C55E; }
+.ov-ck.on { background: #22C55E; border-color: #22C55E; }
+.ov-ico { width: 17px; text-align: center; flex-shrink: 0; font-size: 13px; }
+.ov-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ov-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ov-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
+.ov-tx small { color: var(--ink-soft); font-size: 11px; }
+/* ===== ระบบจองห้องประชุม ===== */
+.rm-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.rm-bar h2 { margin: 0; font-size: 22px; color: var(--indigo-deep); min-width: 190px; }
+.rm-nav { display: inline-flex; gap: 4px; }
+.rm-nav button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 16px; font-family: inherit; }
+.rm-nav button:hover { border-color: var(--indigo); color: var(--indigo); }
+.rm-sp { margin-left: auto; }
+.rm-rooms { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+.rm-rc { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px 5px 7px; font-size: 12.5px; cursor: pointer; font-family: inherit; color: var(--ink); }
+.rm-rc .bx { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--c); display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: 900; }
+.rm-rc.on .bx { background: var(--c); }
+.rm-rc small { color: var(--ink-soft); }
+.rm-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 14px; align-items: start; }
+@media (max-width: 1000px) { .rm-wrap { grid-template-columns: minmax(0, 1fr); } }
+.rm-cal { background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.rm-dow, .rm-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.rm-dow { background: #FAFBFE; border-bottom: 1px solid var(--line); }
+.rm-dow div { padding: 8px 10px; font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.rm-dow .we { color: #B0B7C6; }
+.rm-d { min-height: 150px; border-right: 1px solid #EEF0F5; border-bottom: 1px solid #EEF0F5; padding: 6px 6px 8px; cursor: pointer; min-width: 0; }
+.rm-d:nth-child(7n) { border-right: none; }
+.rm-d:hover { background: #FAFBFF; }
+.rm-d.we { background: #FAFAFC; }
+.rm-d.out .rm-dn { color: #C3C8D4; }
+.rm-d.sel { background: #F5F6FF; box-shadow: inset 0 0 0 2px #C7D2FE; }
+.rm-dn { font-size: 13px; font-weight: 700; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 4px; }
+.rm-d.td .rm-dn { background: var(--indigo); color: #fff; }
+.rm-ev { display: flex; flex-direction: column; font-size: 11.5px; padding: 3px 7px 4px; border-radius: 6px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; line-height: 1.4; background: color-mix(in srgb, var(--c) 10%, #fff); border-left: 3px solid var(--c); cursor: pointer; }
+.rm-ev:hover { background: color-mix(in srgb, var(--c) 18%, #fff); }
+.rm-ev b { font-weight: 800; color: var(--c); font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; }
+.rm-ev b em { font-style: normal; font-weight: 600; color: var(--ink-soft); margin-left: 4px; font-size: 10.5px; }
+.rm-ev span { overflow: hidden; text-overflow: ellipsis; color: #1F2937; }
+.rm-ev.mine { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, #fff); }
+.rm-more { font-size: 11.5px; color: var(--indigo); font-weight: 700; padding: 2px 6px; }
+.rm-side { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px; position: sticky; top: 12px; }
+.rm-side h3 { margin: 0; font-size: 16px; color: var(--indigo-deep); }
+.rm-side .s { font-size: 12px; color: var(--ink-soft); margin: 2px 0 10px; }
+.rm-occ { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; margin-bottom: 12px; }
+.rm-occ > div { border-radius: 10px; padding: 7px 9px; font-size: 11.5px; background: color-mix(in srgb, var(--c) 8%, #fff); border: 1px solid color-mix(in srgb, var(--c) 30%, #fff); line-height: 1.45; }
+.rm-occ b { display: block; font-size: 12.5px; color: var(--c); }
+.rm-occ .bars { height: 5px; background: #E5E7EB; border-radius: 5px; margin-top: 5px; overflow: hidden; }
+.rm-occ .bars i { display: block; height: 100%; background: var(--c); }
+.rm-item { border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px; padding: 9px 11px; margin-bottom: 8px; cursor: pointer; }
+.rm-item:hover { background: #FAFBFF; }
+.rm-item .t { font-size: 12px; font-weight: 700; color: var(--c); }
+.rm-item .ti { font-size: 13px; font-weight: 700; margin: 2px 0 4px; line-height: 1.4; word-break: break-word; }
+.rm-item .m { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-soft); }
+.rm-unit { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: #F1F5F9; color: #475569; }
+.rm-add { width: 100%; border: 2px dashed #C7D2FE; border-radius: 10px; padding: 9px; text-align: center; color: var(--indigo); font-size: 12.5px; font-weight: 700; background: transparent; cursor: pointer; font-family: inherit; }
+.rm-add:hover { background: var(--indigo-soft); }
+.rm-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.rm-pick button { border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fff; text-align: left; cursor: pointer; font-family: inherit; color: var(--ink); }
+.rm-pick button b { display: block; font-size: 13px; }
+.rm-pick button small { color: var(--ink-soft); font-size: 11px; }
+.rm-pick button.on { border-color: var(--c); background: color-mix(in srgb, var(--c) 9%, #fff); }
+.rm-pick button:disabled { cursor: default; }
+.rm-eq { display: flex; flex-wrap: wrap; gap: 6px; }
+.rm-eq button { border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; font-size: 12px; background: #fff; cursor: pointer; font-family: inherit; color: var(--ink); }
+.rm-eq button.on { background: var(--indigo-soft); border-color: var(--indigo); color: var(--indigo-deep); font-weight: 600; }
+.rm-times { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rm-times input.t24 { width: 90px; text-align: center; margin: 0; }
+.rm-chk { margin-top: 10px; font-size: 12.5px; border-radius: 8px; padding: 8px 11px; line-height: 1.55; }
+.rm-chk.ok { background: #ECFDF5; color: #065F46; }
+.rm-chk.bad { background: #FEF2F2; color: #991B1B; }
+.rm-chk.warn { background: #FFFBEB; color: #92400E; }
+.rm-chk button { border: 1px solid currentColor; background: #fff; color: inherit; border-radius: 999px; padding: 1px 9px; font-size: 11.5px; cursor: pointer; font-family: inherit; margin: 2px 4px 0 0; }
+.rm-note { background: #FFFBEB; color: #92400E; border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.6; }
 .t24-pop { position: fixed; z-index: 400; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgba(20,33,58,0.22); max-height: 260px; overflow-y: auto; min-width: 150px; padding: 4px 0; font-size: 13.5px; }
 .t24-pop div { padding: 7px 14px; cursor: pointer; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .t24-pop div small { color: var(--ink-soft); margin-left: 6px; }
@@ -419,6 +506,13 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .tab.td-proj-tab.active .td-cnt { background: rgba(255,255,255,0.25); color: #fff; }
 .td-link-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #ECFDF5; color: #047857; font-weight: 600; }
 .td-path { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+.td-extra { display: inline-block; background: #F1F5F9; color: #475569; border-radius: 999px; padding: 0 8px; font-size: 10.5px; font-weight: 600; }
+.pa-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 6px; }
+.pa-mode button { border: 2px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; text-align: left; cursor: pointer; font-family: inherit; color: var(--ink); }
+.pa-mode button b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.pa-mode button small { color: var(--ink-soft); font-size: 11.5px; line-height: 1.45; display: block; }
+.pa-mode button.on { border-color: var(--indigo); background: var(--indigo-soft); }
+.pa-mode button.on b { color: var(--indigo-deep); }
 .td-card .td-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
 .td-who-pick { display: flex; flex-wrap: wrap; gap: 6px; }
 .td-who-pick button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 4px 12px 4px 5px; font-family: inherit; font-size: 13px; cursor: pointer; color: var(--ink); }
@@ -505,7 +599,7 @@ body.gantt-panning, body.gantt-panning * { cursor: grabbing !important; user-sel
 .act-bar { position: absolute; top: 4px; height: 24px; border-radius: 6px; color: #14213A; font-size: 11.5px; font-weight: 600; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(20,33,58,0.25); cursor: pointer; z-index: 2; user-select: none; transition: transform 0.1s ease, filter 0.1s ease; overflow: hidden; }
 .act-bar.draggable { cursor: grab; touch-action: none; }
 .act-bar.draggable:active { cursor: grabbing; }
-.act-bar:hover { filter: brightness(1.04); box-shadow: 0 2px 6px rgba(20,33,58,0.35); z-index: 3; }
+.act-bar:hover { filter: brightness(1.04); box-shadow: 0 2px 6px rgba(20,33,58,0.35); }   /* ไม่ยกขึ้นมาทับ: งานวันถัดไปอยู่บนเสมอ */
 
 .row-del-btn { position: absolute; right: 4px; top: 4px; width: 18px; height: 18px; border-radius: 50%; border: none; background: var(--line); color: var(--ink-soft); font-size: 12px; line-height: 1; cursor: pointer; z-index: 4; opacity: 0.5; }
 .row-del-btn:hover { opacity: 1; background: var(--danger); color: #fff; }
@@ -545,7 +639,8 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 .lg-card { width: 100%; max-width: 1120px; background: #FFFFFF; border-radius: 18px; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); box-shadow: 0 1px 2px rgba(20,33,58,0.06), 0 24px 60px rgba(20,33,58,0.10); }
 .lg-main { padding: 56px 56px 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
 .lg-brand { display: flex; align-items: center; gap: 12px; }
-.lg-mark { width: 40px; height: 40px; border-radius: 10px; background: #0E1A2E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+.lg-mark { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 3px 8px rgba(30, 27, 75, 0.25)); }
+.lg-mark svg { width: 40px; height: 40px; display: block; }
 .lg-brand-name { font-weight: 600; font-size: 15px; }
 .lg-form { display: flex; flex-direction: column; gap: 22px; max-width: 380px; width: 100%; }
 .lg-head h1 { margin: 0 0 8px; font-family: 'Noto Serif Thai', serif; font-size: 32px; font-weight: 700; color: #0E1A2E; }
@@ -595,8 +690,8 @@ textarea.text-input { resize: vertical; min-height: 60px; }
   <div class="lg-card">
     <div class="lg-main">
       <div class="lg-brand">
-        <div class="lg-mark">รวม</div>
-        <div class="lg-brand-name">แผนการดำเนินงานรวม</div>
+        <div class="lg-mark"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><defs><linearGradient id="bmGL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67E8F9"/><stop offset="1" stop-color="#A5B4FC"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="11" fill="url(#bmGL)"/><rect x="8.5" y="10.5" width="14" height="4.2" rx="2.1" fill="#1E1B4B"/><rect x="13.5" y="17.9" width="17" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".78"/><rect x="8.5" y="25.3" width="9.5" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".6"/><circle cx="28.3" cy="27.4" r="5.6" fill="#fff"/><path d="M25.7 27.5l1.8 1.8 3.4-3.6" stroke="#4F46E5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="lg-brand-name">ระบบบริหารจัดการ</div>
       </div>
 
       <form class="lg-form" onsubmit="event.preventDefault(); doLogin();">
@@ -648,9 +743,9 @@ textarea.text-input { resize: vertical; min-height: 60px; }
 <div id="app" style="display: none; flex-direction: column; min-height: 100vh;">
   <div class="topbar">
     <div class="brand">
-      <div class="brand-mark">รวม</div>
+      <div class="brand-mark"><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><defs><linearGradient id="bmGT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67E8F9"/><stop offset="1" stop-color="#A5B4FC"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="11" fill="url(#bmGT)"/><rect x="8.5" y="10.5" width="14" height="4.2" rx="2.1" fill="#1E1B4B"/><rect x="13.5" y="17.9" width="17" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".78"/><rect x="8.5" y="25.3" width="9.5" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".6"/><circle cx="28.3" cy="27.4" r="5.6" fill="#fff"/><path d="M25.7 27.5l1.8 1.8 3.4-3.6" stroke="#4F46E5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="brand-text">
-        <div class="brand-title">แผนการดำเนินงานรวม (Unified Cloud)</div>
+        <div class="brand-title">ระบบบริหารจัดการ</div>
         <div class="brand-sub">✅ อัปเดตข้อมูลล่าสุด</div>
       </div>
     </div>
@@ -784,6 +879,46 @@ function renderRowCatBar(project) {
   if (act.length) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => { rcSetFilter(project, []); reRenderWithScroll(); }; wrap.appendChild(c); }
   if (!READ_ONLY) { const m = document.createElement('button'); m.type = 'button'; m.className = 'ghost-btn edit-colors-btn'; m.textContent = '⚙ จัดการหมวด'; m.onclick = () => openRowCatManager(project.id); wrap.appendChild(m); }
   return wrap;
+}
+
+// --- หมวดในหน้าภาพรวม: รวมหมวดจากทุกโครงการตามชื่อหมวด ---
+function ovCatKey(categoryFilter) { return 'rowcat_ov_' + (categoryFilter || 'all'); }
+function ovCatActive(categoryFilter) { const v = lsGet(ovCatKey(categoryFilter), []); return Array.isArray(v) ? v : []; }
+function ovRowCatName(project, row) { const c = rcOf(project, row); return c ? c.name : RC_NONE; }
+function ovRowIn(project, row, act) { return !act.length || act.includes(ovRowCatName(project, row)); }
+function renderOvCatBar(projects, categoryFilter) {
+  const cats = new Map();   // ชื่อหมวด -> { color, count }
+  let none = 0;
+  projects.forEach(p => p.departments.forEach(d => d.rows.forEach(r => {
+    if (isHid(d) || isHid(r)) return;
+    const c = rcOf(p, r);
+    if (!c) { none++; return; }
+    if (!cats.has(c.name)) cats.set(c.name, { color: c.color, count: 0 });
+    cats.get(c.name).count++;
+  })));
+  const all = [...cats.keys()];
+  let act = ovCatActive(categoryFilter).filter(n => n === RC_NONE || cats.has(n));
+  const wrap = document.createElement('div'); wrap.className = 'rowcat-bar';
+  wrap.innerHTML = '<span class="legend-label">หมวด:</span>';
+  if (!all.length) {
+    const e = document.createElement('span'); e.className = 'rc-empty'; e.textContent = 'ยังไม่มีหมวด — ตั้งหมวดได้ที่ "⚙ จัดการหมวด" ในหน้าของแต่ละโครงการ'; wrap.appendChild(e);
+    return { el: wrap, act: [] };
+  }
+  const set = (arr) => { lsSet(ovCatKey(categoryFilter), arr); reRenderWithScroll(); };
+  const mk = (name, label, color, count) => {
+    const on = act.includes(name);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rc-chip' + (on ? ' on' : '');
+    b.style.setProperty('--rc', color);
+    b.innerHTML = `<span class="bx">${on ? '✓' : ''}</span>${escapeHTML(label)} <small>(${count})</small>`;
+    b.title = on ? 'คลิกเพื่อเอาออกจากตัวกรอง' : 'คลิกเพื่อแสดงเฉพาะหมวดนี้ในทุกโครงการ (เลือกได้หลายหมวด)';
+    b.onclick = () => set(on ? act.filter(x => x !== name) : [...act, name]);
+    wrap.appendChild(b);
+  };
+  all.forEach(n => mk(n, n, cats.get(n).color, cats.get(n).count));
+  if (none) mk(RC_NONE, 'ไม่ระบุหมวด', '#94A3B8', none);
+  if (act.length) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => set([]); wrap.appendChild(c); }
+  const hint = document.createElement('span'); hint.className = 'rc-empty'; hint.style.fontSize = '11.5px'; hint.textContent = '· แก้หมวดได้ในหน้าโครงการ'; wrap.appendChild(hint);
+  return { el: wrap, act };
 }
 
 // หน้าต่างจัดการหมวด: เพิ่ม / ลบ / แก้ชื่อ / สี / ลำดับ + กำหนดหมวดให้แถว (ตามชื่อแถว)
@@ -1703,6 +1838,7 @@ function render() {
   else if (view.type === 'lanes') content.appendChild(renderLanesOverview());
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else if (view.type === 'todo') content.appendChild(renderTodo());
+  else if (view.type === 'rooms') content.appendChild(renderRooms());
   else content.appendChild(renderProjectDetail(view.id));
   
   app.appendChild(content);
@@ -1723,7 +1859,7 @@ function renderEmptyCategoryState() {
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
- let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ สลส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
+ let allCategories = [ { key: 'all', label: '📊 ภาพรวม' }, { key: 'work', label: '🏛️ แผนการดำเนินงาน สลส.' }, { key: 'extra', label: '💡 PRI' }, { key: 'personal', label: '👤 ส่วนตัว' } ];
 
 // ซ่อนหมวดหมู่อื่นๆ หากไม่ได้ล็อกอินด้วยสิทธิ์ 'all'
 const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 'all' : can(cat.key));
@@ -1741,11 +1877,18 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
   const todoBtn = document.createElement('button'); todoBtn.className = 'main-cat-btn' + (activeMainCat === 'todo' ? ' active' : ''); todoBtn.textContent = '✅ To-do';
   todoBtn.onclick = () => { activeMainCat = 'todo'; view = { type: 'todo' }; render(); };
   mainBar.appendChild(todoBtn);
+  if (can('work')) {   // ระบบจองห้องประชุม สลส.
+    const rmBtn = document.createElement('button'); rmBtn.className = 'main-cat-btn rm-main' + (activeMainCat === 'rooms' ? ' active' : ''); rmBtn.textContent = '🏢 จองห้องประชุม';
+    rmBtn.onclick = () => { activeMainCat = 'rooms'; view = { type: 'rooms' }; render(); };
+    mainBar.appendChild(rmBtn);
+  }
   navWrap.appendChild(mainBar);
 
   const subBar = document.createElement('div'); subBar.className = 'sub-tabs-bar';
   if (activeMainCat === 'todo') {
     renderTodoTabs(subBar);
+  } else if (activeMainCat === 'rooms') {
+    const t = document.createElement('button'); t.className = 'tab active'; t.innerHTML = '<span>🏢 ตารางห้องประชุม สลส.</span>'; subBar.appendChild(t);
   } else if (activeMainCat === 'all') {
     const ov = document.createElement('button'); ov.className = 'tab' + (view.type === 'overview' ? ' active' : '');
     const ovSetting = state.overviewSettings.tab1;
@@ -2541,14 +2684,89 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
 function buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd) {
   const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
   track.onclick = (e) => { if (e.target === track && project) openActivityModal(project.id, dept.id, row.id, null); };
-
-  row.activities.forEach(act => {
-    const bar = createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, row.activities, project, dept, row);
-    if (bar) track.appendChild(bar);
-  });
-
+  appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept, project, dept);
   return track;
 }
+
+// ==========================================
+// --- งานที่เริ่มวันเดียวกันในแถวเดียวกัน: แสดงแถบเดียว + ป้าย "+n" (แบบ Google Calendar) ---
+// ชี้เมาส์ที่ป้ายเพื่อดูรายการทั้งหมด ติ๊กเสร็จ / คลิกเปิดงานได้
+// ==========================================
+function appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept, ctxP, ctxD) {
+  const groups = new Map();
+  row.activities.forEach(a => { if (!groups.has(a.start)) groups.set(a.start, []); groups.get(a.start).push(a); });
+  const filtering = !!(searchQuery || onlyPending);
+  const reps = [];
+  groups.forEach(list => {
+    // ตัวแทนของกลุ่ม: ตรงกับคำค้นก่อน > ยังไม่เสร็จ > ช่วงยาวกว่า
+    const score = (a) => (filtering && activityFilterState(a) === 'hit' ? 4 : 0) + (a.type === 'task' && a.completed ? 0 : 2) + 0;
+    const sorted = list.slice().sort((x, y) => score(y) - score(x) || (y.end - y.start) - (x.end - x.start));
+    reps.push({ rep: sorted[0], all: list.length > 1 ? sorted : null });
+  });
+  // วาดตามลำดับวันเริ่ม: งานวันถัดไปถูกวาดทีหลัง จึงอยู่ด้านบนเสมอ
+  reps.sort((x, y) => x.rep.start - y.rep.start || x.rep.end - y.rep.end);
+  const repActs = reps.map(x => x.rep);
+  reps.forEach(({ rep, all }) => {
+    const bar = createSmartActivityBar(rep, colw, rStart, rEnd, totalWidth, repActs, project, dept, row);
+    if (!bar) return;
+    if (all) {
+      const chip = document.createElement('span'); chip.className = 'ov-more'; chip.textContent = '+' + (all.length - 1);
+      chip.setAttribute('aria-label', `มีอีก ${all.length - 1} งานในวันเดียวกัน`);
+      chip.addEventListener('mouseenter', () => ovShowPop(chip, all, ctxP, ctxD, row));
+      chip.addEventListener('mouseleave', ovHidePopSoon);
+      chip.addEventListener('mousedown', (e) => e.stopPropagation());
+      chip.addEventListener('click', (e) => { e.stopPropagation(); ovShowPop(chip, all, ctxP, ctxD, row); });
+      bar.classList.add('has-more');
+      const t = bar.querySelector('.act-txt'); if (t) t.prepend(chip); else bar.appendChild(chip);
+    }
+    track.appendChild(bar);
+  });
+}
+
+let ovPopEl = null, ovPopTimer = null;
+function ovHidePopSoon() { clearTimeout(ovPopTimer); ovPopTimer = setTimeout(() => { if (ovPopEl) { ovPopEl.remove(); ovPopEl = null; } }, 260); }
+function ovShowPop(anchor, acts, p, d, row) {
+  clearTimeout(ovPopTimer);
+  if (ovPopEl && ovPopEl._anchor === anchor) return;
+  if (ovPopEl) ovPopEl.remove();
+  const today = todayBangkokIndex();
+  const pop = document.createElement('div'); pop.className = 'ov-pop'; pop._anchor = anchor;
+  const d0 = dateFromIndex(acts[0].start);
+  const fmt = (i) => { const x = dateFromIndex(i); return `${x.getUTCDate()} ${THAI_MONTHS_SHORT[x.getUTCMonth()]}`; };
+  pop.innerHTML = `<div class="ov-pop-h">${THAI_WEEKDAY_SHORT[d0.getUTCDay()]}. ${d0.getUTCDate()} ${THAI_MONTHS_SHORT[d0.getUTCMonth()]} ${d0.getUTCFullYear() + 543} · ${acts.length} งาน</div><div class="ov-pop-sub">${escapeHTML((p ? p.name + ' › ' : '') + (d ? d.name + ' › ' : '') + row.name)}</div><div class="ov-pop-list"></div>`;
+  const list = pop.querySelector('.ov-pop-list');
+  acts.slice().sort((a, b) => (a.startTime || '') < (b.startTime || '') ? -1 : 1).forEach(a => {
+    const it = document.createElement('div'); it.className = 'ov-it' + (a.type === 'task' && a.completed ? ' done' : '');
+    const isTask = a.type === 'task';
+    const late = isTask && !a.completed && a.end < today;
+    const ico = a.type === 'meeting' ? (MEETING_ICONS[a.meetingKind] || '📅') : isTask ? '' : '📝';
+    const time = a.allDay === false && a.startTime ? `${a.startTime}${a.endTime ? '–' + a.endTime : ''} น.` : '';
+    const range = a.end !== a.start ? `${fmt(a.start)} – ${fmt(a.end)}` : '';
+    it.innerHTML = `${isTask ? `<button type="button" class="ov-ck ${a.completed ? 'on' : ''}" ${READ_ONLY ? 'disabled' : ''} title="${a.completed ? 'เอาติ๊กออก' : 'ติ๊กว่าเสร็จแล้ว'}">${a.completed ? '✓' : ''}</button>` : `<span class="ov-ico">${ico}</span>`}
+      <i class="ov-dot" style="background:${late ? '#EF4444' : (a.color || '#94A3B8')}"></i>
+      <span class="ov-tx"><span class="ov-name">${escapeHTML(a.label)}</span>${time || range || late ? `<small>${[time, range, late ? 'เลยกำหนด' : ''].filter(Boolean).join(' · ')}</small>` : ''}</span>`;
+    const ck = it.querySelector('.ov-ck');
+    if (ck && !READ_ONLY) ck.onclick = async (e) => {
+      e.stopPropagation();
+      a.completed = !a.completed;
+      if (a.completed) { a.completedAt = Date.now(); a.completedBy = USER_NAME; } else { delete a.completedAt; delete a.completedBy; }
+      a.updatedBy = USER_NAME; a.updatedAt = Date.now();
+      ck.classList.toggle('on', a.completed); ck.textContent = a.completed ? '✓' : ''; it.classList.toggle('done', a.completed);
+      await persistAndRender();
+    };
+    if (p && d) { it.onclick = () => { pop.remove(); ovPopEl = null; openActivityModal(p.id, d.id, row.id, a.id); }; it.title = 'คลิกเพื่อเปิดงานนี้'; }
+    list.appendChild(it);
+  });
+  pop.addEventListener('mouseenter', () => clearTimeout(ovPopTimer));
+  pop.addEventListener('mouseleave', ovHidePopSoon);
+  document.body.appendChild(pop); ovPopEl = pop;
+  const r = anchor.getBoundingClientRect();
+  const left = Math.max(8, Math.min(r.left - 8, window.innerWidth - pop.offsetWidth - 8));
+  const below = r.bottom + 6 + pop.offsetHeight <= window.innerHeight - 8;
+  pop.style.left = left + 'px';
+  pop.style.top = (below ? r.bottom + 6 : Math.max(8, r.top - 6 - pop.offsetHeight)) + 'px';
+}
+document.addEventListener('scroll', (e) => { if (ovPopEl && !(e.target && e.target.nodeType === 1 && ovPopEl.contains(e.target))) { ovPopEl.remove(); ovPopEl = null; } }, true);
 
 // เพิ่ม: ฟังก์ชันรองรับการสร้างภาพรวมแต่ละหมวดหมู่ (categoryFilter)
 function renderOverview(categoryFilter = null) {
@@ -2561,6 +2779,9 @@ function renderOverview(categoryFilter = null) {
   
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
+  const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
+  const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
+  const ovAct = ovBar.act;
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -2585,7 +2806,8 @@ function renderOverview(categoryFilter = null) {
   }
 
   projectsToRender.forEach(p => {
-    const allActs = p.departments.flatMap(d => d.rows.flatMap(r => r.activities));
+    const allActs = p.departments.flatMap(d => d.rows.filter(r => ovRowIn(p, r, ovAct)).flatMap(r => r.activities));
+    if (ovAct.length && !p.departments.some(d => d.rows.some(r => ovRowIn(p, r, ovAct)))) return;   // ไม่มีแถวในหมวดที่เลือก
     const sorted = [...allActs].sort((a, b) => a.start - b.start), lanes = [], placed = [];
     sorted.forEach(a => {
       let laneIdx = lanes.findIndex(end => end < a.start);
@@ -2628,6 +2850,9 @@ function renderLanesOverview(categoryFilter = null) {
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
+  const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
+  const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
+  const ovAct = ovBar.act;
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -2651,27 +2876,27 @@ function renderLanesOverview(categoryFilter = null) {
   }
 
   projectsToRender.forEach(p => {
+    const visRows = (d) => d.rows.filter(r => !isHid(r) && ovRowIn(p, r, ovAct));
+    const depts = p.departments.filter(d => !isHid(d) && (!ovAct.length || visRows(d).length));
+    if (ovAct.length && !depts.length) return;   // ไม่มีแถวในหมวดที่เลือก
     const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
     const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.textContent = `📁 ${p.name}`;
     projHeaderBlock.appendChild(pLabel);
     const pTrackWrap = document.createElement('div'); pTrackWrap.className = 'subrow'; pTrackWrap.style.width = totalWidth + 'px';
     projHeaderBlock.appendChild(pTrackWrap); body.appendChild(projHeaderBlock);
 
-    p.departments.filter(d => !isHid(d)).forEach(dept => {
+    depts.forEach(dept => {
       const deptBlock = document.createElement('div'); deptBlock.className = 'dept-block';
       const labelCol = document.createElement('div'); labelCol.className = 'row-label';
       const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name" style="padding-left:10px;">↳ ${escapeHTML(dept.name)}</div>`;
       const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-      dept.rows.filter(r => !isHid(r)).forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; rowNamesCol.appendChild(rCell); });
+      visRows(dept).forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; const rc = rcOf(p, row); if (rc) { rCell.style.boxShadow = `inset 3px 0 0 ${rc.color}`; rCell.title = 'หมวด: ' + rc.name; } rowNamesCol.appendChild(rCell); });
       labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); deptBlock.appendChild(labelCol);
 
       const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-      dept.rows.filter(r => !isHid(r)).forEach(row => {
+      visRows(dept).forEach(row => {
         const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
-        row.activities.forEach(act => {
-          const bar = createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, row.activities, null, null, null);
-          if(bar) track.appendChild(bar);
-        });
+        appendRowBars(track, row, colw, rStart, rEnd, totalWidth, null, null, p, dept);
         rowsWrap.appendChild(track);
       });
       deptBlock.appendChild(rowsWrap); body.appendChild(deptBlock);
@@ -4220,7 +4445,7 @@ function renderTodoTabs(subBar) {
       const t = document.createElement('button');
       t.className = 'tab td-proj-tab' + (todo.activeId === 'proj:' + p.id ? ' active' : ''); t.style.paddingRight = '14px';
       t.innerHTML = `<span class="td-tab-ico">📊</span><span>${escapeHTML(p.name)}</span>${late ? `<span class="td-cnt" title="เลยกำหนด ${late} งาน">${late}</span>` : ''}`;
-      t.title = `งาน "กำหนดการที่ต้องทำให้เสร็จ" ของ ${p.name} · ค้าง ${open.length} งาน${late ? ' · เลยกำหนด ' + late : ''}\nติ๊กเสร็จที่นี่ = ติ๊กในแผนงานด้วย`;
+      t.title = `งานของ ${p.name} · ค้าง ${open.length} งาน${late ? ' · เลยกำหนด ' + late : ''}\nกำหนดการในแผนงาน + งานเพิ่มเติม`;
       t.onclick = () => { todo.activeId = 'proj:' + p.id; lsSet('todo_active', todo.activeId); render(); };
       subBar.appendChild(t);
     });
@@ -4228,15 +4453,21 @@ function renderTodoTabs(subBar) {
 }
 
 // รายชื่อโครงการที่มีงาน "กำหนดการที่ต้องทำให้เสร็จ" (เฉพาะหมวดที่ผู้ใช้มีสิทธิ์ ซึ่งโหลดมาแล้ว)
+// งานของโครงการในหน้า To-do = กำหนดการในแผนงาน + งานเพิ่มเติม (เก็บใน project.extraTasks ไม่แสดงในแผนงาน)
+function tdProjTasks() {
+  const out = collectTasks();
+  (state.projects || []).forEach(p => (p.extraTasks || []).forEach(a => out.push({ a, p, d: null, r: null, extra: true })));
+  return out;
+}
 function tdProjList() {
   if (!state || !state.projects) return [];
-  const all = collectTasks();
-  return state.projects.map(p => ({ p, tasks: all.filter(x => x.p.id === p.id) })).filter(x => x.tasks.length);
+  const all = tdProjTasks();
+  return state.projects.map(p => ({ p, tasks: all.filter(x => x.p.id === p.id) }));
 }
 
 // ติ๊กเสร็จ / ยกเลิกเสร็จ ของงานในแผนงาน (ข้อมูลชุดเดียวกับหน้าแผนงาน จึงเชื่อมกันทันที)
 function tdSetTaskDone(pid, aid, done, cardEl) {
-  const find = () => { const x = collectTasks().find(t => t.p.id === pid && t.a.id === aid); return x ? x.a : null; };
+  const find = () => { const x = tdProjTasks().find(t => t.p.id === pid && t.a.id === aid); return x ? x.a : null; };
   const a0 = find(); if (!a0 || READ_ONLY) return;
   const prev = { completed: !!a0.completed, completedAt: a0.completedAt, completedBy: a0.completedBy };
   const go = async () => {
@@ -4260,30 +4491,39 @@ function tdOpenProjAdd(pid, colKey) {
   if (READ_ONLY) return;
   const p = state.projects.find(x => x.id === pid); if (!p) return;
   const depts = p.departments.filter(d => d.rows.length);
-  if (!depts.length) { alert('โครงการนี้ยังไม่มีหน่วยงาน/แถว กรุณาเพิ่มในหน้าแผนงานก่อน'); return; }
   const today = todayBangkokIndex();
   const s0 = colKey === 'next' ? today + 1 : today;
   const last = lsGet('td_proj_add_' + pid, {}) || {};
+  let mode = !depts.length ? 'todo' : (last.mode === 'todo' ? 'todo' : 'plan');
   modalOpen = true;
   const ov = document.createElement('div'); ov.className = 'modal-overlay';
   const m = document.createElement('div'); m.className = 'modal td-modal';
   m.innerHTML = `<h3>+ เพิ่มงานใน ${escapeHTML(p.name)}</h3>
-    <p class="modal-desc">งานนี้จะถูกสร้างเป็น "🎯 กำหนดการที่ต้องทำให้เสร็จ" ในหน้าแผนงานของโครงการด้วย</p>
+    <div class="pa-mode" id="paMode">
+      <button type="button" data-m="plan" ${depts.length ? '' : 'disabled style="opacity:.5; cursor:not-allowed;"'}><b>📊 แสดงในแผนงานด้วย</b><small>สร้างเป็น "🎯 กำหนดการที่ต้องทำให้เสร็จ" ในตาราง Gantt ของโครงการ${depts.length ? '' : ' (โครงการยังไม่มีหน่วยงาน)'}</small></button>
+      <button type="button" data-m="todo"><b>📝 เฉพาะใน To-do</b><small>งานย่อย/งานติดตามทั่วไป ไม่แสดงในตารางแผนงาน</small></button>
+    </div>
     <label class="field-label" for="paName">ชื่องาน</label><input id="paName" class="text-input" placeholder="เช่น ส่งรายงานความก้าวหน้า">
     <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
-      <div><label class="field-label" for="paDept">หน่วยงาน</label><select id="paDept" class="text-input">${depts.map(d => `<option value="${d.id}">${escapeHTML(d.name)}</option>`).join('')}</select></div>
-      <div><label class="field-label" for="paRow">แถว (ชื่องาน)</label><select id="paRow" class="text-input"></select></div>
+      <div class="pa-plan"><label class="field-label" for="paDept">หน่วยงาน</label><select id="paDept" class="text-input">${depts.map(d => `<option value="${d.id}">${escapeHTML(d.name)}</option>`).join('')}</select></div>
+      <div class="pa-plan"><label class="field-label" for="paRow">แถว (ชื่องาน)</label><select id="paRow" class="text-input"></select></div>
       <div><label class="field-label" for="paStart">วันเริ่ม</label><input type="date" id="paStart" class="text-input" value="${dateToInputStr(dateFromIndex(s0))}"></div>
       <div><label class="field-label" for="paEnd">กำหนดเสร็จ</label><input type="date" id="paEnd" class="text-input" value="${dateToInputStr(dateFromIndex(s0))}">
         <div class="td-due-quick">${[['วันนี้', 0], ['พรุ่งนี้', 1], ['+3 วัน', 3], ['+7 วัน', 7]].map(([t, n]) => `<button type="button" data-d="${n}">${t}</button>`).join('')}</div></div>
     </div>
-    <label class="field-label">สีในแผนงาน</label><div class="color-picker" id="paColor"></div>
+    <div class="pa-plan"><label class="field-label">สีในแผนงาน</label><div class="color-picker" id="paColor"></div></div>
     <div style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">กด "เพิ่มงาน" แล้วจะเปิดการ์ดให้ใส่รายการย่อย / เลือก Template ต่อได้ทันที</div>
     <div class="modal-actions"><button class="ghost-btn" id="paCancel">ยกเลิก</button><button class="primary-btn" id="paOk">เพิ่มงาน</button></div>`;
   ov.appendChild(m); document.body.appendChild(ov);
   const dSel = m.querySelector('#paDept'), rSel = m.querySelector('#paRow');
+  const drawMode = () => {
+    m.querySelectorAll('#paMode button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
+    m.querySelectorAll('.pa-plan').forEach(x => { x.style.display = mode === 'plan' ? '' : 'none'; });
+  };
+  m.querySelectorAll('#paMode button').forEach(b => b.onclick = () => { if (b.disabled) return; mode = b.dataset.m; drawMode(); });
+  drawMode();
   const fillRows = () => {
-    const d = depts.find(x => x.id === dSel.value);
+    const d = depts.find(x => x.id === dSel.value); if (!d) return;
     rSel.innerHTML = d.rows.map(r => `<option value="${r.id}">${escapeHTML(r.name)}</option>`).join('');
     if (last.rowId && d.rows.some(r => r.id === last.rowId)) rSel.value = last.rowId;
   };
@@ -4300,12 +4540,22 @@ function tdOpenProjAdd(pid, colKey) {
   const ok = async () => {
     const label = m.querySelector('#paName').value.trim();
     if (!label) { m.querySelector('#paName').focus(); return; }
-    const row = findLiveRow(pid, dSel.value, rSel.value); if (!row) return;
     let sIdx = indexFromDate(inputStrToDate(st.value)), eIdx = indexFromDate(inputStrToDate(en.value));
     if (eIdx < sIdx) eIdx = sIdx;
+    if (mode === 'todo') {   // งานเพิ่มเติม: เก็บในโครงการ แต่ไม่แสดงในตารางแผนงาน
+      const live = state.projects.find(x => x.id === pid); if (!live) return;
+      const act = { id: uid('xt'), label, start: sIdx, end: eIdx, type: 'task', completed: false, remark: '', checklist: [], updatedBy: USER_NAME, updatedAt: Date.now() };
+      live.extraTasks = live.extraTasks || []; live.extraTasks.push(act);
+      lsSet('td_proj_add_' + pid, { ...last, mode: 'todo' });
+      closeModal(ov); await persistAndRender();
+      showToast(`เพิ่มงาน "${label}" แล้ว (เฉพาะใน To-do)`);
+      tdOpenProjCard(pid, null, null, act.id);
+      return;
+    }
+    const row = findLiveRow(pid, dSel.value, rSel.value); if (!row) return;
     const act = { id: uid('act'), label, color, start: sIdx, end: eIdx, type: 'task', completed: false, remark: '', checklist: [], updatedBy: USER_NAME, updatedAt: Date.now() };
     row.activities.push(act);
-    lsSet('td_proj_add_' + pid, { deptId: dSel.value, rowId: rSel.value, color });
+    lsSet('td_proj_add_' + pid, { deptId: dSel.value, rowId: rSel.value, color, mode: 'plan' });
     closeModal(ov);
     await persistAndRender();
     showToast(`เพิ่มงาน "${label}" แล้ว (แสดงในแผนงานด้วย)`);
@@ -4315,11 +4565,42 @@ function tdOpenProjAdd(pid, colKey) {
   m.querySelector('#paName').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); ok(); } };
 }
 
+// ย้ายงานเพิ่มเติม (เฉพาะ To-do) ไปเป็นกำหนดการในแผนงาน
+function tdMoveExtraToPlan(pid, aid) {
+  const p = state.projects.find(x => x.id === pid); if (!p) return;
+  const a = (p.extraTasks || []).find(x => x.id === aid); if (!a) return;
+  const depts = p.departments.filter(d => d.rows.length);
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<h3>📊 ย้าย "${escapeHTML(a.label)}" ไปแสดงในแผนงาน</h3><p class="modal-desc">เลือกหน่วยงานและแถวในตาราง Gantt · รายการย่อยและสถานะเสร็จจะติดไปด้วย</p>
+    <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+      <div><label class="field-label">หน่วยงาน</label><select id="mvDept" class="text-input">${depts.map(d => `<option value="${d.id}">${escapeHTML(d.name)}</option>`).join('')}</select></div>
+      <div><label class="field-label">แถว (ชื่องาน)</label><select id="mvRow" class="text-input"></select></div></div>
+    <div class="modal-actions"><button class="ghost-btn" id="mvCancel">ยกเลิก</button><button class="primary-btn" id="mvOk">ย้ายไปแผนงาน</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  const dS = m.querySelector('#mvDept'), rS = m.querySelector('#mvRow');
+  const fill = () => { const d = depts.find(x => x.id === dS.value); rS.innerHTML = d.rows.map(r => `<option value="${r.id}">${escapeHTML(r.name)}</option>`).join(''); };
+  dS.onchange = fill; fill();
+  m.querySelector('#mvCancel').onclick = () => closeModal(ov);
+  m.querySelector('#mvOk').onclick = async () => {
+    const row = findLiveRow(pid, dS.value, rS.value), lp = state.projects.find(x => x.id === pid); if (!row || !lp) return;
+    const live = (lp.extraTasks || []).find(x => x.id === aid); if (!live) { closeModal(ov); return; }
+    lp.extraTasks = lp.extraTasks.filter(x => x.id !== aid);
+    row.activities.push({ ...live, id: uid('act'), color: live.color || state.colors[0].hex, type: 'task', updatedBy: USER_NAME, updatedAt: Date.now() });
+    closeModal(ov); await persistAndRender(); showToast('ย้ายงานไปแสดงในแผนงานแล้ว');
+  };
+}
+
 // ---------- หน้าต่างการ์ดของงานจากแผนงาน: แก้ชื่อ / วันที่ / รายการย่อย (Template) ----------
 function tdOpenProjCard(pid, did, rid, aid) {
-  const findA = () => { const row = findLiveRow(pid, did, rid); return row ? row.activities.find(x => x.id === aid) : null; };
+  const isExtra = !did;
+  const findA = () => {
+    if (isExtra) { const lp = state.projects.find(x => x.id === pid); return lp ? (lp.extraTasks || []).find(x => x.id === aid) || null : null; }
+    const row = findLiveRow(pid, did, rid); return row ? row.activities.find(x => x.id === aid) : null;
+  };
   const a0 = findA(); if (!a0) return;
-  const p = state.projects.find(x => x.id === pid), d = p.departments.find(x => x.id === did), r = d.rows.find(x => x.id === rid);
+  const p = state.projects.find(x => x.id === pid), d = isExtra ? null : p.departments.find(x => x.id === did), r = isExtra ? null : d.rows.find(x => x.id === rid);
   const edit = !READ_ONLY;
   const work = { checklist: clone(a0.checklist || []) };
   const wasComplete = work.checklist.length > 0 && work.checklist.every(i => i.done);
@@ -4328,7 +4609,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
   const m = document.createElement('div'); m.className = 'modal td-modal';
   m.innerHTML = `
     <textarea class="td-title-in" id="pcTitle" rows="1" aria-label="ชื่องาน">${escapeHTML(a0.label)}</textarea>
-    <div class="td-path" style="margin:6px 0 0;">📊 ${escapeHTML(p.name)} › ${escapeHTML(d.name)} › ${escapeHTML(r.name)}${a0.seriesId ? ' · 🔁 ' + escapeHTML(recDescribe(a0.rec)) : ''}</div>
+    <div class="td-path" style="margin:6px 0 0;">📊 ${escapeHTML(p.name)} › ${isExtra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}${a0.seriesId ? ' · 🔁 ' + escapeHTML(recDescribe(a0.rec)) : ''}</div>
     <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
       <div><label class="field-label" for="pcStart">วันเริ่ม</label><input type="date" id="pcStart" class="text-input" value="${dateToInputStr(dateFromIndex(a0.start))}"></div>
       <div><label class="field-label" for="pcEnd">กำหนดเสร็จ</label><input type="date" id="pcEnd" class="text-input" value="${dateToInputStr(dateFromIndex(a0.end))}"></div>
@@ -4340,7 +4621,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
     <div class="td-prog" style="margin:0 0 6px;"><i id="pcBar" style="width:0%"></i></div>
     <div id="pcCl"></div>
     ${edit ? '<input type="text" id="pcClNew" class="text-input" placeholder="+ เพิ่มรายการย่อย แล้วกด Enter" style="margin-top:4px;">' : ''}
-    <label class="field-label" for="pcNote">หมายเหตุ (แสดงในแผนงานด้วย)</label>
+    <label class="field-label" for="pcNote">หมายเหตุ${isExtra ? '' : ' (แสดงในแผนงานด้วย)'}</label>
     <textarea id="pcNote" class="text-input" rows="3" placeholder="รายละเอียดเพิ่มเติม">${escapeHTML(a0.remark || '')}</textarea>
     <div class="td-meta">${a0.updatedBy ? 'แก้ล่าสุดโดย ' + escapeHTML(a0.updatedBy) + (a0.updatedAt ? ' · ' + escapeHTML(fmtDateTime(a0.updatedAt)) : '') : ''}${a0.completedAt ? ' · เสร็จเมื่อ ' + escapeHTML(fmtDateTime(a0.completedAt)) + (a0.completedBy ? ' โดย ' + escapeHTML(a0.completedBy) : '') : ''}</div>
     <div class="modal-actions" id="pcActions"></div>`;
@@ -4379,7 +4660,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
     const tpls = []; todo.boards.forEach(bb => (bb.templates || []).forEach(t => tpls.push({ t, from: bb.name })));
     const src = [];
     todo.boards.forEach(bb => bb.columns.forEach(c => (c.cards || []).forEach(cd => { if ((cd.checklist || []).length) src.push({ title: cd.title, items: cd.checklist.map(i => i.text), from: bb.name }); })));
-    collectTasks().forEach(x => { if (x.a.id !== aid && (x.a.checklist || []).length) src.push({ title: x.a.label, items: x.a.checklist.map(i => i.text), from: x.p.name }); });
+    tdProjTasks().forEach(x => { if (x.a.id !== aid && (x.a.checklist || []).length) src.push({ title: x.a.label, items: x.a.checklist.map(i => i.text), from: x.p.name }); });
     tplBox.innerHTML = `<div class="td-tpl-h">📋 Template</div>
       <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)} <small>· ${escapeHTML(x.from)}</small></span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — สร้างได้ที่ปุ่ม "📋 Template รายการย่อย" ในบอร์ด To-do ของคุณ</div>'}</div>
       <div class="td-tpl-h" style="margin-top:10px;">คัดลอกรายการจากการ์ด…</div>
@@ -4406,6 +4687,11 @@ function tdOpenProjCard(pid, did, rid, aid) {
   const openPlan = document.createElement('button'); openPlan.className = 'ghost-btn'; openPlan.textContent = '↗ เปิดในแผนงาน'; openPlan.style.marginRight = 'auto';
   openPlan.title = 'เปิดหน้าต่างกิจกรรมแบบเต็ม (สี, ประเภท, การทำซ้ำ)';
   openPlan.onclick = () => { closeModal(ov); openActivityModal(pid, did, rid, aid); };
+  if (isExtra) {   // งานเพิ่มเติม: ย้ายไปแสดงในแผนงานได้ภายหลัง
+    openPlan.textContent = '📊 ย้ายไปแสดงในแผนงาน'; openPlan.title = 'เพิ่มงานนี้ลงในตาราง Gantt ของโครงการ (เลือกหน่วยงาน/แถว)';
+    openPlan.onclick = () => { closeModal(ov); tdMoveExtraToPlan(pid, aid); };
+    if (READ_ONLY || !p.departments.some(x => x.rows.length)) openPlan.style.display = 'none';
+  }
   let ok = null;
   if (edit) {
     ok = document.createElement('button'); ok.className = 'primary-btn'; ok.textContent = 'บันทึก';
@@ -4431,6 +4717,15 @@ function tdOpenProjCard(pid, did, rid, aid) {
     };
     const del = document.createElement('button'); del.className = 'danger-btn'; del.textContent = '🗑 ลบ';
     del.onclick = async () => {
+      if (isExtra) {
+        const lp = state.projects.find(x => x.id === pid); const a = findA(); if (!lp || !a) return;
+        if (!confirm(`ลบงาน "${a.label}"?`)) return;
+        const idx = lp.extraTasks.indexOf(a), copy = clone(a);
+        lp.extraTasks.splice(idx, 1);
+        closeModal(ov); await persistAndRender();
+        showToast('🗑 ลบงานแล้ว', 'เลิกทำ', async () => { const lp2 = state.projects.find(x => x.id === pid); if (lp2) { lp2.extraTasks = lp2.extraTasks || []; lp2.extraTasks.splice(Math.min(idx, lp2.extraTasks.length), 0, copy); await persistAndRender(); } });
+        return;
+      }
       const row = findLiveRow(pid, did, rid); const a = findA(); if (!row || !a) return;
       if (!confirm(`ลบงาน "${a.label}"?\nงานนี้จะถูกลบออกจากแผนงานด้วย`)) return;
       const idx = row.activities.indexOf(a), copy = clone(a);
@@ -4449,6 +4744,366 @@ function tdOpenProjCard(pid, did, rid, aid) {
     else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && ok) { e.preventDefault(); document.removeEventListener('keydown', onKey); ok.click(); }
   };
   document.addEventListener('keydown', onKey);
+}
+
+// =====================================================================
+// --- ระบบจองห้องประชุม สลส. ---
+// ข้อมูลเก็บที่สคริปต์ work (ไฟล์ gantt_rooms.json) · เซิร์ฟเวอร์ตรวจการจองชนกันอีกชั้น
+// =====================================================================
+const RM_DAY_START = 8 * 60, RM_DAY_END = 18 * 60;   // ช่วงเวลาที่ใช้คำนวณ "ว่าง" ในแผงด้านขวา
+const RM_COMMON_EQUIP = ['Zoom', 'โปรเจกเตอร์', 'ไมโครโฟน', 'น้ำดื่ม', 'อาหารว่าง'];
+const rm = { loaded: false, loading: false, ok: true, rooms: [], bookings: [], rev: -1, ym: null, sel: null, timer: null };
+function rmMin(t) { const m = /^(\d{1,2}):(\d{2})$/.exec(t || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null; }
+function rmHHMM(n) { return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0'); }
+function rmRoom(id) { return rm.rooms.find(r => r.id === id) || { id, name: '(ห้องที่ถูกลบ)', color: '#94A3B8', seats: 0, equip: [] }; }
+function rmShort(name) { return String(name || '').replace(/^ห้องประชุม\s*/, 'ห้อง'); }
+function rmHidden() { const v = lsGet('rm_hidden_rooms', []); return new Set(Array.isArray(v) ? v : []); }
+function rmDateObj(ds) { return inputStrToDate(ds); }
+function rmThaiDate(ds, full) { const d = rmDateObj(ds); return `${full ? 'วัน' + THAI_WEEKDAY_FULL[d.getUTCDay()] + 'ที่ ' : THAI_WEEKDAY_SHORT[d.getUTCDay()] + '. '}${d.getUTCDate()} ${full ? THAI_MONTHS_FULL[d.getUTCMonth()] : THAI_MONTHS_SHORT[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}`; }
+function rmDayBookings(ds, includeHidden) {
+  const hid = includeHidden ? new Set() : rmHidden();
+  return rm.bookings.filter(b => b.date === ds && !hid.has(b.roomId)).sort((a, b) => rmMin(a.start) - rmMin(b.start) || (a.roomId < b.roomId ? -1 : 1));
+}
+// ช่วงเวลาว่างของห้องในวันนั้น (ภายใน 08:00–18:00)
+function rmFreeRanges(roomId, ds, exceptId) {
+  const busy = rm.bookings.filter(b => b.roomId === roomId && b.date === ds && b.id !== exceptId).map(b => [rmMin(b.start), rmMin(b.end)]).sort((a, b) => a[0] - b[0]);
+  const out = []; let cur = RM_DAY_START;
+  busy.forEach(([s, e]) => { if (s > cur) out.push([cur, Math.min(s, RM_DAY_END)]); cur = Math.max(cur, e); });
+  if (cur < RM_DAY_END) out.push([cur, RM_DAY_END]);
+  return out.filter(([s, e]) => e - s >= 15);
+}
+function rmClash(roomId, ds, s, e, exceptId) {
+  return rm.bookings.find(b => b.id !== exceptId && b.roomId === roomId && b.date === ds && rmMin(b.start) < e && rmMin(b.end) > s) || null;
+}
+
+async function rmLoad(silent) {
+  if (rm.loading) return false;
+  rm.loading = true;
+  try {
+    const d = await fetchWithRetry(URLS.work, { action: 'rooms' });
+    if (!d || !d.roomsOk) { rm.ok = false; rm.loaded = true; return true; }
+    const changed = d.rev !== rm.rev || !rm.loaded;
+    rm.ok = true; rm.rooms = d.rooms || []; rm.bookings = d.bookings || []; rm.rev = d.rev; rm.loaded = true;
+    return changed;
+  } catch (e) {
+    if (!silent) showToast('โหลดข้อมูลห้องประชุมไม่สำเร็จ: ' + e.message);
+    return false;
+  } finally { rm.loading = false; }
+}
+async function rmPost(body) {
+  const r = await todoPost(body);
+  if (r && Array.isArray(r.bookings)) { rm.bookings = r.bookings; rm.rooms = r.rooms || rm.rooms; rm.rev = r.rev; }
+  return r;
+}
+function rmStartPolling() {
+  if (rm.timer) return;
+  rm.timer = setInterval(async () => {
+    if (view.type !== 'rooms' || document.visibilityState !== 'visible' || modalOpen) return;
+    if (await rmLoad(true)) render();
+  }, 15000);
+}
+
+function renderRooms() {
+  const root = document.createElement('div');
+  rmStartPolling();
+  if (!rm.loaded) {
+    root.innerHTML = '<div class="td-empty">⏳ กำลังโหลดตารางห้องประชุม...</div>';
+    rmLoad(false).then(() => render());
+    return root;
+  }
+  if (!rm.ok) {
+    root.innerHTML = '<div class="rm-note"><b>ยังใช้ระบบจองห้องประชุมไม่ได้</b><br>กรุณาวางโค้ด AppsScript_work.gs เวอร์ชันล่าสุด แล้ว Deploy → Manage deployments → ✎ → New version จากนั้นรีเฟรชหน้านี้</div>';
+    return root;
+  }
+  const today = tdTodayStr();
+  if (!rm.sel) rm.sel = today;
+  if (!rm.ym) { const t = rmDateObj(rm.sel); rm.ym = { y: t.getUTCFullYear(), m: t.getUTCMonth() }; }
+  const { y, m } = rm.ym;
+  const hid = rmHidden();
+
+  // แถบด้านบน
+  const bar = document.createElement('div'); bar.className = 'rm-bar';
+  bar.innerHTML = `<h2>${THAI_MONTHS_FULL[m]} ${y + 543}</h2><div class="rm-nav"><button type="button" data-n="-1" aria-label="เดือนก่อน">‹</button><button type="button" data-n="1" aria-label="เดือนถัดไป">›</button></div><button type="button" class="ghost-btn" id="rmToday">วันนี้</button>`;
+  const right = document.createElement('div'); right.className = 'rm-sp'; right.style.cssText = 'display:flex; gap:8px; flex-wrap:wrap;';
+  const myBtn = document.createElement('button'); myBtn.className = 'ghost-btn'; myBtn.textContent = `👤 การจองของฉัน (${rm.bookings.filter(b => b.owner === USER_NAME && b.date >= today).length})`; myBtn.onclick = rmOpenMine; right.appendChild(myBtn);
+  if (!READ_ONLY) {
+    const mg = document.createElement('button'); mg.className = 'ghost-btn'; mg.textContent = '⚙ จัดการห้อง'; mg.onclick = rmOpenRoomsManager; right.appendChild(mg);
+    const nb = document.createElement('button'); nb.className = 'primary-btn'; nb.textContent = '+ จองห้องประชุม'; nb.onclick = () => rmOpenBooking(null, rm.sel >= today ? rm.sel : today); right.appendChild(nb);
+  }
+  bar.appendChild(right); root.appendChild(bar);
+  bar.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { const mm = m + Number(b.dataset.n); rm.ym = { y: y + Math.floor(mm / 12), m: ((mm % 12) + 12) % 12 }; render(); });
+  bar.querySelector('#rmToday').onclick = () => { rm.sel = today; rm.ym = null; render(); };
+
+  // ตัวกรองห้อง
+  const rf = document.createElement('div'); rf.className = 'rm-rooms';
+  rm.rooms.forEach(r => {
+    const on = !hid.has(r.id);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rm-rc' + (on ? ' on' : ''); b.style.setProperty('--c', r.color);
+    b.innerHTML = `<span class="bx">${on ? '✓' : ''}</span>${escapeHTML(r.name)} <small>· ${r.seats || '-'} ที่นั่ง${r.equip && r.equip.length ? ' · ' + escapeHTML(r.equip.join(', ')) : ''}</small>`;
+    b.onclick = () => { const h = rmHidden(); if (h.has(r.id)) h.delete(r.id); else h.add(r.id); lsSet('rm_hidden_rooms', [...h]); render(); };
+    rf.appendChild(b);
+  });
+  root.appendChild(rf);
+
+  const wrap = document.createElement('div'); wrap.className = 'rm-wrap';
+  // ปฏิทินรายเดือน (เริ่มวันอาทิตย์)
+  const cal = document.createElement('div'); cal.className = 'rm-cal';
+  cal.innerHTML = `<div class="rm-dow">${THAI_WEEKDAY_FULL.map((d, i) => `<div class="${i === 0 || i === 6 ? 'we' : ''}">${d}</div>`).join('')}</div>`;
+  const grid = document.createElement('div'); grid.className = 'rm-grid';
+  const first = new Date(Date.UTC(y, m, 1)), startIdx = indexFromDate(first) - first.getUTCDay();
+  const lastIdx = indexFromDate(new Date(Date.UTC(y, m + 1, 0)));
+  const weeks = Math.ceil((lastIdx - startIdx + 1) / 7);
+  for (let i = 0; i < weeks * 7; i++) {
+    const di = startIdx + i, dObj = dateFromIndex(di), ds = dateToInputStr(dObj), dow = dObj.getUTCDay();
+    const cell = document.createElement('div');
+    cell.className = 'rm-d' + (dow === 0 || dow === 6 ? ' we' : '') + (dObj.getUTCMonth() !== m ? ' out' : '') + (ds === today ? ' td' : '') + (ds === rm.sel ? ' sel' : '');
+    cell.innerHTML = `<span class="rm-dn">${dObj.getUTCDate()}</span>`;
+    const list = rmDayBookings(ds);
+    list.slice(0, 3).forEach(bk => cell.appendChild(rmChip(bk)));
+    if (list.length > 3) { const mo = document.createElement('div'); mo.className = 'rm-more'; mo.textContent = `+ อีก ${list.length - 3} รายการ`; cell.appendChild(mo); }
+    cell.onclick = () => { rm.sel = ds; render(); };
+    cell.ondblclick = () => { if (!READ_ONLY && ds >= today) rmOpenBooking(null, ds); };
+    cell.title = READ_ONLY ? '' : 'คลิก = ดูวันนี้ · ดับเบิลคลิก = จองห้องวันนี้';
+    grid.appendChild(cell);
+  }
+  cal.appendChild(grid); wrap.appendChild(cal);
+  wrap.appendChild(rmSidePanel(rm.sel, today));
+  root.appendChild(wrap);
+  return root;
+}
+
+function rmChip(bk) {
+  const r = rmRoom(bk.roomId);
+  const el = document.createElement('div'); el.className = 'rm-ev' + (bk.owner === USER_NAME ? ' mine' : ''); el.style.setProperty('--c', r.color);
+  el.innerHTML = `<b>${escapeHTML(bk.start)}–${escapeHTML(bk.end)}<em>· ${escapeHTML(rmShort(r.name))}</em></b><span>${escapeHTML(bk.title || '(ไม่มีหัวข้อ)')}</span>`;
+  el.addEventListener('mouseenter', () => rmShowPop(el, bk));
+  el.addEventListener('mouseleave', ovHidePopSoon);
+  el.onclick = (e) => { e.stopPropagation(); if (ovPopEl) { ovPopEl.remove(); ovPopEl = null; } rmOpenBooking(bk); };
+  return el;
+}
+function rmShowPop(anchor, bk) {
+  clearTimeout(ovPopTimer);
+  if (ovPopEl && ovPopEl._anchor === anchor) return;
+  if (ovPopEl) ovPopEl.remove();
+  const r = rmRoom(bk.roomId);
+  const pop = document.createElement('div'); pop.className = 'ov-pop'; pop._anchor = anchor; pop.style.padding = '12px 14px';
+  pop.innerHTML = `<div style="font-weight:700; color:${r.color}; font-size:12.5px;">● ${escapeHTML(r.name)} · ${escapeHTML(bk.start)}–${escapeHTML(bk.end)} น.</div>
+    <div style="font-weight:700; font-size:13.5px; margin:4px 0 6px; line-height:1.45;">${escapeHTML(bk.title || '(ไม่มีหัวข้อ)')}</div>
+    <div style="color:var(--ink-soft); font-size:12px; line-height:1.7;">📅 ${escapeHTML(rmThaiDate(bk.date, true))}<br>
+    ${bk.unit ? `🏢 หน่วยงาน <span class="rm-unit">${escapeHTML(bk.unit)}</span><br>` : ''}👤 จองโดย ${escapeHTML(bk.owner)}${bk.people ? ` · ${bk.people} คน` : ''}
+    ${bk.equip && bk.equip.length ? `<br>🧰 ${escapeHTML(bk.equip.join(', '))}` : ''}${bk.note ? `<br>📝 ${escapeHTML(bk.note)}` : ''}</div>
+    <div style="margin-top:6px; color:var(--indigo); font-weight:700; font-size:11.5px;">${bk.owner === USER_NAME && !READ_ONLY ? 'คลิก = แก้ไข / ยกเลิกการจอง' : 'คลิก = ดูรายละเอียด'}</div>`;
+  pop.addEventListener('mouseenter', () => clearTimeout(ovPopTimer));
+  pop.addEventListener('mouseleave', ovHidePopSoon);
+  document.body.appendChild(pop); ovPopEl = pop;
+  const rc = anchor.getBoundingClientRect();
+  pop.style.left = Math.max(8, Math.min(rc.left, window.innerWidth - pop.offsetWidth - 8)) + 'px';
+  pop.style.top = (rc.bottom + 6 + pop.offsetHeight <= window.innerHeight - 8 ? rc.bottom + 6 : Math.max(8, rc.top - 6 - pop.offsetHeight)) + 'px';
+}
+
+function rmSidePanel(ds, today) {
+  const side = document.createElement('div'); side.className = 'rm-side';
+  const list = rmDayBookings(ds);
+  const fmtR = (rs) => rs.map(([a, b]) => `${rmHHMM(a)}–${rmHHMM(b)}`).join(', ');
+  side.innerHTML = `<h3>${escapeHTML(rmThaiDate(ds, true))}</h3><div class="s">${list.length ? list.length + ' การจอง' : 'ยังไม่มีการจอง'}${ds === today ? ' · วันนี้' : ''}</div>`;
+  const occ = document.createElement('div'); occ.className = 'rm-occ';
+  const hid = rmHidden();
+  rm.rooms.filter(r => !hid.has(r.id)).forEach(r => {
+    const free = rmFreeRanges(r.id, ds), freeMin = free.reduce((t, [a, b]) => t + b - a, 0), total = RM_DAY_END - RM_DAY_START;
+    const txt = freeMin >= total ? 'ว่างทั้งวัน' : !free.length ? 'ไม่ว่าง (08:00–18:00)' : 'ว่าง ' + fmtR(free);
+    const d = document.createElement('div'); d.style.setProperty('--c', r.color);
+    d.innerHTML = `<b>${escapeHTML(rmShort(r.name))}</b>${escapeHTML(txt)}<div class="bars"><i style="width:${Math.round((1 - freeMin / total) * 100)}%"></i></div>`;
+    occ.appendChild(d);
+  });
+  side.appendChild(occ);
+  list.forEach(bk => {
+    const r = rmRoom(bk.roomId);
+    const it = document.createElement('div'); it.className = 'rm-item'; it.style.setProperty('--c', r.color);
+    it.innerHTML = `<div class="t">${escapeHTML(bk.start)}–${escapeHTML(bk.end)} · ${escapeHTML(r.name)}</div><div class="ti">${escapeHTML(bk.title || '(ไม่มีหัวข้อ)')}</div>
+      <div class="m">${bk.unit ? `<span class="rm-unit">${escapeHTML(bk.unit)}</span>` : ''}<span>👤 ${escapeHTML(bk.owner)}${bk.owner === USER_NAME ? ' (คุณ)' : ''}</span>${bk.people ? `<span>${bk.people} คน</span>` : ''}${bk.equip && bk.equip.length ? `<span>${escapeHTML(bk.equip.join(', '))}</span>` : ''}</div>`;
+    it.onclick = () => rmOpenBooking(bk);
+    side.appendChild(it);
+  });
+  if (!READ_ONLY && ds >= today) {
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'rm-add';
+    add.textContent = `+ จองห้องในวันที่ ${rmThaiDate(ds).replace(/^\S+\s/, '')}`; add.onclick = () => rmOpenBooking(null, ds);
+    side.appendChild(add);
+  }
+  return side;
+}
+
+// ---------- หน้าต่างจอง / แก้ไข / ดูการจอง ----------
+function rmOpenBooking(bk, presetDate) {
+  const today = tdTodayStr();
+  const mine = bk ? bk.owner === USER_NAME : true;
+  const edit = !READ_ONLY && mine && (!bk || bk.date >= today);
+  const w = bk ? clone(bk) : { roomId: (rm.rooms.find(r => !rmHidden().has(r.id)) || rm.rooms[0] || {}).id, date: presetDate || today, start: '09:00', end: '10:00', title: '', unit: lsGet('rm_last_unit', '') || '', people: '', equip: [], note: '' };
+  if (!bk && w.date === today) {   // จองวันนี้: เริ่มที่ครึ่งชั่วโมงถัดไป
+    const pr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Bangkok', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date());
+    const n = Math.ceil(rmMin(pr) / 30) * 30;
+    if (n >= RM_DAY_START && n < 22 * 60) { w.start = rmHHMM(n); w.end = rmHHMM(Math.min(23 * 60 + 59, n + 60)); }
+  }
+  const units = [...new Set(rm.bookings.map(b => b.unit).filter(Boolean))].sort();
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const md = document.createElement('div'); md.className = 'modal'; md.style.maxWidth = '600px';
+  md.innerHTML = `<h3>${bk ? (edit ? '✎ แก้ไขการจองห้องประชุม' : '📋 รายละเอียดการจอง') : '🏢 จองห้องประชุม'}</h3>
+    ${bk ? `<div class="edited-by">👤 จองโดย <b>${escapeHTML(bk.owner)}</b>${bk.updatedAt ? ' · ' + escapeHTML(fmtDateTime(bk.updatedAt)) : ''}${!mine ? ' · แก้ไข/ยกเลิกได้เฉพาะผู้จอง' : ''}</div>` : ''}
+    <label class="field-label">ห้อง</label>
+    <div class="rm-pick" id="rmRoomPick">${rm.rooms.map(r => `<button type="button" data-r="${r.id}" style="--c:${r.color}" ${edit ? '' : 'disabled'}><b style="color:${r.color}">● ${escapeHTML(r.name)}</b><small>${r.seats || '-'} ที่นั่ง${r.equip && r.equip.length ? ' · ' + escapeHTML(r.equip.join(', ')) : ''}</small></button>`).join('')}</div>
+    <label class="field-label" for="rmTitle">หัวข้อการประชุม</label>
+    <input id="rmTitle" class="text-input" value="${escapeHTML(w.title)}" placeholder="เช่น ประชุมคณะกรรมการตรวจรับ งวดที่ 3">
+    <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+      <div><label class="field-label" for="rmDate">วันที่</label><input type="date" id="rmDate" class="text-input" value="${escapeHTML(w.date)}" min="${bk ? '' : today}"><div class="td-who-hint" id="rmDateThai"></div></div>
+      <div><label class="field-label">เวลา (24 ชั่วโมง)</label><div class="rm-times"><input type="text" id="rmStart" class="text-input t24" inputmode="numeric" maxlength="5" autocomplete="off" value="${escapeHTML(w.start)}"> ถึง <input type="text" id="rmEnd" class="text-input t24" inputmode="numeric" maxlength="5" autocomplete="off" value="${escapeHTML(w.end)}"> น.</div></div>
+      <div><label class="field-label" for="rmUnit">หน่วยงาน</label><input id="rmUnit" class="text-input" list="rmUnits" value="${escapeHTML(w.unit || '')}" placeholder="เช่น พบ, พล, บร"><datalist id="rmUnits">${units.map(u => `<option value="${escapeHTML(u)}">`).join('')}</datalist></div>
+      <div><label class="field-label" for="rmPeople">จำนวนผู้เข้าประชุม</label><input type="number" id="rmPeople" class="text-input" min="1" value="${escapeHTML(String(w.people || ''))}" placeholder="คน"></div>
+    </div>
+    <label class="field-label">อุปกรณ์ / สิ่งที่ต้องการ</label><div class="rm-eq" id="rmEq"></div>
+    <label class="field-label" for="rmNote">หมายเหตุ</label>
+    <textarea id="rmNote" class="text-input" rows="2" placeholder="เช่น จัดโต๊ะแบบตัว U, ต้องการเจ้าหน้าที่ IT">${escapeHTML(w.note || '')}</textarea>
+    <div id="rmCheck"></div>
+    <div class="modal-actions" id="rmActions"></div>`;
+  ov.appendChild(md); document.body.appendChild(ov);
+  const q = (x) => md.querySelector(x);
+  const sIn = q('#rmStart'), eIn = q('#rmEnd'), dIn = q('#rmDate');
+  if (edit) { attachTime24(sIn); attachTime24(eIn, () => sIn.value); }
+  let eqSel = new Set(w.equip || []);
+  const drawRooms = () => md.querySelectorAll('#rmRoomPick button').forEach(b => b.classList.toggle('on', b.dataset.r === w.roomId));
+  const drawEq = () => {
+    const r = rmRoom(w.roomId);
+    const opts = [...new Set([...(r.equip || []), ...RM_COMMON_EQUIP, ...eqSel])];
+    q('#rmEq').innerHTML = opts.map(o => `<button type="button" data-e="${escapeHTML(o)}" class="${eqSel.has(o) ? 'on' : ''}" ${edit ? '' : 'disabled'}>${eqSel.has(o) ? '✓ ' : ''}${escapeHTML(o)}</button>`).join('');
+    md.querySelectorAll('#rmEq button').forEach(b => b.onclick = () => { const v = b.dataset.e; if (eqSel.has(v)) eqSel.delete(v); else eqSel.add(v); drawEq(); });
+  };
+  let okToSave = true;
+  const check = () => {
+    q('#rmDateThai').textContent = dIn.value ? rmThaiDate(dIn.value, true) : '';
+    const box = q('#rmCheck'); if (!edit) { box.innerHTML = ''; return; }
+    const s = rmMin(t24Norm(sIn.value)), e = rmMin(t24Norm(eIn.value)), ds = dIn.value, r = rmRoom(w.roomId);
+    okToSave = false;
+    if (!ds) { box.innerHTML = '<div class="rm-chk bad">กรุณาเลือกวันที่</div>'; return; }
+    if (!bk && ds < today) { box.innerHTML = '<div class="rm-chk bad">จองย้อนหลังไม่ได้</div>'; return; }
+    if (s === null || e === null || e <= s) { box.innerHTML = '<div class="rm-chk bad">เวลาสิ้นสุดต้องหลังเวลาเริ่ม</div>'; return; }
+    const c = rmClash(w.roomId, ds, s, e, bk && bk.id);
+    let html = '';
+    if (c) {
+      const free = rmFreeRanges(w.roomId, ds, bk && bk.id).filter(([a, b]) => b - a >= e - s);
+      const others = rm.rooms.filter(x => x.id !== w.roomId && !rmClash(x.id, ds, s, e, bk && bk.id));
+      html = `<div class="rm-chk bad">✗ ${escapeHTML(r.name)} ไม่ว่าง: ชนกับ <b>${escapeHTML(c.start)}–${escapeHTML(c.end)} ${escapeHTML(c.title || '')}</b> (${escapeHTML(c.owner)})
+        ${others.length ? `<br>ห้องที่ว่างช่วงนี้: ${others.map(x => `<button type="button" data-sw="${x.id}">เปลี่ยนเป็น ${escapeHTML(x.name)}</button>`).join('')}` : ''}
+        ${free.length ? `<br>${escapeHTML(rmShort(r.name))}ว่างช่วง: ${free.slice(0, 4).map(([a]) => `<button type="button" data-ts="${a}">${rmHHMM(a)}–${rmHHMM(a + (e - s))}</button>`).join('')}` : ''}</div>`;
+    } else { okToSave = true; html = `<div class="rm-chk ok">✓ ${escapeHTML(r.name)} ว่างช่วง ${rmHHMM(s)}–${rmHHMM(e)} น. (${escapeHTML(rmThaiDate(ds))})</div>`; }
+    const ppl = Number(q('#rmPeople').value) || 0;
+    if (ppl && r.seats && ppl > r.seats) html += `<div class="rm-chk warn">⚠ จำนวนผู้เข้าประชุม ${ppl} คน มากกว่าที่นั่งของ${escapeHTML(r.name)} (${r.seats} ที่นั่ง)</div>`;
+    box.innerHTML = html;
+    box.querySelectorAll('[data-sw]').forEach(b => b.onclick = () => { w.roomId = b.dataset.sw; drawRooms(); drawEq(); check(); });
+    box.querySelectorAll('[data-ts]').forEach(b => b.onclick = () => { const a = Number(b.dataset.ts); sIn.value = rmHHMM(a); eIn.value = rmHHMM(a + (e - s)); lastS = sIn.value; check(); });
+    if (okBtn) okBtn.disabled = !okToSave, okBtn.style.opacity = okToSave ? 1 : 0.5;
+  };
+  md.querySelectorAll('#rmRoomPick button').forEach(b => b.onclick = () => { if (!edit) return; w.roomId = b.dataset.r; drawRooms(); drawEq(); check(); });
+  // เวลาเริ่มเปลี่ยน -> เลื่อนเวลาสิ้นสุดให้ระยะเวลาเท่าเดิม
+  let lastS = sIn.value;
+  sIn.addEventListener('change', () => { const a0 = rmMin(lastS), a1 = rmMin(sIn.value), b0 = rmMin(eIn.value); if (a0 !== null && a1 !== null && b0 !== null) eIn.value = rmHHMM(Math.min(23 * 60 + 59, a1 + Math.max(15, b0 - a0))); lastS = sIn.value; check(); });
+  [eIn, dIn, q('#rmPeople')].forEach(x => { x.addEventListener('change', check); x.addEventListener('input', check); });
+  if (!edit) md.querySelectorAll('input, textarea').forEach(x => x.disabled = true);
+
+  const act = q('#rmActions');
+  const close = document.createElement('button'); close.className = 'ghost-btn'; close.textContent = edit ? 'ยกเลิก' : 'ปิด'; close.onclick = () => closeModal(ov);
+  let okBtn = null;
+  if (edit) {
+    if (bk) {
+      const del = document.createElement('button'); del.className = 'danger-btn'; del.textContent = '🗑 ยกเลิกการจอง'; del.style.marginRight = 'auto';
+      del.onclick = async () => {
+        if (!confirm(`ยกเลิกการจอง "${bk.title || ''}"\n${rmRoom(bk.roomId).name} · ${rmThaiDate(bk.date)} ${bk.start}–${bk.end} น.?`)) return;
+        del.disabled = true;
+        try { const r = await rmPost({ action: 'roomCancel', id: bk.id }); if (r.error) throw new Error(r.error); closeModal(ov); showToast('ยกเลิกการจองแล้ว'); render(); }
+        catch (e) { del.disabled = false; alert('ยกเลิกไม่สำเร็จ: ' + e.message); }
+      };
+      act.appendChild(del);
+    }
+    okBtn = document.createElement('button'); okBtn.className = 'primary-btn'; okBtn.textContent = bk ? 'บันทึก' : 'ยืนยันการจอง';
+    okBtn.onclick = async () => {
+      sIn.value = t24Norm(sIn.value) || sIn.value; eIn.value = t24Norm(eIn.value) || eIn.value; check();
+      if (!okToSave) return;
+      const title = q('#rmTitle').value.trim(); if (!title) { q('#rmTitle').focus(); showToast('กรุณาใส่หัวข้อการประชุม'); return; }
+      const booking = { id: bk ? bk.id : undefined, roomId: w.roomId, date: dIn.value, start: sIn.value, end: eIn.value, title, unit: q('#rmUnit').value.trim(), people: Number(q('#rmPeople').value) || 0, equip: [...eqSel], note: q('#rmNote').value.trim() };
+      okBtn.disabled = true; okBtn.textContent = '⏳ กำลังจอง...';
+      try {
+        const r = await rmPost({ action: 'roomBook', booking });
+        if (r.error === 'Clash') { okBtn.disabled = false; okBtn.textContent = bk ? 'บันทึก' : 'ยืนยันการจอง'; check(); alert(`มีผู้จองช่วงเวลานี้ไปก่อนแล้ว:\n${r.clash.start}–${r.clash.end} ${r.clash.title || ''} (${r.clash.owner})\n\nกรุณาเลือกเวลาหรือห้องอื่น`); return; }
+        if (r.error) throw new Error(r.error);
+        if (booking.unit) lsSet('rm_last_unit', booking.unit);
+        closeModal(ov); rm.sel = booking.date; rm.ym = null;
+        showToast(bk ? 'บันทึกการแก้ไขแล้ว' : `✓ จอง${rmRoom(booking.roomId).name} ${rmThaiDate(booking.date)} ${booking.start}–${booking.end} น. แล้ว`);
+        render();
+      } catch (e) { okBtn.disabled = false; okBtn.textContent = bk ? 'บันทึก' : 'ยืนยันการจอง'; alert('จองไม่สำเร็จ: ' + e.message); }
+    };
+    act.append(close, okBtn);
+  } else act.append(close);
+  drawRooms(); drawEq(); check();
+  if (edit && !bk) setTimeout(() => q('#rmTitle').focus(), 0);
+}
+
+// ---------- การจองของฉัน ----------
+function rmOpenMine() {
+  const today = tdTodayStr();
+  const list = rm.bookings.filter(b => b.owner === USER_NAME && b.date >= today).sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : rmMin(a.start) - rmMin(b.start));
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const md = document.createElement('div'); md.className = 'modal'; md.style.maxWidth = '560px';
+  md.innerHTML = `<h3>👤 การจองของฉัน</h3><p class="modal-desc">การจองตั้งแต่วันนี้เป็นต้นไป (${list.length} รายการ) · คลิกเพื่อแก้ไขหรือยกเลิก</p><div id="rmMine"></div><div class="modal-actions"><button class="ghost-btn" id="rmMClose">ปิด</button></div>`;
+  ov.appendChild(md); document.body.appendChild(ov);
+  const box = md.querySelector('#rmMine');
+  if (!list.length) box.innerHTML = '<div class="td-tpl-empty" style="padding:10px 2px;">ยังไม่มีการจอง</div>';
+  list.forEach(bk => {
+    const r = rmRoom(bk.roomId);
+    const it = document.createElement('div'); it.className = 'rm-item'; it.style.setProperty('--c', r.color);
+    it.innerHTML = `<div class="t">${escapeHTML(rmThaiDate(bk.date))} · ${escapeHTML(bk.start)}–${escapeHTML(bk.end)} · ${escapeHTML(r.name)}</div><div class="ti">${escapeHTML(bk.title || '(ไม่มีหัวข้อ)')}</div>`;
+    it.onclick = () => { closeModal(ov); rmOpenBooking(bk); };
+    box.appendChild(it);
+  });
+  md.querySelector('#rmMClose').onclick = () => closeModal(ov);
+}
+
+// ---------- จัดการห้อง ----------
+function rmOpenRoomsManager() {
+  if (READ_ONLY) return;
+  const today = tdTodayStr();
+  const work = clone(rm.rooms).map(r => ({ ...r, equipText: (r.equip || []).join(', ') }));
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const md = document.createElement('div'); md.className = 'modal'; md.style.maxWidth = '620px';
+  const draw = () => {
+    md.innerHTML = `<h3>⚙ จัดการห้องประชุม</h3><p class="modal-desc">ชื่อห้อง จำนวนที่นั่ง อุปกรณ์ในห้อง (คั่นด้วยจุลภาค) และสีที่ใช้ในปฏิทิน · ทุกคนใช้รายการห้องชุดเดียวกัน</p>
+      ${work.map((r, i) => `<div class="td-tpl-edit"><div style="display:flex; gap:6px; align-items:center;">
+          <input type="color" data-c="${i}" value="${escapeHTML(r.color || '#64748B')}" style="width:38px; height:34px; border:none; background:none; padding:0; cursor:pointer;" title="สีของห้อง">
+          <input class="text-input" data-n="${i}" value="${escapeHTML(r.name)}" placeholder="ชื่อห้อง" style="font-weight:700;">
+          <input type="number" class="text-input" data-s="${i}" value="${escapeHTML(String(r.seats || ''))}" placeholder="ที่นั่ง" style="width:90px;">
+          <button type="button" class="td-icon-btn" data-del="${i}" title="ลบห้อง">✕</button></div>
+          <input class="text-input" data-e="${i}" value="${escapeHTML(r.equipText)}" placeholder="อุปกรณ์ในห้อง เช่น ทีวี, โปรเจกเตอร์, Zoom"></div>`).join('')}
+      <button type="button" class="td-mini" id="rmAddRoom">+ เพิ่มห้อง</button>
+      <div class="modal-actions"><button class="ghost-btn" id="rmRCancel">ยกเลิก</button><button class="primary-btn" id="rmROk">บันทึก</button></div>`;
+    md.querySelectorAll('[data-n]').forEach(x => x.oninput = () => { work[+x.dataset.n].name = x.value; });
+    md.querySelectorAll('[data-s]').forEach(x => x.oninput = () => { work[+x.dataset.s].seats = Number(x.value) || 0; });
+    md.querySelectorAll('[data-e]').forEach(x => x.oninput = () => { work[+x.dataset.e].equipText = x.value; });
+    md.querySelectorAll('[data-c]').forEach(x => x.oninput = () => { work[+x.dataset.c].color = x.value; });
+    md.querySelectorAll('[data-del]').forEach(x => x.onclick = () => {
+      const r = work[+x.dataset.del], n = rm.bookings.filter(b => b.roomId === r.id && b.date >= today).length;
+      if (n && !confirm(`ห้อง "${r.name}" มีการจองล่วงหน้า ${n} รายการ\nถ้าลบห้อง การจองเหล่านั้นจะแสดงเป็น "(ห้องที่ถูกลบ)" ยืนยันหรือไม่?`)) return;
+      work.splice(+x.dataset.del, 1); draw();
+    });
+    md.querySelector('#rmAddRoom').onclick = () => { work.push({ id: 'room_' + Date.now().toString(36), name: '', seats: 0, color: RC_COLORS[work.length % RC_COLORS.length], equipText: '' }); draw(); const ins = md.querySelectorAll('[data-n]'); ins[ins.length - 1].focus(); };
+    md.querySelector('#rmRCancel').onclick = () => closeModal(ov);
+    md.querySelector('#rmROk').onclick = async () => {
+      const rooms = work.map(r => ({ id: r.id, name: String(r.name || '').trim(), seats: Number(r.seats) || 0, color: r.color, equip: String(r.equipText || '').split(/[,\n]+/).map(x => x.trim()).filter(Boolean) })).filter(r => r.name);
+      if (!rooms.length) { alert('ต้องมีห้องอย่างน้อย 1 ห้อง'); return; }
+      try { const r = await rmPost({ action: 'roomsSave', rooms }); if (r.error) throw new Error(r.error); closeModal(ov); showToast('บันทึกรายการห้องแล้ว'); render(); }
+      catch (e) { alert('บันทึกไม่สำเร็จ: ' + e.message); }
+    };
+  };
+  draw();
+  ov.appendChild(md); document.body.appendChild(ov);
 }
 
 // หน้าบอร์ดของโครงการ: จัดคอลัมน์ตามสถานะวันที่อัตโนมัติ
@@ -4477,7 +5132,7 @@ function renderProjTodo(pid) {
 
   const draw = () => {
     const q = todo.filter.q.toLowerCase();
-    const match = (x) => !q || [x.a.label, x.d.name, x.r.name].join(' ').toLowerCase().includes(q);
+    const match = (x) => !q || [x.a.label, x.d ? x.d.name : 'งานเพิ่มเติม', x.r ? x.r.name : ''].join(' ').toLowerCase().includes(q);
     const list = tasks.filter(match);
     const cols = [
       { key: 'late', name: 'เลยกำหนด', color: '#E5484D', items: list.filter(x => !x.a.completed && x.a.end < today).sort((a, b) => a.a.end - b.a.end) },
@@ -4494,7 +5149,7 @@ function renderProjTodo(pid) {
       const key = 'proj-' + pid + '-' + col.key;
       const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
       if (!col.items.length) ul.innerHTML = '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
-      shown.forEach(({ a, d, r }) => {
+      shown.forEach(({ a, d, r, extra }) => {
         const cl = a.checklist || [], clDone = cl.filter(i => i.done).length, exp = cl.length && todo.expanded.has(a.id);
         const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '');
         let badge;
@@ -4503,7 +5158,7 @@ function renderProjTodo(pid) {
         else if (col.key === 'now') badge = a.end === today ? '<span class="td-b due-amber">ครบกำหนดวันนี้</span>' : `<span class="td-b due-soon">เหลือ ${a.end - today} วัน</span>`;
         else badge = `<span class="td-b">อีก ${a.start - today} วันเริ่ม</span>`;
         card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${col.isDone ? 'เอาติ๊กออก = กลับเป็นงานค้าง' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)'}" aria-label="${col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : ''}</button><span>${escapeHTML(a.label)}</span></div>
-          <div class="td-path">${escapeHTML(d.name)} › ${escapeHTML(r.name)}</div>
+          <div class="td-path">${extra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}</div>
           <div class="td-badges"><span class="td-b" title="ช่วงวันที่ในแผนงาน">🗓 ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.start))))}${a.end !== a.start ? ' – ' + escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.end)))) : ''}</span>${badge}
           ${cl.length ? `<button type="button" class="td-b td-clbtn ${clDone === cl.length ? 'cl-done' : ''}" title="${exp ? 'ซ่อนรายการย่อย' : 'ดู/ติ๊กรายการย่อยบนการ์ด'}">☑ ${clDone}/${cl.length} ${exp ? '▴' : '▾'}</button>` : ''}
           ${col.isDone && a.completedBy ? `<span class="td-avs" title="ติ๊กเสร็จโดย ${escapeHTML(a.completedBy)}"><span class="td-av" style="background:${tdAvColor(a.completedBy)}">${escapeHTML(tdInitial(a.completedBy))}</span></span>` : ''}</div>
@@ -4521,10 +5176,10 @@ function renderProjTodo(pid) {
             await persistAndRender();
           });
         }
-        card.style.borderLeft = `3px solid ${a.color || '#94A3B8'}`;
+        card.style.borderLeft = extra ? '3px dashed #94A3B8' : `3px solid ${a.color || '#94A3B8'}`;
         const tk = card.querySelector('.td-tick');
         tk.onclick = (e) => { e.stopPropagation(); if (edit) tdSetTaskDone(pid, a.id, !col.isDone, card); };
-        card.onclick = () => tdOpenProjCard(p.id, d.id, r.id, a.id);
+        card.onclick = () => tdOpenProjCard(p.id, d ? d.id : null, r ? r.id : null, a.id);
         card.title = 'คลิกเพื่อเปิดการ์ด (รายการย่อย / Template)';
         ul.appendChild(card);
       });
@@ -4550,7 +5205,7 @@ function renderProjTodo(pid) {
   qIn.oninput = () => { clearTimeout(qIn._t); qIn._t = setTimeout(() => { todo.filter.q = qIn.value.trim(); draw(); }, 200); };
   draw();
   const note = document.createElement('div'); note.className = 'td-meta';
-  note.textContent = 'งานในบอร์ดนี้คือกิจกรรมประเภท "กำหนดการที่ต้องทำให้เสร็จ" ในแผนงาน · เพิ่มงานที่นี่จะไปแสดงในแผนงานด้วย · รายการย่อยแสดงเฉพาะในหน้า To-do';
+  note.textContent = 'บอร์ดนี้รวม "กำหนดการที่ต้องทำให้เสร็จ" จากแผนงาน + งานเพิ่มเติม (📝 เฉพาะใน To-do) · ตอนเพิ่มงานเลือกได้ว่าจะแสดงในแผนงานด้วยหรือไม่ · รายการย่อยแสดงเฉพาะในหน้า To-do';
   root.appendChild(note);
   return root;
 }
