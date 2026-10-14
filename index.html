@@ -506,6 +506,15 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .tab.td-proj-tab.active .td-cnt { background: rgba(255,255,255,0.25); color: #fff; }
 .td-link-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #ECFDF5; color: #047857; font-weight: 600; }
 .td-path { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+.pc-move-btn { border: 1px dashed var(--line, #CBD5E1); background: #fff; color: var(--indigo-deep, #3730A3); border-radius: 999px; padding: 1px 9px; font-size: 11px; font-weight: 600; cursor: pointer; margin-left: 6px; font-family: inherit; }
+.pc-move-btn:hover { background: var(--indigo-soft, #EEF2FF); border-style: solid; }
+.pc-move { margin-top: 8px; border: 1px solid #C7D2FE; background: #F8FAFF; border-radius: 10px; padding: 10px 12px; }
+.pc-move-h { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: var(--indigo-deep, #3730A3); margin-bottom: 6px; }
+.pc-move-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.pc-move-grid .field-label { margin-top: 0; }
+.pc-move-prev { margin-top: 8px; font-size: 11.5px; color: var(--ink-soft); }
+.pc-move-prev b { color: #B45309; }
+@media (max-width: 640px) { .pc-move-grid { grid-template-columns: 1fr; } }
 .td-extra { display: inline-block; background: #F1F5F9; color: #475569; border-radius: 999px; padding: 0 8px; font-size: 10.5px; font-weight: 600; }
 .pa-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 6px; }
 .pa-mode button { border: 2px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; text-align: left; cursor: pointer; font-family: inherit; color: var(--ink); }
@@ -4592,6 +4601,31 @@ function tdMoveExtraToPlan(pid, aid) {
   };
 }
 
+// ย้ายงาน (กำหนดการ/งานเพิ่มเติม) ไปโครงการ/หน่วยงาน/แถวอื่น — did ว่าง = งานเพิ่มเติม (เฉพาะ To-do)
+function tdLocate(pid, did, rid) {
+  const p = state.projects.find(x => x.id === pid); if (!p) return null;
+  if (!did) { p.extraTasks = p.extraTasks || []; return p.extraTasks; }
+  const row = findLiveRow(pid, did, rid); return row ? row.activities : null;
+}
+function tdRelocate(from, to, aid) {
+  const src = tdLocate(from.pid, from.did, from.rid), dst = tdLocate(to.pid, to.did, to.rid);
+  if (!src || !dst) return null;
+  const i = src.findIndex(x => x.id === aid); if (i < 0) return null;
+  const a = src.splice(i, 1)[0];
+  const series = a.seriesId ? { seriesId: a.seriesId, seriesRoot: a.seriesRoot, rec: a.rec, recBase: a.recBase } : null;
+  if (a.seriesId) { delete a.seriesId; delete a.seriesRoot; delete a.rec; delete a.recBase; }   // แยกออกจากชุดที่ทำซ้ำ
+  if (to.did && !a.color) a.color = state.colors[0].hex;
+  a.type = 'task';
+  dst.push(a);
+  return { a, index: i, series };
+}
+function tdLocText(pid, did, rid) {
+  const p = state.projects.find(x => x.id === pid); if (!p) return '';
+  if (!did) return p.name + ' › 📝 งานเพิ่มเติม';
+  const d = p.departments.find(x => x.id === did), r = d && d.rows.find(x => x.id === rid);
+  return p.name + ' › ' + (d ? d.name : '?') + ' › ' + (r ? r.name : '?');
+}
+
 // ---------- หน้าต่างการ์ดของงานจากแผนงาน: แก้ชื่อ / วันที่ / รายการย่อย (Template) ----------
 function tdOpenProjCard(pid, did, rid, aid) {
   const isExtra = !did;
@@ -4609,7 +4643,16 @@ function tdOpenProjCard(pid, did, rid, aid) {
   const m = document.createElement('div'); m.className = 'modal td-modal';
   m.innerHTML = `
     <textarea class="td-title-in" id="pcTitle" rows="1" aria-label="ชื่องาน">${escapeHTML(a0.label)}</textarea>
-    <div class="td-path" style="margin:6px 0 0;">📊 ${escapeHTML(p.name)} › ${isExtra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}${a0.seriesId ? ' · 🔁 ' + escapeHTML(recDescribe(a0.rec)) : ''}</div>
+    <div class="td-path" style="margin:6px 0 0;">📊 ${escapeHTML(p.name)} › ${isExtra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}${a0.seriesId ? ' · 🔁 ' + escapeHTML(recDescribe(a0.rec)) : ''}${edit ? '<button type="button" class="pc-move-btn" id="pcMoveBtn" title="ย้ายงานนี้ไปโครงการ / หน่วยงาน / แถวอื่น (ไม่ต้องลบแล้วสร้างใหม่)">✎ เปลี่ยนแผนงาน</button>' : ''}</div>
+    <div class="pc-move" id="pcMove" hidden>
+      <div class="pc-move-h"><span>✎ ย้ายไปแผนงานอื่น</span><button type="button" class="td-icon-btn" id="pcMoveX" aria-label="ยกเลิกการย้าย" title="ยกเลิกการย้าย">✕</button></div>
+      <div class="pc-move-grid">
+        <div><label class="field-label" for="pcMvProj">โครงการ</label><select id="pcMvProj" class="text-input"></select></div>
+        <div><label class="field-label" for="pcMvDept">หน่วยงาน</label><select id="pcMvDept" class="text-input"></select></div>
+        <div id="pcMvRowBox"><label class="field-label" for="pcMvRow">แถว (ชื่องาน)</label><select id="pcMvRow" class="text-input"></select></div>
+      </div>
+      <div class="pc-move-prev" id="pcMvPrev"></div>
+    </div>
     <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
       <div><label class="field-label" for="pcStart">วันเริ่ม</label><input type="date" id="pcStart" class="text-input" value="${dateToInputStr(dateFromIndex(a0.start))}"></div>
       <div><label class="field-label" for="pcEnd">กำหนดเสร็จ</label><input type="date" id="pcEnd" class="text-input" value="${dateToInputStr(dateFromIndex(a0.end))}"></div>
@@ -4682,6 +4725,49 @@ function tdOpenProjCard(pid, did, rid, aid) {
     tplBox.hidden = false; drawPick(); setTimeout(() => { const q = tplBox.querySelector('#pcQ'); if (q) q.focus(); }, 0);
   };
 
+  // ---- เปลี่ยนแผนงาน (ย้ายโครงการ / หน่วยงาน / แถว) ----
+  const mvBox = m.querySelector('#pcMove'), mvP = m.querySelector('#pcMvProj'), mvD = m.querySelector('#pcMvDept'), mvR = m.querySelector('#pcMvRow');
+  let moveOn = false;
+  const curLoc = { pid, did: did || '', rid: rid || '' };
+  const mvTarget = () => ({ pid: mvP.value, did: mvD.value, rid: mvD.value ? mvR.value : '' });
+  const mvChanged = () => { const t = mvTarget(); return moveOn && (t.pid !== curLoc.pid || t.did !== curLoc.did || (t.did && t.rid !== curLoc.rid)); };
+  const mvPrev = () => {
+    const t = mvTarget();
+    m.querySelector('#pcMvRowBox').style.visibility = t.did ? '' : 'hidden';
+    const prev = m.querySelector('#pcMvPrev');
+    if (!mvChanged()) { prev.innerHTML = 'ตำแหน่งปัจจุบัน — เลือกปลายทางที่ต้องการ'; return; }
+    prev.innerHTML = `จะย้ายไปที่ <b>${escapeHTML(tdLocText(t.pid, t.did, t.rid))}</b> เมื่อกด "บันทึก"${!t.did ? ' (จะไม่แสดงในตารางแผนงาน)' : ''}${a0.seriesId ? '<br>🔁 งานนี้เป็นส่วนหนึ่งของชุดที่ทำซ้ำ — จะย้ายเฉพาะครั้งนี้ และแยกออกจากชุด' : ''}`;
+  };
+  const mvFillRows = (prefRid) => {
+    const lp = state.projects.find(x => x.id === mvP.value), dd = lp && lp.departments.find(x => x.id === mvD.value);
+    mvR.innerHTML = dd ? dd.rows.map(r => `<option value="${r.id}">${escapeHTML(r.name)}</option>`).join('') : '';
+    if (prefRid && dd && dd.rows.some(r => r.id === prefRid)) mvR.value = prefRid;
+    mvPrev();
+  };
+  const mvFillDepts = (prefDid, prefRid) => {
+    const lp = state.projects.find(x => x.id === mvP.value);
+    const ds = lp ? lp.departments.filter(x => (x.rows || []).length) : [];
+    mvD.innerHTML = `<option value="">📝 งานเพิ่มเติม (เฉพาะ To-do)</option>` + ds.map(x => `<option value="${x.id}">${escapeHTML(x.name)}</option>`).join('');
+    mvD.value = prefDid != null && (prefDid === '' || ds.some(x => x.id === prefDid)) ? prefDid : (ds[0] ? ds[0].id : '');
+    mvFillRows(prefRid);
+  };
+  if (mvBox) {
+    const cats = {}; state.projects.forEach(x => { const c = x.sourceType || 'work'; (cats[c] = cats[c] || []).push(x); });
+    mvP.innerHTML = Object.keys(cats).map(c => `<optgroup label="${escapeHTML(CAT_LABELS[c] || c)}">${cats[c].map(x => `<option value="${x.id}">${escapeHTML(x.name)}</option>`).join('')}</optgroup>`).join('');
+    mvP.onchange = () => mvFillDepts(mvP.value === curLoc.pid ? curLoc.did : null, curLoc.rid);
+    mvD.onchange = () => mvFillRows(mvD.value === curLoc.did ? curLoc.rid : null);
+    mvR.onchange = mvPrev;
+    const openMove = (preferPlan) => {
+      moveOn = true; mvBox.hidden = false; mvP.value = pid;
+      if (preferPlan && !curLoc.did) mvFillDepts(null, null); else mvFillDepts(curLoc.did, curLoc.rid);
+      const btn = m.querySelector('#pcMoveBtn'); if (btn) btn.style.display = 'none';
+      setTimeout(() => (preferPlan ? mvD : mvP).focus(), 0);
+    };
+    m.querySelector('#pcMoveBtn').onclick = () => openMove(false);
+    m.querySelector('#pcMoveX').onclick = () => { moveOn = false; mvBox.hidden = true; const btn = m.querySelector('#pcMoveBtn'); if (btn) btn.style.display = ''; };
+    m._openMove = openMove;
+  }
+
   const actions = m.querySelector('#pcActions');
   const close = document.createElement('button'); close.className = 'ghost-btn'; close.textContent = edit ? 'ยกเลิก' : 'ปิด'; close.onclick = () => closeModal(ov);
   const openPlan = document.createElement('button'); openPlan.className = 'ghost-btn'; openPlan.textContent = '↗ เปิดในแผนงาน'; openPlan.style.marginRight = 'auto';
@@ -4689,7 +4775,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
   openPlan.onclick = () => { closeModal(ov); openActivityModal(pid, did, rid, aid); };
   if (isExtra) {   // งานเพิ่มเติม: ย้ายไปแสดงในแผนงานได้ภายหลัง
     openPlan.textContent = '📊 ย้ายไปแสดงในแผนงาน'; openPlan.title = 'เพิ่มงานนี้ลงในตาราง Gantt ของโครงการ (เลือกหน่วยงาน/แถว)';
-    openPlan.onclick = () => { closeModal(ov); tdMoveExtraToPlan(pid, aid); };
+    openPlan.onclick = () => { if (m._openMove) m._openMove(true); };
     if (READ_ONLY || !p.departments.some(x => x.rows.length)) openPlan.style.display = 'none';
   }
   let ok = null;
@@ -4712,8 +4798,22 @@ function tdOpenProjCard(pid, did, rid, aid) {
         if (done) { a.completedAt = Date.now(); a.completedBy = USER_NAME; } else { delete a.completedAt; delete a.completedBy; }
       }
       a.updatedBy = USER_NAME; a.updatedAt = Date.now();
+      let moved = null;
+      if (mvChanged()) {
+        const to = mvTarget();
+        const res = tdRelocate(curLoc, to, aid);
+        if (res) moved = { to, index: res.index, series: res.series, text: tdLocText(to.pid, to.did, to.rid) };
+      }
       closeModal(ov); await persistAndRender();
-      if (done && !a0.completed) showToast(`✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)`);
+      if (moved) {
+        showToast(`↪ ย้าย "${a.label}" ไปที่ ${moved.text} แล้ว`, 'เลิกทำ', async () => {
+          const back = tdLocate(curLoc.pid, curLoc.did, curLoc.rid), dst = tdLocate(moved.to.pid, moved.to.did, moved.to.rid);
+          if (!back || !dst) { showToast('ย้ายกลับไม่ได้ — ตำแหน่งเดิมถูกลบไปแล้ว'); return; }
+          const j = dst.findIndex(x => x.id === aid); if (j < 0) return;
+          const b = dst.splice(j, 1)[0]; if (moved.series) Object.keys(moved.series).forEach(k => { if (moved.series[k] !== undefined) b[k] = moved.series[k]; }); back.splice(Math.min(moved.index, back.length), 0, b);
+          await persistAndRender();
+        });
+      } else if (done && !a0.completed) showToast(`✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)`);
     };
     const del = document.createElement('button'); del.className = 'danger-btn'; del.textContent = '🗑 ลบ';
     del.onclick = async () => {
