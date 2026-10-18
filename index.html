@@ -506,6 +506,25 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .tab.td-proj-tab.active .td-cnt { background: rgba(255,255,255,0.25); color: #fff; }
 .td-link-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #ECFDF5; color: #047857; font-weight: 600; }
 .td-path { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+.fu-box { margin-top: 10px; border: 1px solid #DDD6FE; background: #FAF8FF; border-radius: 10px; padding: 8px 10px; }
+.fu-toggle { display: flex; gap: 8px; align-items: center; font-weight: 600; color: #5B21B6; cursor: pointer; font-size: 13px; }
+.fu-toggle input { width: 16px; height: 16px; }
+.fu-toggle small { font-weight: 400; color: var(--ink-soft); }
+.fu-body { margin-top: 8px; }
+.fu-got { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-weight: 600; color: #166534; cursor: pointer; font-size: 13px; }
+.fu-got input { width: 16px; height: 16px; }
+.fu-hint { font-size: 11.5px; color: var(--ink-soft); margin-top: 6px; }
+.td-b.fu-wait { background: #F3E8FF; color: #6B21A8; }
+.td-b.fu-late { background: #FEE2E2; color: #B91C1C; font-weight: 700; }
+.td-b.fu-got { background: #DCFCE7; color: #166534; }
+.td-b.fu-plan { background: #F5F3FF; color: #6D28D9; }
+.td-card.fu-card { background: linear-gradient(0deg, #FCFAFF, #FCFAFF); }
+.td-fu-from { font-size: 11.5px; color: #6B21A8; margin-top: 3px; }
+.toast .toast-act + .toast-act { margin-left: 4px; }
+.rc-chip.rc-now-chip { border-style: dashed; }
+.rc-chip.rc-now-chip.on { border-style: solid; }
+.rc-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.row-name-cell.rc-now-row .r-name-text::before { content: '●'; color: #F59E0B; margin-right: 4px; font-size: 9px; vertical-align: 1px; }
 .pc-move-btn { border: 1px dashed var(--line, #CBD5E1); background: #fff; color: var(--indigo-deep, #3730A3); border-radius: 999px; padding: 1px 9px; font-size: 11px; font-weight: 600; cursor: pointer; margin-left: 6px; font-family: inherit; }
 .pc-move-btn:hover { background: var(--indigo-soft, #EEF2FF); border-style: solid; }
 .pc-move { margin-top: 8px; border: 1px solid #C7D2FE; background: #F8FAFF; border-radius: 10px; padding: 10px 12px; }
@@ -860,9 +879,23 @@ function rcActive(project) {
   return rcGetFilter(project).filter(id => ids.has(id));
 }
 function rcRowOut(project, row) {
+  if (rcNowOn(project) && !rcRowIsNow(row)) return true;   // ช่วงดำเนินการ: ซ่อนแถวที่ไม่มีงานวันนี้
   const act = rcActive(project); if (!act.length) return false;
   const cat = row.cat && rcList(project).some(c => c.id === row.cat) ? row.cat : RC_NONE;
   return !act.includes(cat);
+}
+// "ช่วงดำเนินการ": แสดงเฉพาะแถวที่มีงาน/กิจกรรมครอบคลุมวันนี้ (ตัวกรองของเครื่องนี้ ไม่เปลี่ยนข้อมูล)
+function rcNowOn(project) { return !!(project && lsGet('rowcat_now_' + project.id, false)); }
+function rcRowIsNow(row, t) { t = t == null ? todayBangkokIndex() : t; return (row.activities || []).some(a => a.start <= t && a.end >= t); }
+function rcRowsOrdered(project, dept) {
+  return dept.rows;
+  const t = todayBangkokIndex();
+  return dept.rows.map((r, i) => ({ r, i, n: rcRowIsNow(r, t) ? 0 : 1 })).sort((a, b) => a.n - b.n || a.i - b.i).map(x => x.r);
+}
+function rcDeptsOrdered(project) {
+  return project.departments;
+  const t = todayBangkokIndex();
+  return project.departments.map((d, i) => ({ d, i, n: d.rows.some(r => !isHid(r) && !rcRowOut(project, r) && rcRowIsNow(r, t)) ? 0 : 1 })).sort((a, b) => a.n - b.n || a.i - b.i).map(x => x.d);
 }
 function rcOf(project, row) { return row && row.cat ? rcList(project).find(c => c.id === row.cat) || null : null; }
 
@@ -883,9 +916,21 @@ function renderRowCatBar(project) {
     b.onclick = () => { const cur = rcActive(project); rcSetFilter(project, cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]); reRenderWithScroll(); };
     wrap.appendChild(b);
   };
+  // หมวดพิเศษ: ช่วงดำเนินการ (เรียงแถวที่มีงานวันนี้ขึ้นบนสุด)
+  {
+    const on = !!lsGet('rowcat_now_' + project.id, false), t = todayBangkokIndex();
+    const nNow = allRows.filter(r => !isHid(r) && rcRowIsNow(r, t)).length;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rc-chip rc-now-chip' + (on ? ' on' : '');
+    b.style.setProperty('--rc', '#F59E0B');
+    b.innerHTML = `<span class="bx">${on ? '✓' : ''}</span>📍 ช่วงดำเนินการ <small>(${nNow})</small>`;
+    b.title = on ? 'คลิกเพื่อแสดงทุกแถวเหมือนเดิม' : 'แสดงเฉพาะแถวที่มีงาน/กิจกรรมในวันนี้ (แถวอื่นซ่อนไว้ชั่วคราว)';
+    b.onclick = () => { lsSet('rowcat_now_' + project.id, !on); reRenderWithScroll(); };
+    wrap.appendChild(b);
+    if (cats.length) { const sp = document.createElement('span'); sp.className = 'rc-sep'; wrap.appendChild(sp); }
+  }
   cats.forEach(c => mk(c.id, c.name, c.color));
   if (cats.length && count(RC_NONE)) mk(RC_NONE, 'ไม่ระบุหมวด', '#94A3B8');
-  if (act.length) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => { rcSetFilter(project, []); reRenderWithScroll(); }; wrap.appendChild(c); }
+  if (act.length || rcNowOn(project)) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => { rcSetFilter(project, []); lsSet('rowcat_now_' + project.id, false); reRenderWithScroll(); }; wrap.appendChild(c); }
   if (!READ_ONLY) { const m = document.createElement('button'); m.type = 'button'; m.className = 'ghost-btn edit-colors-btn'; m.textContent = '⚙ จัดการหมวด'; m.onclick = () => openRowCatManager(project.id); wrap.appendChild(m); }
   return wrap;
 }
@@ -894,7 +939,12 @@ function renderRowCatBar(project) {
 function ovCatKey(categoryFilter) { return 'rowcat_ov_' + (categoryFilter || 'all'); }
 function ovCatActive(categoryFilter) { const v = lsGet(ovCatKey(categoryFilter), []); return Array.isArray(v) ? v : []; }
 function ovRowCatName(project, row) { const c = rcOf(project, row); return c ? c.name : RC_NONE; }
-function ovRowIn(project, row, act) { return !act.length || act.includes(ovRowCatName(project, row)); }
+function ovNowKey(categoryFilter) { return 'rowcat_ov_now_' + (categoryFilter || 'all'); }
+function ovRowIn(project, row, act) {
+  if (act.now && !rcRowIsNow(row)) return false;   // ช่วงดำเนินการ: เฉพาะแถวที่มีงานวันนี้
+  return !act.length || act.includes(ovRowCatName(project, row));
+}
+function ovFiltering(act) { return !!(act.length || act.now); }
 function renderOvCatBar(projects, categoryFilter) {
   const cats = new Map();   // ชื่อหมวด -> { color, count }
   let none = 0;
@@ -907,11 +957,23 @@ function renderOvCatBar(projects, categoryFilter) {
   })));
   const all = [...cats.keys()];
   let act = ovCatActive(categoryFilter).filter(n => n === RC_NONE || cats.has(n));
+  act.now = !!lsGet(ovNowKey(categoryFilter), false);
   const wrap = document.createElement('div'); wrap.className = 'rowcat-bar';
   wrap.innerHTML = '<span class="legend-label">หมวด:</span>';
+  {   // หมวดพิเศษ: ช่วงดำเนินการ
+    const t = todayBangkokIndex(); let nNow = 0;
+    projects.forEach(p => p.departments.forEach(d => d.rows.forEach(r => { if (!isHid(d) && !isHid(r) && rcRowIsNow(r, t)) nNow++; })));
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'rc-chip rc-now-chip' + (act.now ? ' on' : '');
+    b.style.setProperty('--rc', '#F59E0B');
+    b.innerHTML = `<span class="bx">${act.now ? '✓' : ''}</span>📍 ช่วงดำเนินการ <small>(${nNow})</small>`;
+    b.title = act.now ? 'คลิกเพื่อแสดงทุกแถวเหมือนเดิม' : 'แสดงเฉพาะแถวที่มีงาน/กิจกรรมในวันนี้ ของทุกโครงการ (แถวอื่นซ่อนไว้ชั่วคราว)';
+    b.onclick = () => { lsSet(ovNowKey(categoryFilter), !act.now); reRenderWithScroll(); };
+    wrap.appendChild(b);
+    if (all.length) { const sp = document.createElement('span'); sp.className = 'rc-sep'; wrap.appendChild(sp); }
+  }
   if (!all.length) {
     const e = document.createElement('span'); e.className = 'rc-empty'; e.textContent = 'ยังไม่มีหมวด — ตั้งหมวดได้ที่ "⚙ จัดการหมวด" ในหน้าของแต่ละโครงการ'; wrap.appendChild(e);
-    return { el: wrap, act: [] };
+    const a0 = []; a0.now = act.now; return { el: wrap, act: a0 };
   }
   const set = (arr) => { lsSet(ovCatKey(categoryFilter), arr); reRenderWithScroll(); };
   const mk = (name, label, color, count) => {
@@ -925,7 +987,7 @@ function renderOvCatBar(projects, categoryFilter) {
   };
   all.forEach(n => mk(n, n, cats.get(n).color, cats.get(n).count));
   if (none) mk(RC_NONE, 'ไม่ระบุหมวด', '#94A3B8', none);
-  if (act.length) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => set([]); wrap.appendChild(c); }
+  if (act.length || act.now) { const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = '✕ แสดงทั้งหมด'; c.onclick = () => { lsSet(ovNowKey(categoryFilter), false); set([]); }; wrap.appendChild(c); }
   const hint = document.createElement('span'); hint.className = 'rc-empty'; hint.style.fontSize = '11.5px'; hint.textContent = '· แก้หมวดได้ในหน้าโครงการ'; wrap.appendChild(hint);
   return { el: wrap, act };
 }
@@ -1065,7 +1127,7 @@ function applyLoaded(res) {
   lastCommitted = snapshotState();   // ข้อมูลจากผู้อื่นไม่ถือเป็นการกระทำของเรา
 }
 
-function showToast(msg, actLabel, actFn) {
+function showToast(msg, actLabel, actFn, extra) {
   let t = document.getElementById('toast');
   if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
   t.textContent = msg;
@@ -1074,10 +1136,15 @@ function showToast(msg, actLabel, actFn) {
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'toast-act'; btn.textContent = actLabel || 'เลิกทำ';
     btn.onclick = () => { t.classList.remove('show', 'has-act'); clearTimeout(showToast._timer); actFn(); };
     t.appendChild(btn);
+    (extra || []).forEach(x => {
+      const b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'toast-act'; b2.textContent = x.label;
+      b2.onclick = () => { t.classList.remove('show', 'has-act'); clearTimeout(showToast._timer); x.fn(); };
+      t.appendChild(b2);
+    });
   }
   t.classList.add('show');
   clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(() => t.classList.remove('show'), typeof actFn === 'function' ? 6500 : 3500);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), typeof actFn === 'function' ? (extra && extra.length ? 9000 : 6500) : 3500);
 }
 
 window.addEventListener('beforeunload', (e) => {
@@ -2327,15 +2394,15 @@ function renderProjectDetail(projectId) {
   const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id);
   toolbar.appendChild(addDeptBtn); root.appendChild(toolbar); root.appendChild(renderLegend(project));
   root.appendChild(renderRowCatBar(project));
-  const rcAct = rcActive(project);
-  if (rcAct.length) {
+  const rcAct = rcActive(project), rcNow = rcNowOn(project);
+  if (rcAct.length || rcNow) {
     const all = project.departments.flatMap(d => d.rows).filter(r => !isHid(r));
     const shown = all.filter(r => !rcRowOut(project, r)).length;
-    const names = rcAct.map(id => id === RC_NONE ? 'ไม่ระบุหมวด' : (rcList(project).find(c => c.id === id) || {}).name).join(', ');
+    const names = [rcNow ? '📍 ช่วงดำเนินการ (มีงานวันนี้)' : '', ...rcAct.map(id => id === RC_NONE ? 'ไม่ระบุหมวด' : (rcList(project).find(c => c.id === id) || {}).name)].filter(Boolean).join(', ');
     const note = document.createElement('div'); note.className = 'rc-filter-note';
     note.innerHTML = `<span>🔎 แสดงเฉพาะหมวด: <b>${escapeHTML(names)}</b> · ${shown} จาก ${all.length} แถว</span>`;
     const clr = document.createElement('button'); clr.type = 'button'; clr.className = 'rc-clear'; clr.textContent = '✕ แสดงทั้งหมด';
-    clr.onclick = () => { rcSetFilter(project, []); reRenderWithScroll(); }; note.appendChild(clr);
+    clr.onclick = () => { rcSetFilter(project, []); lsSet('rowcat_now_' + project.id, false); reRenderWithScroll(); }; note.appendChild(clr);
     root.appendChild(note);
   }
 
@@ -2353,9 +2420,10 @@ function renderProjectDetail(projectId) {
 
   let hiddenRun = [];
   const flushHidden = () => { if (hiddenRun.length) { body.appendChild(buildHiddenDeptStrip(project, hiddenRun)); hiddenRun = []; } };
-  project.departments.forEach((dept, index) => {
+  rcDeptsOrdered(project).forEach((dept) => {
+    const index = project.departments.indexOf(dept);
     if (isHid(dept)) { hiddenRun.push(dept); return; }   // หน่วยงานที่ซ่อน: ไม่วาด แต่แสดงแถบบอกตำแหน่งแทน
-    if (rcAct.length && !dept.rows.some(r => !isHid(r) && !rcRowOut(project, r))) return;   // กรองหมวด: หน่วยงานที่ไม่มีแถวในหมวดที่เลือก ไม่ต้องแสดง
+    if ((rcAct.length || rcNow) && !dept.rows.some(r => !isHid(r) && !rcRowOut(project, r))) return;   // กรองหมวด: หน่วยงานที่ไม่มีแถวในหมวดที่เลือก ไม่ต้องแสดง
     flushHidden();
     body.appendChild(buildDeptBlock(project, dept, index, project.departments.length, colw, totalWidth, rStart, rEnd));
   });
@@ -2471,7 +2539,7 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   deptInfo.oncontextmenu = (e) => { e.preventDefault(); openDeptMenu(e, project, dept); };
 
   const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-  dept.rows.forEach((row, rIdx) => {
+  rcRowsOrdered(project, dept).forEach((row, rIdx) => {
     if (isHid(row)) return;   // แถวที่ซ่อน: ไม่วาด
     if (rcRowOut(project, row)) return;   // ไม่อยู่ในหมวดที่ติ๊กกรอง
     const rCell = document.createElement('div'); rCell.className = 'row-name-cell';
@@ -2519,7 +2587,7 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); block.appendChild(labelCol);
 
   const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-  dept.rows.forEach(row => { if (isHid(row) || rcRowOut(project, row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
+  rcRowsOrdered(project, dept).forEach(row => { if (isHid(row) || rcRowOut(project, row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
   block.appendChild(rowsWrap); return block;
 }
 
@@ -2568,6 +2636,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   }
   if (act.type !== 'meeting' && act.allDay === false && act.startTime) { prefix += act.startTime + ' '; statusText += `\n🕘 ${act.startTime}–${act.endTime || ''} น.`; }
   if (act.seriesId) { prefix = '🔁 ' + prefix; statusText += '\n🔁 ' + recDescribe(act.rec); }
+  if (fuWaiting(act)) { prefix = '📮 ' + prefix; statusText += '\n📮 รอติดตามผล' + (act.followUp.from ? ' จาก ' + act.followUp.from : '') + (act.followUp.due != null ? ' · ติดตามภายใน ' + formatDateThai(dateFromIndex(act.followUp.due)) : ''); }
   const bar = document.createElement('div');
   bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '');
   bar.style.position = 'absolute';
@@ -2816,7 +2885,7 @@ function renderOverview(categoryFilter = null) {
 
   projectsToRender.forEach(p => {
     const allActs = p.departments.flatMap(d => d.rows.filter(r => ovRowIn(p, r, ovAct)).flatMap(r => r.activities));
-    if (ovAct.length && !p.departments.some(d => d.rows.some(r => ovRowIn(p, r, ovAct)))) return;   // ไม่มีแถวในหมวดที่เลือก
+    if (ovFiltering(ovAct) && !p.departments.some(d => !isHid(d) && d.rows.some(r => !isHid(r) && ovRowIn(p, r, ovAct)))) return;   // ไม่มีแถวในหมวดที่เลือก
     const sorted = [...allActs].sort((a, b) => a.start - b.start), lanes = [], placed = [];
     sorted.forEach(a => {
       let laneIdx = lanes.findIndex(end => end < a.start);
@@ -2886,8 +2955,8 @@ function renderLanesOverview(categoryFilter = null) {
 
   projectsToRender.forEach(p => {
     const visRows = (d) => d.rows.filter(r => !isHid(r) && ovRowIn(p, r, ovAct));
-    const depts = p.departments.filter(d => !isHid(d) && (!ovAct.length || visRows(d).length));
-    if (ovAct.length && !depts.length) return;   // ไม่มีแถวในหมวดที่เลือก
+    const depts = p.departments.filter(d => !isHid(d) && (!ovFiltering(ovAct) || visRows(d).length));
+    if (ovFiltering(ovAct) && !depts.length) return;   // ไม่มีแถวในหมวดที่เลือก
     const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
     const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.textContent = `📁 ${p.name}`;
     projHeaderBlock.appendChild(pLabel);
@@ -4474,6 +4543,41 @@ function tdProjList() {
   return state.projects.map(p => ({ p, tasks: all.filter(x => x.p.id === p.id) }));
 }
 
+// ---- ติดตามผล: ส่งหนังสือ/ทำเสร็จแล้ว แต่ยังรอเขาส่งข้อมูลกลับ ----
+// a.followUp = { from, due(index), received, receivedAt, receivedBy }
+function fuWaiting(a) { return !!(a && a.completed && a.followUp && !a.followUp.received); }
+function fuDefaultDue(a) { return Math.max(todayBangkokIndex(), a ? a.end : 0) + 7; }
+function tdSetFollowUp(pid, aid, patch, msg, cardEl) {
+  const find = () => { const x = tdProjTasks().find(t => t.p.id === pid && t.a.id === aid); return x ? x.a : null; };
+  const a0 = find(); if (!a0 || READ_ONLY) return;
+  const prev = { completed: !!a0.completed, completedAt: a0.completedAt, completedBy: a0.completedBy, followUp: a0.followUp ? clone(a0.followUp) : undefined };
+  const go = async () => {
+    const a = find(); if (!a) return;
+    patch(a); a.updatedBy = USER_NAME; a.updatedAt = Date.now();
+    showToast(msg(a), 'เลิกทำ', async () => {
+      const b = find(); if (!b) return;
+      Object.keys(prev).forEach(k => { if (prev[k] === undefined) delete b[k]; else b[k] = prev[k]; });
+      await persistAndRender();
+    });
+    await persistAndRender();
+  };
+  if (cardEl) { cardEl.classList.add('td-leaving'); setTimeout(go, 220); } else go();
+}
+function tdMarkReceived(pid, aid, got, cardEl) {
+  tdSetFollowUp(pid, aid, (a) => {
+    a.followUp = a.followUp || { from: '', due: fuDefaultDue(a) };
+    a.followUp.received = got;
+    if (got) { a.followUp.receivedAt = Date.now(); a.followUp.receivedBy = USER_NAME; if (!a.completed) { a.completed = true; a.completedAt = Date.now(); a.completedBy = USER_NAME; } }
+    else { delete a.followUp.receivedAt; delete a.followUp.receivedBy; }
+  }, (a) => got ? `📬 "${a.label}" ได้รับข้อมูลกลับแล้ว → เสร็จแล้ว` : `⏳ "${a.label}" กลับไปรอติดตามผล`, cardEl);
+}
+function tdStartFollowUp(pid, aid, from) {
+  tdSetFollowUp(pid, aid, (a) => {
+    a.followUp = { from: from || '', due: fuDefaultDue(a), received: false };
+    if (!a.completed) { a.completed = true; a.completedAt = Date.now(); a.completedBy = USER_NAME; }
+  }, (a) => `📮 "${a.label}" ย้ายไปรอติดตามผล · ติดตามภายใน ${tdFmtDate(dateToInputStr(dateFromIndex(a.followUp.due)))} (แก้ได้ในการ์ด)`);
+}
+
 // ติ๊กเสร็จ / ยกเลิกเสร็จ ของงานในแผนงาน (ข้อมูลชุดเดียวกับหน้าแผนงาน จึงเชื่อมกันทันที)
 function tdSetTaskDone(pid, aid, done, cardEl) {
   const find = () => { const x = tdProjTasks().find(t => t.p.id === pid && t.a.id === aid); return x ? x.a : null; };
@@ -4484,12 +4588,13 @@ function tdSetTaskDone(pid, aid, done, cardEl) {
     a.completed = done;
     if (done) { a.completedAt = Date.now(); a.completedBy = USER_NAME; } else { delete a.completedAt; delete a.completedBy; }
     a.updatedBy = USER_NAME; a.updatedAt = Date.now();
-    showToast(done ? `✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)` : `↺ "${a.label}" กลับไปเป็นงานค้าง`, 'เลิกทำ', async () => {
+    const x0 = tdProjTasks().find(t => t.p.id === pid && t.a.id === aid);
+    showToast(done ? (fuWaiting(a) ? `✔ "${a.label}" เสร็จแล้ว → ⏳ รอติดตามผล` : `✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)`) : `↺ "${a.label}" กลับไปเป็นงานค้าง`, 'เลิกทำ', async () => {
       const b = find(); if (!b) return;
       b.completed = prev.completed;
       ['completedAt', 'completedBy'].forEach(k => { if (prev[k] === undefined) delete b[k]; else b[k] = prev[k]; });
       await persistAndRender();
-    });
+    }, done && !a.followUp ? [{ label: '📮 รอตอบกลับ', fn: () => tdStartFollowUp(pid, aid, x0 && x0.d ? x0.d.name : '') }] : null);
     await persistAndRender();
   };
   if (cardEl) { cardEl.classList.add('td-leaving'); setTimeout(go, 220); } else go();
@@ -4658,8 +4763,20 @@ function tdOpenProjCard(pid, did, rid, aid) {
       <div><label class="field-label" for="pcEnd">กำหนดเสร็จ</label><input type="date" id="pcEnd" class="text-input" value="${dateToInputStr(dateFromIndex(a0.end))}"></div>
     </div>
     <label style="display:flex; gap:8px; align-items:center; margin-top:12px; background:var(--indigo-soft); padding:8px 10px; border-radius:8px; cursor:pointer; font-weight:600; color:var(--indigo-deep);"><input type="checkbox" id="pcDone" ${a0.completed ? 'checked' : ''} style="width:17px; height:17px;"> ทำงานนี้เสร็จเรียบร้อยแล้ว ✅</label>
+    <div class="fu-box" id="pcFu">
+      <label class="fu-toggle"><input type="checkbox" id="pcFuOn" ${a0.followUp ? 'checked' : ''}> 📮 ต้องติดตามผล <small>— เช่น ส่งหนังสือแล้ว รอเขาส่งข้อมูล/ตอบกลับ</small></label>
+      <div class="fu-body" id="pcFuBody" ${a0.followUp ? '' : 'hidden'}>
+        <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top:0;">
+          <div><label class="field-label" for="pcFuFrom">รอข้อมูลจาก</label><input id="pcFuFrom" class="text-input" placeholder="เช่น FA / ADB / กรมบัญชีกลาง" value="${escapeHTML((a0.followUp && a0.followUp.from) || (d ? d.name : ''))}"></div>
+          <div><label class="field-label" for="pcFuDue">ติดตามภายในวันที่</label><input type="date" id="pcFuDue" class="text-input" value="${dateToInputStr(dateFromIndex(a0.followUp && a0.followUp.due != null ? a0.followUp.due : fuDefaultDue(a0)))}">
+            <div class="td-due-quick" id="pcFuQuick">${[['+3 วัน', 3], ['+7 วัน', 7], ['+14 วัน', 14], ['+30 วัน', 30]].map(([t, n]) => `<button type="button" data-d="${n}">${t}</button>`).join('')}</div></div>
+        </div>
+        <label class="fu-got"><input type="checkbox" id="pcFuGot" ${a0.followUp && a0.followUp.received ? 'checked' : ''}> 📬 ได้รับข้อมูลกลับแล้ว${a0.followUp && a0.followUp.receivedAt ? ` <small style="font-weight:400; color:var(--ink-soft);">· ${escapeHTML(fmtDateTime(a0.followUp.receivedAt))}${a0.followUp.receivedBy ? ' โดย ' + escapeHTML(a0.followUp.receivedBy) : ''}</small>` : ''}</label>
+        <div class="fu-hint">เมื่อติ๊ก "เสร็จเรียบร้อยแล้ว" งานจะไปอยู่คอลัมน์ <b>⏳ รอติดตามผล</b> จนกว่าจะติ๊ก "ได้รับข้อมูลกลับแล้ว" จึงย้ายไป "เสร็จแล้ว"</div>
+      </div>
+    </div>
     <div class="td-cl-head"><label class="field-label">รายการย่อย <span id="pcPct" style="font-weight:400;"></span> <span style="font-weight:400; font-size:11px;">· แสดงเฉพาะในหน้า To-do</span></label>
-      ${edit ? '<button type="button" class="td-mini" id="pcTplBtn">📋 ใช้ Template / คัดลอก</button>' : ''}</div>
+      ${edit ? '<span style="display:flex; gap:6px; flex-wrap:wrap;"><button type="button" class="td-mini" id="pcTplBtn">📋 ใช้ Template / คัดลอก</button><button type="button" class="td-mini" id="pcTplSave">💾 บันทึกเป็น Template</button></span>' : ''}</div>
     <div id="pcTpl" class="td-tpl" hidden></div>
     <div class="td-prog" style="margin:0 0 6px;"><i id="pcBar" style="width:0%"></i></div>
     <div id="pcCl"></div>
@@ -4705,7 +4822,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
     todo.boards.forEach(bb => bb.columns.forEach(c => (c.cards || []).forEach(cd => { if ((cd.checklist || []).length) src.push({ title: cd.title, items: cd.checklist.map(i => i.text), from: bb.name }); })));
     tdProjTasks().forEach(x => { if (x.a.id !== aid && (x.a.checklist || []).length) src.push({ title: x.a.label, items: x.a.checklist.map(i => i.text), from: x.p.name }); });
     tplBox.innerHTML = `<div class="td-tpl-h">📋 Template</div>
-      <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)} <small>· ${escapeHTML(x.from)}</small></span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — สร้างได้ที่ปุ่ม "📋 Template รายการย่อย" ในบอร์ด To-do ของคุณ</div>'}</div>
+      <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)} <small>· ${escapeHTML(x.from)}</small></span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — ใส่รายการย่อยแล้วกด "💾 บันทึกเป็น Template"</div>'}</div>
       <div class="td-tpl-h" style="margin-top:10px;">คัดลอกรายการจากการ์ด…</div>
       <input type="search" class="text-input" id="pcQ" placeholder="🔍 พิมพ์ชื่อการ์ด">
       <div class="td-tpl-list" id="pcSrc" style="margin-top:6px;"></div>`;
@@ -4720,10 +4837,51 @@ function tdOpenProjCard(pid, did, rid, aid) {
     q.oninput = drawSrc; q.onkeydown = (e) => { if (e.key === 'Enter') e.preventDefault(); };
     drawSrc();
   };
-  if (edit) m.querySelector('#pcTplBtn').onclick = () => {
-    if (!tplBox.hidden) { tplBox.hidden = true; return; }
-    tplBox.hidden = false; drawPick(); setTimeout(() => { const q = tplBox.querySelector('#pcQ'); if (q) q.focus(); }, 0);
+  // 💾 บันทึกรายการย่อยเป็น Template (เก็บไว้ในบอร์ด To-do ที่แก้ไขได้ — ใช้ร่วมกับการ์ดทุกที่)
+  const drawSave = () => {
+    const items = work.checklist.map(i => i.text.trim()).filter(Boolean);
+    const boards = todo.boards.filter(bb => tdCanEdit(bb));
+    if (!boards.length) { tplBox.innerHTML = '<div class="td-tpl-empty">ยังไม่มีบอร์ด To-do ที่คุณแก้ไขได้ — สร้างบอร์ดของคุณก่อน (ปุ่ม "+ บอร์ดใหม่") แล้ว Template จะเก็บไว้ในบอร์ดนั้น</div>'; return; }
+    const lastB = lsGet('td_tpl_board', ''), defB = boards.find(bb => bb.id === lastB) || boards.find(bb => bb.owner === todo.me && tdVis(bb) === 'private') || boards[0];
+    tplBox.innerHTML = `<div class="td-tpl-h">💾 บันทึกรายการย่อย ${items.length} รายการนี้เป็น Template (สถานะติ๊กจะไม่ถูกบันทึก)</div>
+      <input class="text-input" id="pcTplName" placeholder="ชื่อ Template เช่น หนังสือส่งออก + ได้รับข้อมูล">
+      <div style="display:flex; gap:6px; margin-top:6px; align-items:center;"><span style="font-size:12px; color:var(--ink-soft); white-space:nowrap;">เก็บไว้ในบอร์ด</span>
+        <select id="pcTplBoard" class="text-input">${boards.map(bb => `<option value="${bb.id}" ${bb.id === defB.id ? 'selected' : ''}>${escapeHTML(bb.name)} (${(bb.templates || []).length} Template)</option>`).join('')}</select>
+        <button type="button" class="primary-btn" id="pcTplOk">บันทึก</button></div>`;
+    const nm = tplBox.querySelector('#pcTplName'); nm.value = ta.value.trim();
+    const doSave = () => {
+      const name = nm.value.trim(); if (!name) { nm.focus(); return; }
+      const bid = tplBox.querySelector('#pcTplBoard').value, live = todo.boards.find(bb => bb.id === bid); if (!live) return;
+      live.templates = live.templates || [];
+      const ex = live.templates.find(t => t.name === name);
+      if (ex) { if (!confirm(`มี Template "${name}" อยู่แล้ว\nแทนที่ด้วยรายการชุดนี้หรือไม่?`)) return; ex.items = items; }
+      else live.templates.push({ id: tdUid('tpl'), name, items });
+      lsSet('td_tpl_board', bid);
+      tplBox.hidden = true; tdChanged(live); showToast(`💾 บันทึก Template "${name}" แล้ว (ในบอร์ด ${live.name})`);
+    };
+    tplBox.querySelector('#pcTplOk').onclick = doSave;
+    nm.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); doSave(); } };
+    setTimeout(() => { nm.focus(); nm.select(); }, 0);
   };
+  const toggleTpl = (mode) => {
+    if (!tplBox.hidden && tplBox.dataset.mode === mode) { tplBox.hidden = true; return; }
+    if (!todo.loaded) { showToast('⏳ กำลังโหลดข้อมูล To-do… ลองอีกครั้งในอีกสักครู่'); loadTodos(true); return; }
+    tplBox.dataset.mode = mode; tplBox.hidden = false;
+    if (mode === 'pick') { drawPick(); setTimeout(() => { const q = tplBox.querySelector('#pcQ'); if (q) q.focus(); }, 0); } else drawSave();
+  };
+  if (edit) {
+    m.querySelector('#pcTplBtn').onclick = () => toggleTpl('pick');
+    m.querySelector('#pcTplSave').onclick = () => {
+      if (!work.checklist.some(i => i.text.trim())) { showToast('ยังไม่มีรายการย่อยให้บันทึก — เพิ่มรายการก่อน'); return; }
+      toggleTpl('save');
+    };
+  }
+
+  // ---- ติดตามผล ----
+  const fuOn = m.querySelector('#pcFuOn'), fuBody = m.querySelector('#pcFuBody'), fuDue = m.querySelector('#pcFuDue'), fuGot = m.querySelector('#pcFuGot');
+  fuOn.onchange = () => { fuBody.hidden = !fuOn.checked; };
+  m.querySelectorAll('#pcFuQuick button').forEach(b => b.onclick = () => { fuDue.value = dateToInputStr(dateFromIndex(todayBangkokIndex() + Number(b.dataset.d))); });
+  fuGot.onchange = () => { if (fuGot.checked) m.querySelector('#pcDone').checked = true; };
 
   // ---- เปลี่ยนแผนงาน (ย้ายโครงการ / หน่วยงาน / แถว) ----
   const mvBox = m.querySelector('#pcMove'), mvP = m.querySelector('#pcMvProj'), mvD = m.querySelector('#pcMvDept'), mvR = m.querySelector('#pcMvRow');
@@ -4793,6 +4951,13 @@ function tdOpenProjCard(pid, did, rid, aid) {
       let done = m.querySelector('#pcDone').checked;
       const cl = a.checklist || [];
       if (!a.completed && !done && cl.length && cl.every(i => i.done) && !wasComplete) done = true;   // ติ๊กรายการย่อยครบ = งานเสร็จ
+      if (fuOn.checked) {
+        const old = a.followUp || {};
+        let due = indexFromDate(inputStrToDate(fuDue.value)); if (isNaN(due)) due = fuDefaultDue(a);
+        const got = fuGot.checked;
+        a.followUp = { from: m.querySelector('#pcFuFrom').value.trim(), due, received: got };
+        if (got) { a.followUp.receivedAt = old.received ? old.receivedAt : Date.now(); a.followUp.receivedBy = old.received ? old.receivedBy : USER_NAME; done = true; }
+      } else delete a.followUp;
       if (done !== !!a.completed) {
         a.completed = done;
         if (done) { a.completedAt = Date.now(); a.completedBy = USER_NAME; } else { delete a.completedAt; delete a.completedBy; }
@@ -4813,7 +4978,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
           const b = dst.splice(j, 1)[0]; if (moved.series) Object.keys(moved.series).forEach(k => { if (moved.series[k] !== undefined) b[k] = moved.series[k]; }); back.splice(Math.min(moved.index, back.length), 0, b);
           await persistAndRender();
         });
-      } else if (done && !a0.completed) showToast(`✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)`);
+      } else if (done && !a0.completed) showToast(fuWaiting(a) ? `✔ "${a.label}" เสร็จแล้ว → ⏳ รอติดตามผล` : `✔ "${a.label}" เสร็จแล้ว (อัปเดตในแผนงานแล้ว)`);
     };
     const del = document.createElement('button'); del.className = 'danger-btn'; del.textContent = '🗑 ลบ';
     del.onclick = async () => {
@@ -5237,8 +5402,9 @@ function renderProjTodo(pid) {
     const cols = [
       { key: 'late', name: 'เลยกำหนด', color: '#E5484D', items: list.filter(x => !x.a.completed && x.a.end < today).sort((a, b) => a.a.end - b.a.end) },
       { key: 'now', name: 'ต้องดำเนินการ', color: '#F59E0B', items: list.filter(x => !x.a.completed && x.a.start <= today && x.a.end >= today).sort((a, b) => a.a.end - b.a.end) },
+      { key: 'wait', name: '⏳ รอติดตามผล', color: '#8B5CF6', items: list.filter(x => fuWaiting(x.a)).sort((a, b) => (a.a.followUp.due ?? 1e9) - (b.a.followUp.due ?? 1e9)) },
       { key: 'next', name: 'ยังไม่ถึงกำหนดเริ่ม', color: '#94A3B8', items: list.filter(x => !x.a.completed && x.a.start > today).sort((a, b) => a.a.start - b.a.start) },
-      { key: 'done', name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, items: list.filter(x => x.a.completed).sort((a, b) => (b.a.completedAt || 0) - (a.a.completedAt || 0) || b.a.end - a.a.end) }
+      { key: 'done', name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, items: list.filter(x => x.a.completed && !fuWaiting(x.a)).sort((a, b) => (b.a.completedAt || 0) - (a.a.completedAt || 0) || b.a.end - a.a.end) }
     ];
     area.innerHTML = '';
     const board = document.createElement('div'); board.className = 'td-board';
@@ -5248,17 +5414,30 @@ function renderProjTodo(pid) {
       const ul = document.createElement('div'); ul.className = 'td-list';
       const key = 'proj-' + pid + '-' + col.key;
       const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
-      if (!col.items.length) ul.innerHTML = '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
+      if (!col.items.length) ul.innerHTML = col.key === 'wait' ? '<div style="font-size:11.5px; color:var(--ink-soft); padding:6px 4px; line-height:1.5;">— ไม่มีงานที่รอตอบกลับ —<br>งานที่ส่งหนังสือแล้วแต่ต้องรอข้อมูลกลับ: เปิดการ์ด → ติ๊ก "📮 ต้องติดตามผล" หรือกด "📮 รอตอบกลับ" หลังติ๊กเสร็จ</div>' : '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
       shown.forEach(({ a, d, r, extra }) => {
         const cl = a.checklist || [], clDone = cl.filter(i => i.done).length, exp = cl.length && todo.expanded.has(a.id);
-        const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '');
+        const isWait = col.key === 'wait', fu = a.followUp;
+        const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '') + (isWait ? ' fu-card' : '');
         let badge;
-        if (col.isDone) badge = `<span class="td-b due-done">✔ ${a.completedAt ? 'เสร็จ ' + escapeHTML(fmtDateTime(a.completedAt)) : 'เสร็จแล้ว'}</span>`;
+        if (isWait) {
+          const dd = fu.due;
+          badge = dd == null ? '<span class="td-b fu-wait">⏳ รอตอบกลับ</span>'
+            : dd < today ? `<span class="td-b fu-late" title="เลยวันที่ต้องติดตาม">🔔 เลยกำหนดติดตาม ${today - dd} วัน</span>`
+            : dd === today ? '<span class="td-b fu-late">🔔 ติดตามวันนี้</span>'
+            : `<span class="td-b fu-wait">⏳ ติดตาม ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(dd))))} · อีก ${dd - today} วัน</span>`;
+          if (a.completedAt) badge = `<span class="td-b" title="วันที่ทำเสร็จ/ส่งออก">📤 ส่ง ${escapeHTML(tdFmtDate(new Date(a.completedAt + 7 * 3600e3).toISOString().slice(0, 10)))}</span>` + badge;
+        }
+        else if (col.isDone && fu && fu.received) badge = `<span class="td-b fu-got">📬 ได้รับแล้ว${fu.receivedAt ? ' ' + escapeHTML(fmtDateTime(fu.receivedAt)) : ''}</span>`;
+        else if (col.isDone) badge = `<span class="td-b due-done">✔ ${a.completedAt ? 'เสร็จ ' + escapeHTML(fmtDateTime(a.completedAt)) : 'เสร็จแล้ว'}</span>`;
         else if (col.key === 'late') badge = `<span class="td-b due-red">เลย ${today - a.end} วัน</span>`;
         else if (col.key === 'now') badge = a.end === today ? '<span class="td-b due-amber">ครบกำหนดวันนี้</span>' : `<span class="td-b due-soon">เหลือ ${a.end - today} วัน</span>`;
         else badge = `<span class="td-b">อีก ${a.start - today} วันเริ่ม</span>`;
-        card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${col.isDone ? 'เอาติ๊กออก = กลับเป็นงานค้าง' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)'}" aria-label="${col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : ''}</button><span>${escapeHTML(a.label)}</span></div>
+        if (!col.isDone && !isWait && fu) badge += '<span class="td-b fu-plan" title="เมื่อติ๊กเสร็จ จะไปรอติดตามผล">📮 ติดตามผลต่อ</span>';
+        const tickTitle = isWait ? 'ติ๊กเมื่อได้รับข้อมูลกลับแล้ว → ย้ายไป "เสร็จแล้ว"' : col.isDone ? (fu && fu.received ? 'เอาติ๊กออก = กลับไปรอติดตามผล' : 'เอาติ๊กออก = กลับเป็นงานค้าง') : (fu ? 'ติ๊กเมื่อทำเสร็จ → ไปรอติดตามผล' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)');
+        card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${tickTitle}" aria-label="${isWait ? 'ได้รับข้อมูลแล้ว' : col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : isWait ? '📬' : ''}</button><span>${escapeHTML(a.label)}</span></div>
           <div class="td-path">${extra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}</div>
+          ${isWait && fu.from ? `<div class="td-fu-from">⏳ รอข้อมูลจาก <b>${escapeHTML(fu.from)}</b></div>` : ''}
           <div class="td-badges"><span class="td-b" title="ช่วงวันที่ในแผนงาน">🗓 ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.start))))}${a.end !== a.start ? ' – ' + escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.end)))) : ''}</span>${badge}
           ${cl.length ? `<button type="button" class="td-b td-clbtn ${clDone === cl.length ? 'cl-done' : ''}" title="${exp ? 'ซ่อนรายการย่อย' : 'ดู/ติ๊กรายการย่อยบนการ์ด'}">☑ ${clDone}/${cl.length} ${exp ? '▴' : '▾'}</button>` : ''}
           ${col.isDone && a.completedBy ? `<span class="td-avs" title="ติ๊กเสร็จโดย ${escapeHTML(a.completedBy)}"><span class="td-av" style="background:${tdAvColor(a.completedBy)}">${escapeHTML(tdInitial(a.completedBy))}</span></span>` : ''}</div>
@@ -5278,7 +5457,12 @@ function renderProjTodo(pid) {
         }
         card.style.borderLeft = extra ? '3px dashed #94A3B8' : `3px solid ${a.color || '#94A3B8'}`;
         const tk = card.querySelector('.td-tick');
-        tk.onclick = (e) => { e.stopPropagation(); if (edit) tdSetTaskDone(pid, a.id, !col.isDone, card); };
+        tk.onclick = (e) => {
+          e.stopPropagation(); if (!edit) return;
+          if (isWait) tdMarkReceived(pid, a.id, true, card);
+          else if (col.isDone && fu && fu.received) tdMarkReceived(pid, a.id, false, card);
+          else tdSetTaskDone(pid, a.id, !col.isDone, card);
+        };
         card.onclick = () => tdOpenProjCard(p.id, d ? d.id : null, r ? r.id : null, a.id);
         card.title = 'คลิกเพื่อเปิดการ์ด (รายการย่อย / Template)';
         ul.appendChild(card);
@@ -5299,7 +5483,8 @@ function renderProjTodo(pid) {
     });
     area.appendChild(board);
     const st = root.querySelector('#tdStats');
-    st.innerHTML = `<span>รอดำเนินการ <b>${cols[0].items.length + cols[1].items.length + cols[2].items.length}</b></span><span class="red">เลยกำหนด <b>${cols[0].items.length}</b></span><span class="amber">ครบวันนี้ <b>${cols[1].items.filter(x => x.a.end === today).length}</b></span>`;
+    const cw = cols.find(c => c.key === 'wait').items, cn = cols.find(c => c.key === 'next').items;
+    st.innerHTML = `<span>รอดำเนินการ <b>${cols[0].items.length + cols[1].items.length + cn.length}</b></span><span class="red">เลยกำหนด <b>${cols[0].items.length}</b></span><span class="amber">ครบวันนี้ <b>${cols[1].items.filter(x => x.a.end === today).length}</b></span><span style="color:#6B21A8;">รอตอบกลับ <b>${cw.length}</b>${cw.some(x => x.a.followUp.due != null && x.a.followUp.due <= today) ? ' 🔔' : ''}</span>`;
   };
   const qIn = tools.querySelector('#tdSearch');
   qIn.oninput = () => { clearTimeout(qIn._t); qIn._t = setTimeout(() => { todo.filter.q = qIn.value.trim(); draw(); }, 200); };
