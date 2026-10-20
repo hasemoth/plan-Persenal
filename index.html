@@ -506,6 +506,142 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .tab.td-proj-tab.active .td-cnt { background: rgba(255,255,255,0.25); color: #fff; }
 .td-link-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #ECFDF5; color: #047857; font-weight: 600; }
 .td-path { font-size: 11px; color: var(--ink-soft); margin-top: 3px; line-height: 1.35; }
+.td-tpl-item .tpl-prev { display: block; font-size: 11px; color: var(--ink-soft); font-weight: 400; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.td-tpl-item > span:first-child { min-width: 0; }
+.td-copy-tog { margin-top: 10px; border: none; background: none; padding: 4px 0; font-family: inherit; font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
+.td-copy-tog:hover { color: var(--indigo-deep); }
+/* ===== ปฏิทิน ===== */
+.cal-on .gantt-only { display: none !important; }
+.cal-toggle { display: inline-flex; background: #EEF0F8; border-radius: 10px; padding: 3px; margin-left: 8px; }
+.cal-toggle button { border: none; background: none; padding: 5px 12px; border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+.cal-toggle button.on { background: #fff; color: var(--indigo-deep); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.cal-wrap { background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px 10px; margin-top: 10px; }
+.cal-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.cal-head .ghost-btn { padding: 5px 12px; }
+.cal-head .cal-nav { padding: 5px 11px; font-size: 16px; line-height: 1; }
+.cal-title { margin: 0 0 0 6px; font-size: 19px; color: var(--ink); }
+.cal-seg { display: inline-flex; background: #EEF0F8; border-radius: 10px; padding: 3px; }
+.cal-seg button { border: none; background: none; padding: 5px 12px; border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+.cal-seg button.on { background: #fff; color: var(--indigo-deep); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.cal-seg.sm button { padding: 3px 10px; font-size: 12px; }
+.cal-optbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; font-size: 12.5px; }
+.cal-ck { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12.5px; color: var(--ink); margin: 3px 0; }
+.cal-ck input { width: 15px; height: 15px; margin: 0; cursor: pointer; }
+.cal-ck-l { color: var(--ink-soft); font-weight: 600; }
+.cal-month { border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; }
+.cal-dow { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); font-size: 11.5px; color: #64748B; text-align: center; border-bottom: 1px solid #EEF0F4; padding: 6px 0; font-weight: 600; }
+.cal-week { position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-bottom: 1px solid #EEF0F4; }
+.cal-week:last-child { border-bottom: none; }
+.cal-day { border-right: 1px solid #F1F2F6; position: relative; cursor: pointer; }
+.cal-day:last-child { border-right: none; }
+.cal-day.we, .cal-day.holiday { background: #F7F8FA; }
+.cal-day.other .cal-dn span { color: #C0C7D2; }
+.cal-day:hover { background: #F5F7FF; }
+.cal-day.cal-drop, .cal-tg-col.cal-drop, .cal-tg-adcell.cal-drop { background: #E0E7FF !important; }
+.cal-dn { text-align: center; font-size: 12px; padding-top: 3px; height: 24px; box-sizing: border-box; }
+.cal-dn span { display: inline-block; min-width: 22px; height: 20px; line-height: 20px; border-radius: 10px; padding: 0 4px; color: #334155; }
+.cal-dn span:hover { background: #E2E8F0; }
+.cal-day.today .cal-dn span { background: #1A73E8; color: #fff; font-weight: 700; }
+.cal-ev { position: absolute; height: 19px; line-height: 19px; font-size: 11.5px; font-weight: 600; padding: 0 6px; border-radius: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; z-index: 2; user-select: none; box-sizing: border-box; }
+.cal-ev.bar { background: var(--ec); color: #fff; }
+.cal-ev.bar.cont-l { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.cal-ev.bar.cont-r { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.cal-ev.dot { color: var(--ink); font-weight: 500; }
+.cal-ev.dot i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ec); margin-right: 4px; }
+.cal-ev.dot b { font-weight: 700; }
+.cal-ev.dot:hover { background: #EEF2FF; }
+.cal-ev.bar:hover { filter: brightness(.94); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+.cal-ev .ic { margin-right: 3px; }
+.cal-ev.done { opacity: .5; }
+.cal-ev.done.bar { text-decoration: line-through; }
+.cal-ev.xt.bar { background: repeating-linear-gradient(135deg, var(--ec), var(--ec) 6px, color-mix(in srgb, var(--ec) 82%, #fff) 6px, color-mix(in srgb, var(--ec) 82%, #fff) 12px); }
+.cal-ev.hol { background: #E2E8F0 !important; color: #475569 !important; cursor: default; font-weight: 600; }
+.cal-ev.cal-dragging { opacity: .45; }
+body.cal-drag-on, body.cal-drag-on * { cursor: grabbing !important; user-select: none; }
+.cal-drag-tip { position: fixed; z-index: 9999; background: #1F2A44; color: #fff; font-size: 12px; padding: 3px 9px; border-radius: 6px; pointer-events: none; white-space: nowrap; }
+.cal-more { position: absolute; left: 4px; right: 4px; height: 19px; border: none; background: none; text-align: left; font-family: inherit; font-size: 11.5px; font-weight: 700; color: #475569; padding: 0 4px; border-radius: 5px; cursor: pointer; z-index: 2; }
+.cal-more:hover { background: #E2E8F0; }
+.cal-pop { position: fixed; z-index: 3000; width: 300px; max-height: 360px; display: flex; flex-direction: column; background: #fff; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 10px 30px rgba(15,23,42,.18); }
+.cal-pop-h { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px 6px; font-weight: 700; font-size: 13px; }
+.cal-pop-h button { border: none; background: none; cursor: pointer; font-size: 13px; color: #64748B; }
+.cal-pop-list { overflow: auto; padding: 0 8px 8px; }
+.cal-pop-it { display: grid; grid-template-columns: 10px 1fr; gap: 0 7px; align-items: center; padding: 5px 6px; border-radius: 7px; cursor: pointer; font-size: 12.5px; }
+.cal-pop-it:hover { background: #F1F5F9; }
+.cal-pop-it i { width: 9px; height: 9px; border-radius: 50%; }
+.cal-pop-it .p { grid-column: 2; color: var(--ink-soft); font-size: 11px; }
+.cal-pop-it.done .t { text-decoration: line-through; opacity: .6; }
+.cal-pop-it.hol { cursor: default; color: #475569; }
+/* สัปดาห์ / วัน */
+.cal-tg { border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; }
+.cal-tg-head, .cal-tg-allday, .cal-tg-body { display: grid; grid-template-columns: 56px repeat(var(--nd), minmax(0, 1fr)); position: relative; }
+.cal-tg-head { border-bottom: 1px solid #EEF0F4; }
+.cal-tg-dh { text-align: center; padding: 6px 2px; cursor: pointer; border-left: 1px solid #F1F2F6; }
+.cal-tg-dh small { display: block; font-size: 11px; color: #64748B; font-weight: 600; }
+.cal-tg-dh span { display: inline-block; font-size: 20px; width: 36px; height: 36px; line-height: 36px; border-radius: 50%; color: #334155; }
+.cal-tg-dh.today span { background: #1A73E8; color: #fff; font-weight: 700; }
+.cal-tg-dh em { display: block; font-style: normal; font-size: 10.5px; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-tg-dh.we { background: #F7F8FA; }
+.cal-tg-allday { border-bottom: 2px solid #E5E7EB; }
+.cal-tg-adcell { border-left: 1px solid #F1F2F6; cursor: pointer; }
+.cal-tg-adcell.we { background: #F7F8FA; }
+.cal-tg-gut { position: relative; font-size: 10.5px; color: #94A3B8; text-align: right; padding-right: 6px; }
+.cal-tg-allday .cal-tg-gut { padding-top: 6px; }
+.cal-tg-scroll { max-height: 560px; overflow-y: auto; }
+.cal-tg-hr { position: absolute; right: 6px; transform: translateY(-50%); }
+.cal-tg-col { position: relative; border-left: 1px solid #F1F2F6; cursor: pointer; }
+.cal-tg-col.we { background: #FAFBFC; }
+.cal-tg-line { position: absolute; left: 0; right: 0; border-top: 1px solid #F1F2F6; pointer-events: none; }
+.cal-ev.tm { height: auto; line-height: 1.3; white-space: normal; padding: 2px 6px; background: var(--ec); color: #fff; border: 1px solid #fff; font-size: 11.5px; }
+.cal-ev.tm b { display: block; font-size: 11px; }
+.cal-ev.tm div { overflow: hidden; }
+.cal-now { position: absolute; left: 0; right: 0; height: 2px; background: #EA4335; z-index: 3; pointer-events: none; }
+.cal-now::before { content: ''; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #EA4335; }
+/* รายการ */
+.cal-list { border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; }
+.cal-lg { display: grid; grid-template-columns: 110px 1fr; border-bottom: 1px solid #EEF0F4; }
+.cal-lg:last-child { border-bottom: none; }
+.cal-lg.today .cal-ld b { background: #1A73E8; color: #fff; }
+.cal-ld { padding: 8px 12px; display: flex; align-items: baseline; gap: 6px; }
+.cal-ld b { font-size: 18px; min-width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 15px; display: inline-block; }
+.cal-ld small { color: #64748B; font-size: 11.5px; }
+.cal-ld { flex-wrap: wrap; }
+.cal-ld b.txt { font-size: 12.5px; min-width: 0; height: auto; line-height: 1.6; padding: 0 10px; background: #EEF2FF; color: var(--indigo-deep); white-space: nowrap; }
+.cal-lr { padding: 4px 0; }
+.cal-li { display: grid; grid-template-columns: 130px 12px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 5px 12px; cursor: pointer; font-size: 13px; border-radius: 6px; }
+.cal-li:hover { background: #F5F7FF; }
+.cal-li .tm { color: #475569; font-size: 12px; }
+.cal-li i { width: 10px; height: 10px; border-radius: 50%; }
+.cal-li small { color: var(--ink-soft); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+.cal-li.done .lb { text-decoration: line-through; opacity: .6; }
+.cal-li.hol { cursor: default; color: #64748B; }
+.cal-foot { font-size: 11.5px; color: var(--ink-soft); margin-top: 8px; }
+/* ปฏิทินรวม */
+.cal-layout { display: flex; gap: 14px; align-items: flex-start; }
+.cal-side { width: 250px; flex-shrink: 0; position: sticky; top: 8px; }
+.cal-main { flex: 1; min-width: 0; }
+.cal-main .cal-wrap { margin-top: 0; }
+.cal-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+.cal-card-h { font-weight: 700; font-size: 13px; margin-bottom: 4px; color: var(--indigo-deep); }
+.cal-mini-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; }
+.cal-mini-h button { border: none; background: none; cursor: pointer; font-size: 15px; padding: 0 6px; color: #475569; }
+.cal-mini { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center; font-size: 11px; }
+.cal-mini b { color: #64748B; font-weight: 600; padding: 2px 0; }
+.cal-mini button { border: none; background: none; font-family: inherit; font-size: 11px; height: 24px; border-radius: 12px; cursor: pointer; color: #334155; }
+.cal-mini button:hover { background: #E2E8F0; }
+.cal-mini button.o { color: #C0C7D2; }
+.cal-mini button.h { color: #DC2626; }
+.cal-mini button.a { background: #E0E7FF; font-weight: 700; }
+.cal-mini button.t { background: #1A73E8; color: #fff; font-weight: 700; }
+.cal-grp { margin-bottom: 6px; }
+.cal-ck-h { font-weight: 700; }
+.cal-ck-p { margin-left: 14px; }
+.cal-ck-p input { accent-color: var(--pc); }
+.cal-ck-p span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-only { border: none; background: none; font-family: inherit; font-size: 10.5px; color: #64748B; cursor: pointer; visibility: hidden; padding: 0 4px; }
+.cal-ck-p:hover .cal-only { visibility: visible; }
+.cal-only:hover { color: var(--indigo-deep); text-decoration: underline; }
+@media (max-width: 900px) { .cal-layout { flex-direction: column; } .cal-side { width: 100%; position: static; } .cal-li { grid-template-columns: 90px 12px 1fr; } .cal-li small { display: none; } }
+
 .fu-box { margin-top: 10px; border: 1px solid #DDD6FE; background: #FAF8FF; border-radius: 10px; padding: 8px 10px; }
 .fu-toggle { display: flex; gap: 8px; align-items: center; font-weight: 600; color: #5B21B6; cursor: pointer; font-size: 13px; }
 .fu-toggle input { width: 16px; height: 16px; }
@@ -787,7 +923,7 @@ textarea.text-input { resize: vertical; min-height: 60px; }
       <button class="ghost-btn top-btn" onclick="logout()">ออกจากระบบ</button>
     </div>
   </div>
-  <div style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบ...</div>
+  <div id="bootMsg" style="padding:40px;text-align:center;color:#4A5773;">⏳ กำลังโหลดข้อมูลระบบ...</div>
 </div>
 
 <script>
@@ -1296,10 +1432,10 @@ async function securePost(url, dataPayload, force = false, baseModified) {
 }
 
 // ลองโหลดซ้ำเมื่อเซิร์ฟเวอร์ตอบช้า/ขัดข้องชั่วคราว (ไม่ลองซ้ำกรณีไม่มีสิทธิ์)
-async function fetchWithRetry(url, params = {}, tries = 3) {
+async function fetchWithRetry(url, params = {}, tries = 3, onTry) {
   let lastErr;
   for (let i = 0; i < tries; i++) {
-    try { return await secureFetch(url, params); }
+    try { if (onTry) onTry(i, lastErr); return await secureFetch(url, params); }
     catch (e) { lastErr = e; if (/Unauthorized/.test(e.message) && i >= 1) break; await new Promise(r => setTimeout(r, 1500 * (i + 1))); }   // Unauthorized ลองซ้ำ 1 ครั้ง (อาจเป็นความขัดข้องชั่วคราวฝั่งเซิร์ฟเวอร์)
   }
   throw lastErr;
@@ -1308,8 +1444,13 @@ async function fetchWithRetry(url, params = {}, tries = 3) {
 async function loadUnifiedState() {
   const order = ['work', 'extra', 'personal'].filter(can);
   // โหลดทุกหมวดพร้อมกัน (เร็วกว่าโหลดทีละหมวด)
-  const results = await Promise.all(order.map(t =>
-    fetchWithRetry(URLS[t]).then(d => ({ ok: true, d }), e => ({ ok: false, e }))));
+  const bs = window.__boot;   // สถานะการโหลดครั้งแรก (แสดงบนหน้าจอ)
+  const results = await Promise.all(order.map(t => {
+    if (bs) bs[t] = { t0: Date.now(), state: 'loading', tries: 0 };
+    return fetchWithRetry(URLS[t], {}, 3, bs ? (i, err) => { bs[t].tries = i; bs[t].err = err ? err.message : ''; } : undefined)
+      .then(d => { if (bs) Object.assign(bs[t], { state: 'ok', t1: Date.now() }); return { ok: true, d }; },
+            e => { if (bs) Object.assign(bs[t], { state: 'fail', t1: Date.now(), err: e.message }); return { ok: false, e }; });
+  }));
 
   let allProjects = [], latestMod = 0, settingsSource = null;
   const okMap = {}, modMap = {}, rawMap = {}, errMap = {};
@@ -1715,15 +1856,48 @@ function editorFocused() {
   return !!(window.tinymce && tinymce.activeEditor && tinymce.activeEditor.hasFocus());
 }
 
+// หน้าจอระหว่างโหลดครั้งแรก: บอกเวลาที่รอ และสถานะของแต่ละหมวด (ช่วยดูว่าช้าที่สคริปต์ตัวไหน)
+function bootPaint() {
+  const el = document.getElementById('bootMsg'), bs = window.__boot; if (!el || !bs) return;
+  const sec = Math.round((Date.now() - bs.start) / 1000);
+  const line = (t) => {
+    const x = bs[t]; if (!x) return '';
+    const dt = (((x.t1 || Date.now()) - x.t0) / 1000).toFixed(1);
+    const st = x.state === 'ok' ? `✅ โหลดแล้ว (${dt} วินาที)` : x.state === 'fail' ? `⚠️ โหลดไม่สำเร็จ: ${escapeHTML(x.err || '')}` : `⏳ กำลังโหลด… ${dt} วินาที${x.tries ? ` · ลองใหม่ครั้งที่ ${x.tries + 1}${x.err ? ' (' + escapeHTML(x.err) + ')' : ''}` : ''}`;
+    return `<div style="margin:3px 0;"><b>${escapeHTML(CAT_LABELS[t] || t)}</b> — ${st}</div>`;
+  };
+  el.innerHTML = `<div style="font-size:15px; margin-bottom:10px;">⏳ กำลังโหลดข้อมูลระบบ... <b>${sec}</b> วินาที</div>
+    <div style="display:inline-block; text-align:left; font-size:13px; background:#fff; border:1px solid #E2E8F0; border-radius:10px; padding:10px 16px;">${['work', 'extra', 'personal'].map(line).join('')}</div>
+    ${sec >= 20 ? '<div style="font-size:12px; margin-top:10px; color:#94A3B8;">ถ้ารอนานผิดปกติ มักเกิดจากเซิร์ฟเวอร์ Google Apps Script ตอบช้า ระบบจะลองใหม่ให้อัตโนมัติ (สูงสุด 3 ครั้ง ครั้งละไม่เกิน 30 วินาที)</div>' : ''}`;
+}
+
 async function init() {
-  const first = await loadUnifiedState();
-  applyLoaded(first);
+  window.__boot = { start: Date.now() };
+  const bootTimer = setInterval(bootPaint, 500); bootPaint();
+  let first;
+  try {
+    first = await loadUnifiedState();
+    applyLoaded(first);
+  } catch (e) {
+    clearInterval(bootTimer); window.__boot = null;
+    const el = document.getElementById('bootMsg');
+    if (el) el.innerHTML = `<div style="color:#B91C1C; font-weight:600;">⚠️ เปิดระบบไม่สำเร็จ: ${escapeHTML(e && e.message || String(e))}</div><div style="margin-top:10px;"><button class="primary-btn" onclick="location.reload()">ลองใหม่</button></div>`;
+    console.error(e); return;
+  }
+  clearInterval(bootTimer); window.__boot = null;
   const failed = ALLOWED.filter(t => !loadedOk[t]);
   if (failed.length) {
     alert('⚠️ โหลดข้อมูลไม่สำเร็จ:\n' + failed.map(t => `• ${CAT_LABELS[t]}: ${first.errMap[t] || 'ไม่ทราบสาเหตุ'}`).join('\n')
       + '\n\nระบบจะไม่บันทึกหมวดนี้เพื่อป้องกันข้อมูลหาย และจะลองโหลดใหม่อัตโนมัติ');
   }
-  render();
+  try { render(); }
+  catch (e) {
+    console.error(e);
+    const app = document.getElementById('app'), box = document.createElement('div');
+    box.style.cssText = 'padding:30px; text-align:center; color:#B91C1C;';
+    box.innerHTML = `⚠️ แสดงหน้าไม่สำเร็จ: ${escapeHTML(e && e.message || String(e))}<br><small style="color:#64748B;">กรุณาแคปหน้าจอนี้ส่งให้ผู้ดูแล</small>`;
+    app.appendChild(box);
+  }
 
   setInterval(async () => {
     if (document.visibilityState !== 'visible') return;
@@ -1915,6 +2089,7 @@ function render() {
   else if (view.type === 'empty') content.appendChild(renderEmptyCategoryState());
   else if (view.type === 'todo') content.appendChild(renderTodo());
   else if (view.type === 'rooms') content.appendChild(renderRooms());
+  else if (view.type === 'calendar') content.appendChild(renderCalendarAll());
   else content.appendChild(renderProjectDetail(view.id));
   
   app.appendChild(content);
@@ -1932,6 +2107,12 @@ function renderEmptyCategoryState() {
   return wrap;
 }
 
+function calAllTab() {
+  const t = document.createElement('button'); t.className = 'tab cal-all-tab' + (view.type === 'calendar' ? ' active' : '');
+  t.innerHTML = '<span>📅 ปฏิทินรวม</span>'; t.title = 'ปฏิทินรวมทุกโครงการ (ทุกหมวดที่มีสิทธิ์) แบบ Google Calendar';
+  t.onclick = () => { view = { type: 'calendar' }; render(); };
+  return t;
+}
 function renderTwoTierNav() {
   const navWrap = document.createElement('div'); navWrap.className = 'nav-container';
   const mainBar = document.createElement('div'); mainBar.className = 'main-cat-bar';
@@ -1981,6 +2162,7 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
     lanesTab.oncontextmenu = (e) => { e.preventDefault(); openOverviewSettingsModal('tab2'); };
     const lanesEditBtn = document.createElement('span'); lanesEditBtn.className = 'tab-color-btn'; lanesEditBtn.textContent = '✎'; lanesEditBtn.onclick = (e) => { e.stopPropagation(); openOverviewSettingsModal('tab2'); };
     lanesTab.appendChild(lanesEditBtn); lanesTab.style.paddingRight = '26px'; subBar.appendChild(lanesTab);
+    subBar.appendChild(calAllTab());
   } else {
     // เปลี่ยนแปลง: สร้างแท็บภาพรวมหมวดหมู่ไว้ซ้ายสุดเสมอ
     const catOverviewTab = document.createElement('button');
@@ -1988,6 +2170,7 @@ const categories = allCategories.filter(cat => cat.key === 'all' ? APP_MODE === 
     catOverviewTab.innerHTML = `<span>📊 ภาพรวมหมวดหมู่</span>`;
     catOverviewTab.onclick = () => { view = { type: 'category_overview', category: activeMainCat }; render(); };
     subBar.appendChild(catOverviewTab);
+    subBar.appendChild(calAllTab());
 
     const filteredProjects = state.projects.filter(p => activeMainCat === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === activeMainCat);
     filteredProjects.forEach(p => {
@@ -2034,7 +2217,7 @@ function renderToolbarControls(toolbar) {
   toolbar.appendChild(hWrap);
   setTimeout(updateUndoButtons, 0);
 
-  const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls'; zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
+  const zWrap = document.createElement('div'); zWrap.className = 'zoom-controls gantt-only'; zWrap.innerHTML = `<span class="zoom-label">มุมมองเวลา:</span>`;
   [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([key, txt]) => {
     const b = document.createElement('button'); b.className = 'zoom-btn' + (zoom === key ? ' active' : ''); b.textContent = txt;
     b.onclick = () => { zoom = key; userScale = DEFAULT_SCALE[key] || 1.0; lastScrollCenterIdx = null; render(); scrollToToday(); }; zWrap.appendChild(b);
@@ -2043,7 +2226,7 @@ function renderToolbarControls(toolbar) {
   const todayBtn = document.createElement('button'); todayBtn.className = 'zoom-btn today-btn'; todayBtn.textContent = '📍 วันนี้'; todayBtn.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); }; zWrap.appendChild(todayBtn);
   const nextBtn = document.createElement('button'); nextBtn.className = 'zoom-btn nav-step'; nextBtn.textContent = '›'; nextBtn.title = 'ช่วงถัดไป'; nextBtn.onclick = () => stepView(1); zWrap.appendChild(nextBtn); toolbar.appendChild(zWrap);
 
-  const scaleWrap = document.createElement('div'); scaleWrap.className = 'zoom-controls';
+  const scaleWrap = document.createElement('div'); scaleWrap.className = 'zoom-controls gantt-only';
   scaleWrap.innerHTML = `<span class="zoom-label">↔️ ความกว้างช่อง:</span>
     <button class="ghost-btn" style="padding: 2px 8px; font-size: 14px; border:none; border-radius:50%;" id="btnZoomOut">-</button>
     <span style="font-size: 11px; color: var(--ink-soft); min-width: 35px; text-align:center; display:inline-block; font-weight:600;">${Math.round(userScale * 100)}%</span>
@@ -2053,7 +2236,7 @@ function renderToolbarControls(toolbar) {
   toolbar.appendChild(scaleWrap);
 
   // ความสูงตาราง
-  const ghWrap = document.createElement('div'); ghWrap.className = 'zoom-controls gh-ctrl';
+  const ghWrap = document.createElement('div'); ghWrap.className = 'zoom-controls gh-ctrl gantt-only';
   ghWrap.innerHTML = '<span class="zoom-label">↕ ความสูงตาราง:</span>';
   [['compact', 'ย่อ', 'แบบเดิม (ประมาณ 3/4 ของจอ)'], ['full', 'เต็มจอ', 'สูงเต็มหน้าจอ หัวตารางยังค้างอยู่ด้านบนเวลาเลื่อน'], ['all', 'แสดงทุกแถว', 'ขยายลงด้านล่างจนเห็นครบทุกแถว (เลื่อนทั้งหน้าแทน)']].forEach(([k, t, tip]) => {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'zoom-btn' + (ganttHeightMode() === k ? ' active' : ''); b.textContent = t; b.title = tip;
@@ -2062,11 +2245,11 @@ function renderToolbarControls(toolbar) {
   });
   toolbar.appendChild(ghWrap);
 
-  const mWrap = document.createElement('label'); mWrap.className = 'mode-controls'; mWrap.style.cursor = 'pointer';
+  const mWrap = document.createElement('label'); mWrap.className = 'mode-controls gantt-only'; mWrap.style.cursor = 'pointer';
   mWrap.innerHTML = `<input type="checkbox" id="dragModeToggle" ${dragMode ? 'checked' : ''} style="cursor: pointer; width: 15px; height: 15px;"><span style="font-weight:600; color:var(--indigo-deep);">✋ เปิดโหมดแก้ไข/ลากเลื่อนวัน</span>`;
   mWrap.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); }; toolbar.appendChild(mWrap);
 
-  const fWrap = document.createElement('div'); fWrap.className = 'filter-controls';
+  const fWrap = document.createElement('div'); fWrap.className = 'filter-controls gantt-only';
   fWrap.innerHTML = `<span class="zoom-label">แสดงช่วง:</span><input type="date" id="filterStart" value="${state.viewRange.start}"><span style="color:var(--ink-soft); font-size:12px;">ถึง</span><input type="date" id="filterEnd" value="${state.viewRange.end}">`;
   const fBtn = document.createElement('button'); fBtn.className = 'ghost-btn'; fBtn.style.padding = '3px 8px'; fBtn.style.fontSize = '12px'; fBtn.textContent = 'ตกลง';
   fBtn.onclick = async () => { state.viewRange.start = document.getElementById('filterStart').value; state.viewRange.end = document.getElementById('filterEnd').value; await persistAndRender(); };
@@ -2390,6 +2573,9 @@ function renderProjectDetail(projectId) {
   const toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   const titleWrap = document.createElement('div'); titleWrap.className = 'proj-title'; titleWrap.innerHTML = `<h2>${escapeHTML(project.name)}</h2>`;
   const renameBtn = document.createElement('button'); renameBtn.className = 'ghost-btn'; renameBtn.textContent = '✎ เปลี่ยนชื่อ'; renameBtn.onclick = () => renameProject(project.id); titleWrap.appendChild(renameBtn);
+  const calMode = calIsOn('p_' + project.id);
+  titleWrap.appendChild(calToggle('p_' + project.id));
+  if (calMode) root.classList.add('cal-on');
   toolbar.appendChild(titleWrap); renderToolbarControls(toolbar);
   const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id);
   toolbar.appendChild(addDeptBtn); root.appendChild(toolbar); root.appendChild(renderLegend(project));
@@ -2406,6 +2592,8 @@ function renderProjectDetail(projectId) {
     root.appendChild(note);
   }
 
+  if (calMode) root.appendChild(renderCalendar({ projects: [project], rowOk: (p, d, r) => !rcRowOut(p, r) }));
+  else {
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
   const totalWidth = totalDays * colw;
@@ -2435,6 +2623,8 @@ function renderProjectDetail(projectId) {
   const todayIdx = todayBangkokIndex();
   if (todayIdx >= rStart && todayIdx <= rEnd) { const tLine = document.createElement('div'); tLine.className = 'today-line'; tLine.style.left = ((todayIdx - rStart + nowDayFrac()) * colw) + 'px'; overlay.appendChild(tLine); }
   inner.appendChild(overlay); scrollWrap.appendChild(inner); root.appendChild(scrollWrap);
+  restoreScrollPosition(rStart, colw);
+  }
   
   const notesWrap = document.createElement('div');
   notesWrap.style.marginTop = '24px';
@@ -2479,7 +2669,525 @@ function renderProjectDetail(projectId) {
       });
   }, 100);
 
-  restoreScrollPosition(rStart, colw);
+  return root;
+}
+
+// ==========================================
+// --- มุมมองปฏิทิน (แบบ Google Calendar) ---
+// ใช้ได้ทั้งหน้าโครงการ / ภาพรวม (ปุ่มสลับ 📊 Gantt | 📅 ปฏิทิน) และแท็บ "📅 ปฏิทินรวม"
+// ==========================================
+// วันหยุดราชการไทย (ปี 2570 อ้างอิงปฏิทินล่วงหน้า — ครม. อาจประกาศวันหยุดพิเศษเพิ่ม)
+const TH_HOLIDAYS = {
+  '2026-01-01': 'วันขึ้นปีใหม่', '2026-01-02': 'วันหยุดพิเศษ (ปีใหม่)', '2026-03-03': 'วันมาฆบูชา', '2026-04-06': 'วันจักรี',
+  '2026-04-13': 'วันสงกรานต์', '2026-04-14': 'วันสงกรานต์', '2026-04-15': 'วันสงกรานต์', '2026-05-04': 'วันฉัตรมงคล',
+  '2026-05-11': 'วันพืชมงคล', '2026-05-31': 'วันวิสาขบูชา', '2026-06-01': 'ชดเชยวันวิสาขบูชา', '2026-06-03': 'วันเฉลิมฯ พระราชินี',
+  '2026-07-28': 'วันเฉลิมฯ ร.10', '2026-07-29': 'วันอาสาฬหบูชา', '2026-07-30': 'วันเข้าพรรษา', '2026-08-12': 'วันแม่แห่งชาติ',
+  '2026-10-13': 'วันคล้ายวันสวรรคต ร.9', '2026-10-23': 'วันปิยมหาราช', '2026-12-05': 'วันพ่อแห่งชาติ', '2026-12-07': 'ชดเชยวันพ่อแห่งชาติ',
+  '2026-12-10': 'วันรัฐธรรมนูญ', '2026-12-31': 'วันสิ้นปี',
+  '2027-01-01': 'วันขึ้นปีใหม่', '2027-02-21': 'วันมาฆบูชา', '2027-02-22': 'ชดเชยวันมาฆบูชา', '2027-04-06': 'วันจักรี',
+  '2027-04-13': 'วันสงกรานต์', '2027-04-14': 'วันสงกรานต์', '2027-04-15': 'วันสงกรานต์', '2027-05-04': 'วันฉัตรมงคล',
+  '2027-05-20': 'วันวิสาขบูชา', '2027-06-03': 'วันเฉลิมฯ พระราชินี', '2027-07-18': 'วันอาสาฬหบูชา', '2027-07-19': 'วันเข้าพรรษา',
+  '2027-07-28': 'วันเฉลิมฯ ร.10', '2027-08-12': 'วันแม่แห่งชาติ', '2027-10-13': 'วันคล้ายวันสวรรคต ร.9', '2027-10-23': 'วันปิยมหาราช',
+  '2027-10-25': 'ชดเชยวันปิยมหาราช', '2027-12-05': 'วันพ่อแห่งชาติ', '2027-12-06': 'ชดเชยวันพ่อแห่งชาติ', '2027-12-10': 'วันรัฐธรรมนูญ',
+  '2027-12-31': 'วันสิ้นปี'
+};
+function calHoliday(idx) { return TH_HOLIDAYS[dateToInputStr(dateFromIndex(idx))] || null; }
+
+// สถานะปฏิทิน (ใช้ร่วมกันทุกหน้า): วันที่ที่กำลังดู + มุมมอง
+const cal = { anchor: null, mode: lsGet('cal_mode', 'month') };
+const CAL_MODES = [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['list', 'รายการ']];
+function calOpts() { return { extra: true, hol: true, done: true, color: 'act', expand: false, ...(lsGet('cal_opts', {}) || {}) }; }
+function calSetOpt(k, v) { const o = calOpts(); o[k] = v; lsSet('cal_opts', o); reRenderWithScroll(); }
+function calIsOn(scope) { return lsGet('viewmode_' + scope, 'gantt') === 'cal'; }
+function calAnchor() { if (cal.anchor == null) cal.anchor = todayBangkokIndex(); return cal.anchor; }
+function calDow(idx) { return dateFromIndex(idx).getUTCDay(); }   // 0 = อาทิตย์
+function calMonthStart(idx) { const d = dateFromIndex(idx); return indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))); }
+function calMonthEnd(idx) { const d = dateFromIndex(idx); return indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0))); }
+function calShortDate(idx) { const d = dateFromIndex(idx); return `${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]}`; }
+function calMin(t) { const m = String(t || '').match(/^(\d{1,2}):(\d{2})/); return m ? Math.min(1439, +m[1] * 60 + +m[2]) : null; }
+function calHM(min) { min = Math.max(0, Math.min(1439, Math.round(min))); return String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0'); }
+const CAL_PROJ_COLORS = ['#3B82F6', '#E5484D', '#22A06B', '#F59E0B', '#8B5CF6', '#06B6D4', '#EC4899', '#0F766E', '#A16207', '#64748B'];
+function calProjColor(p) { if (p.color) return p.color; const i = state.projects.indexOf(p); return CAL_PROJ_COLORS[(i < 0 ? 0 : i) % CAL_PROJ_COLORS.length]; }
+
+// ปุ่มสลับ 📊 Gantt | 📅 ปฏิทิน
+function calToggle(scope) {
+  const on = calIsOn(scope);
+  const w = document.createElement('div'); w.className = 'cal-toggle';
+  w.innerHTML = `<button type="button" data-v="gantt" class="${on ? '' : 'on'}" title="มุมมองตาราง Gantt">📊 Gantt</button><button type="button" data-v="cal" class="${on ? 'on' : ''}" title="มุมมองปฏิทินแบบ Google Calendar">📅 ปฏิทิน</button>`;
+  w.querySelectorAll('button').forEach(b => b.onclick = () => { lsSet('viewmode_' + scope, b.dataset.v); render(); });
+  return w;
+}
+
+// ---------- รวบรวมงานที่จะแสดง ----------
+// projects: รายการโครงการ · rowOk(p, d, r): แถวนี้แสดงไหม · flt: ตัวกรองเพิ่ม (types, done)
+function calCollect(projects, rowOk, flt) {
+  const o = calOpts(), today = todayBangkokIndex(), items = [];
+  const colorMode = flt && flt.color ? flt.color : o.color;
+  const showDone = flt && flt.done != null ? flt.done : o.done;
+  const showExtra = flt && flt.extra != null ? flt.extra : o.extra;
+  const types = flt && flt.types;   // { task, meeting, note }
+  const q = (searchQuery || '').toLowerCase();
+  const pass = (a) => {
+    if (!showDone && a.completed) return false;
+    if (onlyPending && (a.type !== 'task' || a.completed)) return false;
+    if (q && !((a.label || '') + ' ' + (a.remark || '')).toLowerCase().includes(q)) return false;
+    if (types) { const t = a.type === 'task' ? 'task' : a.type === 'meeting' ? 'meeting' : 'note'; if (!types[t]) return false; }
+    return true;
+  };
+  const mk = (a, p, d, r, extra) => {
+    let color = colorMode === 'proj' ? calProjColor(p) : (a.color || (extra ? '#64748B' : '#94A3B8'));
+    let icon = '', st = '';
+    if (a.type === 'task') {
+      if (a.completed) { icon = fuWaiting(a) ? '📮' : '✓'; st = fuWaiting(a) ? 'รอติดตามผล' : 'เสร็จแล้ว'; }
+      else if (a.end < today) { icon = '🚨'; st = 'เลยกำหนด'; if (colorMode !== 'proj') color = '#EF4444'; }
+      else if (a.end === today) { icon = '🔥'; st = 'ครบกำหนดวันนี้'; if (colorMode !== 'proj') color = '#F59E0B'; }
+    }
+    if (a.type === 'meeting') icon = (MEETING_ICONS[a.meetingKind] || '📅');
+    if (a.seriesId) icon = '🔁' + icon;
+    if (extra) icon = '📝' + icon;
+    const sMin = a.allDay === false ? calMin(a.startTime) : null;
+    let eMin = a.allDay === false ? calMin(a.endTime) : null;
+    if (sMin != null && (eMin == null || eMin <= sMin)) eMin = Math.min(1440, sMin + 60);
+    const timed = sMin != null && a.start === a.end;
+    const path = `${p.name}${d ? ' › ' + d.name + ' › ' + r.name : ' › 📝 งานเพิ่มเติม (เฉพาะ To-do)'}`;
+    const title = `${a.label}\n📊 ${path}\n🗓 ${calShortDate(a.start)}${a.end !== a.start ? ' – ' + calShortDate(a.end) : ''}${sMin != null ? ' · ' + (a.startTime || '') + '–' + (a.endTime || '') + ' น.' : ''}${st ? '\n' + st : ''}${a.location ? '\n📍 ' + a.location : ''}${a.remark ? '\n📝 ' + a.remark : ''}`;
+    items.push({ a, p, d, r, extra: !!extra, start: a.start, end: a.end, label: a.label || '(ไม่มีชื่อ)', color, icon, timed, sMin, eMin, done: !!(a.type === 'task' && a.completed), title, path });
+  };
+  projects.forEach(p => {
+    (p.departments || []).forEach(d => {
+      if (isHid(d)) return;
+      (d.rows || []).forEach(r => {
+        if (isHid(r) || (rowOk && !rowOk(p, d, r))) return;
+        (r.activities || []).forEach(a => { if (pass(a)) mk(a, p, d, r, false); });
+      });
+    });
+    if (showExtra) (p.extraTasks || []).forEach(a => { if (pass(a)) mk(a, p, null, null, true); });
+  });
+  return items;
+}
+function calHolidayItems(s, e) {
+  const out = [];
+  for (let i = s; i <= e; i++) { const h = calHoliday(i); if (h) out.push({ hol: true, start: i, end: i, label: h, color: '#94A3B8', icon: '🎌', timed: false, title: '🎌 ' + h }); }
+  return out;
+}
+
+// ---------- หาออบเจกต์จริง (ข้อมูลอาจถูกโหลดใหม่ระหว่างนี้) ----------
+function calLiveAct(it) {
+  const lp = state.projects.find(x => x.id === it.p.id); if (!lp) return null;
+  if (it.extra) return (lp.extraTasks || []).find(x => x.id === it.a.id) || null;
+  const row = findLiveRow(it.p.id, it.d.id, it.r.id); return row ? row.activities.find(x => x.id === it.a.id) || null : null;
+}
+function calOpenItem(it) {
+  if (it.hol) return;
+  if (it.extra) tdOpenProjCard(it.p.id, null, null, it.a.id);
+  else openActivityModal(it.p.id, it.d.id, it.r.id, it.a.id);
+}
+// เลื่อนงาน dDays วัน (และ/หรือ เปลี่ยนเวลา) + เลิกทำได้
+async function calMoveItem(it, dDays, newStartMin) {
+  if (READ_ONLY || it.hol) return;
+  const a = calLiveAct(it); if (!a) return;
+  const prev = { start: a.start, end: a.end, startTime: a.startTime, endTime: a.endTime };
+  a.start += dDays; a.end += dDays;
+  if (newStartMin != null && a.allDay === false && a.startTime) {
+    const s0 = calMin(a.startTime), e0 = calMin(a.endTime);
+    const dur = e0 != null && e0 > s0 ? e0 - s0 : 60;
+    const ns = Math.max(0, Math.min(1440 - dur, newStartMin));
+    a.startTime = calHM(ns); if (a.endTime || e0 != null) a.endTime = calHM(ns + dur);
+  }
+  a.updatedBy = USER_NAME; a.updatedAt = Date.now();
+  await persistAndRender();
+  const label = a.label;
+  showToast(`↔ ย้าย "${label}" ไป ${calShortDate(a.start)}${a.start !== a.end ? ' – ' + calShortDate(a.end) : ''}${newStartMin != null && a.startTime ? ' ' + a.startTime + ' น.' : ''}`, 'เลิกทำ', async () => {
+    const b = calLiveAct(it); if (!b) return;
+    Object.keys(prev).forEach(k => { if (prev[k] === undefined) delete b[k]; else b[k] = prev[k]; });
+    b.updatedBy = USER_NAME; b.updatedAt = Date.now();
+    await persistAndRender();
+  });
+}
+// คลิกช่องว่าง = เพิ่มกิจกรรมในวันนั้น (เลือกโครงการ/หน่วยงาน/แถว ถ้ามีหลายที่)
+function calAdd(dayIdx, projects) {
+  if (READ_ONLY) return;
+  const ps = projects.filter(p => (p.departments || []).some(d => !isHid(d) && d.rows.length));
+  if (!ps.length) { showToast('ยังไม่มีหน่วยงาน/แถวให้เพิ่มกิจกรรม — เพิ่มหน่วยงานในหน้าโครงการก่อน'); return; }
+  const preset = { start: dayIdx, end: dayIdx };
+  if (ps.length === 1) {
+    const ds = ps[0].departments.filter(d => !isHid(d) && d.rows.length);
+    if (ds.length === 1 && ds[0].rows.length === 1) { openActivityModal(ps[0].id, ds[0].id, ds[0].rows[0].id, null, preset); return; }
+  }
+  const last = lsGet('cal_add_last', {}) || {};
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal';
+  const d0 = dateFromIndex(dayIdx);
+  m.innerHTML = `<h3>+ เพิ่มกิจกรรม · ${THAI_WEEKDAY_SHORT[d0.getUTCDay()]}. ${d0.getUTCDate()} ${THAI_MONTHS_FULL[d0.getUTCMonth()]} ${d0.getUTCFullYear() + 543}</h3>
+    <p class="modal-desc">เลือกว่าจะเพิ่มไว้ที่แถวไหนในแผนงาน แล้วกรอกรายละเอียดในหน้าถัดไป</p>
+    ${ps.length > 1 ? `<label class="field-label">โครงการ</label><select id="caP" class="text-input">${ps.map(p => `<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('')}</select>` : ''}
+    <div class="td-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+      <div><label class="field-label">หน่วยงาน</label><select id="caD" class="text-input"></select></div>
+      <div><label class="field-label">แถว (ชื่องาน)</label><select id="caR" class="text-input"></select></div></div>
+    <div class="modal-actions"><button class="ghost-btn" id="caX">ยกเลิก</button><button class="primary-btn" id="caOk">ถัดไป ›</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  const pS = m.querySelector('#caP'), dS = m.querySelector('#caD'), rS = m.querySelector('#caR');
+  const curP = () => ps.find(p => p.id === (pS ? pS.value : ps[0].id));
+  const fillR = () => { const d = curP().departments.find(x => x.id === dS.value); rS.innerHTML = d ? d.rows.map(r => `<option value="${r.id}">${escapeHTML(r.name)}</option>`).join('') : ''; if (last.rid && d && d.rows.some(r => r.id === last.rid)) rS.value = last.rid; };
+  const fillD = () => { const ds = curP().departments.filter(d => !isHid(d) && d.rows.length); dS.innerHTML = ds.map(d => `<option value="${d.id}">${escapeHTML(d.name)}</option>`).join(''); if (last.did && ds.some(d => d.id === last.did)) dS.value = last.did; fillR(); };
+  if (pS) { if (last.pid && ps.some(p => p.id === last.pid)) pS.value = last.pid; pS.onchange = fillD; }
+  dS.onchange = fillR; fillD();
+  m.querySelector('#caX').onclick = () => closeModal(ov);
+  m.querySelector('#caOk').onclick = () => {
+    const p = curP(); if (!dS.value || !rS.value) return;
+    lsSet('cal_add_last', { pid: p.id, did: dS.value, rid: rS.value });
+    closeModal(ov); openActivityModal(p.id, dS.value, rS.value, null, preset);
+  };
+}
+
+// ---------- ป๊อปอัป "+n รายการ" ----------
+let calPopEl = null;
+function calClosePop() { if (calPopEl) { calPopEl.remove(); calPopEl = null; } }
+function calShowDayPop(anchorEl, dayIdx, list) {
+  calClosePop();
+  const d0 = dateFromIndex(dayIdx);
+  const pop = document.createElement('div'); pop.className = 'cal-pop';
+  pop.innerHTML = `<div class="cal-pop-h"><span>${THAI_WEEKDAY_SHORT[d0.getUTCDay()]}. ${d0.getUTCDate()} ${THAI_MONTHS_SHORT[d0.getUTCMonth()]} ${d0.getUTCFullYear() + 543}</span><button type="button" aria-label="ปิด">✕</button></div><div class="cal-pop-list"></div>`;
+  const box = pop.querySelector('.cal-pop-list');
+  list.forEach(it => {
+    const row = document.createElement('div'); row.className = 'cal-pop-it' + (it.done ? ' done' : '') + (it.hol ? ' hol' : '');
+    row.innerHTML = `<i style="background:${it.color}"></i><span class="t">${it.timed ? `<b>${escapeHTML(it.a.startTime)}</b> ` : ''}${escapeHTML(it.icon ? it.icon + ' ' : '')}${escapeHTML(it.label)}${it.start !== it.end ? ` <small>(${calShortDate(it.start)} – ${calShortDate(it.end)})</small>` : ''}</span>${it.path ? `<small class="p">${escapeHTML(it.path)}</small>` : ''}`;
+    row.title = it.title;
+    if (!it.hol) row.onclick = () => { calClosePop(); calOpenItem(it); };
+    box.appendChild(row);
+  });
+  pop.querySelector('.cal-pop-h button').onclick = calClosePop;
+  document.body.appendChild(pop); calPopEl = pop;
+  const r = anchorEl.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  pop.style.left = Math.max(8, Math.min(window.innerWidth - pw - 8, r.left + r.width / 2 - pw / 2)) + 'px';
+  pop.style.top = Math.max(8, Math.min(window.innerHeight - ph - 8, r.top - 10)) + 'px';
+}
+document.addEventListener('mousedown', (e) => { if (calPopEl && !calPopEl.contains(e.target)) calClosePop(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') calClosePop(); });
+
+// ---------- จัดแถว (lane) ของงานในช่วงวัน ----------
+function calSortItems(list) {
+  return list.slice().sort((x, y) => (y.hol ? 1 : 0) - (x.hol ? 1 : 0) || (x.timed ? 1 : 0) - (y.timed ? 1 : 0) || x.start - y.start || (y.end - y.start) - (x.end - x.start) || (x.sMin || 0) - (y.sMin || 0) || x.label.localeCompare(y.label, 'th'));
+}
+function calLanes(list, s, e) {
+  const lanes = [], out = [];
+  calSortItems(list).forEach(it => {
+    const a = Math.max(s, it.start), b = Math.min(e, it.end);
+    let li = lanes.findIndex(L => L.every(([x, y]) => b < x || a > y));
+    if (li < 0) { li = lanes.length; lanes.push([]); }
+    lanes[li].push([a, b]); out.push({ it, a, b, lane: li });
+  });
+  return { placed: out, n: lanes.length };
+}
+
+// ---------- ลากเลื่อนงาน (ใช้ร่วมกันทุกมุมมอง) ----------
+// el: องค์ประกอบงาน · getTarget(ev) -> { day, min? } · onDone(dDays, newMin)
+function calMakeDraggable(el, it, getTarget, opts = {}) {
+  el.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    const canDrag = !READ_ONLY && !it.hol;
+    const t0 = getTarget(e); let moved = false, last = t0, tip = null;
+    const sx = e.clientX, sy = e.clientY;
+    const move = (ev) => {
+      if (!canDrag) return;
+      if (!moved && Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) < 5) return;
+      if (!moved) { moved = true; el.classList.add('cal-dragging'); document.body.classList.add('cal-drag-on'); tip = document.createElement('div'); tip.className = 'cal-drag-tip'; document.body.appendChild(tip); }
+      const t = getTarget(ev); if (t) last = t;
+      document.querySelectorAll('.cal-drop').forEach(x => x.classList.remove('cal-drop'));
+      if (last && last.cell) last.cell.classList.add('cal-drop');
+      if (last && t0) {
+        const dd = last.day - t0.day;
+        const nm = opts.timeDrag && last.min != null && t0.min != null ? Math.round(((it.sMin || 0) + (last.min - t0.min)) / 15) * 15 : null;
+        tip.textContent = `${calShortDate(it.start + dd)}${it.end !== it.start ? ' – ' + calShortDate(it.end + dd) : ''}${nm != null ? ' · ' + calHM(nm) + ' น.' : ''}${dd ? ` (${dd > 0 ? '+' : ''}${dd} วัน)` : ''}`;
+      }
+      tip.style.left = (ev.clientX + 14) + 'px'; tip.style.top = (ev.clientY + 12) + 'px';
+    };
+    const up = () => {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up);
+      document.querySelectorAll('.cal-drop').forEach(x => x.classList.remove('cal-drop'));
+      document.body.classList.remove('cal-drag-on'); el.classList.remove('cal-dragging'); if (tip) tip.remove();
+      if (!moved) { calOpenItem(it); return; }
+      if (!last || !t0) return;
+      const dd = last.day - t0.day;
+      let nm = null;
+      if (opts.timeDrag && last.min != null && t0.min != null) { nm = Math.round(((it.sMin || 0) + (last.min - t0.min)) / 15) * 15; if (nm === it.sMin) nm = null; }
+      if (dd || nm != null) calMoveItem(it, dd, nm);
+    };
+    document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+  });
+}
+function calCellAt(ev, sel) {
+  for (const el of document.elementsFromPoint(ev.clientX, ev.clientY)) { const c = el.closest(sel); if (c) return c; }
+  return null;
+}
+function calDayFromPoint(ev) {
+  const c = calCellAt(ev, '[data-cday]');
+  return c ? { day: +c.dataset.cday, cell: c } : null;
+}
+
+// ---------- ตัวสร้างปฏิทิน ----------
+// opts: { projects, rowOk, flt, multi (หลายโครงการ), showColorToggle, sideOpts (ตัวเลือกอยู่ในแถบซ้ายแล้ว) }
+function renderCalendar(opts) {
+  const o = calOpts();
+  const wrap = document.createElement('div'); wrap.className = 'cal-wrap';
+  const mode = CAL_MODES.some(m => m[0] === cal.mode) ? cal.mode : 'month';
+  const A = calAnchor();
+  // ช่วงวันที่ของมุมมอง
+  let s, e, title;
+  const ad = dateFromIndex(A);
+  if (mode === 'month' || mode === 'list') { s = calMonthStart(A); e = calMonthEnd(A); title = `${THAI_MONTHS_FULL[ad.getUTCMonth()]} ${ad.getUTCFullYear() + 543}`; }
+  else if (mode === 'week') { s = A - calDow(A); e = s + 6; const a1 = dateFromIndex(s), a2 = dateFromIndex(e); title = a1.getUTCMonth() === a2.getUTCMonth() ? `${a1.getUTCDate()} – ${a2.getUTCDate()} ${THAI_MONTHS_FULL[a2.getUTCMonth()]} ${a2.getUTCFullYear() + 543}` : `${calShortDate(s)} – ${calShortDate(e)} ${a2.getUTCFullYear() + 543}`; }
+  else { s = e = A; title = `วัน${THAI_WEEKDAY_FULL[ad.getUTCDay()]}ที่ ${ad.getUTCDate()} ${THAI_MONTHS_FULL[ad.getUTCMonth()]} ${ad.getUTCFullYear() + 543}`; }
+  const gridS = mode === 'month' ? s - calDow(s) : s;
+  const gridE = mode === 'month' ? e + (6 - calDow(e)) : e;
+
+  // แถบควบคุม
+  const head = document.createElement('div'); head.className = 'cal-head';
+  head.innerHTML = `<button type="button" class="ghost-btn cal-today">วันนี้</button><button type="button" class="ghost-btn cal-nav" data-d="-1" aria-label="ก่อนหน้า">‹</button><button type="button" class="ghost-btn cal-nav" data-d="1" aria-label="ถัดไป">›</button><h3 class="cal-title">${escapeHTML(title)}</h3><span style="flex:1"></span>
+    <div class="cal-seg">${CAL_MODES.map(([k, t]) => `<button type="button" data-m="${k}" class="${mode === k ? 'on' : ''}">${t}</button>`).join('')}</div>`;
+  head.querySelector('.cal-today').onclick = () => { cal.anchor = todayBangkokIndex(); reRenderWithScroll(); };
+  head.querySelectorAll('.cal-nav').forEach(b => b.onclick = () => {
+    const dir = +b.dataset.d;
+    if (mode === 'month' || mode === 'list') { const d = dateFromIndex(A); cal.anchor = indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + dir, 1))); }
+    else cal.anchor = A + dir * (mode === 'week' ? 7 : 1);
+    reRenderWithScroll();
+  });
+  head.querySelectorAll('.cal-seg button').forEach(b => b.onclick = () => { cal.mode = b.dataset.m; lsSet('cal_mode', cal.mode); reRenderWithScroll(); });
+  wrap.appendChild(head);
+
+  if (!opts.sideOpts) {
+    const opt = document.createElement('div'); opt.className = 'cal-optbar';
+    const ck = (k, label, tip) => `<label class="cal-ck" title="${tip}"><input type="checkbox" data-k="${k}" ${o[k] ? 'checked' : ''}> ${label}</label>`;
+    opt.innerHTML = `${opts.multi ? `<span class="cal-ck-l">สี:</span><div class="cal-seg sm"><button type="button" data-c="act" class="${o.color !== 'proj' ? 'on' : ''}">สีกิจกรรม</button><button type="button" data-c="proj" class="${o.color === 'proj' ? 'on' : ''}">สีโครงการ</button></div>` : ''}
+      ${ck('done', '✅ งานที่เสร็จแล้ว', 'แสดงกำหนดการที่ติ๊กเสร็จแล้ว')}${ck('extra', '📝 งานเพิ่มเติม (To-do)', 'งานที่เพิ่มเฉพาะในหน้า To-do')}${ck('hol', '🎌 วันหยุดราชการ', 'แสดงวันหยุดราชการไทย')}
+      ${mode === 'month' ? ck('expand', '↕ แสดงทุกรายการ', 'ขยายช่องให้เห็นทุกงาน แทน "+n รายการ"') : ''}`;
+    opt.querySelectorAll('input[data-k]').forEach(i => i.onchange = () => calSetOpt(i.dataset.k, i.checked));
+    opt.querySelectorAll('[data-c]').forEach(b => b.onclick = () => calSetOpt('color', b.dataset.c));
+    wrap.appendChild(opt);
+  } else if (mode === 'month') {
+    const opt = document.createElement('div'); opt.className = 'cal-optbar';
+    opt.innerHTML = `<label class="cal-ck"><input type="checkbox" ${o.expand ? 'checked' : ''}> ↕ แสดงทุกรายการ</label>`;
+    opt.querySelector('input').onchange = (ev) => calSetOpt('expand', ev.target.checked);
+    wrap.appendChild(opt);
+  }
+
+  // งานในช่วง
+  const all = calCollect(opts.projects, opts.rowOk, opts.flt).filter(it => it.end >= gridS && it.start <= gridE);
+  const hol = (opts.flt && opts.flt.hol != null ? opts.flt.hol : o.hol) ? calHolidayItems(gridS, gridE) : [];
+  const items = all.concat(hol);
+  searchHits = all.length;
+  const today = todayBangkokIndex();
+  const isWE = (i) => { const w = calDow(i); return w === 0 || w === 6; };
+  const evEl = (it, cls) => {
+    const el = document.createElement('div');
+    el.className = 'cal-ev ' + cls + (it.done ? ' done' : '') + (it.hol ? ' hol' : '') + (it.extra ? ' xt' : '');
+    el.style.setProperty('--ec', it.color);
+    el.title = it.title + (it.hol || READ_ONLY ? '' : '\n\nคลิก = เปิด/แก้ไข · ลาก = เลื่อนวัน');
+    return el;
+  };
+  const evText = (it) => `${it.icon ? `<span class="ic">${escapeHTML(it.icon)}</span>` : ''}${escapeHTML(it.label)}`;
+
+  if (mode === 'month') {
+    const grid = document.createElement('div'); grid.className = 'cal-month';
+    grid.innerHTML = `<div class="cal-dow">${[0, 1, 2, 3, 4, 5, 6].map(i => `<div>${THAI_WEEKDAY_SHORT[i]}.</div>`).join('')}</div>`;
+    const LH = 21, TOP = 26;
+    for (let ws = gridS; ws <= gridE; ws += 7) {
+      const we = ws + 6;
+      const wk = items.filter(it => it.end >= ws && it.start <= we);
+      const { placed, n } = calLanes(wk, ws, we);
+      const maxL = o.expand ? Math.max(n, 1) : 3;
+      const anyOver = !o.expand && n > maxL;
+      const showL = maxL;
+      const row = document.createElement('div'); row.className = 'cal-week';
+      row.style.height = (TOP + (maxL + (anyOver ? 1 : 0)) * LH + 6) + 'px';   // มีงานล้น: เพิ่มบรรทัด "+n รายการ"
+      for (let k = 0; k < 7; k++) {
+        const i = ws + k, d = dateFromIndex(i);
+        const c = document.createElement('div');
+        c.className = 'cal-day' + (isWE(i) ? ' we' : '') + (i < s || i > e ? ' other' : '') + (i === today ? ' today' : '') + (calHoliday(i) && hol.length ? ' holiday' : '');
+        c.dataset.cday = i;
+        c.innerHTML = `<div class="cal-dn"><span>${d.getUTCDate() === 1 ? d.getUTCDate() + ' ' + THAI_MONTHS_SHORT[d.getUTCMonth()] : d.getUTCDate()}</span></div>`;
+        c.title = READ_ONLY ? '' : 'คลิกช่องว่างเพื่อเพิ่มกิจกรรมวันนี้';
+        c.onclick = (ev) => { if (ev.target === c || ev.target.closest('.cal-dn')) { if (ev.target.closest('.cal-dn')) { cal.anchor = i; cal.mode = 'day'; lsSet('cal_mode', 'day'); reRenderWithScroll(); return; } calAdd(i, opts.projects); } };
+        c.querySelector('.cal-dn').title = 'ดูวันนี้แบบรายชั่วโมง';
+        const hidden = placed.filter(x => x.a <= i && x.b >= i && x.lane >= showL);
+        if (hidden.length) {
+          const more = document.createElement('button'); more.type = 'button'; more.className = 'cal-more';
+          more.textContent = `+${hidden.length} รายการ`; more.style.top = (TOP + showL * LH) + 'px';
+          const dayList = calSortItems(placed.filter(x => x.a <= i && x.b >= i).map(x => x.it));
+          more.onclick = (ev) => { ev.stopPropagation(); calShowDayPop(more, i, dayList); };
+          more.onmouseenter = () => { clearTimeout(more._t); more._t = setTimeout(() => calShowDayPop(more, i, dayList), 350); };
+          more.onmouseleave = () => clearTimeout(more._t);
+          c.appendChild(more);
+        }
+        row.appendChild(c);
+      }
+      placed.filter(x => x.lane < showL).forEach(x => {
+        const it = x.it;
+        const bar = !it.timed;
+        const el = evEl(it, bar ? 'bar' : 'dot');
+        if (bar && it.start < x.a) el.classList.add('cont-l');
+        if (bar && it.end > x.b) el.classList.add('cont-r');
+        el.style.left = `calc(${(x.a - ws) / 7 * 100}% + 3px)`;
+        el.style.width = `calc(${(x.b - x.a + 1) / 7 * 100}% - 6px)`;
+        el.style.top = (TOP + x.lane * LH) + 'px';
+        el.innerHTML = bar ? evText(it) : `<i></i><b>${escapeHTML(it.a.startTime)}</b> ${evText(it)}`;
+        calMakeDraggable(el, it, calDayFromPoint);
+        row.appendChild(el);
+      });
+      grid.appendChild(row);
+    }
+    wrap.appendChild(grid);
+  } else if (mode === 'week' || mode === 'day') {
+    const days = []; for (let i = s; i <= e; i++) days.push(i);
+    const box = document.createElement('div'); box.className = 'cal-tg' + (mode === 'day' ? ' one' : '');
+    box.style.setProperty('--nd', days.length);
+    // หัววัน
+    const hd = document.createElement('div'); hd.className = 'cal-tg-head';
+    hd.innerHTML = `<div class="cal-tg-gut"></div>` + days.map(i => { const d = dateFromIndex(i); return `<div class="cal-tg-dh${i === today ? ' today' : ''}${isWE(i) ? ' we' : ''}" data-day="${i}"><small>${THAI_WEEKDAY_SHORT[d.getUTCDay()]}.</small><span>${d.getUTCDate()}</span>${hol.length && calHoliday(i) ? `<em>🎌 ${escapeHTML(calHoliday(i))}</em>` : ''}</div>`; }).join('');
+    hd.querySelectorAll('.cal-tg-dh').forEach(x => { x.title = 'ดูวันนี้แบบรายชั่วโมง'; x.onclick = () => { cal.anchor = +x.dataset.day; cal.mode = 'day'; lsSet('cal_mode', 'day'); reRenderWithScroll(); }; });
+    box.appendChild(hd);
+    // แถวงานทั้งวัน / หลายวัน
+    const ad2 = items.filter(it => !it.timed && !it.hol);
+    const { placed, n } = calLanes(ad2, s, e);
+    const allDay = document.createElement('div'); allDay.className = 'cal-tg-allday';
+    allDay.style.height = (Math.max(1, n) * 22 + 6) + 'px';
+    allDay.innerHTML = `<div class="cal-tg-gut"><small>ทั้งวัน</small></div>` + days.map(i => `<div class="cal-tg-adcell${isWE(i) ? ' we' : ''}" data-cday="${i}"></div>`).join('');
+    allDay.querySelectorAll('.cal-tg-adcell').forEach(c => { c.title = READ_ONLY ? '' : 'คลิกเพื่อเพิ่มกิจกรรม'; c.onclick = (ev) => { if (ev.target === c) calAdd(+c.dataset.cday, opts.projects); }; });
+    placed.forEach(x => {
+      const it = x.it, el = evEl(it, 'bar');
+      if (it.start < x.a) el.classList.add('cont-l'); if (it.end > x.b) el.classList.add('cont-r');
+      el.style.left = `calc(56px + (100% - 56px) * ${(x.a - s) / days.length} + 2px)`;
+      el.style.width = `calc((100% - 56px) * ${(x.b - x.a + 1) / days.length} - 4px)`;
+      el.style.top = (3 + x.lane * 22) + 'px';
+      el.innerHTML = evText(it);
+      calMakeDraggable(el, it, calDayFromPoint);
+      allDay.appendChild(el);
+    });
+    box.appendChild(allDay);
+    // ตารางเวลา
+    const HH = 44;
+    const sc = document.createElement('div'); sc.className = 'cal-tg-scroll';
+    const body = document.createElement('div'); body.className = 'cal-tg-body'; body.style.height = (24 * HH) + 'px';
+    body.innerHTML = `<div class="cal-tg-gut">${Array.from({ length: 24 }, (_, h) => `<div class="cal-tg-hr" style="top:${h * HH}px">${h ? String(h).padStart(2, '0') + ':00' : ''}</div>`).join('')}</div>`
+      + days.map(i => `<div class="cal-tg-col${isWE(i) ? ' we' : ''}${i === today ? ' today' : ''}" data-cday="${i}">${Array.from({ length: 24 }, (_, h) => `<div class="cal-tg-line" style="top:${h * HH}px"></div>`).join('')}</div>`).join('');
+    const minFromEv = (ev, col) => { const r = col.getBoundingClientRect(); return Math.max(0, Math.min(1439, (ev.clientY - r.top) / HH * 60)); };
+    const tgTarget = (ev) => { const c = calCellAt(ev, '.cal-tg-col'); return c ? { day: +c.dataset.cday, min: minFromEv(ev, c), cell: c } : null; };
+    body.querySelectorAll('.cal-tg-col').forEach(col => {
+      col.title = READ_ONLY ? '' : 'คลิกเพื่อเพิ่มกิจกรรม';
+      col.onclick = (ev) => { if (ev.target === col || ev.target.classList.contains('cal-tg-line')) calAdd(+col.dataset.cday, opts.projects); };
+      const i = +col.dataset.cday;
+      // งานที่มีเวลา: ซ้อนกันให้แบ่งคอลัมน์
+      const ts = items.filter(it => it.timed && it.start === i).sort((x, y) => x.sMin - y.sMin || y.eMin - x.eMin);
+      const groups = []; let g = null, gEnd = -1;
+      ts.forEach(it => { if (!g || it.sMin >= gEnd) { g = []; groups.push(g); gEnd = it.eMin; } else gEnd = Math.max(gEnd, it.eMin); g.push(it); });
+      groups.forEach(gr => {
+        const cols = [];
+        gr.forEach(it => { let ci = cols.findIndex(endM => endM <= it.sMin); if (ci < 0) { ci = cols.length; cols.push(0); } cols[ci] = it.eMin; it._ci = ci; });
+        gr.forEach(it => {
+          const el = evEl(it, 'tm');
+          el.style.top = (it.sMin / 60 * HH) + 'px';
+          el.style.height = Math.max(20, (it.eMin - it.sMin) / 60 * HH - 2) + 'px';
+          el.style.left = `calc(${it._ci / cols.length * 100}% + 2px)`;
+          el.style.width = `calc(${100 / cols.length}% - 4px)`;
+          el.innerHTML = `<b>${escapeHTML(it.a.startTime)}${it.a.endTime ? '–' + escapeHTML(it.a.endTime) : ''}</b><div>${evText(it)}</div>`;
+          calMakeDraggable(el, it, tgTarget, { timeDrag: true });
+          col.appendChild(el);
+        });
+      });
+      if (i === today) { const now = new Date(Date.now() + 7 * 3600e3); const nl = document.createElement('div'); nl.className = 'cal-now'; nl.style.top = ((now.getUTCHours() * 60 + now.getUTCMinutes()) / 60 * HH) + 'px'; col.appendChild(nl); }
+    });
+    sc.appendChild(body); box.appendChild(sc);
+    wrap.appendChild(box);
+    const firstMin = Math.min(8 * 60, ...items.filter(it => it.timed && it.start >= s && it.start <= e).map(it => it.sMin));
+    requestAnimationFrame(() => { sc.scrollTop = Math.max(0, firstMin / 60 * HH - 10); });
+  } else {
+    // รายการ (Agenda): เรียงตามวันเริ่ม ของเดือนนี้ + งานที่ต่อเนื่องจากเดือนก่อน
+    const box = document.createElement('div'); box.className = 'cal-list';
+    const ongoing = calSortItems(items.filter(it => it.start < s && it.end >= s && !it.hol));
+    const inMonth = items.filter(it => it.start >= s && it.start <= e);
+    const byDay = new Map();
+    calSortItems(inMonth).sort((x, y) => x.start - y.start || (x.timed ? 1 : 0) - (y.timed ? 1 : 0) || (x.sMin || 0) - (y.sMin || 0)).forEach(it => { if (!byDay.has(it.start)) byDay.set(it.start, []); byDay.get(it.start).push(it); });
+    const rowHTML = (it) => `<div class="cal-li${it.done ? ' done' : ''}${it.hol ? ' hol' : ''}" data-k="${items.indexOf(it)}" title="${escapeHTML(it.title)}"><span class="tm">${it.hol ? 'วันหยุด' : it.timed ? escapeHTML(it.a.startTime + (it.a.endTime ? '–' + it.a.endTime : '')) : it.start !== it.end ? `${calShortDate(it.start)} – ${calShortDate(it.end)}` : 'ทั้งวัน'}</span><i style="background:${it.color}"></i><span class="lb">${evText(it)}</span>${it.path ? `<small>${escapeHTML(it.path)}</small>` : ''}</div>`;
+    let html = '';
+    if (ongoing.length) html += `<div class="cal-lg"><div class="cal-ld"><b class="txt">ต่อเนื่อง</b><small>จากเดือนก่อน</small></div><div class="cal-lr">${ongoing.map(rowHTML).join('')}</div></div>`;
+    [...byDay.keys()].sort((x, y) => x - y).forEach(i => {
+      const d = dateFromIndex(i);
+      html += `<div class="cal-lg${i === today ? ' today' : ''}"><div class="cal-ld"><b>${d.getUTCDate()}</b><small>${THAI_MONTHS_SHORT[d.getUTCMonth()]} · ${THAI_WEEKDAY_SHORT[d.getUTCDay()]}.</small></div><div class="cal-lr">${byDay.get(i).map(rowHTML).join('')}</div></div>`;
+    });
+    box.innerHTML = html || '<div class="empty-hint">ไม่มีงานในเดือนนี้</div>';
+    box.querySelectorAll('.cal-li').forEach(el => { const it = items[+el.dataset.k]; if (it && !it.hol) el.onclick = () => calOpenItem(it); });
+    wrap.appendChild(box);
+  }
+  const foot = document.createElement('div'); foot.className = 'cal-foot';
+  foot.textContent = READ_ONLY ? 'ชี้เมาส์ที่งานเพื่อดูรายละเอียด · คลิกเพื่อเปิด' : 'คลิกงาน = เปิด/แก้ไข · ลากงานไปวันอื่นได้ (สัปดาห์/วัน: ลากขึ้นลงเพื่อเปลี่ยนเวลา) · คลิกช่องว่าง = เพิ่มกิจกรรมวันนั้น · คลิกเลขวันที่ = ดูรายชั่วโมง';
+  wrap.appendChild(foot);
+  setTimeout(() => { const c = document.getElementById('searchCount'); if (c && (searchQuery || onlyPending)) c.textContent = `พบ ${searchHits} งาน`; }, 0);
+  return wrap;
+}
+
+// ---------- แท็บ "📅 ปฏิทินรวม" (ทุกหมวดที่มีสิทธิ์) ----------
+function calAllPrefs() { return { hidden: [], types: { task: true, meeting: true, note: true }, ...(lsGet('calall_prefs', {}) || {}) }; }
+function calAllSet(p) { lsSet('calall_prefs', p); reRenderWithScroll(); }
+function renderCalendarAll() {
+  const root = document.createElement('div');
+  const toolbar = document.createElement('div'); toolbar.className = 'toolbar';
+  toolbar.innerHTML = `<div class="proj-title"><h2>📅 ปฏิทินรวม</h2></div>`;
+  renderToolbarControls(toolbar); root.appendChild(toolbar); root.classList.add('cal-on');
+  const pf = calAllPrefs(), o = calOpts();
+  const hidden = new Set(pf.hidden || []);
+  const cats = ['work', 'extra', 'personal'].filter(can);
+  const projsOf = (c) => state.projects.filter(p => (p.sourceType || 'work') === c);
+  const lay = document.createElement('div'); lay.className = 'cal-layout';
+  const side = document.createElement('div'); side.className = 'cal-side';
+  // ปฏิทินเล็ก
+  const A = calAnchor(), ms = calMonthStart(A), me = calMonthEnd(A), today = todayBangkokIndex();
+  const mini = document.createElement('div'); mini.className = 'cal-card';
+  const ad = dateFromIndex(A);
+  let mh = `<div class="cal-mini-h"><b>${THAI_MONTHS_FULL[ad.getUTCMonth()]} ${ad.getUTCFullYear() + 543}</b><span><button type="button" data-mm="-1">‹</button><button type="button" data-mm="1">›</button></span></div><div class="cal-mini">${[0, 1, 2, 3, 4, 5, 6].map(i => `<b>${THAI_WEEKDAY_SHORT[i]}</b>`).join('')}`;
+  for (let i = ms - calDow(ms); i <= me + (6 - calDow(me)); i++) { const d = dateFromIndex(i); mh += `<button type="button" data-mi="${i}" class="${i === today ? 't' : ''}${i === A ? ' a' : ''}${i < ms || i > me ? ' o' : ''}${calHoliday(i) ? ' h' : ''}" title="${escapeHTML(calHoliday(i) || '')}">${d.getUTCDate()}</button>`; }
+  mini.innerHTML = mh + '</div>';
+  mini.querySelectorAll('[data-mm]').forEach(b => b.onclick = () => { cal.anchor = indexFromDate(new Date(Date.UTC(ad.getUTCFullYear(), ad.getUTCMonth() + +b.dataset.mm, 1))); reRenderWithScroll(); });
+  mini.querySelectorAll('[data-mi]').forEach(b => b.onclick = () => { cal.anchor = +b.dataset.mi; reRenderWithScroll(); });
+  side.appendChild(mini);
+  // โครงการ (แยกตามหมวด)
+  const pc = document.createElement('div'); pc.className = 'cal-card';
+  let h = '';
+  cats.forEach(c => {
+    const ps = projsOf(c); if (!ps.length) return;
+    const onN = ps.filter(p => !hidden.has(p.id)).length;
+    h += `<div class="cal-grp"><label class="cal-ck cal-ck-h"><input type="checkbox" data-cat="${c}" ${onN === ps.length ? 'checked' : ''}> ${escapeHTML(CAT_LABELS[c] || c)} <small>(${onN}/${ps.length})</small></label>`
+      + ps.map(p => `<label class="cal-ck cal-ck-p" style="--pc:${o.color === 'proj' ? calProjColor(p) : '#475569'}"><input type="checkbox" data-pid="${p.id}" ${hidden.has(p.id) ? '' : 'checked'}> <span>${escapeHTML(p.name)}</span><button type="button" class="cal-only" data-only="${p.id}" title="แสดงเฉพาะโครงการนี้">เฉพาะ</button></label>`).join('') + '</div>';
+  });
+  pc.innerHTML = `<div class="cal-card-h">โครงการ</div>${h || '<div class="rc-empty">ยังไม่มีโครงการ</div>'}`;
+  pc.querySelectorAll('[data-cat]').forEach(i => i.indeterminate = (() => { const ps = projsOf(i.dataset.cat); const n = ps.filter(p => !hidden.has(p.id)).length; return n > 0 && n < ps.length; })());
+  pc.querySelectorAll('[data-cat]').forEach(i => i.onchange = () => { const ps = projsOf(i.dataset.cat); ps.forEach(p => { if (i.checked) hidden.delete(p.id); else hidden.add(p.id); }); calAllSet({ ...pf, hidden: [...hidden] }); });
+  pc.querySelectorAll('[data-pid]').forEach(i => i.onchange = () => { if (i.checked) hidden.delete(i.dataset.pid); else hidden.add(i.dataset.pid); calAllSet({ ...pf, hidden: [...hidden] }); });
+  pc.querySelectorAll('[data-only]').forEach(b => b.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); calAllSet({ ...pf, hidden: state.projects.filter(p => p.id !== b.dataset.only).map(p => p.id) }); });
+  side.appendChild(pc);
+  // ชนิดงาน + ตัวเลือก
+  const tc = document.createElement('div'); tc.className = 'cal-card';
+  const T = pf.types || {};
+  tc.innerHTML = `<div class="cal-card-h">แสดง</div>
+    <label class="cal-ck"><input type="checkbox" data-t="task" ${T.task !== false ? 'checked' : ''}> 🎯 กำหนดการที่ต้องทำ</label>
+    <label class="cal-ck"><input type="checkbox" data-t="meeting" ${T.meeting !== false ? 'checked' : ''}> 📅 ประชุม / นัดหมาย</label>
+    <label class="cal-ck"><input type="checkbox" data-t="note" ${T.note !== false ? 'checked' : ''}> 📝 กิจกรรมทั่วไป/แผนงาน</label>
+    <label class="cal-ck"><input type="checkbox" data-o="done" ${o.done ? 'checked' : ''}> ✅ งานที่เสร็จแล้ว</label>
+    <label class="cal-ck"><input type="checkbox" data-o="extra" ${o.extra ? 'checked' : ''}> 📝 งานเพิ่มเติม (To-do)</label>
+    <label class="cal-ck"><input type="checkbox" data-o="hol" ${o.hol ? 'checked' : ''}> 🎌 วันหยุดราชการ</label>
+    <div class="cal-card-h" style="margin-top:10px;">สีของงาน</div>
+    <div class="cal-seg sm"><button type="button" data-c="act" class="${o.color !== 'proj' ? 'on' : ''}">สีกิจกรรม</button><button type="button" data-c="proj" class="${o.color === 'proj' ? 'on' : ''}">สีโครงการ</button></div>`;
+  tc.querySelectorAll('[data-t]').forEach(i => i.onchange = () => calAllSet({ ...pf, types: { ...T, [i.dataset.t]: i.checked } }));
+  tc.querySelectorAll('[data-o]').forEach(i => i.onchange = () => calSetOpt(i.dataset.o, i.checked));
+  tc.querySelectorAll('[data-c]').forEach(b => b.onclick = () => calSetOpt('color', b.dataset.c));
+  side.appendChild(tc);
+  lay.appendChild(side);
+  const main = document.createElement('div'); main.className = 'cal-main';
+  const projects = state.projects.filter(p => cats.includes(p.sourceType || 'work') && !hidden.has(p.id));
+  main.appendChild(renderCalendar({ projects, multi: true, sideOpts: true, flt: { types: { task: T.task !== false, meeting: T.meeting !== false, note: T.note !== false } } }));
+  lay.appendChild(main);
+  root.appendChild(lay);
   return root;
 }
 
@@ -2851,15 +3559,19 @@ function renderOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   
   let title = state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ';
+  const __calScope = 'ov_' + (categoryFilter || 'all');
   if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
   if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
+  toolbar.querySelector('.proj-title').appendChild(calToggle(__calScope));
+  if (calIsOn(__calScope)) root.classList.add('cal-on');
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
   const ovAct = ovBar.act;
+  if (calIsOn(__calScope)) { root.appendChild(renderCalendar({ projects: ovProjs, rowOk: (p, d, r) => ovRowIn(p, r, ovAct), multi: true })); return root; }
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -2923,14 +3635,18 @@ function renderOverview(categoryFilter = null) {
 function renderLanesOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   let title = state.overviewSettings.tab2.name || '🛣️ รายละเอียดภาพรวมโครงการ';
+  const __calScope = 'lanes_' + (categoryFilter || 'all');
   if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
   if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
   if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
   toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
+  toolbar.querySelector('.proj-title').appendChild(calToggle(__calScope));
+  if (calIsOn(__calScope)) root.classList.add('cal-on');
   renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
   const ovAct = ovBar.act;
+  if (calIsOn(__calScope)) { root.appendChild(renderCalendar({ projects: ovProjs, rowOk: (p, d, r) => ovRowIn(p, r, ovAct), multi: true })); return root; }
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -3334,12 +4050,12 @@ function findLiveRow(projectId, deptId, rowId) {
   return d.rows.find(x => x.id === rowId) || null;
 }
 
-function openActivityModal(projectId, deptId, rowId, actId) {
+function openActivityModal(projectId, deptId, rowId, actId, preset) {
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
   const existing = actId ? r.activities.find(a => a.id === actId) : null;
   modalOpen = true; const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
   const modal = document.createElement('div'); modal.className = 'modal';
-  const todayIdx = todayBangkokIndex(), startD = existing ? dateFromIndex(existing.start) : dateFromIndex(todayIdx), endD = existing ? dateFromIndex(existing.end) : dateFromIndex(todayIdx);
+  const todayIdx = todayBangkokIndex(), startD = existing ? dateFromIndex(existing.start) : dateFromIndex(preset ? preset.start : todayIdx), endD = existing ? dateFromIndex(existing.end) : dateFromIndex(preset ? preset.end : todayIdx);
 
   modal.innerHTML = `
     <h3>${existing ? 'แก้ไขกิจกรรม' : 'เพิ่มกิจกรรม'}</h3>
@@ -4706,6 +5422,16 @@ function tdMoveExtraToPlan(pid, aid) {
   };
 }
 
+// รายการ Template ที่บันทึกไว้ (ทุกบอร์ดที่มองเห็น) — แสดงตัวอย่างรายการย่อยใต้ชื่อ
+function tdAllTemplates(firstBoardId) {
+  const out = []; todo.boards.forEach(bb => (bb.templates || []).forEach(t => out.push({ t, board: bb })));
+  out.sort((x, y) => (x.board.id === firstBoardId ? 0 : 1) - (y.board.id === firstBoardId ? 0 : 1) || x.t.name.localeCompare(y.t.name, 'th'));
+  return out;
+}
+function tdTplListHTML(tpls, curBoardId) {
+  return tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}" title="${escapeHTML(x.t.items.join('\n'))}"><span>${escapeHTML(x.t.name)}${x.board.id !== curBoardId ? ` <small>· ${escapeHTML(x.board.name)}</small>` : ''}<span class="tpl-prev">${escapeHTML(x.t.items.slice(0, 4).join(' · '))}${x.t.items.length > 4 ? ' …' : ''}</span></span><small>${x.t.items.length} รายการ</small></button>`).join('');
+}
+
 // ย้ายงาน (กำหนดการ/งานเพิ่มเติม) ไปโครงการ/หน่วยงาน/แถวอื่น — did ว่าง = งานเพิ่มเติม (เฉพาะ To-do)
 function tdLocate(pid, did, rid) {
   const p = state.projects.find(x => x.id === pid); if (!p) return null;
@@ -4817,15 +5543,19 @@ function tdOpenProjCard(pid, did, rid, aid) {
     showToast(n ? `เพิ่มรายการย่อย ${n} รายการจาก "${from}"` : 'รายการเหล่านี้มีอยู่ในการ์ดแล้ว');
   };
   const drawPick = () => {
-    const tpls = []; todo.boards.forEach(bb => (bb.templates || []).forEach(t => tpls.push({ t, from: bb.name })));
+    const tpls = tdAllTemplates(lsGet('td_tpl_board', ''));
     const src = [];
     todo.boards.forEach(bb => bb.columns.forEach(c => (c.cards || []).forEach(cd => { if ((cd.checklist || []).length) src.push({ title: cd.title, items: cd.checklist.map(i => i.text), from: bb.name }); })));
     tdProjTasks().forEach(x => { if (x.a.id !== aid && (x.a.checklist || []).length) src.push({ title: x.a.label, items: x.a.checklist.map(i => i.text), from: x.p.name }); });
-    tplBox.innerHTML = `<div class="td-tpl-h">📋 Template</div>
-      <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)} <small>· ${escapeHTML(x.from)}</small></span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — ใส่รายการย่อยแล้วกด "💾 บันทึกเป็น Template"</div>'}</div>
-      <div class="td-tpl-h" style="margin-top:10px;">คัดลอกรายการจากการ์ด…</div>
-      <input type="search" class="text-input" id="pcQ" placeholder="🔍 พิมพ์ชื่อการ์ด">
-      <div class="td-tpl-list" id="pcSrc" style="margin-top:6px;"></div>`;
+    tplBox.innerHTML = `<div class="td-tpl-h">📋 Template ที่บันทึกไว้ (${tpls.length})</div>
+      <div class="td-tpl-list">${tpls.length ? tdTplListHTML(tpls, '') : '<div class="td-tpl-empty">ยังไม่มี Template ที่บันทึกไว้ — ใส่รายการย่อยแล้วกด "💾 บันทึกเป็น Template"</div>'}</div>
+      <button type="button" class="td-copy-tog" id="pcCopyTog">▸ หรือคัดลอกรายการย่อยจากการ์ดอื่น</button>
+      <div id="pcCopyBox" hidden>
+        <input type="search" class="text-input" id="pcQ" placeholder="🔍 พิมพ์ชื่อการ์ด">
+        <div class="td-tpl-list" id="pcSrc" style="margin-top:6px;"></div>
+      </div>`;
+    const cTog = tplBox.querySelector('#pcCopyTog'), cBox = tplBox.querySelector('#pcCopyBox');
+    cTog.onclick = () => { cBox.hidden = !cBox.hidden; cTog.textContent = (cBox.hidden ? '▸' : '▾') + ' หรือคัดลอกรายการย่อยจากการ์ดอื่น'; if (!cBox.hidden) cBox.querySelector('#pcQ').focus(); };
     tplBox.querySelectorAll('[data-t]').forEach(x => x.onclick = () => { const it = tpls[+x.dataset.t]; addItems(it.t.items, it.t.name); });
     const q = tplBox.querySelector('#pcQ'), list = tplBox.querySelector('#pcSrc');
     const drawSrc = () => {
@@ -4841,17 +5571,22 @@ function tdOpenProjCard(pid, did, rid, aid) {
   const drawSave = () => {
     const items = work.checklist.map(i => i.text.trim()).filter(Boolean);
     const boards = todo.boards.filter(bb => tdCanEdit(bb));
-    if (!boards.length) { tplBox.innerHTML = '<div class="td-tpl-empty">ยังไม่มีบอร์ด To-do ที่คุณแก้ไขได้ — สร้างบอร์ดของคุณก่อน (ปุ่ม "+ บอร์ดใหม่") แล้ว Template จะเก็บไว้ในบอร์ดนั้น</div>'; return; }
-    const lastB = lsGet('td_tpl_board', ''), defB = boards.find(bb => bb.id === lastB) || boards.find(bb => bb.owner === todo.me && tdVis(bb) === 'private') || boards[0];
+    const NEWB = '__new__';
+    const lastB = lsGet('td_tpl_board', ''), defB = boards.find(bb => bb.id === lastB) || boards.find(bb => (bb.templates || []).length) || boards.find(bb => bb.owner === todo.me && tdVis(bb) === 'private') || boards[0] || { id: NEWB };
     tplBox.innerHTML = `<div class="td-tpl-h">💾 บันทึกรายการย่อย ${items.length} รายการนี้เป็น Template (สถานะติ๊กจะไม่ถูกบันทึก)</div>
       <input class="text-input" id="pcTplName" placeholder="ชื่อ Template เช่น หนังสือส่งออก + ได้รับข้อมูล">
       <div style="display:flex; gap:6px; margin-top:6px; align-items:center;"><span style="font-size:12px; color:var(--ink-soft); white-space:nowrap;">เก็บไว้ในบอร์ด</span>
-        <select id="pcTplBoard" class="text-input">${boards.map(bb => `<option value="${bb.id}" ${bb.id === defB.id ? 'selected' : ''}>${escapeHTML(bb.name)} (${(bb.templates || []).length} Template)</option>`).join('')}</select>
+        <select id="pcTplBoard" class="text-input">${boards.map(bb => `<option value="${bb.id}" ${bb.id === defB.id ? 'selected' : ''}>${escapeHTML(bb.name)} (${(bb.templates || []).length} Template)</option>`).join('')}<option value="${NEWB}" ${defB.id === NEWB ? 'selected' : ''}>+ สร้างบอร์ดใหม่ "📋 Template ของฉัน"</option></select>
         <button type="button" class="primary-btn" id="pcTplOk">บันทึก</button></div>`;
     const nm = tplBox.querySelector('#pcTplName'); nm.value = ta.value.trim();
     const doSave = () => {
       const name = nm.value.trim(); if (!name) { nm.focus(); return; }
-      const bid = tplBox.querySelector('#pcTplBoard').value, live = todo.boards.find(bb => bb.id === bid); if (!live) return;
+      let bid = tplBox.querySelector('#pcTplBoard').value;
+      if (bid === NEWB) {   // ยังไม่มีบอร์ดเก็บ Template: สร้างบอร์ดส่วนตัวให้อัตโนมัติ
+        const nb = tdNewBoard('📋 Template ของฉัน', 'private', []);
+        todo.boards.push(nb); bid = nb.id;
+      }
+      const live = todo.boards.find(bb => bb.id === bid); if (!live) return;
       live.templates = live.templates || [];
       const ex = live.templates.find(t => t.name === name);
       if (ex) { if (!confirm(`มี Template "${name}" อยู่แล้ว\nแทนที่ด้วยรายการชุดนี้หรือไม่?`)) return; ex.items = items; }
@@ -4867,7 +5602,7 @@ function tdOpenProjCard(pid, did, rid, aid) {
     if (!tplBox.hidden && tplBox.dataset.mode === mode) { tplBox.hidden = true; return; }
     if (!todo.loaded) { showToast('⏳ กำลังโหลดข้อมูล To-do… ลองอีกครั้งในอีกสักครู่'); loadTodos(true); return; }
     tplBox.dataset.mode = mode; tplBox.hidden = false;
-    if (mode === 'pick') { drawPick(); setTimeout(() => { const q = tplBox.querySelector('#pcQ'); if (q) q.focus(); }, 0); } else drawSave();
+    if (mode === 'pick') drawPick(); else drawSave();
   };
   if (edit) {
     m.querySelector('#pcTplBtn').onclick = () => toggleTpl('pick');
@@ -5861,17 +6596,19 @@ function tdOpenCard(b, cardId) {
     showToast(n ? `เพิ่มรายการย่อย ${n} รายการจาก "${from}"` : 'รายการเหล่านี้มีอยู่ในการ์ดแล้ว');
   };
   const drawPick = () => {
-    const tpls = [];
-    todo.boards.forEach(bb => (bb.templates || []).forEach(t => tpls.push({ t, board: bb })));
-    tpls.sort((x, y) => (x.board.id === b.id ? 0 : 1) - (y.board.id === b.id ? 0 : 1));
+    const tpls = tdAllTemplates(b.id);
     const src = [];
     todo.boards.forEach(bb => bb.columns.forEach(c => (c.cards || []).forEach(cd => { if (cd.id !== cardId && (cd.checklist || []).length) src.push({ cd, board: bb }); })));
     src.sort((x, y) => (x.board.id === b.id ? 0 : 1) - (y.board.id === b.id ? 0 : 1));
-    tplBox.innerHTML = `<div class="td-tpl-h">📋 Template</div>
-      <div class="td-tpl-list">${tpls.length ? tpls.map((x, i) => `<button type="button" class="td-tpl-item" data-t="${i}"><span>${escapeHTML(x.t.name)}${x.board.id !== b.id ? ` <small>· ${escapeHTML(x.board.name)}</small>` : ''}</span><small>${x.t.items.length} รายการ</small></button>`).join('') : '<div class="td-tpl-empty">ยังไม่มี Template — กด "💾 บันทึกเป็น Template" หรือปุ่ม "📋 Template รายการย่อย" ที่หัวบอร์ด</div>'}</div>
-      <div class="td-tpl-h" style="margin-top:10px;">คัดลอกรายการจากการ์ด…</div>
-      <input type="search" class="text-input" id="tplQ" placeholder="🔍 พิมพ์ชื่อการ์ด เช่น งบกลาง">
-      <div class="td-tpl-list" id="tplSrc" style="margin-top:6px;"></div>`;
+    tplBox.innerHTML = `<div class="td-tpl-h">📋 Template ที่บันทึกไว้ (${tpls.length})</div>
+      <div class="td-tpl-list">${tpls.length ? tdTplListHTML(tpls, b.id) : '<div class="td-tpl-empty">ยังไม่มี Template ที่บันทึกไว้ — กด "💾 บันทึกเป็น Template" หรือปุ่ม "📋 Template รายการย่อย" ที่หัวบอร์ด</div>'}</div>
+      <button type="button" class="td-copy-tog" id="tplCopyTog">▸ หรือคัดลอกรายการย่อยจากการ์ดอื่น</button>
+      <div id="tplCopyBox" hidden>
+        <input type="search" class="text-input" id="tplQ" placeholder="🔍 พิมพ์ชื่อการ์ด เช่น งบกลาง">
+        <div class="td-tpl-list" id="tplSrc" style="margin-top:6px;"></div>
+      </div>`;
+    const cTog = tplBox.querySelector('#tplCopyTog'), cBox = tplBox.querySelector('#tplCopyBox');
+    cTog.onclick = () => { cBox.hidden = !cBox.hidden; cTog.textContent = (cBox.hidden ? '▸' : '▾') + ' หรือคัดลอกรายการย่อยจากการ์ดอื่น'; if (!cBox.hidden) cBox.querySelector('#tplQ').focus(); };
     tplBox.querySelectorAll('[data-t]').forEach(x => x.onclick = () => { const it = tpls[+x.dataset.t]; addItems(it.t.items, it.t.name); });
     const q = tplBox.querySelector('#tplQ'), list = tplBox.querySelector('#tplSrc');
     const drawSrc = () => {
@@ -5904,7 +6641,7 @@ function tdOpenCard(b, cardId) {
   const toggleTpl = (mode) => {
     if (!tplBox.hidden && tplBox.dataset.mode === mode) { tplBox.hidden = true; return; }
     tplBox.dataset.mode = mode; tplBox.hidden = false;
-    if (mode === 'pick') { drawPick(); setTimeout(() => { const q = tplBox.querySelector('#tplQ'); if (q) q.focus(); }, 0); } else drawSave();
+    if (mode === 'pick') drawPick(); else drawSave();
   };
   if (edit) {
     m.querySelector('#tdcTplBtn').onclick = () => toggleTpl('pick');
