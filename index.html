@@ -128,7 +128,7 @@ body.gh-all .gantt-scroll { max-height: none; }
 .dept-ctrls .icon-btn { padding: 3px 7px; font-size: 11px; }
 .icon-btn.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
 .dept-row-names { width: var(--rown-cur); flex-shrink: 0; display: flex; flex-direction: column; background: #FAFAFD; }
-.row-name-cell { height: 32px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; padding: 0 6px; font-size: 11px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; }
+.row-name-cell { height: 38px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; padding: 0 6px; font-size: 11px; color: var(--ink-soft); cursor: pointer; transition: all 0.15s ease; }
 .row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo); font-weight: 600; }
 .row-name-cell:last-child { border-bottom: none; }
 .r-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
@@ -551,7 +551,7 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .cal-ev.dot b { font-weight: 700; }
 .cal-ev.dot:hover { background: #EEF2FF; }
 .cal-ev.bar:hover { filter: brightness(.94); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
-.cal-ev .ic { margin-right: 3px; }
+.cal-ev .cal-ic { margin-right: 3px; }
 .cal-ev.done { opacity: .5; }
 .cal-ev.done.bar { text-decoration: line-through; }
 .cal-ev.xt.bar { background: repeating-linear-gradient(135deg, var(--ec), var(--ec) 6px, color-mix(in srgb, var(--ec) 82%, #fff) 6px, color-mix(in srgb, var(--ec) 82%, #fff) 12px); }
@@ -846,6 +846,274 @@ textarea.text-input { resize: vertical; min-height: 60px; }
   .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
   .row-name-cell { font-size: 10px; padding: 0 4px; }
 }
+/* ===== โครงหน้าจอใหม่ (ขั้นที่ 1) ===== */
+:root { --muted: #5B6680; --rail: #241C4D; --side-w: 232px; --st-late: #C81E3A; --st-today: #B45309; --st-done: #15803D; --st-wait: #6D28D9; --st-soon: #1D4ED8; --today: #0891B2; --today-l: #22D3EE; }
+body { font-family: 'IBM Plex Sans Thai', 'Sarabun', 'Noto Sans Thai', sans-serif; }
+#login-screen, #login-screen * { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
+#app.shell { flex-direction: row !important; align-items: stretch; }
+#app.shell > .topbar { display: none !important; }
+:where(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 2px solid var(--today); outline-offset: 2px; }
+.ghost-btn, .primary-btn, .danger-btn { min-height: 36px; }
+svg.ic { flex-shrink: 0; display: block; }
+
+/* แถบซ้าย */
+.side { width: var(--side-w); flex-shrink: 0; background: var(--rail); color: #fff; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 40; }
+.side-brand { display: flex; align-items: center; gap: 9px; padding: 18px 8px 14px 14px; }
+.side-logo { display: inline-flex; flex-shrink: 0; }
+.side-name { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.side-name b { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-name small { font-size: 12px; color: #B9B3DA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-mini-btn, .side-close { width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #B9B3DA; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.side-mini-btn:hover, .side-close:hover { background: rgba(255,255,255,.1); color: #fff; }
+.side-close { display: none; }
+.side-scroll { flex: 1; overflow-y: auto; padding: 4px 10px 10px; display: flex; flex-direction: column; gap: 16px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.2) transparent; }
+.side-grp { display: flex; flex-direction: column; gap: 2px; }
+.side-h { font-size: 12px; font-weight: 600; color: #B9B3DA; padding: 0 10px 4px; }
+.side-row { display: flex; align-items: center; border-radius: 8px; position: relative; }
+.side-row.sub { padding-left: 18px; }
+.side-row:hover { background: rgba(255,255,255,.07); }
+.side-it { flex: 1; min-width: 0; font: inherit; display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; border: 0; background: transparent; color: #E9E6FA; font-size: 14px; text-align: left; cursor: pointer; border-radius: 8px; }
+.side-row.sub .side-it { font-size: 13.5px; color: #D7D3EE; }
+.side-it .lb { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-it:hover { color: #fff; }
+.side-it.on { background: rgba(255,255,255,.16); color: #fff; font-weight: 600; }
+.side-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin: 0 4px 0 4px; box-shadow: 0 0 0 1.5px rgba(255,255,255,.25); }
+.side-badge { font-size: 11.5px; font-weight: 700; background: var(--st-late); color: #fff; border-radius: 999px; padding: 1px 8px; }
+.side-tg, .side-more { width: 30px; height: 30px; border: 0; background: transparent; color: #B9B3DA; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.side-tg:hover, .side-more:hover { background: rgba(255,255,255,.12); color: #fff; }
+.side-more { opacity: 0; }
+.side-row:hover .side-more, .side-more:focus-visible, .side-more[aria-expanded="true"] { opacity: 1; }
+.side-empty { font-size: 12.5px; color: #8F88BD; padding: 4px 10px 4px 46px; }
+.side-foot { padding: 10px 10px 14px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,.08); }
+.side-sync { display: flex; align-items: center; gap: 8px; padding: 0 8px; font-size: 12.5px; color: #D7D3EE; min-height: 22px; }
+.side-sync .dot { width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; flex-shrink: 0; }
+.side-sync.busy .dot { background: #FBBF24; animation: syncPulse 1s ease-in-out infinite; }
+.side-sync.err .dot { background: #F87171; }
+.side-sync.err .tx { color: #FECACA; }
+.side-sync .tx { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-sync .tm { color: #B9B3DA; }
+@keyframes syncPulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .side-sync.busy .dot { animation: none; } }
+.side-user { font: inherit; display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(255,255,255,.08); border: 0; border-radius: 10px; padding: 8px 10px; color: #fff; cursor: pointer; text-align: left; min-height: 48px; }
+.side-user:hover { background: rgba(255,255,255,.14); }
+.side-av { width: 32px; height: 32px; border-radius: 50%; background: #67E8F9; color: #1E1B4B; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+.side-av.lg { width: 40px; height: 40px; font-size: 17px; }
+.side-un { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.side-un b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-un small { font-size: 12px; color: #B9B3DA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* แถบซ้ายแบบย่อ */
+body.side-mini { --side-w: 68px; }
+body.side-mini .side-name, body.side-mini .side-h, body.side-mini .side-it .lb, body.side-mini .side-tg, body.side-mini .side-more, body.side-mini .side-row.sub, body.side-mini .side-empty, body.side-mini .side-sync .tx, body.side-mini .side-sync .tm, body.side-mini .side-un, body.side-mini .side-user > .ic { display: none; }
+body.side-mini .side-brand { flex-direction: column; padding: 14px 8px; gap: 8px; }
+body.side-mini .side-it { justify-content: center; padding: 0; }
+body.side-mini .side-badge { position: absolute; top: 0; right: 2px; font-size: 10px; padding: 0 5px; }
+body.side-mini .side-user { justify-content: center; padding: 8px 0; }
+body.side-mini .side-sync { justify-content: center; }
+
+.main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.m-top { display: none; }
+.side-scrim { display: none; }
+
+/* หัวหน้า */
+.btn { font: inherit; font-size: 14px; min-height: 36px; padding: 0 14px; border-radius: 9px; border: 1px solid #D5D9E3; background: #fff; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; }
+.btn:hover { border-color: var(--indigo); }
+.btn.on { border-color: var(--indigo); background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 600; }
+.btn.ghost { border-color: transparent; background: transparent; }
+.btn.ghost:hover { background: #F3F5F9; }
+.btn-p { background: var(--indigo); border-color: var(--indigo); color: #fff; font-weight: 600; }
+.btn-p:hover { background: var(--indigo-deep); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.ibtn { width: 36px; padding: 0; justify-content: center; }
+.btn .cnt { font-size: 12px; font-weight: 700; background: var(--indigo); color: #fff; border-radius: 999px; padding: 0 7px; line-height: 18px; }
+.ph { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; background: #fff; border-bottom: 1px solid var(--line); margin: -18px -22px 0; padding: 14px 22px; }
+.ph-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ph-tt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ph-crumb { font-size: 13px; color: var(--muted); }
+.ph-h { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ph-h h2 { margin: 0; font-size: 23px; font-weight: 700; color: var(--indigo-deep); line-height: 1.25; overflow-wrap: anywhere; }
+.ph-h .btn { width: 32px; min-height: 32px; height: 32px; }
+.ph-act { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ph-ur { display: flex; gap: 4px; }
+.ph-switch { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; padding: 0 4px; min-height: 36px; position: relative; }
+.ph-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.ph-switch .trk { width: 38px; height: 22px; border-radius: 999px; background: #CBD1DC; position: relative; transition: background .15s; flex-shrink: 0; }
+.ph-switch .kn { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
+.ph-switch input:checked + .trk { background: var(--indigo); }
+.ph-switch input:checked + .trk .kn { left: 19px; }
+.ph-switch input:focus-visible + .trk { outline: 2px solid var(--today); outline-offset: 2px; }
+.cal-toggle { margin-left: 0; height: 36px; box-sizing: border-box; align-items: center; }
+.cal-toggle button { height: 30px; }
+/* แถบเครื่องมือแถวเดียว */
+.tb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 0 10px; }
+.tb-nav { display: flex; align-items: center; gap: 4px; }
+.tb-range { font-size: 16px; font-weight: 600; color: var(--ink); min-width: 0; white-space: nowrap; }
+.tb-sp { flex: 1; }
+.seg { display: inline-flex; background: #ECEEF3; border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { font: inherit; font-size: 13.5px; height: 30px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-soft); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--indigo-deep); font-weight: 600; box-shadow: 0 1px 2px rgba(22,35,59,.16); }
+.tb-search { position: relative; display: inline-flex; align-items: center; }
+.tb-search > .ic { position: absolute; left: 11px; color: var(--muted); pointer-events: none; }
+.tb-search input { font: inherit; font-size: 14px; height: 36px; width: 220px; padding: 0 32px 0 34px; border: 1px solid #D5D9E3; border-radius: 9px; background: #fff; color: var(--ink); }
+.tb-search .s-clear { position: absolute; right: 6px; width: 24px; height: 24px; border: 0; background: transparent; color: var(--muted); border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; }
+.tb .search-count:empty { display: none; }
+/* ป๊อปอัป / เมนู */
+.pop { position: fixed; z-index: 2500; background: #fff; border: 1px solid #D5D9E3; border-radius: 14px; box-shadow: 0 16px 40px rgba(22,35,59,.18); padding: 8px; min-width: 220px; max-height: calc(100vh - 16px); overflow-y: auto; color: var(--ink); }
+.pop-mi { font: inherit; width: 100%; display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; border: 0; background: transparent; border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--ink); text-align: left; }
+.pop-mi:hover, .pop-mi:focus-visible { background: #F3F5F9; }
+.pop-mi .ic { color: var(--ink-soft); }
+.pop-mi.danger, .pop-mi.danger .ic { color: #B4233C; }
+.pop-sep { height: 1px; background: #EEF0F5; margin: 6px 0; }
+.pop-h { margin: 4px 6px 10px; font-size: 16px; font-weight: 700; color: var(--indigo-deep); }
+.pop-w { width: 340px; padding: 12px 14px; }
+.pop-ck { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; padding: 6px; border-radius: 8px; }
+.pop-ck:hover { background: #F7F8FB; }
+.pop-ck input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--indigo); flex-shrink: 0; }
+.pop-ck span { display: flex; flex-direction: column; font-size: 14px; }
+.pop-ck small { color: var(--muted); font-size: 12.5px; }
+.pop-note { font-size: 12.5px; color: var(--muted); margin: 8px 6px; }
+.pop-foot { display: flex; justify-content: flex-end; margin-top: 8px; padding-top: 10px; border-top: 1px solid #EEF0F5; }
+.um-pop { width: 300px; }
+.um-head { display: flex; align-items: center; gap: 12px; padding: 8px 10px 12px; border-bottom: 1px solid #EEF0F5; margin-bottom: 6px; }
+.um-head > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.um-head b { font-size: 15px; }
+.um-head small { font-size: 12.5px; color: var(--muted); }
+.pop-view { width: 440px; padding: 16px 18px; }
+.vm-sec { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.vm-sec:last-child { margin-bottom: 4px; }
+.vm-row { display: flex; justify-content: space-between; align-items: baseline; }
+.vm-l { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.vm-sec input[type=range] { width: 100%; accent-color: var(--indigo); margin: 0; }
+.vm-range { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.vm-range .inp { font: inherit; font-size: 13.5px; height: 36px; padding: 0 8px; border: 1px solid #D5D9E3; border-radius: 8px; min-width: 0; flex: 1; color: var(--ink); }
+.vm-colors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; }
+.vm-c { display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; }
+.vm-c i { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+.vm-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; font-size: 13px; }
+.vm-legend span { display: flex; align-items: center; gap: 8px; }
+.lg-dot { width: 16px; height: 16px; border-radius: 50%; color: #fff; font-style: normal; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lg-more { font-style: normal; font-size: 11px; font-weight: 700; background: #fff; color: var(--indigo-deep); border: 1px solid var(--indigo); border-radius: 999px; padding: 0 5px; line-height: 15px; }
+.link-btn { font: inherit; font-size: 13px; border: 0; background: none; color: var(--indigo); cursor: pointer; text-decoration: underline; padding: 4px; }
+/* แถบบอร์ด To-do ในเนื้อหา */
+.main-col > .sub-tabs-bar { background: #fff; border-bottom: 1px solid var(--line); padding: 10px 22px; }
+
+/* จอแคบ: แถบซ้ายเป็นเมนูที่กดเปิด */
+@media (max-width: 900px) {
+  body { --side-w: 280px; }
+  body.side-mini { --side-w: 280px; }
+  .side { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); transition: transform .2s ease; box-shadow: 0 0 40px rgba(0,0,0,.3); }
+  body.side-open .side { transform: none; }
+  body.side-open .side-scrim { display: block; position: fixed; inset: 0; background: rgba(15,18,40,.45); z-index: 39; }
+  .side-mini-btn { display: none; }
+  .side-close { display: inline-flex; }
+  body.side-mini .side-name, body.side-mini .side-h, body.side-mini .side-it .lb, body.side-mini .side-tg, body.side-mini .side-more, body.side-mini .side-row.sub, body.side-mini .side-empty, body.side-mini .side-sync .tx, body.side-mini .side-sync .tm, body.side-mini .side-un { display: revert; }
+  .side-more { opacity: 1; }
+  .m-top { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--rail); color: #fff; position: sticky; top: 0; z-index: 30; }
+  .m-top .btn { background: transparent; border-color: rgba(255,255,255,.25); color: #fff; }
+  .m-top b { font-size: 15px; }
+  .ph { margin: -18px -22px 0; }
+  .tb-search input { width: 160px; }
+  .pop-view, .pop-w { width: min(440px, calc(100vw - 16px)); }
+}
+@media (prefers-reduced-motion: reduce) { .side { transition: none; } }
+@media print {
+  .side, .side-scrim, .m-top, .tb, .ph-act, .ph-title .btn, .pop { display: none !important; }
+  #app.shell { display: block !important; }
+  .ph { margin: 0 0 8px; padding: 0; border: 0; }
+}
+
+/* ===== ตาราง Gantt (ขั้นที่ 2) ===== */
+.subrow { height: 38px; }
+.gantt-scroll { background: #fff; border-radius: 12px; }
+/* หน่วยงาน = หัวกลุ่มเต็มแถว */
+.dg { min-width: max-content; width: 100%; }
+.dg-head, .dg-row { display: flex; min-width: max-content; width: 100%; align-items: stretch; }
+.dg-head { height: 38px; border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); }
+.dg:first-child .dg-head { border-top: 0; }
+.dg-hl { background: #F7F8FB !important; align-items: center !important; gap: 6px; padding: 0 8px 0 6px !important; border-bottom: 0 !important; }
+.dg-tog { font: inherit; flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; height: 32px; border: 0; background: transparent; color: var(--ink); cursor: pointer; text-align: left; border-radius: 7px; padding: 0 6px; }
+.dg-tog:hover { background: #ECEEF3; }
+.dg-name { font-size: 14.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.dg-meta { font-size: 12.5px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+.dg-ctrls { flex-wrap: nowrap; }
+.dg-ctrls .icon-btn { display: inline-flex; align-items: center; gap: 2px; min-height: 26px; }
+.dg-hl .hidden-chip { align-self: center; flex-shrink: 0; }
+.dg-htrack { position: relative; background: #F7F8FB; z-index: 1; flex-shrink: 0; }
+.dg-mini { position: absolute; top: 15px; height: 8px; border-radius: 4px; opacity: .55; }
+.dg-row { border-bottom: 1px solid var(--line-soft); }
+.dg-row .subrow { border-bottom: 0; }
+.dg-rl { background: #fff !important; border-bottom: 0 !important; }
+.dg-rl .row-name-cell { flex: 1; min-width: 0; height: 38px; border-bottom: 0; padding: 0 8px 0 34px; font-size: 13.5px; color: var(--ink); gap: 8px; justify-content: flex-start; position: relative; }
+.dg-rl .row-name-cell::before { content: ''; position: absolute; left: 22px; top: 9px; bottom: 9px; width: 4px; border-radius: 2px; background: var(--rcc, transparent); }
+.dg-rl .row-name-cell .r-name-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dg-rl .row-name-cell:hover { background: var(--indigo-soft); color: var(--indigo-deep); font-weight: 500; }
+.dg-rl .row-move { margin-right: 0; }
+.dg-rl .row-del { padding: 2px 4px; display: inline-flex; flex-shrink: 0; }
+/* แถบงาน */
+.act-bar { top: 6px; height: 26px; border-radius: 7px; box-shadow: none; background: transparent; font-size: 12.5px; font-weight: 500; overflow: hidden; }
+.act-bar:hover { box-shadow: none; filter: none; }
+.act-fill { position: absolute; left: 0; top: 0; bottom: 0; border: 1.5px solid; border-radius: 7px; box-sizing: border-box; z-index: 0; }
+.act-bar:hover .act-fill { filter: brightness(.96); box-shadow: 0 1px 4px rgba(22,35,59,.18); }
+.act-in { position: relative; z-index: 2; display: flex; align-items: center; gap: 5px; height: 100%; padding: 0 7px; box-sizing: border-box; color: #16233B; min-width: 0; }
+.act-in.out { padding: 0; gap: 0; }
+.act-lead { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
+.act-lead:empty { display: none; }
+.act-leadbox { display: inline-flex !important; padding: 0 5px; box-sizing: border-box; overflow: hidden; height: 100%; }
+.act-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.act-out { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; padding: 0 6px 0 6px; color: #16233B; }
+.act-time { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.act-bar .st { flex-shrink: 0; display: block; }
+.act-bar.is-done .act-in { color: #4A5773; }
+.act-bar .ov-more { margin-right: 2px; height: 17px; min-width: 22px; padding: 0 5px; font-size: 11px; border-width: 1px; box-shadow: none; }
+.act-bar.has-more { box-shadow: none; }
+.act-bar.has-more .act-fill { box-shadow: 3px -3px 0 -1px #fff, 3px -3px 0 0 rgba(58,46,110,.45); }
+/* วันนี้: คอลัมน์ฟ้าอ่อน + หัววงรีฟ้า + เส้นเวลาปัจจุบันสีฟ้า */
+.today-col { background: rgba(34, 211, 238, 0.10); }
+.today-line { background: var(--today); }
+.today-line::before { content: none; }
+.gcal .day-seg.today { background: #ECFEFF; }
+.gcal .day-seg.today .day-num { background: var(--today); color: #fff; width: auto; min-width: 26px; padding: 0 8px; border-radius: 999px; }
+.gcal .day-seg.today .day-dow { color: #0E7490; }
+.day-seg .day-hol { font-size: 10px; line-height: 1.15; color: #9A3412; max-width: 100%; padding: 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gcal.has-hol .day-seg { height: 54px; }
+.gcal .day-seg.holiday { background: #F6F7FA; }
+.gcal .day-seg.holiday .day-num { color: #5B6680; }
+/* แถบสรุปวันนี้ */
+.today-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 5px 10px; margin-bottom: 12px; }
+.tdb-h { font-size: 14px; font-weight: 600; color: var(--indigo-deep); padding: 0 10px 0 6px; }
+.tdb-it { font: inherit; border: 0; background: transparent; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink); cursor: pointer; padding: 0 10px; min-height: 36px; border-radius: 8px; }
+.tdb-it:hover { background: #F3F5F9; }
+.tdb-it i { width: 8px; height: 8px; border-radius: 50%; }
+.tdb-it b { font-size: 16px; }
+.tdb-it.zero { color: var(--muted); }
+.pop-list { width: 380px; max-height: 420px; }
+.tdl-it { font: inherit; width: 100%; display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border: 0; background: transparent; border-radius: 8px; cursor: pointer; text-align: left; color: var(--ink); }
+.tdl-it:hover { background: #F3F5F9; }
+.tdl-it i { width: 10px; height: 10px; border-radius: 3px; }
+.tdl-t { display: flex; flex-direction: column; min-width: 0; }
+.tdl-t b { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tdl-t small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tdl-d { font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+/* บันทึกรายละเอียดโครงการ */
+.notes-box { margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+.notes-tog { font: inherit; width: 100%; display: flex; align-items: center; gap: 10px; padding: 14px 18px; border: 0; background: transparent; cursor: pointer; text-align: left; color: var(--ink); border-radius: 12px; min-height: 52px; }
+.notes-tog:hover { background: #F7F8FB; }
+.nt-h { font-size: 15px; font-weight: 600; flex-shrink: 0; }
+.nt-m { font-size: 13px; color: var(--muted); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notes-body { padding: 0 18px 18px; }
+@media print { .today-bar, .notes-tog .ic { display: none !important; } .dg-tog .ic { display: none; } }
+
+
+.side-row.dragging { opacity: .45; }
+.side-row.drop-before { box-shadow: inset 0 2px 0 #67E8F9; }
+.side-row.drop-after { box-shadow: inset 0 -2px 0 #67E8F9; }
+.side-row[draggable="true"] .side-it { cursor: pointer; }
+.fp-sec { display: flex; flex-direction: column; gap: 6px; margin: 10px 6px 0; }
+.fp-depts { display: flex; flex-direction: column; max-height: 220px; overflow-y: auto; border: 1px solid #EEF0F5; border-radius: 8px; padding: 4px; }
+.fp-dept { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
+.fp-dept:hover { background: #F7F8FB; }
+.fp-dept input { width: 16px; height: 16px; accent-color: var(--indigo); margin: 0; }
+.fp-dept span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fp-dept small { color: var(--muted); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -1781,11 +2049,8 @@ async function saveState() {
   if (isSaving) { pendingSave = true; return; }   // อย่าทิ้ง ให้เข้าคิวไว้
   isSaving = true;
   unsavedChanges = true;
-  const setStatus = (html) => {
-    const el = document.querySelector('.brand-sub');
-    if (el) el.innerHTML = 'ระบบรวม · ' + html;
-  };
-  setStatus('<span style="color:#FBBF24">⏳ กำลังบันทึกข้อมูล...</span>');
+  const setStatus = (cls, text) => setSyncState(cls, text);
+  setStatus('busy', 'กำลังบันทึก...');
   let autoMerged = false, resolvedCount = 0;
   const calResults = [];
 
@@ -1809,7 +2074,7 @@ async function saveState() {
       let tries = 0;
       while (res.error === 'Conflict' && tries < 3) {
         tries++;
-        setStatus('<span style="color:#FBBF24">🔀 กำลังรวมการแก้ไขกับผู้ใช้อื่น...</span>');
+        setStatus('busy', 'กำลังรวมการแก้ไขกับผู้ใช้อื่น...');
         const theirs = await secureFetch(URLS[type]);
         const { merged, conflictCount } = await mergeWithServer(type, sub, theirs);
         res = await securePost(URLS[type], merged, false, theirs.lastModified || 0);
@@ -1838,10 +2103,10 @@ async function saveState() {
         ? `🔀 รวมการแก้ไขกับผู้ใช้อื่นแล้ว (เลือกเอง ${resolvedCount} รายการ)`
         : '🔀 รวมการแก้ไขของคุณกับผู้ใช้อื่นให้อัตโนมัติแล้ว');
     }
-    setStatus('<span style="color:#34D399">✅ ซิงค์ข้อมูลเรียบร้อยแล้ว</span>');
+    setStatus('ok', 'บันทึกทุกอย่างแล้ว');
     reportCalendar(calResults);
   } catch (e) {
-    setStatus('<span style="color:#E23D5B">❌ บันทึกไม่สำเร็จ: ' + escapeHTML(e.message || String(e)) + ' (จะลองใหม่เมื่อแก้ไขครั้งถัดไป)</span>');
+    setStatus('err', 'บันทึกไม่สำเร็จ: ' + (e.message || String(e)) + ' (จะลองใหม่เมื่อแก้ไขครั้งถัดไป)');
   } finally {
     isSaving = false;
     if (pendingSave) { pendingSave = false; saveState(); }
@@ -1971,7 +2236,8 @@ function importBackup(event) {
 function getColWidth(zoom, totalDays) {
   const labelW = getLabelW();
   // ใช้ความกว้างหน้าต่าง (คงที่) ไม่ใช่ความกว้างตารางเดิม เพราะแถบเลื่อนแนวตั้งที่มี/ไม่มี ทำให้ค่าเปลี่ยนไปมา
-  const containerWidth = Math.max(300, window.innerWidth - 46 - 17 - labelW);
+  const sideW = window.innerWidth > 900 ? (document.body.classList.contains('side-mini') ? 68 : 232) : 0;
+  const containerWidth = Math.max(300, window.innerWidth - sideW - 46 - 17 - labelW);
   let base = containerWidth / (VIEW_DAYS[zoom] || 30);
   if (totalDays * base < containerWidth && totalDays > 0) base = containerWidth / totalDays;
   let w = base * userScale;
@@ -2072,6 +2338,7 @@ function render() {
   const ae = document.activeElement;
   const keepSearch = ae && ae.id === 'actSearch' ? ae.selectionStart : null;   // กำลังพิมพ์ค้นหาอยู่
   if (window.tinymce) tinymce.remove();
+  closePop();
   const topbarHTML = app.querySelector('.topbar').outerHTML;
   app.innerHTML = '';
   
@@ -2079,7 +2346,16 @@ function render() {
   tempDiv.innerHTML = topbarHTML;
   app.appendChild(tempDiv.firstElementChild);
 
-  app.appendChild(renderTwoTierNav());
+  if (!render._miniInit) { render._miniInit = true; document.body.classList.toggle('side-mini', !!lsGet('side_mini', false)); }
+  app.classList.add('shell');
+  app.appendChild(renderSidebar());
+  const scrim = document.createElement('div'); scrim.className = 'side-scrim'; scrim.onclick = () => document.body.classList.remove('side-open'); app.appendChild(scrim);
+  const mainCol = document.createElement('div'); mainCol.className = 'main-col'; app.appendChild(mainCol);
+  const mTop = document.createElement('div'); mTop.className = 'm-top';
+  mTop.innerHTML = `<button type="button" class="btn ibtn" aria-label="เปิดเมนู">${ic('menu', 20)}</button><b>ระบบบริหารจัดการ</b>`;
+  mTop.querySelector('button').onclick = () => document.body.classList.add('side-open');
+  mainCol.appendChild(mTop);
+  if (activeMainCat === 'todo') { const tb = document.createElement('div'); tb.className = 'sub-tabs-bar'; renderTodoTabs(tb); mainCol.appendChild(tb); }
   const content = document.createElement('div'); content.className = 'content';
   
   // จัดการการ Render หน้า Overview ย่อยตาม Category
@@ -2092,7 +2368,7 @@ function render() {
   else if (view.type === 'calendar') content.appendChild(renderCalendarAll());
   else content.appendChild(renderProjectDetail(view.id));
   
-  app.appendChild(content);
+  mainCol.appendChild(content);
   if (keepSearch !== null) {
     const inp = document.getElementById('actSearch');
     if (inp) { inp.focus(); try { inp.setSelectionRange(keepSearch, keepSearch); } catch (e) {} }
@@ -2105,6 +2381,371 @@ function renderEmptyCategoryState() {
   const wrap = document.createElement('div'); wrap.className = 'empty-hint';
   wrap.textContent = `ยังไม่มีโครงการในหมวด "${labels[activeMainCat] || ''}" กดปุ่ม "+ เพิ่มโครงการ" ด้านบนเพื่อเริ่มสร้างโครงการแรก`;
   return wrap;
+}
+
+// ==========================================
+// --- โครงหน้าจอใหม่: แถบซ้าย + หัวหน้า + แถบเครื่องมือ (ขั้นที่ 1) ---
+// ==========================================
+const ICONS = {
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  lanes: '<path d="M4 6h10M4 12h16M4 18h8"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  todo: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  room: '<path d="M4 21h16M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><circle cx="14" cy="12" r="1"/>',
+  down: '<path d="M6 9l6 6 6-6"/>', up: '<path d="M6 15l6-6 6 6"/>', right: '<path d="M9 6l6 6-6 6"/>', left: '<path d="M15 6l-6 6 6 6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', dots: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  dotsV: '<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
+  history: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  print: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
+  download: '<path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 19h16"/>', upload: '<path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 19h16"/>',
+  logout: '<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/>',
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>', undo: '<path d="M9 14l-5-5 5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+  redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/>', search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  filter: '<path d="M4 5h16l-6 8v6l-4-2v-4z"/>', sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+  pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', panel: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>', palette: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-1-.8-1.4-.8-2.3 0-.8.7-1.2 1.6-1.2H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/>',
+  trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
+};
+function ic(name, size = 18, sw = 1.8) { return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`; }
+const BRAND_SVG = '<svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><defs><linearGradient id="bmSide" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67E8F9"/><stop offset="1" stop-color="#A5B4FC"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="11" fill="url(#bmSide)"/><rect x="8.5" y="10.5" width="14" height="4.2" rx="2.1" fill="#1E1B4B"/><rect x="13.5" y="17.9" width="17" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".78"/><rect x="8.5" y="25.3" width="9.5" height="4.2" rx="2.1" fill="#1E1B4B" opacity=".6"/><circle cx="28.3" cy="27.4" r="5.6" fill="#fff"/><path d="M25.7 27.5l1.8 1.8 3.4-3.6" stroke="#4F46E5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CAT_DOT = { work: '#38BDF8', extra: '#FBBF24', personal: '#C084FC' };
+const CAT_ADD = { work: () => addProject(), extra: () => addExtraProject(), personal: () => addPersonalProject() };
+
+// สถานะการบันทึก (เก็บไว้ เพราะแถบซ้ายถูกวาดใหม่ทุกครั้ง)
+let syncState = { cls: 'ok', text: 'อัปเดตข้อมูลล่าสุด', at: null };
+function setSyncState(cls, text) {
+  syncState = { cls, text, at: Date.now() };
+  const el = document.getElementById('sideSync');
+  if (el) el.replaceWith(buildSyncEl());
+}
+function buildSyncEl() {
+  const el = document.createElement('div'); el.id = 'sideSync'; el.className = 'side-sync ' + syncState.cls;
+  const t = syncState.at ? new Date(syncState.at + 7 * 3600e3).toISOString().slice(11, 16) + ' น.' : '';
+  el.innerHTML = `<span class="dot"></span><span class="tx">${escapeHTML(syncState.text)}</span><span class="tm">${t}</span>`;
+  el.title = syncState.text;
+  return el;
+}
+
+// ---------- ป๊อปอัป / เมนู ----------
+let popEl = null, popAnchor = null;
+function closePop() { if (popEl) { popEl.remove(); popEl = null; } if (popAnchor) { popAnchor.setAttribute('aria-expanded', 'false'); popAnchor = null; } }
+function openPop(anchor, build, opts = {}) {
+  if (popAnchor === anchor) { closePop(); return; }
+  closePop(); calClosePop();
+  const p = document.createElement('div'); p.className = 'pop' + (opts.cls ? ' ' + opts.cls : '');
+  p.setAttribute('role', opts.role || 'dialog');
+  build(p);
+  document.body.appendChild(p); popEl = p; popAnchor = anchor; anchor.setAttribute('aria-expanded', 'true');
+  const r = anchor.getBoundingClientRect(), pw = p.offsetWidth, ph = p.offsetHeight;
+  let left = opts.alignRight ? r.right - pw : r.left, top = r.bottom + 6;
+  if (opts.up || top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 6);
+  if (opts.side) { left = r.right + 8; top = Math.min(window.innerHeight - ph - 8, Math.max(8, r.top)); }
+  p.style.left = Math.max(8, Math.min(window.innerWidth - pw - 8, left)) + 'px';
+  p.style.top = Math.max(8, top) + 'px';
+  const f = p.querySelector('button, input, select, a[href]'); if (f && opts.focus !== false) setTimeout(() => f.focus(), 0);
+}
+document.addEventListener('mousedown', (e) => { if (popEl && !popEl.contains(e.target) && !(popAnchor && popAnchor.contains(e.target))) closePop(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && popEl) { const a = popAnchor; closePop(); if (a) a.focus(); } });
+function menuPop(anchor, items, opts = {}) {
+  openPop(anchor, (p) => {
+    items.filter(Boolean).forEach(it => {
+      if (it === '-') { const s = document.createElement('div'); s.className = 'pop-sep'; p.appendChild(s); return; }
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pop-mi' + (it.danger ? ' danger' : ''); b.setAttribute('role', 'menuitem');
+      b.innerHTML = (it.icon ? ic(it.icon, 18) : '') + `<span>${escapeHTML(it.label)}</span>`;
+      b.onclick = () => { closePop(); it.fn(); };
+      p.appendChild(b);
+    });
+  }, { role: 'menu', ...opts });
+}
+
+// ---------- แถบซ้าย ----------
+let sideDrag = null;
+function sideOpenState() { return { work: true, ...(lsGet('side_open', {}) || {}) }; }
+function goView(mainCat, v) { activeMainCat = mainCat; view = v; document.body.classList.remove('side-open'); render(); }
+function todoOverdueCount() {
+  const today = todayBangkokIndex(); let n = 0;
+  try { n += tdProjTasks().filter(x => !x.a.completed && x.a.end < today).length; } catch (e) {}
+  if (todo.loaded) todo.boards.forEach(b => (b.columns || []).forEach(col => { if (col.isDone) return; (col.cards || []).forEach(c => { const d = tdDayDiff(c.due); if (d !== null && d < 0 && !c.done) n++; }); }));
+  return n;
+}
+function renderSidebar() {
+  const side = document.createElement('nav'); side.className = 'side'; side.setAttribute('aria-label', 'เมนูหลัก');
+  const open = sideOpenState();
+  const cats = ['work', 'extra', 'personal'].filter(can);
+  const item = (opts) => {
+    const row = document.createElement('div'); row.className = 'side-row' + (opts.sub ? ' sub' : '');
+    const a = document.createElement('button'); a.type = 'button'; a.className = 'side-it' + (opts.active ? ' on' : '');
+    if (opts.active) a.setAttribute('aria-current', 'page');
+    a.innerHTML = `${opts.icon ? ic(opts.icon, 18) : opts.dot ? `<span class="side-dot" style="background:${opts.dot}"></span>` : ''}<span class="lb">${escapeHTML(opts.label)}</span>${opts.badge ? `<span class="side-badge" title="${escapeHTML(opts.badgeTitle || '')}">${opts.badge}</span>` : ''}`;
+    a.title = opts.title || opts.label;
+    a.onclick = opts.fn;
+    row.appendChild(a);
+    if (opts.toggle) {
+      const t = document.createElement('button'); t.type = 'button'; t.className = 'side-tg'; t.setAttribute('aria-expanded', opts.expanded ? 'true' : 'false');
+      t.setAttribute('aria-label', (opts.expanded ? 'ย่อ ' : 'ขยาย ') + opts.label); t.innerHTML = ic(opts.expanded ? 'down' : 'right', 16, 2);
+      t.onclick = opts.toggle; row.appendChild(t);
+    }
+    if (opts.menu) {
+      const m = document.createElement('button'); m.type = 'button'; m.className = 'side-more'; m.setAttribute('aria-haspopup', 'menu'); m.setAttribute('aria-label', 'ตัวเลือกของ ' + opts.label);
+      m.innerHTML = ic('dots', 16, 2.4); m.onclick = (e) => { e.stopPropagation(); menuPop(m, opts.menu(), { side: true }); };
+      row.appendChild(m);
+    }
+    return row;
+  };
+  const head = document.createElement('div'); head.className = 'side-brand';
+  head.innerHTML = `<span class="side-logo">${BRAND_SVG}</span><span class="side-name"><b>ระบบบริหารจัดการ</b><small>${escapeHTML(cats.map(c => CAT_LABELS[c]).join(' · '))}</small></span>`;
+  const mini = document.createElement('button'); mini.type = 'button'; mini.className = 'side-mini-btn'; mini.innerHTML = ic('panel', 18);
+  mini.setAttribute('aria-label', document.body.classList.contains('side-mini') ? 'ขยายแถบเมนู' : 'ย่อแถบเมนู'); mini.title = mini.getAttribute('aria-label');
+  mini.onclick = () => { const on = !document.body.classList.contains('side-mini'); document.body.classList.toggle('side-mini', on); lsSet('side_mini', on); render(); };
+  head.appendChild(mini);
+  const close = document.createElement('button'); close.type = 'button'; close.className = 'side-close'; close.innerHTML = ic('x', 18); close.setAttribute('aria-label', 'ปิดเมนู');
+  close.onclick = () => document.body.classList.remove('side-open'); head.appendChild(close);
+  side.appendChild(head);
+
+  const scroll = document.createElement('div'); scroll.className = 'side-scroll';
+  // ภาพรวมทั้งหมด (2 แท็บเดิม — ตั้งชื่อ/สีได้ที่เมนู ⋯)
+  if (APP_MODE === 'all') {
+    const g = document.createElement('div'); g.className = 'side-grp';
+    const t1 = state.overviewSettings.tab1, t2 = state.overviewSettings.tab2;
+    g.appendChild(item({ icon: 'grid', label: t1.name || 'ภาพรวมทั้งหมด', active: activeMainCat === 'all' && view.type === 'overview', fn: () => goView('all', { type: 'overview' }), menu: () => [{ icon: 'pencil', label: 'ตั้งชื่อ / สีแท็บนี้', fn: () => openOverviewSettingsModal('tab1') }] }));
+    g.appendChild(item({ icon: 'lanes', label: t2.name || 'รายละเอียดภาพรวมโครงการ', active: activeMainCat === 'all' && view.type === 'lanes', fn: () => goView('all', { type: 'lanes' }), menu: () => [{ icon: 'pencil', label: 'ตั้งชื่อ / สีแท็บนี้', fn: () => openOverviewSettingsModal('tab2') }] }));
+    scroll.appendChild(g);
+  }
+  // แผนงาน: หมวด › โครงการ
+  const g2 = document.createElement('div'); g2.className = 'side-grp';
+  g2.innerHTML = '<div class="side-h">แผนงาน</div>';
+  cats.forEach(c => {
+    const exp = !!open[c];
+    const isCatView = view.type === 'category_overview' && view.category === c;
+    g2.appendChild(item({ dot: CAT_DOT[c], label: CAT_LABELS[c], title: 'ภาพรวมหมวด ' + CAT_LABELS[c], active: isCatView, expanded: exp,
+      fn: () => goView(c, { type: 'category_overview', category: c }),
+      toggle: () => { const o = sideOpenState(); o[c] = !exp; lsSet('side_open', o); render(); } }));
+    if (exp) {
+      const ps = state.projects.filter(p => (p.sourceType || 'work') === c);
+      ps.forEach((p, pi) => {
+        const row = item({ sub: true, dot: p.color || '#8B84B8', label: p.name, active: view.type === 'project' && view.id === p.id,
+        fn: () => goView(c, { type: 'project', id: p.id }),
+        menu: READ_ONLY ? null : () => [
+          pi > 0 ? { icon: 'up', label: 'เลื่อนขึ้น', fn: () => moveProject(p.id, -1) } : null,
+          pi < ps.length - 1 ? { icon: 'down', label: 'เลื่อนลง', fn: () => moveProject(p.id, 1) } : null,
+          ps.length > 1 ? '-' : null,
+          { icon: 'pencil', label: 'เปลี่ยนชื่อโครงการ', fn: () => renameProject(p.id) },
+          { icon: 'palette', label: 'เปลี่ยนสีโครงการ', fn: () => openProjectColorModal(p.id) },
+          '-', { icon: 'trash', label: 'ลบโครงการ', danger: true, fn: () => deleteProject(p.id) }] });
+        if (!READ_ONLY && ps.length > 1) {   // ลากเพื่อสลับลำดับโครงการ
+          row.draggable = true; row.dataset.pid = p.id; row.dataset.cat = c; row.title = 'ลากเพื่อสลับลำดับ';
+          row.addEventListener('dragstart', (e) => { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', p.id); sideDrag = { pid: p.id, cat: c }; row.classList.add('dragging'); });
+          row.addEventListener('dragend', () => { sideDrag = null; row.classList.remove('dragging'); document.querySelectorAll('.side-row.drop-before,.side-row.drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after')); });
+          row.addEventListener('dragover', (e) => {
+            if (!sideDrag || sideDrag.cat !== c || sideDrag.pid === p.id) return;
+            e.preventDefault(); const r = row.getBoundingClientRect(), after = e.clientY > r.top + r.height / 2;
+            row.classList.toggle('drop-after', after); row.classList.toggle('drop-before', !after);
+          });
+          row.addEventListener('dragleave', () => row.classList.remove('drop-before', 'drop-after'));
+          row.addEventListener('drop', (e) => {
+            if (!sideDrag || sideDrag.cat !== c || sideDrag.pid === p.id) return;
+            e.preventDefault(); const after = row.classList.contains('drop-after'); const moving = sideDrag.pid;
+            row.classList.remove('drop-before', 'drop-after'); sideDrag = null;
+            moveProject(moving, 0, after ? (ps[pi + 1] ? ps[pi + 1].id : null) : p.id);
+          });
+        }
+        g2.appendChild(row);
+      });
+      if (!ps.length) { const e = document.createElement('div'); e.className = 'side-empty'; e.textContent = 'ยังไม่มีโครงการ'; g2.appendChild(e); }
+      if (!READ_ONLY) g2.appendChild(item({ sub: true, icon: 'plus', label: 'เพิ่มโครงการ', fn: () => CAT_ADD[c]() }));
+    }
+  });
+  scroll.appendChild(g2);
+  // เครื่องมือ
+  const g3 = document.createElement('div'); g3.className = 'side-grp';
+  g3.innerHTML = '<div class="side-h">เครื่องมือ</div>';
+  g3.appendChild(item({ icon: 'calendar', label: 'ปฏิทินรวม', active: view.type === 'calendar', fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'calendar' }) }));
+  const od = todoOverdueCount();
+  g3.appendChild(item({ icon: 'todo', label: 'To-do', active: activeMainCat === 'todo', badge: od || '', badgeTitle: `เลยกำหนด ${od} งาน`, fn: () => goView('todo', { type: 'todo' }) }));
+  if (can('work')) g3.appendChild(item({ icon: 'room', label: 'จองห้องประชุม', active: activeMainCat === 'rooms', fn: () => goView('rooms', { type: 'rooms' }) }));
+  scroll.appendChild(g3);
+  side.appendChild(scroll);
+
+  // ด้านล่าง: สถานะบันทึก + ผู้ใช้
+  const foot = document.createElement('div'); foot.className = 'side-foot';
+  foot.appendChild(buildSyncEl());
+  const u = document.createElement('button'); u.type = 'button'; u.className = 'side-user'; u.setAttribute('aria-haspopup', 'menu');
+  u.innerHTML = `<span class="side-av">${escapeHTML(tdInitial(USER_NAME || 'U'))}</span><span class="side-un"><b>${escapeHTML(USER_NAME || 'ผู้ใช้')}</b><small>${READ_ONLY ? 'ดูอย่างเดียว' : 'ประวัติ · พิมพ์ · สำรองข้อมูล'}</small></span>${ic('dotsV', 16, 2.4)}`;
+  u.onclick = () => openUserMenu(u);
+  foot.appendChild(u);
+  side.appendChild(foot);
+  return side;
+}
+function openUserMenu(anchor) {
+  openPop(anchor, (p) => {
+    p.innerHTML = `<div class="um-head"><span class="side-av lg">${escapeHTML(tdInitial(USER_NAME || 'U'))}</span><span><b>${escapeHTML(USER_NAME || 'ผู้ใช้')}</b>${READ_ONLY ? '<span class="ro-badge">ดูอย่างเดียว</span>' : ''}<small>สิทธิ์: ${escapeHTML(['work', 'extra', 'personal'].filter(can).map(c => CAT_LABELS[c]).join(' · '))}</small></span></div>`;
+    const add = (icon, label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'pop-mi' + (cls ? ' ' + cls : ''); b.setAttribute('role', 'menuitem'); b.innerHTML = ic(icon, 18) + `<span>${label}</span>`; b.onclick = () => { closePop(); fn(); }; p.appendChild(b); };
+    add('history', 'ประวัติการแก้ไข', openLogModal);
+    add('print', 'พิมพ์ / บันทึกเป็น PDF', printView);
+    add('download', 'สำรองข้อมูล (ไฟล์ JSON)', exportBackup);
+    if (!READ_ONLY) add('upload', 'กู้คืนข้อมูลจากไฟล์', () => document.getElementById('importFile').click());
+    const s = document.createElement('div'); s.className = 'pop-sep'; p.appendChild(s);
+    add('logout', 'ออกจากระบบ', logout, 'danger');
+  }, { role: 'menu', up: true, side: window.innerWidth > 900, cls: 'um-pop' });
+}
+
+// ---------- หัวหน้า + แถบเครื่องมือ ----------
+// opts: { crumb, title, rename(), toggle (scope ปุ่ม Gantt|ปฏิทิน), cal (อยู่ในโหมดปฏิทิน), add: [{label, fn}], noGantt (หน้าไม่มีตาราง Gantt) }
+function buildPageHead(opts) {
+  const head = document.createElement('div'); head.className = 'ph';
+  const left = document.createElement('div'); left.className = 'ph-title';
+  const tt = document.createElement('div'); tt.className = 'ph-tt';
+  tt.innerHTML = `${opts.crumb ? `<span class="ph-crumb">${escapeHTML(opts.crumb)}</span>` : ''}<div class="ph-h"><h2>${escapeHTML(opts.title)}</h2></div>`;
+  if (opts.rename && !READ_ONLY) { const rb = document.createElement('button'); rb.type = 'button'; rb.className = 'btn ibtn ghost'; rb.innerHTML = ic('pencil', 16); rb.setAttribute('aria-label', 'เปลี่ยนชื่อ'); rb.title = 'เปลี่ยนชื่อ'; rb.onclick = opts.rename; tt.querySelector('.ph-h').appendChild(rb); }
+  left.appendChild(tt);
+  head.appendChild(left);
+  const act = document.createElement('div'); act.className = 'ph-act';
+  if (opts.toggle) act.appendChild(calToggle(opts.toggle));
+  const ur = document.createElement('div'); ur.className = 'ph-ur';
+  ur.innerHTML = `<button type="button" class="btn ibtn" id="btnUndo" aria-label="ย้อนกลับ (Ctrl+Z)">${ic('undo', 18)}</button><button type="button" class="btn ibtn" id="btnRedo" aria-label="ทำซ้ำ (Ctrl+Y)">${ic('redo', 18)}</button>`;
+  ur.querySelector('#btnUndo').onclick = undo; ur.querySelector('#btnRedo').onclick = redo;
+  if (!READ_ONLY) act.appendChild(ur);
+  setTimeout(updateUndoButtons, 0);
+  if (!opts.noGantt && !READ_ONLY) {
+    const sw = document.createElement('label'); sw.className = 'ph-switch gantt-only'; sw.title = 'เปิดเพื่อลากเลื่อนวัน จัดลำดับ ซ่อน/ลบ หน่วยงานและแถว';
+    sw.innerHTML = `<input type="checkbox" role="switch" id="dragModeToggle" ${dragMode ? 'checked' : ''}><span class="trk"><span class="kn"></span></span><span>โหมดแก้ไข</span>`;
+    sw.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); };
+    act.appendChild(sw);
+  }
+  if (opts.add && opts.add.length && !READ_ONLY) {
+    const ab = document.createElement('button'); ab.type = 'button'; ab.className = 'btn btn-p';
+    ab.innerHTML = ic('plus', 16, 2.2) + '<span>เพิ่ม</span>' + (opts.add.length > 1 ? ic('down', 14, 2.2) : '');
+    if (opts.add.length > 1) { ab.setAttribute('aria-haspopup', 'menu'); ab.onclick = () => menuPop(ab, opts.add.map(a => ({ icon: a.icon || 'plus', label: a.label, fn: a.fn })), { alignRight: true }); }
+    else { ab.innerHTML = ic('plus', 16, 2.2) + `<span>${escapeHTML(opts.add[0].label)}</span>`; ab.onclick = opts.add[0].fn; }
+    act.appendChild(ab);
+  }
+  head.appendChild(act);
+  return head;
+}
+function ganttRangeText() {
+  const el = document.querySelector('.gantt-scroll'); if (!el) return '';
+  const { rStart, rEnd, totalDays } = getRenderBounds();
+  const colw = getColWidth(zoom, totalDays), lw = getLabelW();
+  const a = Math.max(rStart, rStart + Math.floor(el.scrollLeft / colw));
+  const b = Math.min(rEnd, rStart + Math.floor((el.scrollLeft + el.clientWidth - lw - 1) / colw));
+  const da = dateFromIndex(a), db = dateFromIndex(Math.max(a, b));
+  if (a === b || zoom === 'day') return `${da.getUTCDate()} ${THAI_MONTHS_SHORT[da.getUTCMonth()]} ${da.getUTCFullYear() + 543}`;
+  return `${da.getUTCDate()} ${THAI_MONTHS_SHORT[da.getUTCMonth()]}${da.getUTCFullYear() !== db.getUTCFullYear() ? ' ' + (da.getUTCFullYear() + 543) : ''} – ${db.getUTCDate()} ${THAI_MONTHS_SHORT[db.getUTCMonth()]} ${db.getUTCFullYear() + 543}`;
+}
+function updateRangeLabel() { const l = document.getElementById('tbRange'); if (l) l.textContent = ganttRangeText(); }
+function bindRangeLabel() {
+  requestAnimationFrame(() => {
+    const el = document.querySelector('.gantt-scroll'); if (!el || el._rangeBound) { updateRangeLabel(); return; }
+    el._rangeBound = true; let t = null;
+    el.addEventListener('scroll', () => { if (t) return; t = requestAnimationFrame(() => { t = null; updateRangeLabel(); }); }, { passive: true });
+    updateRangeLabel(); setTimeout(updateRangeLabel, 400);
+  });
+}
+// จำนวนตัวกรองที่เปิดอยู่ (แสดงบนปุ่ม "ตัวกรอง")
+function activeFilterCount(ctx) {
+  let n = (onlyPending ? 1 : 0);
+  if (ctx && ctx.project) n += rcActive(ctx.project).length + (rcNowOn(ctx.project) ? 1 : 0);
+  if (ctx && ctx.ov) { const a = ovCatActive(ctx.ovKey); n += a.length + (lsGet(ovNowKey(ctx.ovKey), false) ? 1 : 0); }
+  if (ctx && ctx.lanes) { const lp = lanesPref(ctx.ovKey); n += (lp.depts || []).length ? 1 : 0; n += lp.group === 'dept' ? 1 : 0; }
+  return n;
+}
+function buildToolRow(opts) {
+  const row = document.createElement('div'); row.className = 'tb';
+  searchHits = 0;
+  if (!opts.noGantt) {
+    const nav = document.createElement('div'); nav.className = 'tb-nav gantt-only';
+    nav.innerHTML = `<button type="button" class="btn ibtn" aria-label="ช่วงก่อนหน้า" title="ช่วงก่อนหน้า">${ic('left', 18, 2)}</button><button type="button" class="btn">วันนี้</button><button type="button" class="btn ibtn" aria-label="ช่วงถัดไป" title="ช่วงถัดไป">${ic('right', 18, 2)}</button>`;
+    const [pv, td, nx] = nav.querySelectorAll('button');
+    pv.onclick = () => { stepView(-1); setTimeout(updateRangeLabel, 650); };
+    nx.onclick = () => { stepView(1); setTimeout(updateRangeLabel, 650); };
+    td.onclick = () => { lastScrollCenterIdx = null; scrollToToday(); setTimeout(updateRangeLabel, 100); };
+    row.appendChild(nav);
+    const rg = document.createElement('span'); rg.id = 'tbRange'; rg.className = 'tb-range gantt-only'; row.appendChild(rg);
+    const z = document.createElement('div'); z.className = 'seg gantt-only'; z.setAttribute('role', 'group'); z.setAttribute('aria-label', 'มุมมองเวลา');
+    [['day', 'วัน'], ['week', 'สัปดาห์'], ['month', 'เดือน'], ['year', 'ปี']].forEach(([k, t]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.setAttribute('aria-pressed', zoom === k ? 'true' : 'false');
+      b.onclick = () => { zoom = k; userScale = DEFAULT_SCALE[k] || 1.0; lastScrollCenterIdx = null; render(); scrollToToday(); };
+      z.appendChild(b);
+    });
+    row.appendChild(z);
+  }
+  const sp = document.createElement('div'); sp.className = 'tb-sp'; row.appendChild(sp);
+  const sc = document.createElement('span'); sc.className = 'search-count'; sc.id = 'searchCount'; row.appendChild(sc);
+  const sWrap = document.createElement('div'); sWrap.className = 'tb-search';
+  sWrap.innerHTML = `${ic('search', 16, 2)}<input type="search" id="actSearch" placeholder="ค้นหางาน / หมายเหตุ" value="${escapeHTML(searchQuery)}" aria-label="ค้นหางาน"><button type="button" class="s-clear" title="ล้างคำค้นหา" aria-label="ล้างคำค้นหา" style="display:${searchQuery ? 'flex' : 'none'}">${ic('x', 14, 2.2)}</button>`;
+  const sInp = sWrap.querySelector('#actSearch');
+  sInp.oninput = () => { clearTimeout(buildToolRow._t); buildToolRow._t = setTimeout(() => { searchQuery = sInp.value.trim(); reRenderWithScroll(); }, 250); };
+  sInp.onkeydown = (e) => { if (e.key === 'Escape') { searchQuery = ''; reRenderWithScroll(); } };
+  sWrap.querySelector('.s-clear').onclick = () => { searchQuery = ''; reRenderWithScroll(); };
+  row.appendChild(sWrap);
+  // ตัวกรอง
+  const fc = activeFilterCount(opts.filterCtx);
+  const fb = document.createElement('button'); fb.type = 'button'; fb.className = 'btn' + (fc ? ' on' : ''); fb.setAttribute('aria-haspopup', 'dialog');
+  fb.innerHTML = ic('filter', 16) + '<span>ตัวกรอง</span>' + (fc ? `<span class="cnt">${fc}</span>` : '');
+  fb.onclick = () => openPop(fb, (p) => {
+    p.innerHTML = `<h3 class="pop-h">ตัวกรอง</h3>
+      <label class="pop-ck"><input type="checkbox" id="fpPending" ${onlyPending ? 'checked' : ''}><span><b>เฉพาะงานที่ยังไม่เสร็จ</b><small>แสดงเด่นเฉพาะ "กำหนดการที่ต้องทำ" ที่ยังไม่ติ๊กเสร็จ</small></span></label>
+      ${opts.filterCtx && (opts.filterCtx.project || opts.filterCtx.ov) ? '<p class="pop-note">กรองตามหมวดของแถว และ "ช่วงดำเนินการ" ได้ที่แถบหมวดใต้แถบเครื่องมือ</p>' : ''}
+      <div id="fpLanes"></div>
+      <div class="pop-foot"><button type="button" class="btn" id="fpClear">ล้างตัวกรองทั้งหมด</button></div>`;
+    const c0 = opts.filterCtx || {};
+    if (c0.lanes) {
+      const lp = lanesPref(c0.ovKey), sel = new Set(lp.depts || []);
+      const names = new Map(); (c0.projects || []).forEach(pp => pp.departments.forEach(d => { if (isHid(d)) return; const k = deptKey(d.name); if (!names.has(k)) names.set(k, { name: d.name.trim(), n: 0 }); names.get(k).n++; }));
+      const box = p.querySelector('#fpLanes');
+      box.innerHTML = `<div class="fp-sec"><span class="vm-l">จัดเรียงตาม</span><div class="seg" role="group" aria-label="จัดเรียงตาม"><button type="button" data-g="project" aria-pressed="${lp.group !== 'dept'}">โครงการ</button><button type="button" data-g="dept" aria-pressed="${lp.group === 'dept'}">หน่วยงาน (รวมชื่อเดียวกัน)</button></div></div>
+        <div class="fp-sec"><div class="vm-row"><span class="vm-l">แสดงเฉพาะหน่วยงาน</span>${sel.size ? '<button type="button" class="link-btn" id="fpDeptAll">แสดงทั้งหมด</button>' : ''}</div>
+        <div class="fp-depts">${[...names.entries()].map(([k, v]) => `<label class="fp-dept"><input type="checkbox" value="${escapeHTML(k)}" ${sel.has(k) ? 'checked' : ''}><span>${escapeHTML(v.name)}</span><small>${v.n} โครงการ</small></label>`).join('') || '<span class="pop-note">ยังไม่มีหน่วยงาน</span>'}</div></div>`;
+      box.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { closePop(); setLanesPref(c0.ovKey, { group: b.dataset.g }); });
+      box.querySelectorAll('.fp-dept input').forEach(i => i.onchange = () => { const v = [...box.querySelectorAll('.fp-dept input:checked')].map(x => x.value); setLanesPref(c0.ovKey, { depts: v }); });
+      const da = box.querySelector('#fpDeptAll'); if (da) da.onclick = () => { closePop(); setLanesPref(c0.ovKey, { depts: [] }); };
+    }
+    p.querySelector('#fpPending').onchange = (e) => { onlyPending = e.target.checked; closePop(); reRenderWithScroll(); };
+    p.querySelector('#fpClear').onclick = () => {
+      onlyPending = false; searchQuery = '';
+      const c = opts.filterCtx || {};
+      if (c.project) { rcSetFilter(c.project, []); lsSet('rowcat_now_' + c.project.id, false); }
+      if (c.ov) { lsSet(ovCatKey(c.ovKey), []); lsSet(ovNowKey(c.ovKey), false); }
+      if (c.lanes) lsSet('lanes_pref_' + (c.ovKey || 'all'), { group: 'project', depts: [] });
+      closePop(); reRenderWithScroll();
+    };
+  }, { alignRight: true, cls: 'pop-w' });
+  row.appendChild(fb);
+  // มุมมอง
+  const vb = document.createElement('button'); vb.type = 'button'; vb.className = 'btn'; vb.setAttribute('aria-haspopup', 'dialog');
+  vb.innerHTML = ic('sliders', 16) + '<span>มุมมอง</span>';
+  vb.onclick = () => openPop(vb, (p) => buildViewMenu(p, opts), { alignRight: true, cls: 'pop-view' });
+  row.appendChild(vb);
+  if (!opts.noGantt) bindRangeLabel();
+  return row;
+}
+// ป๊อปอัป "มุมมอง": ความกว้างช่อง / ความสูงตาราง / ช่วงวันที่ / สีกิจกรรม / สัญลักษณ์
+function buildViewMenu(p, opts) {
+  const gantt = !opts.noGantt && !opts.cal;
+  const pct = Math.round(userScale * 100);
+  const hm = ganttHeightMode();
+  const usedColors = state.colors;
+  p.innerHTML = `<h3 class="pop-h">มุมมองตาราง</h3>
+    ${gantt ? `<div class="vm-sec"><div class="vm-row"><label class="vm-l" for="vmW">ความกว้างช่อง</label><b id="vmWv">${pct}%</b></div>
+      <input id="vmW" type="range" min="30" max="${Math.max(400, pct)}" step="10" value="${pct}"></div>
+    <div class="vm-sec"><span class="vm-l">ความสูงตาราง</span><div class="seg" role="group" aria-label="ความสูงตาราง">${[['compact', 'ย่อ'], ['full', 'เต็มจอ'], ['all', 'แสดงทุกแถว']].map(([k, t]) => `<button type="button" data-h="${k}" aria-pressed="${hm === k}">${t}</button>`).join('')}</div></div>
+    <div class="vm-sec"><span class="vm-l">ช่วงวันที่ที่แสดง</span><div class="vm-range"><input type="date" id="vmS" class="inp" value="${state.viewRange.start}" aria-label="ตั้งแต่"><span>ถึง</span><input type="date" id="vmE" class="inp" value="${state.viewRange.end}" aria-label="ถึง"><button type="button" class="btn" id="vmRangeOk">ตกลง</button></div></div>` : ''}
+    <div class="vm-sec"><div class="vm-row"><span class="vm-l">สีกิจกรรม</span>${READ_ONLY ? '' : '<button type="button" class="link-btn" id="vmColors">แก้ไขชื่อสี</button>'}</div>
+      <div class="vm-colors">${usedColors.map(c => `<span class="vm-c"><i style="background:${c.hex}"></i>${escapeHTML(c.name)}</span>`).join('')}</div></div>
+    ${gantt ? `<div class="vm-sec"><span class="vm-l">สัญลักษณ์บนแถบงาน</span><div class="vm-legend">
+      <span><i class="lg-dot" style="background:#C81E3A">!</i>เลยกำหนด</span><span><i class="lg-dot" style="background:#B45309">●</i>ครบกำหนดวันนี้</span>
+      <span><i class="lg-dot" style="background:#15803D">✓</i>เสร็จแล้ว</span><span><i class="lg-dot" style="background:#6D28D9">✉</i>รอตอบกลับ</span>
+      <span><i class="lg-dot" style="background:#3A2E6E">↻</i>งานที่ทำซ้ำ</span><span><i class="lg-more">+3</i>มีงานซ้อนวันเดียวกัน</span></div></div>
+    <label class="pop-ck"><input type="checkbox" id="vmHol" ${ganttHolOn() ? 'checked' : ''}><span><b>แสดงชื่อวันหยุดราชการ</b><small>ใต้เลขวันบนหัวตาราง (มุมมองสัปดาห์/เดือน)</small></span></label>` : ''}`;
+  if (gantt) {
+    const w = p.querySelector('#vmW'), wv = p.querySelector('#vmWv');
+    w.oninput = () => { wv.textContent = w.value + '%'; };
+    w.onchange = () => { userScale = Math.round(+w.value) / 100; reRenderWithScroll(); };
+    p.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { setGanttHeightMode(b.dataset.h); p.querySelectorAll('[data-h]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); });
+    p.querySelector('#vmRangeOk').onclick = async () => { state.viewRange.start = p.querySelector('#vmS').value; state.viewRange.end = p.querySelector('#vmE').value; closePop(); await persistAndRender(); };
+  }
+  const ce = p.querySelector('#vmColors'); if (ce) ce.onclick = () => { closePop(); editColorsModal(); };
+  const vh = p.querySelector('#vmHol'); if (vh) vh.onchange = () => { lsSet('gantt_hol', vh.checked); closePop(); reRenderWithScroll(); };
 }
 
 function calAllTab() {
@@ -2282,7 +2923,7 @@ function buildGridBg(colw, rStart, rEnd, totalDays, zoom) {
         }
         for (let i = rStart; i <= rEnd; i++) {
             const d = dateFromIndex(i), dow = d.getUTCDay();
-            if (dow === 0 || dow === 6) {
+            if (dow === 0 || dow === 6 || (zoom !== 'day' && ganttHolOn() && calHoliday(i))) {
                 const wknd = document.createElement('div');
                 wknd.className = 'weekend-col gc'; wknd.style.left = ((i - rStart) * colw) + 'px'; wknd.style.width = colw + 'px';
                 bg.appendChild(wknd);
@@ -2391,7 +3032,11 @@ function buildHeader(colw, rStart, rEnd, totalDays, labelText = 'หน่วย
       seg.className = 'hdr-seg day-seg' + (dow === 0 || dow === 6 ? ' weekend' : '') + (i === todayIdx ? ' today' : '') + (zoom === 'day' ? ' day-full' : '');
       seg.style.width = colw + 'px';
       if (zoom === 'day') seg.innerHTML = `<span class="day-full-txt"><span class="day-num">${d.getUTCDate()}</span>วัน${THAI_WEEKDAY_FULL[dow]} ${d.getUTCDate()} ${THAI_MONTHS_FULL[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}</span>`;
-      else seg.innerHTML = `<span class="day-dow">${THAI_WEEKDAY_SHORT[dow]}.</span><span class="day-num">${d.getUTCDate()}</span>`;
+      else {
+        const hol = ganttHolOn() ? calHoliday(i) : null;
+        seg.innerHTML = `<span class="day-dow">${THAI_WEEKDAY_SHORT[dow]}.</span><span class="day-num">${d.getUTCDate()}</span>${hol ? `<span class="day-hol">${escapeHTML(hol)}</span>` : ''}`;
+        if (hol) { seg.classList.add('holiday'); seg.title = hol; header.classList.add('has-hol'); }
+      }
       dTrack.appendChild(seg);
     }
     if (zoom === 'day') {
@@ -2570,15 +3215,11 @@ function restoreScrollPosition(rStart, colw) {
 function renderProjectDetail(projectId) {
   const project = state.projects.find(p => p.id === projectId), root = document.createElement('div');
   if (!project) { root.textContent = 'ไม่พบโครงการ'; return root; }
-  const toolbar = document.createElement('div'); toolbar.className = 'toolbar';
-  const titleWrap = document.createElement('div'); titleWrap.className = 'proj-title'; titleWrap.innerHTML = `<h2>${escapeHTML(project.name)}</h2>`;
-  const renameBtn = document.createElement('button'); renameBtn.className = 'ghost-btn'; renameBtn.textContent = '✎ เปลี่ยนชื่อ'; renameBtn.onclick = () => renameProject(project.id); titleWrap.appendChild(renameBtn);
   const calMode = calIsOn('p_' + project.id);
-  titleWrap.appendChild(calToggle('p_' + project.id));
   if (calMode) root.classList.add('cal-on');
-  toolbar.appendChild(titleWrap); renderToolbarControls(toolbar);
-  const addDeptBtn = document.createElement('button'); addDeptBtn.className = 'primary-btn'; addDeptBtn.textContent = '+ เพิ่มหน่วยงาน'; addDeptBtn.onclick = () => addDepartment(project.id);
-  toolbar.appendChild(addDeptBtn); root.appendChild(toolbar); root.appendChild(renderLegend(project));
+  root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id,
+    add: [{ label: 'เพิ่มกิจกรรม', icon: 'calendar', fn: () => calAdd(todayBangkokIndex(), [project]) }, { label: 'เพิ่มหน่วยงาน', icon: 'folder', fn: () => addDepartment(project.id) }] }));
+  root.appendChild(buildToolRow({ filterCtx: { project }, cal: calMode }));
   root.appendChild(renderRowCatBar(project));
   const rcAct = rcActive(project), rcNow = rcNowOn(project);
   if (rcAct.length || rcNow) {
@@ -2592,6 +3233,7 @@ function renderProjectDetail(projectId) {
     root.appendChild(note);
   }
 
+  root.appendChild(buildTodayBar([project]));
   if (calMode) root.appendChild(renderCalendar({ projects: [project], rowOk: (p, d, r) => !rcRowOut(p, r) }));
   else {
   const { rStart, rEnd, totalDays } = getRenderBounds();
@@ -2626,21 +3268,14 @@ function renderProjectDetail(projectId) {
   restoreScrollPosition(rStart, colw);
   }
   
-  const notesWrap = document.createElement('div');
-  notesWrap.style.marginTop = '24px';
-  notesWrap.style.background = 'var(--surface)';
-  notesWrap.style.padding = '20px';
-  notesWrap.style.borderRadius = 'var(--radius)';
-  notesWrap.style.border = '1px solid var(--line)';
-  notesWrap.innerHTML = `
-      <h3 style="margin-top: 0; margin-bottom: 12px; color: var(--indigo-deep);">
-          📝 บันทึกรายละเอียดโครงการ
-      </h3>
-      <textarea id="proj-notes-${projectId}" style="width:100%; opacity: 0;"></textarea>
-  `;
+  // บันทึกรายละเอียดโครงการ: พับไว้เป็นค่าเริ่มต้น (เปิดแล้วจึงโหลดหน้าต่างแก้ไขข้อความ)
+  const notesWrap = document.createElement('div'); notesWrap.className = 'notes-box';
+  const notesOpen = !!(lsGet('notes_open', {}) || {})[projectId];
+  const plain = String(project.note || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  notesWrap.innerHTML = `<button type="button" class="notes-tog" aria-expanded="${notesOpen}">${ic(notesOpen ? 'down' : 'right', 18, 2)}<span class="nt-h">บันทึกรายละเอียดโครงการ</span><span class="nt-m">${plain ? escapeHTML(plain.slice(0, 80)) + (plain.length > 80 ? '…' : '') : 'ยังไม่มีบันทึก'}</span></button>
+    <div class="notes-body" ${notesOpen ? '' : 'hidden'}><textarea id="proj-notes-${projectId}" style="width:100%; opacity: 0;"></textarea></div>`;
   root.appendChild(notesWrap);
-
-  setTimeout(() => {
+  const initNotes = () => {
       if (tinymce.get(`proj-notes-${projectId}`)) {
           tinymce.get(`proj-notes-${projectId}`).remove();
       }
@@ -2667,7 +3302,18 @@ function renderProjectDetail(projectId) {
               });
           }
       });
-  }, 100);
+  };
+  notesWrap.querySelector('.notes-tog').onclick = () => {
+      const o = lsGet('notes_open', {}) || {}; const open = !o[projectId];
+      o[projectId] = open; lsSet('notes_open', o);
+      const ed = window.tinymce && tinymce.get(`proj-notes-${projectId}`);
+      if (!open && ed) { const c = ed.getContent(); if (project.note !== c) { project.note = c; saveState(); } ed.remove(); }
+      notesWrap.querySelector('.notes-body').hidden = !open;
+      const t = notesWrap.querySelector('.notes-tog'); t.setAttribute('aria-expanded', open);
+      t.querySelector('.ic').outerHTML = ic(open ? 'down' : 'right', 18, 2);
+      if (open && window.tinymce) initNotes();
+  };
+  if (notesOpen) setTimeout(() => { if (window.tinymce) initNotes(); }, 100);
 
   return root;
 }
@@ -2713,7 +3359,7 @@ function calProjColor(p) { if (p.color) return p.color; const i = state.projects
 function calToggle(scope) {
   const on = calIsOn(scope);
   const w = document.createElement('div'); w.className = 'cal-toggle';
-  w.innerHTML = `<button type="button" data-v="gantt" class="${on ? '' : 'on'}" title="มุมมองตาราง Gantt">📊 Gantt</button><button type="button" data-v="cal" class="${on ? 'on' : ''}" title="มุมมองปฏิทินแบบ Google Calendar">📅 ปฏิทิน</button>`;
+  w.innerHTML = `<button type="button" data-v="gantt" class="${on ? '' : 'on'}" title="มุมมองตาราง Gantt" aria-pressed="${on ? 'false' : 'true'}">Gantt</button><button type="button" data-v="cal" class="${on ? 'on' : ''}" title="มุมมองปฏิทินแบบ Google Calendar" aria-pressed="${on ? 'true' : 'false'}">ปฏิทิน</button>`;
   w.querySelectorAll('button').forEach(b => b.onclick = () => { lsSet('viewmode_' + scope, b.dataset.v); render(); });
   return w;
 }
@@ -2987,7 +3633,7 @@ function renderCalendar(opts) {
     el.title = it.title + (it.hol || READ_ONLY ? '' : '\n\nคลิก = เปิด/แก้ไข · ลาก = เลื่อนวัน');
     return el;
   };
-  const evText = (it) => `${it.icon ? `<span class="ic">${escapeHTML(it.icon)}</span>` : ''}${escapeHTML(it.label)}`;
+  const evText = (it) => `${it.icon ? `<span class="cal-ic">${escapeHTML(it.icon)}</span>` : ''}${escapeHTML(it.label)}`;
 
   if (mode === 'month') {
     const grid = document.createElement('div'); grid.className = 'cal-month';
@@ -3132,9 +3778,10 @@ function calAllPrefs() { return { hidden: [], types: { task: true, meeting: true
 function calAllSet(p) { lsSet('calall_prefs', p); reRenderWithScroll(); }
 function renderCalendarAll() {
   const root = document.createElement('div');
-  const toolbar = document.createElement('div'); toolbar.className = 'toolbar';
-  toolbar.innerHTML = `<div class="proj-title"><h2>📅 ปฏิทินรวม</h2></div>`;
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.classList.add('cal-on');
+  root.classList.add('cal-on');
+  root.appendChild(buildPageHead({ crumb: 'เครื่องมือ', title: 'ปฏิทินรวม', noGantt: true,
+    add: [{ label: 'เพิ่มกิจกรรม', fn: () => { const hid = new Set(calAllPrefs().hidden || []); calAdd(calAnchor(), state.projects.filter(p => can(p.sourceType || 'work') && !hid.has(p.id))); } }] }));
+  root.appendChild(buildToolRow({ noGantt: true, cal: true }));
   const pf = calAllPrefs(), o = calOpts();
   const hidden = new Set(pf.hidden || []);
   const cats = ['work', 'extra', 'personal'].filter(can);
@@ -3214,92 +3861,152 @@ function renderLegend(targetProject = null, categoryFilter = null) {
 }
 
 function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rStart, rEnd) {
-  const block = document.createElement('div'); block.className = 'dept-block';
-  const labelCol = document.createElement('div'); labelCol.className = 'row-label';
-  const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name">${escapeHTML(dept.name)}</div>`;
-  
-  if (dragMode) {
-    const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls';
-    const moveUpBtn = document.createElement('button'); moveUpBtn.className = 'icon-btn'; moveUpBtn.textContent = '▲'; moveUpBtn.onclick = () => moveDepartmentUp(project.id, dept.id);
-    const moveDownBtn = document.createElement('button'); moveDownBtn.className = 'icon-btn'; moveDownBtn.textContent = '▼'; moveDownBtn.onclick = () => moveDepartmentDown(project.id, dept.id);
-    const addRowBtn = document.createElement('button'); addRowBtn.className = 'icon-btn'; addRowBtn.textContent = '+ แถว'; addRowBtn.onclick = () => addRow(project.id, dept.id);
-    const renameDeptBtn = document.createElement('button'); renameDeptBtn.className = 'icon-btn'; renameDeptBtn.textContent = '✎'; renameDeptBtn.onclick = () => renameDepartment(project.id, dept.id);
-    const delDeptBtn = document.createElement('button'); delDeptBtn.className = 'icon-btn danger'; delDeptBtn.textContent = '🗑'; delDeptBtn.onclick = () => deleteDepartment(project.id, dept.id);
-    ctrls.append(moveUpBtn, moveDownBtn, addRowBtn, renameDeptBtn, delDeptBtn); deptInfo.appendChild(ctrls);
-  }
-
-  // --- ซ่อน/แสดง แบบ Excel ---
+  // หน่วยงาน = หัวกลุ่มเต็มแถว (พับ/ขยายได้ จำไว้ในเครื่อง) + แถวงานด้านล่าง
+  const fold = lsGet('gantt_fold', {}) || {};
+  const folded = (fold[project.id] || []).includes(dept.id);
+  const block = document.createElement('div'); block.className = 'dg' + (folded ? ' folded' : '');
   const visRows = dept.rows.filter(r => !isHid(r));
+  const shownRows = visRows.filter(r => !rcRowOut(project, r));
   const hiddenRowCount = dept.rows.length - visRows.length;
-  const deptCtrls = deptInfo.querySelector('.dept-ctrls');
-  if (deptCtrls) {
-    const hideDeptBtn = document.createElement('button'); hideDeptBtn.className = 'icon-btn'; hideDeptBtn.textContent = 'ซ่อน'; hideDeptBtn.title = 'ซ่อนหน่วยงานนี้';
-    hideDeptBtn.onclick = () => setDeptHidden(project.id, dept.id, true);
-    deptCtrls.appendChild(hideDeptBtn);
+  const nActs = shownRows.reduce((t, r) => t + (r.activities || []).length, 0);
+
+  const head = document.createElement('div'); head.className = 'dg-head';
+  const hl = document.createElement('div'); hl.className = 'row-label dg-hl';
+  const tog = document.createElement('button'); tog.type = 'button'; tog.className = 'dg-tog'; tog.setAttribute('aria-expanded', folded ? 'false' : 'true');
+  tog.innerHTML = `${ic(folded ? 'right' : 'down', 16, 2)}<span class="dg-name">${escapeHTML(dept.name)}</span><span class="dg-meta">${shownRows.length} แถว · ${nActs} งาน</span>`;
+  tog.title = (folded ? 'ขยาย' : 'พับ') + 'หน่วยงานนี้';
+  tog.onclick = () => {
+    const f = lsGet('gantt_fold', {}) || {}; const arr = new Set(f[project.id] || []);
+    if (arr.has(dept.id)) arr.delete(dept.id); else arr.add(dept.id);
+    f[project.id] = [...arr]; lsSet('gantt_fold', f); reRenderWithScroll();
+  };
+  hl.appendChild(tog);
+  if (dragMode) {
+    const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls dg-ctrls';
+    const b = (txt, title, fn, cls) => { const x = document.createElement('button'); x.type = 'button'; x.className = 'icon-btn' + (cls ? ' ' + cls : ''); x.innerHTML = txt; x.title = title; x.setAttribute('aria-label', title); x.onclick = (e) => { e.stopPropagation(); fn(); }; ctrls.appendChild(x); };
+    b('▲', 'เลื่อนหน่วยงานขึ้น', () => moveDepartmentUp(project.id, dept.id));
+    b('▼', 'เลื่อนหน่วยงานลง', () => moveDepartmentDown(project.id, dept.id));
+    b('+ แถว', 'เพิ่มแถว', () => addRow(project.id, dept.id));
+    b(ic('pencil', 13), 'เปลี่ยนชื่อหน่วยงาน', () => renameDepartment(project.id, dept.id));
+    b('ซ่อน', 'ซ่อนหน่วยงานนี้', () => setDeptHidden(project.id, dept.id, true));
+    b(ic('trash', 13), 'ลบหน่วยงาน', () => deleteDepartment(project.id, dept.id), 'danger');
+    hl.appendChild(ctrls);
   }
   if (hiddenRowCount > 0) {
     const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'hidden-chip';
-    chip.textContent = `ซ่อนอยู่ ${hiddenRowCount} แถว · แสดง`;
+    chip.textContent = `ซ่อน ${hiddenRowCount} แถว · แสดง`;
     chip.title = 'แสดง: ' + dept.rows.filter(r => isHid(r)).map(r => r.name).join(', ');
     chip.onclick = (e) => { e.stopPropagation(); unhideAllRows(project.id, dept.id); };
-    deptInfo.appendChild(chip);
+    hl.appendChild(chip);
   }
-  deptInfo.oncontextmenu = (e) => { e.preventDefault(); openDeptMenu(e, project, dept); };
+  hl.oncontextmenu = (e) => { e.preventDefault(); openDeptMenu(e, project, dept); };
+  head.appendChild(hl);
+  const ht = document.createElement('div'); ht.className = 'dg-htrack'; ht.style.width = totalWidth + 'px';
+  if (folded && nActs) {   // พับอยู่: แสดงตำแหน่งงานแบบย่อ
+    shownRows.forEach(r => (r.activities || []).forEach(a => {
+      const s = Math.max(rStart, a.start), e = Math.min(rEnd, a.end); if (e < rStart || s > rEnd) return;
+      const m = document.createElement('i'); m.className = 'dg-mini'; m.style.left = ((s - rStart) * colw) + 'px'; m.style.width = Math.max(4, (e - s + 1) * colw - 2) + 'px'; m.style.background = a.color || '#94A3B8';
+      ht.appendChild(m);
+    }));
+  }
+  head.appendChild(ht);
+  block.appendChild(head);
+  if (folded) return block;
 
-  const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-  rcRowsOrdered(project, dept).forEach((row, rIdx) => {
-    if (isHid(row)) return;   // แถวที่ซ่อน: ไม่วาด
-    if (rcRowOut(project, row)) return;   // ไม่อยู่ในหมวดที่ติ๊กกรอง
+  shownRows.forEach(row => {
+    const line = document.createElement('div'); line.className = 'dg-row';
+    const lab = document.createElement('div'); lab.className = 'row-label dg-rl';
     const rCell = document.createElement('div'); rCell.className = 'row-name-cell';
     const rc = rcOf(project, row);
-    if (rc) { rCell.style.boxShadow = `inset 3px 0 0 ${rc.color}`; rCell.dataset.cat = rc.name; }
-
-    // ปุ่มเลื่อนลำดับแถว ▲▼ (เฉพาะโหมดแก้ไข และมีมากกว่า 1 แถว)
-    if (dragMode && project && visRows.length > 1) {
-        const mv = document.createElement('div'); mv.className = 'row-move';
-        const upBtn = document.createElement('button'); upBtn.type = 'button'; upBtn.textContent = '▲'; upBtn.title = 'เลื่อนแถวขึ้น';
-        const downBtn = document.createElement('button'); downBtn.type = 'button'; downBtn.textContent = '▼'; downBtn.title = 'เลื่อนแถวลง';
-        upBtn.disabled = row === visRows[0];
-        downBtn.disabled = row === visRows[visRows.length - 1];
-        upBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, -1); };
-        downBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, 1); };
-        mv.append(upBtn, downBtn);
-        rCell.appendChild(mv);
+    rCell.style.setProperty('--rcc', rc ? rc.color : 'transparent');
+    if (rc) { rCell.dataset.cat = rc.name; rCell.title = row.name + ' · หมวด: ' + rc.name; } else rCell.title = row.name;
+    if (dragMode && visRows.length > 1) {
+      const mv = document.createElement('div'); mv.className = 'row-move';
+      const upBtn = document.createElement('button'); upBtn.type = 'button'; upBtn.textContent = '▲'; upBtn.title = 'เลื่อนแถวขึ้น'; upBtn.setAttribute('aria-label', 'เลื่อนแถวขึ้น');
+      const downBtn = document.createElement('button'); downBtn.type = 'button'; downBtn.textContent = '▼'; downBtn.title = 'เลื่อนแถวลง'; downBtn.setAttribute('aria-label', 'เลื่อนแถวลง');
+      upBtn.disabled = row === visRows[0]; downBtn.disabled = row === visRows[visRows.length - 1];
+      upBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, -1); };
+      downBtn.onclick = (e) => { e.stopPropagation(); moveRow(project.id, dept.id, row.id, 1); };
+      mv.append(upBtn, downBtn); rCell.appendChild(mv);
     }
-    
-    // แสดงชื่อแถว
-    const nameSpan = document.createElement('span');
-    nameSpan.className = 'r-name-text';
-    nameSpan.textContent = row.name;
-    nameSpan.title = row.name;
+    const nameSpan = document.createElement('span'); nameSpan.className = 'r-name-text'; nameSpan.textContent = row.name;
     rCell.appendChild(nameSpan);
-
-    // แก้ไข: เพิ่มปุ่มลบแถว ตรงช่องชื่อแถว ถ้าเปิดโหมดแก้ไข และมีแถวมากกว่า 1
-    if (dragMode && project && dept.rows.length > 1) {
-        const delRowBtn = document.createElement('button');
-        delRowBtn.className = 'icon-btn danger';
-        delRowBtn.innerHTML = '🗑';
-        delRowBtn.style.cssText = 'padding: 2px 4px; font-size: 10px; margin-left: 4px; background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); border-radius: 4px;';
-        delRowBtn.title = 'ลบแถวนี้';
-        delRowBtn.onclick = (e) => {
-            e.stopPropagation();
-            deleteRow(project.id, dept.id, row.id);
-        };
-        rCell.appendChild(delRowBtn);
+    if (dragMode && dept.rows.length > 1) {
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'icon-btn danger row-del'; del.innerHTML = ic('trash', 13); del.title = 'ลบแถวนี้'; del.setAttribute('aria-label', 'ลบแถวนี้');
+      del.onclick = (e) => { e.stopPropagation(); deleteRow(project.id, dept.id, row.id); };
+      rCell.appendChild(del);
     }
-    
     rCell.oncontextmenu = (e) => { e.preventDefault(); openRowMenu(e, project, dept, row); };
-    rCell.onclick = () => renameRow(project.id, dept.id, row.id); 
-    rowNamesCol.appendChild(rCell);
+    rCell.onclick = () => { if (!READ_ONLY) renameRow(project.id, dept.id, row.id); };
+    lab.appendChild(rCell); line.appendChild(lab);
+    line.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd));
+    block.appendChild(line);
   });
-  labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); block.appendChild(labelCol);
-
-  const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-  rcRowsOrdered(project, dept).forEach(row => { if (isHid(row) || rcRowOut(project, row)) return; rowsWrap.appendChild(buildSubrow(project, dept, row, colw, totalWidth, rStart, rEnd)); });
-  block.appendChild(rowsWrap); return block;
+  return block;
 }
 
-function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActivities, project, dept, row) {
+// ---------- แถบ "วันนี้" แบบบาง: ต้องดำเนินการ / เลยกำหนด / รอตอบกลับ / เริ่มภายใน 7 วัน ----------
+function todayGroups(projects) {
+  const t = todayBangkokIndex(), ids = new Set(projects.map(p => p.id));
+  const tasks = tdProjTasks().filter(x => ids.has(x.p.id));
+  return {
+    now:  { label: 'ต้องดำเนินการ', color: '#B45309', items: tasks.filter(x => !x.a.completed && x.a.start <= t && x.a.end >= t).sort((a, b) => a.a.end - b.a.end) },
+    late: { label: 'เลยกำหนด', color: '#C81E3A', items: tasks.filter(x => !x.a.completed && x.a.end < t).sort((a, b) => a.a.end - b.a.end) },
+    wait: { label: 'รอตอบกลับ', color: '#6D28D9', items: tasks.filter(x => fuWaiting(x.a)).sort((a, b) => (a.a.followUp.due ?? 1e9) - (b.a.followUp.due ?? 1e9)) },
+    soon: { label: 'เริ่มภายใน 7 วัน', color: '#1D4ED8', items: tasks.filter(x => !x.a.completed && x.a.start > t && x.a.start <= t + 7).sort((a, b) => a.a.start - b.a.start) }
+  };
+}
+function openTaskItem(x) { if (x.extra || !x.d) tdOpenProjCard(x.p.id, null, null, x.a.id); else openActivityModal(x.p.id, x.d.id, x.r.id, x.a.id); }
+function buildTodayBar(projects) {
+  const g = todayGroups(projects), t = todayBangkokIndex(), d0 = dateFromIndex(t);
+  const bar = document.createElement('div'); bar.className = 'today-bar';
+  bar.innerHTML = `<span class="tdb-h">วันนี้ ${THAI_WEEKDAY_SHORT[d0.getUTCDay()]}. ${d0.getUTCDate()} ${THAI_MONTHS_SHORT[d0.getUTCMonth()]}</span>`;
+  Object.entries(g).forEach(([k, grp]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tdb-it' + (grp.items.length ? '' : ' zero'); b.setAttribute('aria-haspopup', 'dialog');
+    b.innerHTML = `<i style="background:${grp.color}"></i>${grp.label} <b style="${k === 'late' && grp.items.length ? 'color:#C81E3A' : ''}">${grp.items.length}</b>`;
+    b.onclick = () => openPop(b, (p) => {
+      p.innerHTML = `<h3 class="pop-h">${grp.label} · ${grp.items.length} งาน</h3>`;
+      if (!grp.items.length) { p.insertAdjacentHTML('beforeend', '<p class="pop-note">ไม่มีงานในกลุ่มนี้</p>'); return; }
+      grp.items.forEach(x => {
+        const it = document.createElement('button'); it.type = 'button'; it.className = 'tdl-it';
+        const due = k === 'wait' && x.a.followUp.due != null ? 'ติดตาม ' + calShortDate(x.a.followUp.due) : k === 'soon' ? 'เริ่ม ' + calShortDate(x.a.start) : k === 'late' ? `เลย ${t - x.a.end} วัน` : x.a.end === t ? 'ครบวันนี้' : 'ถึง ' + calShortDate(x.a.end);
+        it.innerHTML = `<i style="background:${x.a.color || '#94A3B8'}"></i><span class="tdl-t"><b>${escapeHTML(x.a.label)}</b><small>${escapeHTML((projects.length > 1 ? x.p.name + ' › ' : '') + (x.d ? x.d.name + ' › ' + x.r.name : 'งานเพิ่มเติม (To-do)'))}</small></span><span class="tdl-d" style="color:${grp.color}">${due}</span>`;
+        it.onclick = () => { closePop(); openTaskItem(x); };
+        p.appendChild(it);
+      });
+    }, { cls: 'pop-list' });
+    bar.appendChild(b);
+  });
+  const sp = document.createElement('span'); sp.style.flex = '1'; bar.appendChild(sp);
+  if (projects.length === 1) {
+    const all = document.createElement('button'); all.type = 'button'; all.className = 'link-btn'; all.textContent = 'เปิดบอร์ด To-do ของโครงการ';
+    all.onclick = () => { todo.activeId = 'proj:' + projects[0].id; lsSet('todo_active', todo.activeId); goView('todo', { type: 'todo' }); };
+    bar.appendChild(all);
+  }
+  return bar;
+}
+function ganttHolOn() { return lsGet('gantt_hol', true) !== false; }
+
+// ---------- แถบงาน: สีอ่อน + ขอบสีเต็ม · สถานะเป็นวงกลมเล็กหน้าแถบ ----------
+const ST_ICON = {
+  late: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="เลยกำหนด"><circle cx="8" cy="8" r="8" fill="#C81E3A"/><path d="M8 4v5M8 11.5v.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  done: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="เสร็จแล้ว"><circle cx="8" cy="8" r="8" fill="#15803D"/><path d="M4.5 8.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  today: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="ครบกำหนดวันนี้"><circle cx="8" cy="8" r="8" fill="#B45309"/><circle cx="8" cy="8" r="3" fill="#fff"/></svg>',
+  wait: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="รอตอบกลับ"><circle cx="8" cy="8" r="8" fill="#6D28D9"/><rect x="4" y="5.2" width="8" height="5.8" rx="1" stroke="#fff" stroke-width="1.3" fill="none"/><path d="M4.3 5.8L8 8.4l3.7-2.6" stroke="#fff" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>',
+  rec: '<svg class="st" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3A2E6E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="งานที่ทำซ้ำ"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>'
+};
+function barTint(hex, a) {
+  let h = String(hex || '#888888').replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16) || 0, m = (c) => Math.round(c * a + 255 * (1 - a));
+  return `rgb(${m(n >> 16)},${m((n >> 8) & 255)},${m(n & 255)})`;
+}
+function barTextW(txt) {
+  const c = barTextW._c || (barTextW._c = document.createElement('canvas').getContext('2d'));
+  c.font = "500 12.5px 'IBM Plex Sans Thai', 'Sarabun', sans-serif";
+  return c.measureText(txt).width;
+}
+
+function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActivities, project, dept, row, leadExtra) {
   const actStart = Math.max(rStart, act.start);
   const actEnd = Math.min(rEnd, act.end);
   if (actEnd < rStart || actStart > rEnd) return null;
@@ -3324,89 +4031,58 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
       spaceToNext = Math.max(actWidth, nextStartOffset - actStartOffset - 2);
   }
 
-  const todayIdx = todayBangkokIndex(); 
-  let displayColor = act.color, prefix = '', statusText = '';
+  const todayIdx = todayBangkokIndex();
+  const color = act.color || '#94A3B8';
+  const st = []; let statusText = '';
+  const done = act.type === 'task' && act.completed;
   if (act.type === 'task') {
-      if (act.completed) { prefix = '✅ '; statusText = ' (เสร็จสิ้น)'; }
-      else {
-          if (todayIdx > act.end) { displayColor = '#EF4444'; prefix = '🚨 '; statusText = ' (เลยกำหนด!)'; }
-          else if (todayIdx === act.end) { displayColor = '#F59E0B'; prefix = '🔥 '; statusText = ' (ครบกำหนดวันนี้!)'; }
-          else { prefix = '📌 '; statusText = ' (รอดำเนินการ)'; }
-      }
+      if (act.completed) { if (fuWaiting(act)) { st.push('wait'); statusText = ' (เสร็จแล้ว · รอตอบกลับ)'; } else { st.push('done'); statusText = ' (เสร็จสิ้น)'; } }
+      else if (todayIdx > act.end) { st.push('late'); statusText = ' (เลยกำหนด!)'; }
+      else if (todayIdx === act.end) { st.push('today'); statusText = ' (ครบกำหนดวันนี้!)'; }
+      else statusText = ' (รอดำเนินการ)';
   }
-
+  const timeTxt = act.allDay === false && act.startTime ? act.startTime : '';
   if (act.type === 'meeting') {
-    prefix = (MEETING_ICONS[act.meetingKind] || '📅') + ' ' + (act.allDay === false && act.startTime ? act.startTime + ' ' : '');
     statusText = ` (${MEETING_KIND_LABELS[act.meetingKind] || 'นัดหมาย'}${act.allDay === false ? ' ' + (act.startTime || '') + '–' + (act.endTime || '') + ' น.' : ' ทั้งวัน'})`
-      + (act.location ? '\n📍 ' + act.location : '')
-      + (act.guests && act.guests.length ? '\n👥 ' + act.guests.join(', ') : '')
-      + (act.calSync ? '\n🗓 อยู่ใน Google Calendar' : '');
+      + (act.location ? '\nสถานที่: ' + act.location : '')
+      + (act.guests && act.guests.length ? '\nผู้เข้าร่วม: ' + act.guests.join(', ') : '')
+      + (act.calSync ? '\nอยู่ใน Google Calendar' : '');
   }
-  if (act.type !== 'meeting' && act.allDay === false && act.startTime) { prefix += act.startTime + ' '; statusText += `\n🕘 ${act.startTime}–${act.endTime || ''} น.`; }
-  if (act.seriesId) { prefix = '🔁 ' + prefix; statusText += '\n🔁 ' + recDescribe(act.rec); }
-  if (fuWaiting(act)) { prefix = '📮 ' + prefix; statusText += '\n📮 รอติดตามผล' + (act.followUp.from ? ' จาก ' + act.followUp.from : '') + (act.followUp.due != null ? ' · ติดตามภายใน ' + formatDateThai(dateFromIndex(act.followUp.due)) : ''); }
+  if (act.type !== 'meeting' && timeTxt) statusText += `\nเวลา ${act.startTime}–${act.endTime || ''} น.`;
+  if (act.seriesId) { st.push('rec'); statusText += '\nทำซ้ำ: ' + recDescribe(act.rec); }
+  if (fuWaiting(act)) statusText += '\nรอติดตามผล' + (act.followUp.from ? ' จาก ' + act.followUp.from : '') + (act.followUp.due != null ? ' · ติดตามภายใน ' + formatDateThai(dateFromIndex(act.followUp.due)) : '');
   const bar = document.createElement('div');
-  bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '');
+  bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '') + (done ? ' is-done' : '');
   bar.style.position = 'absolute';
   bar.style.left = actStartOffset + 'px';
   bar.style.width = 'max-content';
   bar.style.minWidth = actWidth + 'px';
-  bar.style.maxWidth = spaceToNext + 'px'; 
-  bar.title = `${prefix}${act.label}${statusText}${act.remark ? '\n📝 หมายเหตุ: ' + act.remark : ''}${act.updatedBy ? '\n✎ แก้ล่าสุดโดย ' + act.updatedBy + ' · ' + fmtDateTime(act.updatedAt) : ''}`;
+  bar.style.maxWidth = spaceToNext + 'px';
+  bar.title = `${act.label}${statusText}${act.remark ? '\nหมายเหตุ: ' + act.remark : ''}${act.updatedBy ? '\nแก้ล่าสุดโดย ' + act.updatedBy + ' · ' + fmtDateTime(act.updatedAt) : ''}`;
   const fState = activityFilterState(act);
   if (fState === 'dim') bar.classList.add('act-dim');
   else if (fState === 'hit') { bar.classList.add('act-hit'); searchHits++; }
   else if (fState === 'show' && (searchQuery || onlyPending)) searchHits++;
-  bar.style.background = 'transparent';
-  bar.style.border = 'none'; 
-  bar.style.padding = '0';
-  bar.style.boxSizing = 'border-box';
-  bar.style.overflow = 'hidden'; 
 
-  let hex = (displayColor || '#888888').replace('#', '');
-  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-  let rHex = parseInt(hex.slice(0, 2), 16) || 0;
-  let gHex = parseInt(hex.slice(2, 4), 16) || 0;
-  let bHex = parseInt(hex.slice(4, 6), 16) || 0;
-  let lightBg = `rgba(${rHex}, ${gHex}, ${bHex}, 0.15)`;
-
-  const dashedFill = document.createElement('div');
-  dashedFill.style.position = 'absolute';
-  dashedFill.style.inset = '0';
-  dashedFill.style.background = lightBg;
-  dashedFill.style.border = `1.5px dashed ${displayColor}`;
-  dashedFill.style.borderRadius = '6px';
-  dashedFill.style.zIndex = '0';
-  dashedFill.style.boxSizing = 'border-box';
-
-  const solidFill = document.createElement('div');
-  solidFill.style.position = 'absolute';
-  solidFill.style.left = '0'; 
-  solidFill.style.top = '0'; 
-  solidFill.style.bottom = '0'; 
-  solidFill.style.width = actWidth + 'px'; 
-  solidFill.style.background = displayColor;
-  solidFill.style.border = `1.5px solid ${displayColor}`; 
-  solidFill.style.borderRadius = '6px';
-  solidFill.style.zIndex = '1';
-  solidFill.style.boxSizing = 'border-box';
-
-  const textSpan = document.createElement('span'); textSpan.className = 'act-txt';
-  textSpan.style.position = 'relative';
-  textSpan.style.zIndex = '2';
-  textSpan.style.padding = '0 8px';
-  textSpan.style.whiteSpace = 'nowrap';
-  textSpan.style.overflow = 'hidden';
-  textSpan.style.textOverflow = 'ellipsis';
-  textSpan.style.color = '#14213A';
-  textSpan.style.textShadow = '0 0 3px rgba(255,255,255,0.9), 0 0 1px rgba(255,255,255,1)';
-  textSpan.textContent = prefix + act.label;
-  textSpan.style.display = 'block'; 
-  textSpan.style.width = '100%';
-
-  bar.appendChild(dashedFill);
+  const solidFill = document.createElement('div'); solidFill.className = 'act-fill';
+  solidFill.style.width = actWidth + 'px';
+  solidFill.style.background = barTint(color, done ? 0.1 : 0.22);
+  solidFill.style.borderColor = color;
+  const leadHTML = st.map(k => ST_ICON[k]).join('') + (timeTxt ? `<b class="act-time">${escapeHTML(timeTxt)}</b>` : '');
+  const leadW = st.length * 19 + (timeTxt ? 40 : 0) + (leadExtra || 0);
+  const fits = 14 + leadW + barTextW(act.label || '') <= actWidth || spaceToNext - actWidth < 48;   // ที่ว่างหลังแถบไม่พอ: ตัดชื่อในแถบแทน
+  const content = document.createElement('div');
+  let leadBox = null;
+  if (fits) {   // ชื่อพอดีในแถบ
+    content.className = 'act-in act-txt'; content.style.width = actWidth + 'px';
+    content.innerHTML = `<span class="act-lead">${leadHTML}</span><span class="act-name">${escapeHTML(act.label)}</span>`;
+  } else {      // ชื่อยาวเกินแถบ: เขียนต่อท้ายนอกแถบ (ชนงานถัดไปจะตัดด้วย …)
+    content.className = 'act-in out';
+    content.innerHTML = `<span class="act-lead act-leadbox" style="width:${actWidth}px">${leadHTML}</span><span class="act-out">${escapeHTML(act.label)}</span>`;
+    leadBox = content.querySelector('.act-leadbox');
+  }
   bar.appendChild(solidFill);
-  bar.appendChild(textSpan);
+  bar.appendChild(content);
 
   if (dragMode && project) {
       const startDrag = (e) => {
@@ -3431,6 +4107,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
                   bar.style.left = newOffset + 'px';
                   bar.style.minWidth = newWidth + 'px';
                   solidFill.style.width = newWidth + 'px';
+                  if (leadBox) leadBox.style.width = newWidth + 'px'; else content.style.width = newWidth + 'px';
                   
                   const curSortedActs = [...rowActivities].sort((a, b) => a.start - b.start || a.end - b.end);
                   const curMyIndex = curSortedActs.findIndex(a => a.id === act.id);
@@ -3493,7 +4170,7 @@ function appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept
   reps.sort((x, y) => x.rep.start - y.rep.start || x.rep.end - y.rep.end);
   const repActs = reps.map(x => x.rep);
   reps.forEach(({ rep, all }) => {
-    const bar = createSmartActivityBar(rep, colw, rStart, rEnd, totalWidth, repActs, project, dept, row);
+    const bar = createSmartActivityBar(rep, colw, rStart, rEnd, totalWidth, repActs, project, dept, row, all ? 34 : 0);
     if (!bar) return;
     if (all) {
       const chip = document.createElement('span'); chip.className = 'ov-more'; chip.textContent = '+' + (all.length - 1);
@@ -3503,7 +4180,7 @@ function appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept
       chip.addEventListener('mousedown', (e) => e.stopPropagation());
       chip.addEventListener('click', (e) => { e.stopPropagation(); ovShowPop(chip, all, ctxP, ctxD, row); });
       bar.classList.add('has-more');
-      const t = bar.querySelector('.act-txt'); if (t) t.prepend(chip); else bar.appendChild(chip);
+      const t = bar.querySelector('.act-lead'); if (t) t.prepend(chip); else bar.appendChild(chip);
     }
     track.appendChild(bar);
   });
@@ -3560,14 +4237,13 @@ function renderOverview(categoryFilter = null) {
   
   let title = state.overviewSettings.tab1.name || 'ภาพรวมทุกโครงการ';
   const __calScope = 'ov_' + (categoryFilter || 'all');
-  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
-  if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
-  if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
+  if (categoryFilter) title = 'ภาพรวมโครงการ ' + (CAT_LABELS[categoryFilter] || '');
   
-  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  toolbar.querySelector('.proj-title').appendChild(calToggle(__calScope));
   if (calIsOn(__calScope)) root.classList.add('cal-on');
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
+  root.appendChild(buildPageHead({ crumb: categoryFilter ? 'แผนงาน / ' + (CAT_LABELS[categoryFilter] || '') : 'ภาพรวม', title, toggle: __calScope,
+    add: categoryFilter && CAT_ADD[categoryFilter] ? [{ label: 'เพิ่มโครงการ', fn: () => CAT_ADD[categoryFilter]() }] : null }));
+  root.appendChild(buildToolRow({ filterCtx: { ov: true, ovKey: categoryFilter }, cal: calIsOn(__calScope) }));
+  root.appendChild(buildWatchPanel(categoryFilter));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
   const ovAct = ovBar.act;
@@ -3632,21 +4308,34 @@ function renderOverview(categoryFilter = null) {
   return root;
 }
 
+// ภาพรวมหมวด: จัดกลุ่มตามโครงการ (เดิม) หรือตามชื่อหน่วยงาน + กรองเฉพาะบางหน่วยงาน (เก็บในเครื่องนี้)
+function deptKey(n) { return String(n || '').trim().replace(/\s+/g, ' ').toLowerCase(); }
+function lanesPref(cat) { return { group: 'project', depts: [], ...(lsGet('lanes_pref_' + (cat || 'all'), {}) || {}) }; }
+function setLanesPref(cat, patch) { lsSet('lanes_pref_' + (cat || 'all'), { ...lanesPref(cat), ...patch }); reRenderWithScroll(); }
+function lanesNote(cat, lp) {
+  const n = document.createElement('div'); n.className = 'rc-filter-note';
+  const parts = []; if (lp.group === 'dept') parts.push('จัดกลุ่มตามชื่อหน่วยงาน');
+  if ((lp.depts || []).length) parts.push('เฉพาะหน่วยงาน: ' + lp.depts.length + ' ชื่อ');
+  n.innerHTML = `<span>${escapeHTML(parts.join(' · '))}</span>`;
+  const c = document.createElement('button'); c.type = 'button'; c.className = 'rc-clear'; c.textContent = 'กลับเป็นแบบเดิม';
+  c.onclick = () => setLanesPref(cat, { group: 'project', depts: [] }); n.appendChild(c);
+  return n;
+}
 function renderLanesOverview(categoryFilter = null) {
   const root = document.createElement('div'), toolbar = document.createElement('div'); toolbar.className = 'toolbar';
   let title = state.overviewSettings.tab2.name || '🛣️ รายละเอียดภาพรวมโครงการ';
   const __calScope = 'lanes_' + (categoryFilter || 'all');
-  if (categoryFilter === 'work') title = '📊 ภาพรวมโครงการ สลส.';
-  if (categoryFilter === 'extra') title = '📊 ภาพรวมโครงการ PRI';
-  if (categoryFilter === 'personal') title = '📊 ภาพรวมโครงการ ส่วนตัว';
-  toolbar.innerHTML = `<div class="proj-title"><h2>${escapeHTML(title)}</h2></div>`;
-  toolbar.querySelector('.proj-title').appendChild(calToggle(__calScope));
+  if (categoryFilter) title = 'ภาพรวมโครงการ ' + (CAT_LABELS[categoryFilter] || '');
   if (calIsOn(__calScope)) root.classList.add('cal-on');
-  renderToolbarControls(toolbar); root.appendChild(toolbar); root.appendChild(buildWatchPanel(categoryFilter)); root.appendChild(renderLegend(null, categoryFilter));
+  root.appendChild(buildPageHead({ crumb: categoryFilter ? 'แผนงาน / ' + (CAT_LABELS[categoryFilter] || '') : 'ภาพรวม', title, toggle: __calScope,
+    add: categoryFilter && CAT_ADD[categoryFilter] ? [{ label: 'เพิ่มโครงการ', fn: () => CAT_ADD[categoryFilter]() }] : null }));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
+  root.appendChild(buildToolRow({ filterCtx: { ov: true, ovKey: categoryFilter, lanes: true, projects: ovProjs }, cal: calIsOn(__calScope) }));
+  root.appendChild(buildWatchPanel(categoryFilter));
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
   const ovAct = ovBar.act;
-  if (calIsOn(__calScope)) { root.appendChild(renderCalendar({ projects: ovProjs, rowOk: (p, d, r) => ovRowIn(p, r, ovAct), multi: true })); return root; }
+  { const lpx = lanesPref(categoryFilter); if (lpx.group === 'dept' || (lpx.depts || []).length) root.appendChild(lanesNote(categoryFilter, lpx)); }
+  if (calIsOn(__calScope)) { const ds = new Set(lanesPref(categoryFilter).depts || []); root.appendChild(renderCalendar({ projects: ovProjs, rowOk: (p, d, r) => ovRowIn(p, r, ovAct) && (!ds.size || ds.has(deptKey(d.name))), multi: true })); return root; }
   
   const { rStart, rEnd, totalDays } = getRenderBounds();
   const colw = getColWidth(zoom, totalDays);
@@ -3656,7 +4345,7 @@ function renderLanesOverview(categoryFilter = null) {
   const inner = document.createElement('div'); inner.className = 'gantt-inner'; 
   
   inner.appendChild(buildGridBg(colw, rStart, rEnd, totalDays, zoom));
-  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, 'โครงการ / หน่วยงาน'));
+  inner.appendChild(buildHeader(colw, rStart, rEnd, totalDays, lanesPref(categoryFilter).group === 'dept' ? 'หน่วยงาน / โครงการ' : 'โครงการ / หน่วยงาน'));
   
   const body = document.createElement('div'); body.className = 'gantt-body'; const todayIdx = todayBangkokIndex();
 
@@ -3669,32 +4358,55 @@ function renderLanesOverview(categoryFilter = null) {
       const empty = document.createElement('div'); empty.className = 'empty-hint'; empty.textContent = 'ยังไม่มีโครงการในหมวดหมู่นี้'; body.appendChild(empty);
   }
 
-  projectsToRender.forEach(p => {
-    const visRows = (d) => d.rows.filter(r => !isHid(r) && ovRowIn(p, r, ovAct));
-    const depts = p.departments.filter(d => !isHid(d) && (!ovFiltering(ovAct) || visRows(d).length));
-    if (ovFiltering(ovAct) && !depts.length) return;   // ไม่มีแถวในหมวดที่เลือก
-    const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
-    const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.textContent = `📁 ${p.name}`;
-    projHeaderBlock.appendChild(pLabel);
-    const pTrackWrap = document.createElement('div'); pTrackWrap.className = 'subrow'; pTrackWrap.style.width = totalWidth + 'px';
-    projHeaderBlock.appendChild(pTrackWrap); body.appendChild(projHeaderBlock);
-
-    depts.forEach(dept => {
+  const lp = lanesPref(categoryFilter), deptSel = new Set(lp.depts || []);
+  const deptOk = (d) => !deptSel.size || deptSel.has(deptKey(d.name));
+  const drawDept = (p, dept, rows, labelText) => {
       const deptBlock = document.createElement('div'); deptBlock.className = 'dept-block';
       const labelCol = document.createElement('div'); labelCol.className = 'row-label';
-      const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name" style="padding-left:10px;">↳ ${escapeHTML(dept.name)}</div>`;
+      const deptInfo = document.createElement('div'); deptInfo.className = 'dept-info'; deptInfo.innerHTML = `<div class="dept-name" style="padding-left:10px;">↳ ${escapeHTML(labelText)}</div>`;
+      deptInfo.title = p.name + ' › ' + dept.name; deptInfo.style.cursor = 'pointer'; deptInfo.onclick = () => goView(p.sourceType || 'work', { type: 'project', id: p.id });
       const rowNamesCol = document.createElement('div'); rowNamesCol.className = 'dept-row-names';
-      visRows(dept).forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; const rc = rcOf(p, row); if (rc) { rCell.style.boxShadow = `inset 3px 0 0 ${rc.color}`; rCell.title = 'หมวด: ' + rc.name; } rowNamesCol.appendChild(rCell); });
+      rows.forEach(row => { const rCell = document.createElement('div'); rCell.className = 'row-name-cell'; rCell.innerHTML = `<span class="r-name-text">${escapeHTML(row.name)}</span>`; const rc = rcOf(p, row); if (rc) { rCell.style.boxShadow = `inset 3px 0 0 ${rc.color}`; rCell.title = 'หมวด: ' + rc.name; } rowNamesCol.appendChild(rCell); });
       labelCol.appendChild(deptInfo); labelCol.appendChild(rowNamesCol); deptBlock.appendChild(labelCol);
-
       const rowsWrap = document.createElement('div'); rowsWrap.className = 'dept-rows';
-      visRows(dept).forEach(row => {
+      rows.forEach(row => {
         const track = document.createElement('div'); track.className = 'subrow'; track.style.width = totalWidth + 'px';
         appendRowBars(track, row, colw, rStart, rEnd, totalWidth, null, null, p, dept);
         rowsWrap.appendChild(track);
       });
       deptBlock.appendChild(rowsWrap); body.appendChild(deptBlock);
+  };
+  const groupHead = (text) => {
+    const hb = document.createElement('div'); hb.className = 'dept-block'; hb.style.background = 'var(--indigo-soft)';
+    const lb = document.createElement('div'); lb.className = 'row-label corner'; lb.textContent = text; hb.appendChild(lb);
+    const tw = document.createElement('div'); tw.className = 'subrow'; tw.style.width = totalWidth + 'px'; hb.appendChild(tw); body.appendChild(hb);
+  };
+  if (lp.group === 'dept') {   // จัดกลุ่มตามชื่อหน่วยงาน (รวมหน่วยงานชื่อเดียวกันจากทุกโครงการ)
+    const groups = new Map();
+    projectsToRender.forEach(p => p.departments.forEach(d => {
+      if (isHid(d) || !deptOk(d)) return;
+      const rows = d.rows.filter(r => !isHid(r) && ovRowIn(p, r, ovAct));
+      if (ovFiltering(ovAct) && !rows.length) return;
+      const k = deptKey(d.name); if (!groups.has(k)) groups.set(k, { name: d.name.trim(), list: [] });
+      groups.get(k).list.push({ p, d, rows });
+    }));
+    groups.forEach(g => {
+      groupHead(`${g.name} · ${g.list.length} โครงการ`);
+      g.list.forEach(({ p, d, rows }) => drawDept(p, d, rows, p.name));
     });
+    if (!groups.size && projectsToRender.length) { const e = document.createElement('div'); e.className = 'empty-hint'; e.textContent = 'ไม่มีหน่วยงานตามตัวกรองที่เลือก'; body.appendChild(e); }
+  }
+  if (lp.group !== 'dept') projectsToRender.forEach(p => {
+    const visRows = (d) => d.rows.filter(r => !isHid(r) && ovRowIn(p, r, ovAct));
+    const depts = p.departments.filter(d => !isHid(d) && deptOk(d) && (!ovFiltering(ovAct) || visRows(d).length));
+    if ((ovFiltering(ovAct) || deptSel.size) && !depts.length) return;   // ไม่มีแถวในหมวด/หน่วยงานที่เลือก
+    const projHeaderBlock = document.createElement('div'); projHeaderBlock.className = 'dept-block'; projHeaderBlock.style.background = 'var(--indigo-soft)';
+    const pLabel = document.createElement('div'); pLabel.className = 'row-label corner'; pLabel.textContent = p.name; pLabel.title = 'คลิกเพื่อเปิดโครงการ'; pLabel.style.cursor = 'pointer'; pLabel.onclick = () => goView(p.sourceType || 'work', { type: 'project', id: p.id });
+    projHeaderBlock.appendChild(pLabel);
+    const pTrackWrap = document.createElement('div'); pTrackWrap.className = 'subrow'; pTrackWrap.style.width = totalWidth + 'px';
+    projHeaderBlock.appendChild(pTrackWrap); body.appendChild(projHeaderBlock);
+
+    depts.forEach(dept => drawDept(p, dept, visRows(dept), dept.name));
   });
   inner.appendChild(body);
   const overlay = document.createElement('div'); overlay.className = 'gantt-grid-overlay';
@@ -4205,6 +4917,21 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
   const cancelBtn = document.createElement('button'); cancelBtn.className = 'ghost-btn'; cancelBtn.textContent = 'ยกเลิก'; cancelBtn.onclick = () => closeModal(overlay); actions.appendChild(cancelBtn);
 }
 
+// เรียงลำดับโครงการในหมวดเดียวกัน (แถบซ้าย): dir = -1/+1 หรือ beforeId = วางก่อนโครงการนั้น (null = ท้ายสุด)
+async function moveProject(projectId, dir, beforeId) {
+  const arr = state.projects, p = arr.find(x => x.id === projectId); if (!p) return;
+  const cat = p.sourceType || 'work';
+  const same = arr.filter(x => (x.sourceType || 'work') === cat);
+  const order = same.filter(x => x !== p);
+  let pos;
+  if (dir) { const i = same.indexOf(p); pos = Math.max(0, Math.min(order.length, i + dir)); }
+  else { pos = beforeId ? order.findIndex(x => x.id === beforeId) : order.length; if (pos < 0) pos = order.length; }
+  order.splice(pos, 0, p);
+  if (order.every((x, i) => x === same[i])) return;
+  // ใส่กลับตำแหน่งเดิมของหมวดนี้ในรายการรวม
+  let k = 0; for (let i = 0; i < arr.length; i++) if ((arr[i].sourceType || 'work') === cat) arr[i] = order[k++];
+  await persistAndRender();
+}
 async function moveDepartmentUp(projectId, deptId) {
   const p = state.projects.find(x => x.id === projectId); const idx = p.departments.findIndex(x => x.id === deptId);
   if (idx > 0) { const temp = p.departments[idx - 1]; p.departments[idx - 1] = p.departments[idx]; p.departments[idx] = temp; await persistAndRender(); }
@@ -6918,7 +7645,7 @@ function tdFromTrello(j, vis) {
   const roToast = () => showToast('บัญชีนี้ดูได้อย่างเดียว ไม่สามารถแก้ไขได้');
   const blocked = ['addProject', 'addExtraProject', 'addPersonalProject', 'deleteProject', 'renameProject',
     'openProjectColorModal', 'openOverviewSettingsModal', 'editColorsModal', 'addDepartment', 'renameDepartment',
-    'deleteDepartment', 'moveDepartmentUp', 'moveDepartmentDown', 'addRow', 'deleteRow', 'moveRow', 'importBackup', 'undo', 'redo', 'openRowCatManager', 'openRowCatPicker'];
+    'deleteDepartment', 'moveProject', 'moveDepartmentUp', 'moveDepartmentDown', 'addRow', 'deleteRow', 'moveRow', 'importBackup', 'undo', 'redo', 'openRowCatManager', 'openRowCatPicker'];
   blocked.forEach(n => {
     const f = window[n]; if (typeof f !== 'function') return;
     window[n] = function (...a) { if (READ_ONLY) { roToast(); return; } return f.apply(this, a); };
