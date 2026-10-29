@@ -4159,23 +4159,27 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   else if (fState === 'hit') { bar.classList.add('act-hit'); searchHits++; }
   else if (fState === 'show' && (searchQuery || onlyPending)) searchHits++;
 
-  const solidFill = document.createElement('div'); solidFill.className = 'act-fill';
-  solidFill.style.width = actWidth + 'px';
-  solidFill.style.background = barTint(color, done ? 0.1 : 0.22);
-  solidFill.style.borderColor = color;
+  // ชื่อทั้งหมดอยู่ "ในกรอบ" ของงาน: ถ้าชื่อยาวกว่าช่วงวันที่ กรอบจะยืดต่อ (สีจางกว่า) ได้ไม่เกินจุดเริ่มของงานถัดไป
+  // งานที่ช่วงวันซ้อนกัน: งานวันถัดไปวาดทับด้านบนด้วยพื้นทึบ ส่วนที่ซ้อนของงานก่อนหน้าจึงไม่โผล่มาให้อ่านปนกัน
   const leadHTML = st.map(k => ST_ICON[k]).join('') + (timeTxt ? `<b class="act-time">${escapeHTML(timeTxt)}</b>` : '');
   const leadW = st.length * 19 + (timeTxt ? 40 : 0) + (leadExtra || 0);
-  const fits = 14 + leadW + barTextW(act.label || '') <= actWidth || spaceToNext - actWidth < 48;   // ที่ว่างหลังแถบไม่พอ: ตัดชื่อในแถบแทน
+  const needW = Math.ceil(16 + leadW + barTextW(act.label || ''));
+  const tintMain = barTint(color, done ? 0.1 : 0.22), tintExt = barTint(color, done ? 0.05 : 0.09);
+  const paint = (rangeW, maxW) => {
+    const boxW = Math.max(rangeW, Math.min(maxW, needW));
+    bar.style.width = boxW + 'px'; bar.style.minWidth = ''; bar.style.maxWidth = '';
+    solidFill.style.width = boxW + 'px';
+    solidFill.style.background = boxW > rangeW + 1 ? `linear-gradient(to right, ${tintMain} 0 ${rangeW}px, ${tintExt} ${rangeW}px 100%)` : tintMain;
+    content.style.width = boxW + 'px';
+    bar.classList.toggle('ext', boxW > rangeW + 1);
+  };
+  const solidFill = document.createElement('div'); solidFill.className = 'act-fill';
+  solidFill.style.borderColor = color;
   const content = document.createElement('div');
-  let leadBox = null;
-  if (fits) {   // ชื่อพอดีในแถบ
-    content.className = 'act-in act-txt'; content.style.width = actWidth + 'px';
-    content.innerHTML = `<span class="act-lead">${leadHTML}</span><span class="act-name">${escapeHTML(act.label)}</span>`;
-  } else {      // ชื่อยาวเกินแถบ: เขียนต่อท้ายนอกแถบ (ชนงานถัดไปจะตัดด้วย …)
-    content.className = 'act-in out';
-    content.innerHTML = `<span class="act-lead act-leadbox" style="width:${actWidth}px">${leadHTML}</span><span class="act-out">${escapeHTML(act.label)}</span>`;
-    leadBox = content.querySelector('.act-leadbox');
-  }
+  content.className = 'act-in act-txt';
+  content.innerHTML = `<span class="act-lead">${leadHTML}</span><span class="act-name">${escapeHTML(act.label)}</span>`;
+  const leadBox = null;
+  paint(actWidth, spaceToNext);
   bar.appendChild(solidFill);
   bar.appendChild(content);
 
@@ -4201,8 +4205,6 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
                   
                   bar.style.left = newOffset + 'px';
                   bar.style.minWidth = newWidth + 'px';
-                  solidFill.style.width = newWidth + 'px';
-                  if (leadBox) leadBox.style.width = newWidth + 'px'; else content.style.width = newWidth + 'px';
                   
                   const curSortedActs = [...rowActivities].sort((a, b) => a.start - b.start || a.end - b.end);
                   const curMyIndex = curSortedActs.findIndex(a => a.id === act.id);
@@ -4213,7 +4215,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
                       const nextStartOffset = (curNextAct.start - rStart) * colw;
                       curSpaceToNext = Math.max(newWidth, nextStartOffset - newOffset - 2);
                   }
-                  bar.style.maxWidth = curSpaceToNext + 'px';
+                  paint(newWidth, curSpaceToNext);
               }
           }
           
