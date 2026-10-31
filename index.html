@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 <style>
 /* --- THEME & CSS VARIABLES --- */
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@700&family=Kanit:wght@500;600&display=swap');
 :root {
   --ink: #16233B; --ink-soft: #4A5773; --bg: #F3F5F9; --surface: #FFFFFF;
   --indigo: #3A2E6E; --indigo-deep: #241C4D; --indigo-soft: #EDEAFB;
@@ -1152,6 +1152,164 @@ body.side-mini .side-sync { justify-content: center; }
 .pwd-rules { list-style: none; margin: 6px 0 4px; padding: 0; font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
 .pwd-rules li.ok { color: #15803D; }
 .pwd-err { min-height: 20px; color: #B4233C; font-size: 13px; margin-top: 8px; }
+/* ===== หน้าสรุปผู้บริหาร ===== */
+.ex-page .ex-tb { gap: 8px; }
+.ex-tb .ex-pn { max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+.ex-sep { width: 1px; height: 24px; background: #D5D9E3; }
+.ex-warn { font-size: 13px; color: #9A3412; background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 999px; padding: 4px 10px; }
+.ex-stage { background: #E4E8F0; border: 1px solid var(--line, #E1E4EC); border-radius: 14px; padding: 14px; display: flex; justify-content: center; justify-content: safe center; overflow: auto; }
+.ex-zoomhint { display: none; font-size: 12.5px; color: #5B6680; text-align: center; margin: 6px 0 0; }
+@media (max-width: 760px) { .ex-zoomhint { display: block; } .ex-stage { padding: 8px; } .ex-sep { display: none; } }
+.ex-scale { position: relative; flex-shrink: 0; }
+.ex-scale > .exs { position: absolute; left: 0; top: 0; transform-origin: 0 0; box-shadow: 0 10px 30px rgba(22,35,59,.16); }
+.ex-hint { font-size: 13px; color: var(--muted, #5B6680); margin: 10px 2px 0; line-height: 1.55; }
+.ex-pop { width: 380px; }
+.ex-pop-dept { width: 520px; padding: 12px 14px; }
+.ex-pop-show { width: 400px; }
+.ex-pop-share { width: 440px; }
+.ex-ph { display: flex; align-items: center; justify-content: space-between; }
+.ex-ph .pop-h { margin-bottom: 4px; }
+.ex-lnk { font: inherit; font-size: 13px; border: 0; background: none; color: var(--indigo, #3A2E6E); text-decoration: underline; cursor: pointer; padding: 4px; }
+.ex-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 4px 6px; }
+.ex-chips button { font: inherit; font-size: 13px; min-height: 32px; border: 1px solid #D5D9E3; background: #fff; color: var(--ink, #16233B); border-radius: 999px; padding: 0 12px; cursor: pointer; }
+.ex-chips button[aria-pressed="true"] { background: #EDEAFB; border-color: #3A2E6E; color: #241C4D; font-weight: 600; }
+.ex-rg { display: flex; align-items: flex-end; gap: 8px; margin: 10px 4px 4px; }
+.ex-rg label { flex: 1; display: flex; flex-direction: column; gap: 3px; font-size: 12.5px; color: var(--muted, #5B6680); }
+.ex-rg select, .ex-row2 select { height: 36px; margin: 0; padding: 0 8px; }
+.ex-rg > span { padding-bottom: 9px; color: var(--muted, #5B6680); }
+.ex-gt { font-size: 12px; font-weight: 700; color: #5B6680; margin: 12px 6px 4px; letter-spacing: .2px; }
+.ex-dl { border-top: 1px solid #EEF0F5; margin: 6px 0 4px; }
+.ex-dr { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-bottom: 1px solid #F1F2F6; }
+.ex-dr.off .nm, .ex-dr.off .cnt { opacity: .5; }
+.ex-dr input { width: 18px; height: 18px; accent-color: #3A2E6E; margin: 0; flex-shrink: 0; }
+.ex-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #D5D9E3; cursor: pointer; flex-shrink: 0; padding: 0; }
+.ex-dr .nm { flex: 1; min-width: 0; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ex-dr .cnt { font-size: 12px; color: #5B6680; white-space: nowrap; }
+.ex-seg button { height: 28px; padding: 0 9px; font-size: 12.5px; }
+.ex-mv { width: 30px !important; min-height: 30px; height: 30px; }
+.ex-ck { align-items: center; }
+.ex-ck input { margin: 0; }
+.ex-sw { width: 10px !important; height: 10px; border-radius: 3px; flex-shrink: 0; display: inline-block !important; }
+.ex-foot { justify-content: space-between; align-items: center; font-size: 13px; color: #4A5773; }
+.ex-fl { display: block; font-size: 12.5px; color: #5B6680; margin: 0 6px 3px; }
+.ex-pop-show .text-input { margin-bottom: 0; }
+.ex-lg { display: flex; align-items: center; gap: 6px; }
+.ex-lg .pop-ck { flex: 1; }
+.ex-row2 { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 6px; font-size: 14px; }
+.ex-row2 select { width: auto; flex: 1; max-width: 230px; }
+.ex-sub { margin-left: 22px; border-left: 2px solid #EEF0F5; padding-left: 6px; }
+.pop-ck.dis { opacity: .45; cursor: not-allowed; }
+.ex-wide { width: 100%; justify-content: center; margin-top: 6px; }
+.ex-shl { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 8px; }
+.ex-sh { border: 1px solid #E1E4EC; border-radius: 12px; padding: 10px; background: #F8F9FC; }
+.ex-sh-i b { font-size: 13.5px; } .ex-sh-i small { display: block; color: #5B6680; font-size: 12px; margin: 1px 0 6px; }
+.ex-url { font-size: 12.5px; height: 34px; margin: 0 0 8px; color: #1D4ED8; }
+.ex-sh-a { display: flex; gap: 6px; flex-wrap: wrap; }
+.ex-danger { color: #B4233C; }
+.ex-msg { font-size: 13px; color: #15803D; margin: 8px 4px 2px; min-height: 18px; }
+.ex-msg.bad { color: #B4233C; }
+.ex-iss-r { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.ex-iss-r > div { flex: 1; }
+.ex-iss-r .text-input { margin-bottom: 4px; }
+.ex-iss-s { font-size: 13px; }
+.ex-iss .exp-no, .ex-iss-r .exp-no { margin-top: 8px; }
+.ex-multi .ex-mp { max-height: 46vh; overflow-y: auto; border: 1px solid #EEF0F5; border-radius: 10px; padding: 4px 8px; margin-bottom: 6px; }
+.ex-af { border: 1px solid #E1E4EC; border-radius: 10px; padding: 0 12px; margin: 4px 0 12px; background: #FAFAFD; }
+.ex-af summary { display: flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; font-weight: 600; color: var(--indigo-deep, #241C4D); font-size: 14px; list-style: none; }
+.ex-af summary::-webkit-details-marker { display: none; }
+.ex-af summary small { font-weight: 400; color: #5B6680; }
+.ex-af[open] { padding-bottom: 8px; }
+.ex-busy { position: fixed; inset: 0; z-index: 4000; background: rgba(243,245,249,.86); display: flex; align-items: center; justify-content: center; font-size: 15px; color: #241C4D; font-weight: 600; }
+.ex-busy > div { background: #fff; border: 1px solid #E1E4EC; border-radius: 14px; padding: 16px 22px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(22,35,59,.12); }
+.ex-spin { width: 18px; height: 18px; border-radius: 50%; border: 3px solid #EDEAFB; border-top-color: #3A2E6E; animation: exspin .8s linear infinite; }
+@keyframes exspin { to { transform: rotate(360deg); } }
+.ex-off { position: fixed; left: 0; top: 0; z-index: -10; pointer-events: none; }
+
+/* --- สไลด์ 1600×900 --- */
+.exs { position: relative; width: 1600px; height: 900px; overflow: hidden; font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif; color: #16233B; background-color: #EAF1FF; background-image: linear-gradient(160deg, #DCEBFF 0%, #F4F8FF 45%, #E6F0FF 100%); text-align: left; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.exs > * { position: absolute; box-sizing: border-box; }
+.exs-logo { border-radius: 50%; object-fit: contain; background: #fff; box-shadow: 0 4px 12px rgba(30,64,175,.18); }
+.exs-hdr { border-radius: 22px; background-color: #1E40AF; background-image: linear-gradient(90deg, #1E40AF, #2563EB); box-shadow: 0 8px 20px rgba(30,64,175,.28); }
+.exs-ttl { color: #fff; font-family: 'Kanit', 'IBM Plex Sans Thai', sans-serif; font-weight: 600; font-size: 38px; line-height: 1.18; display: flex; align-items: center; overflow: hidden; }
+.exs-sub { color: #fff; font-size: 15px; line-height: 1.5; text-align: right; display: flex; align-items: center; justify-content: flex-end; opacity: .95; }
+.exs-board { background: rgba(255,255,255,.9); border-radius: 16px; box-shadow: 0 2px 10px rgba(22,35,59,.06); }
+.exs-past { background: rgba(148,163,184,.13); border-radius: 6px; }
+.exs-grid { width: 1px; background: #E3E8F1; }
+.exs-sep { height: 0; border-top: 1px dashed #D3DCEB; }
+.exs-lane { color: #fff; font-weight: 700; font-size: 14px; line-height: 1.2; border-radius: 14px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2px 8px; overflow: hidden; overflow-wrap: anywhere; }
+.exs-fy { background: #EEF2FF; color: #1E3A8A; font-weight: 700; font-size: 12.5px; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-align: center; white-space: nowrap; overflow: hidden; }
+.exs-mo { background: #1E3A8A; color: #fff; font-weight: 600; font-size: 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-align: center; white-space: nowrap; overflow: hidden; }
+.exs-mo.past { background: #94A3B8; }
+.exs-box { border: 1.5px solid; border-radius: 8px; font-size: 12.5px; line-height: 1.25; font-weight: 500; color: #16233B; display: flex; align-items: center; align-items: safe center; justify-content: center; text-align: center; padding: 2px 6px; overflow: hidden; overflow-wrap: anywhere; }
+.exs-box.done { opacity: .5; }
+.exs-ms { width: 18px; height: 18px; } .exs-ms svg { display: block; } .exs-ms.past { opacity: .45; }
+.exs-today { width: 2px; background: #0891B2; }
+.exs-tpill { background: #0891B2; color: #fff; font-size: 12px; font-weight: 700; border-radius: 999px; width: 54px; height: 20px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.exs-empty { text-align: center; font-size: 18px; color: #5B6680; }
+.exs-panel { display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+.exs-panel > * { position: relative; }
+.exp-card { background: #fff; border-radius: 16px; padding: 16px 18px; box-shadow: 0 2px 10px rgba(22,35,59,.06); }
+.exp-h { font-size: 15px; font-weight: 700; color: #241C4D; margin-bottom: 10px; }
+.exp-pill { display: inline-flex; align-items: center; text-align: center; border-radius: 999px; padding: 3px 14px; font-weight: 700; font-size: 15px; }
+.exp-pill.lv-ok { background: #DCFCE7; color: #166534; } .exp-pill.lv-watch { background: #FEF3C7; color: #92400E; } .exp-pill.lv-late { background: #FEE2E2; color: #B91C1C; }
+.exp-big { display: flex; align-items: baseline; gap: 10px; margin: 8px 0 6px; }
+.exp-pct { font-size: 40px; font-weight: 700; line-height: 1.05; font-family: 'Kanit', 'IBM Plex Sans Thai', sans-serif; }
+.exp-pct.lv-ok { color: #15803D; } .exp-pct.lv-watch { color: #B45309; } .exp-pct.lv-late { color: #C81E3A; }
+.exp-pl { font-size: 13.5px; color: #4A5773; }
+.exp-bar { position: relative; height: 10px; background: #E5EAF3; border-radius: 5px; }
+.exp-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: #15803D; }
+.exp-bar i.lv-watch { background: #D97706; } .exp-bar i.lv-late { background: #C81E3A; }
+.exp-bar b { position: absolute; top: -4px; width: 3px; height: 18px; background: #241C4D; border-radius: 2px; }
+.exp-line { font-size: 13px; color: #4A5773; margin-top: 10px; line-height: 1.45; }
+.exp-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-top: 1px solid #EEF0F5; }
+.exp-row:first-of-type { border-top: 0; padding-top: 2px; }
+.exp-dia { width: 14px; height: 14px; margin-top: 4px; flex-shrink: 0; } .exp-dia svg { display: block; }
+.exp-d { font-weight: 700; color: #1E3A8A; font-size: 14px; width: 62px; flex-shrink: 0; line-height: 1.5; }
+.exp-tx { flex: 1; min-width: 0; }
+.exp-t { font-size: 14px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.exp-s { font-size: 12px; color: #5B6680; line-height: 1.4; margin-top: 1px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.exp-no { width: 22px; height: 22px; border-radius: 50%; background: #FEE2E2; color: #B91C1C; font-weight: 700; font-size: 12.5px; display: flex; align-items: center; justify-content: center; text-align: center; flex-shrink: 0; }
+.exp-none { font-size: 13.5px; color: #5B6680; }
+.exs-leg { display: flex; align-items: center; gap: 20px; font-size: 13px; color: #334155; height: 22px; }
+.exs-leg > * { position: relative; }
+.exl { display: inline-flex; align-items: center; gap: 7px; }
+.exl-sw { display: inline-block; width: 18px; height: 12px; border-radius: 3px; }
+.exl-sw.fade { background: #E9EDFB; border: 1.5px solid #B9C0E8; }
+.exl-sw.past { background: #E9EDF3; }
+.exl-sw.today { width: 3px; height: 16px; background: #0891B2; border-radius: 1px; }
+.exl-ms { width: 14px; height: 14px; } .exl-ms svg { display: block; }
+.exl-sp { flex: 1; }
+.exl-stamp { color: #5B6680; }
+
+/* --- หน้าดูผ่านลิงก์แชร์ --- */
+body.ex-viewing { background: #E4E8F0; }
+.exv { min-height: 100vh; display: flex; flex-direction: column; font-family: 'IBM Plex Sans Thai', 'Sarabun', sans-serif; }
+.exv-top { display: flex; align-items: center; gap: 12px; padding: 10px 18px; background: #241C4D; color: #fff; flex-wrap: wrap; }
+.exv-logo { display: flex; }
+.exv-tt { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
+.exv-tt b { font-size: 16px; } .exv-tt small { font-size: 12.5px; opacity: .8; }
+.exv-act { display: flex; gap: 8px; flex-wrap: wrap; }
+.exv-act .btn { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.3); }
+.exv-act .btn:hover { background: rgba(255,255,255,.16); border-color: #fff; }
+.exv-main { flex: 1; padding: 16px; }
+.exv-main .ex-stage { border: 0; background: transparent; padding: 0; }
+.exv-msg { padding: 60px 20px; text-align: center; color: #4A5773; font-size: 15px; line-height: 1.7; }
+.exv-msg.bad b { color: #B4233C; font-size: 17px; }
+@media (max-width: 700px) { .exv-main { padding: 8px; } .ex-pop-dept { width: calc(100vw - 16px); } .ex-dr { flex-wrap: wrap; } }
+
+/* --- พิมพ์ / PDF ของสไลด์ --- */
+#exPrint { position: fixed; left: 0; top: 0; z-index: -20; opacity: 0; pointer-events: none; }
+@page exslide { size: 1600px 900px; margin: 0; }
+@page exa4 { size: A4 landscape; margin: 0; }
+@media print {
+  body.ex-printing { background: #fff !important; }
+  body.ex-printing > *:not(#exPrint) { display: none !important; }
+  body.ex-printing #exPrint { position: static; opacity: 1; z-index: auto; }
+  body.ex-printing .exp-pg { page: exslide; width: 1600px; height: 900px; overflow: hidden; position: relative; break-after: page; }
+  body.ex-printing .exp-pg:last-child { break-after: auto; }
+  body.ex-printing.ex-a4 .exp-pg { page: exa4; width: 297mm; height: 209mm; display: flex; align-items: center; justify-content: center; }
+  body.ex-printing.ex-a4 .exs { zoom: .7; flex-shrink: 0; }
+}
 </style>
 </head>
 <body>
@@ -2408,6 +2566,7 @@ function render() {
   else if (view.type === 'todo') content.appendChild(renderTodo());
   else if (view.type === 'rooms') content.appendChild(renderRooms());
   else if (view.type === 'calendar') content.appendChild(renderCalendarAll());
+  else if (view.type === 'exec') content.appendChild(renderExec());
   else content.appendChild(renderProjectDetail(view.id));
   
   mainCol.appendChild(content);
@@ -2446,6 +2605,7 @@ const ICONS = {
   filter: '<path d="M4 5h16l-6 8v6l-4-2v-4z"/>', sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
   pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', panel: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>', key: '<circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/>', eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', palette: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.8 1.5-1.5 0-1-.8-1.4-.8-2.3 0-.8.7-1.2 1.6-1.2H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/>',
+  present: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8M7 12l3-3 2 2 4-4"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>', copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/>',
   trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
 };
 function ic(name, size = 18, sw = 1.8) { return `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`; }
@@ -2602,6 +2762,7 @@ function renderSidebar() {
   const g3 = document.createElement('div'); g3.className = 'side-grp';
   g3.innerHTML = '<div class="side-h">เครื่องมือ</div>';
   g3.appendChild(item({ icon: 'calendar', label: 'ปฏิทินรวม', active: view.type === 'calendar', fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'calendar' }) }));
+  g3.appendChild(item({ icon: 'present', label: 'สรุปผู้บริหาร', active: view.type === 'exec', fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'exec', pid: view.type === 'project' ? view.id : view.pid }) }));
   const od = todoOverdueCount();
   g3.appendChild(item({ icon: 'todo', label: 'To-do', active: activeMainCat === 'todo', badge: od || '', badgeTitle: `เลยกำหนด ${od} งาน`, fn: () => goView('todo', { type: 'todo' }) }));
   if (can('work')) g3.appendChild(item({ icon: 'room', label: 'จองห้องประชุม', active: activeMainCat === 'rooms', fn: () => goView('rooms', { type: 'rooms' }) }));
@@ -2707,6 +2868,7 @@ function buildPageHead(opts) {
     sw.querySelector('input').onchange = (e) => { dragMode = e.target.checked; render(); };
     act.appendChild(sw);
   }
+  if (opts.extra) opts.extra.forEach(x => act.appendChild(x));
   if (opts.add && opts.add.length && !READ_ONLY) {
     const ab = document.createElement('button'); ab.type = 'button'; ab.className = 'btn btn-p';
     ab.innerHTML = ic('plus', 16, 2.2) + '<span>เพิ่ม</span>' + (opts.add.length > 1 ? ic('down', 14, 2.2) : '');
@@ -3312,7 +3474,9 @@ function renderProjectDetail(projectId) {
   if (!project) { root.textContent = 'ไม่พบโครงการ'; return root; }
   const calMode = calIsOn('p_' + project.id);
   if (calMode) root.classList.add('cal-on');
-  root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id,
+  const exBtn = document.createElement('button'); exBtn.type = 'button'; exBtn.className = 'btn'; exBtn.innerHTML = ic('present', 16) + '<span>สรุปผู้บริหาร</span>'; exBtn.title = 'สร้างสไลด์สรุปโครงการนี้สำหรับผู้บริหาร (ส่งออก / แชร์ได้)';
+  exBtn.onclick = () => goView(activeMainCat, { type: 'exec', pid: project.id });
+  root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id, extra: [exBtn],
     add: [{ label: 'เพิ่มกิจกรรม', icon: 'calendar', fn: () => calAdd(todayBangkokIndex(), [project]) }, { label: 'เพิ่มหน่วยงาน', icon: 'folder', fn: () => addDepartment(project.id) }] }));
   root.appendChild(buildToolRow({ filterCtx: { project }, cal: calMode }));
   root.appendChild(renderRowCatBar(project));
@@ -4884,6 +5048,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     </div>
     <label class="field-label">หมายเหตุ</label>
     <textarea id="actRemark" class="text-input" placeholder="รายละเอียดเพิ่มเติม...">${existing && existing.remark ? escapeHTML(existing.remark) : ''}</textarea>
+    ${exActFieldsHTML(existing)}
     
     <label class="field-label">วันที่เริ่มต้น</label>
     <div style="display:flex; gap:6px; align-items:center;">
@@ -4985,6 +5150,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     const rule = recur.getRule();
     if (rule || (existing && existing.seriesId)) {
       const done = await saveRecurring({ modal, overlay, liveRow, existing, rule, sIdx, eIdx, label, type, completed, remark, color: chosenColor });
+      if (done && existing) exApplyActFields(liveRow.activities.find(a => a.id === existing.id), modal);
       if (done) { closeModal(overlay); await persistAndRender(); }
       return;
     }
@@ -4992,6 +5158,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     if (target) { const existing = target; existing.label = label; existing.color = chosenColor; existing.start = sIdx; existing.end = eIdx; existing.type = type; existing.completed = completed; existing.remark = remark; }
     else { liveRow.activities.push({ id: uid('act'), label, color: chosenColor, start: sIdx, end: eIdx, type, completed, remark }); }
     applyMeetingFields(target || liveRow.activities[liveRow.activities.length - 1], modal, type);
+    exApplyActFields(target || liveRow.activities[liveRow.activities.length - 1], modal);
     closeModal(overlay); await persistAndRender();
   };
   actions.appendChild(saveBtn);
@@ -7887,10 +8054,797 @@ function tdFromTrello(j, vis) {
 })();
 
 // ==========================================
+// --- หน้าสรุปผู้บริหาร: สไลด์ 16:9 สร้างจากแผนงานจริง · PDF / PNG / PowerPoint · ลิงก์แชร์ ---
+// ค่าตั้งของหน้านี้เก็บในเครื่องนี้ (localStorage) ไม่กระทบข้อมูลแผนงานและผู้ใช้อื่น
+// ==========================================
+const EX_W = 1600, EX_H = 900;
+const EX_PAL = ['#E11D48', '#BE185D', '#86198F', '#6D28D9', '#312E81', '#1D4ED8', '#0F766E', '#B45309', '#0369A1', '#4D7C0F'];
+const EX_TYPES = [['note', 'กิจกรรม/แผนงาน'], ['task', 'กำหนดการที่ต้องทำ'], ['meeting', 'นัดหมาย/ประชุม']];
+const EX_SHOW_DEF = { panel: true, pStatus: true, pNext: true, pIssues: true, short: true, ms: true, fy: true, today: true, fade: true, groupRecur: true, logo: true, legend: true, color: 'dept' };
+const EX_LV = { ok: 'เป็นไปตามแผน', watch: 'ต้องติดตาม', late: 'ล่าช้ากว่าแผน' };
+const EX_LIBS = {
+  pptx: ['https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js', 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'],
+  h2c: ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js']
+};
+
+function exPrefs(pid) {
+  const p = lsGet('exec_p_' + pid, {}) || {};
+  return { range: { mode: 'all' }, depts: {}, catOff: [], types: ['note', 'task'], status: 'all', title: '', issues: null, lv: '', ...p };
+}
+function exSetPrefs(pid, patch) { lsSet('exec_p_' + pid, { ...exPrefs(pid), ...patch }); }
+function exShow() { return { ...EX_SHOW_DEF, ...(lsGet('exec_show', {}) || {}) }; }
+function exSetShow(patch) { lsSet('exec_show', { ...exShow(), ...patch }); }
+
+// ---------- เดือน / ปีงบประมาณ ----------
+function exYM(i) { const d = dateFromIndex(i); return { y: d.getUTCFullYear(), m: d.getUTCMonth() }; }
+function exAddM(o, n) { const t = o.y * 12 + o.m + n; return { y: Math.floor(t / 12), m: ((t % 12) + 12) % 12 }; }
+function exIdx(o) { return indexFromDate(new Date(Date.UTC(o.y, o.m, 1))); }
+function exMLabel(o) { return THAI_MONTHS_SHORT[o.m] + ' ' + String(o.y + 543).slice(2); }
+function exKey(o) { return o.y + '-' + String(o.m + 1).padStart(2, '0'); }
+function exParseKey(k) { const m = /^(\d{4})-(\d{2})$/.exec(k || ''); return m ? { y: +m[1], m: +m[2] - 1 } : null; }
+function exFyOf(o) { return o.m >= 9 ? o.y + 544 : o.y + 543; }   // ปีงบประมาณ (พ.ศ.) เริ่ม ต.ค.
+function exThaiDate(i) { const d = dateFromIndex(i); return `${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}`; }
+function exDateRange(s, e) { return s === e ? exThaiDate(s) : exThaiDate(s) + ' – ' + exThaiDate(e); }
+
+// ---------- ดึงงานจากแผน ----------
+function exDepts(project, pr) {
+  const ds = project.departments.filter(d => !isHid(d));
+  const ord = (pr.depts && pr.depts.order) || [];
+  const pos = (d) => { const i = ord.indexOf(d.id); return i < 0 ? 1e6 + ds.indexOf(d) : i; };
+  return ds.slice().sort((a, b) => pos(a) - pos(b));
+}
+function exDeptColor(pr, d, i) { return ((pr.depts || {}).color || {})[d.id] || EX_PAL[i % EX_PAL.length]; }
+function exActsOfDept(project, d, pr) {
+  const off = new Set(pr.catOff || []), cats = rcList(project), out = [];
+  d.rows.forEach(r => {
+    if (isHid(r)) return;
+    const ck = r.cat && cats.some(c => c.id === r.cat) ? r.cat : '_none';
+    if (off.has(ck)) return;
+    (r.activities || []).forEach(a => out.push({ a, r }));
+  });
+  return out;
+}
+function exItems(project, d, pr, sh, R, today) {
+  const types = new Set(pr.types && pr.types.length ? pr.types : EX_TYPES.map(t => t[0]));
+  const mk = (a, r) => {
+    const ty = a.type || 'note';
+    return { label: a.label || 'กิจกรรม', short: String(a.shortName || '').trim(), start: a.start, end: a.end, type: ty, row: r.name,
+      done: !!a.completed || (ty !== 'task' && a.end < today), late: ty === 'task' && !a.completed && a.end < today,
+      ms: !!a.milestone, color: a.color, wait: fuWaiting(a), fu: a.followUp || null, n: 1 };
+  };
+  const items = [], series = new Map();
+  exActsOfDept(project, d, pr).forEach(({ a, r }) => {
+    if (!types.has(a.type || 'note') || a.end < R.i0 || a.start > R.i1) return;
+    const it = mk(a, r);
+    if (sh.groupRecur && a.seriesId) {   // งานที่ทำซ้ำ: รวมเป็นกล่องเดียว
+      const g = series.get(a.seriesId);
+      if (g) { g.start = Math.min(g.start, it.start); g.end = Math.max(g.end, it.end); g.done = g.done && it.done; g.late = g.late || it.late; g.ms = g.ms || it.ms; g.wait = g.wait || it.wait; g.n++; return; }
+      series.set(a.seriesId, it);
+    }
+    items.push(it);
+  });
+  items.forEach(it => { if (it.n > 1) { it.label += ` (${it.n} ครั้ง)`; if (it.short) it.short += ` (${it.n} ครั้ง)`; } });
+  const st = pr.status || 'all';
+  return items.filter(it => st === 'all' || (st === 'pending' ? !it.done : st === 'late' ? it.late : it.done));
+}
+function exRange(project, pr) {
+  const today = todayBangkokIndex(), t = exYM(today), fy0 = t.m >= 9 ? t.y : t.y - 1;
+  const rg = pr.range || { mode: 'all' };
+  let s, e, clipped = false;
+  if (rg.mode === 'fy0') { s = { y: fy0, m: 9 }; e = { y: fy0 + 1, m: 8 }; }
+  else if (rg.mode === 'fy1') { s = { y: fy0 + 1, m: 9 }; e = { y: fy0 + 2, m: 8 }; }
+  else if (rg.mode === 'next6') { s = t; e = exAddM(t, 5); }
+  else if (rg.mode === 'next12') { s = t; e = exAddM(t, 11); }
+  else if (rg.mode === 'custom' && exParseKey(rg.s) && exParseKey(rg.e)) {
+    s = exParseKey(rg.s); e = exParseKey(rg.e); if (exIdx(e) < exIdx(s)) { const x = s; s = e; e = x; }
+  } else {
+    let mn = Infinity, mx = -Infinity; const off = new Set((pr.depts || {}).off || []);
+    exDepts(project, pr).forEach(d => { if (off.has(d.id)) return; exActsOfDept(project, d, pr).forEach(({ a }) => { if (a.start < mn) mn = a.start; if (a.end > mx) mx = a.end; }); });
+    if (isFinite(mn)) { s = exYM(mn); e = exYM(mx); } else { s = t; e = exAddM(t, 11); }
+  }
+  let n = (e.y * 12 + e.m) - (s.y * 12 + s.m) + 1;
+  if (n > 48) { e = exAddM(s, 47); n = 48; clipped = true; }
+  const months = []; for (let k = 0; k < n; k++) months.push(exAddM(s, k));
+  return { s, e, n, months, i0: exIdx(s), i1: exIdx(exAddM(e, 1)) - 1, clipped, mode: rg.mode || 'all', fy0 };
+}
+function exRel(diff) { return diff <= 0 ? 'วันนี้' : diff <= 31 ? `อีก ${diff} วัน` : `อีก ~${Math.round(diff / 30)} เดือน`; }
+
+// ---------- สร้าง "แบบสไลด์" (ตัวเลขตำแหน่งทั้งหมด ใช้ร่วมกันทั้งจอ / PDF / PNG / PowerPoint / ลิงก์แชร์) ----------
+function exBuildModel(project) {
+  const pr = exPrefs(project.id), sh = exShow(), today = todayBangkokIndex();
+  const R = exRange(project, pr), dp = pr.depts || {};
+  const off = new Set(dp.off || []), below = new Set(dp.below || []);
+  const lanes = [];
+  exDepts(project, pr).forEach((d, i) => {
+    if (off.has(d.id)) return;
+    const items = exItems(project, d, pr, sh, R, today);
+    if (!items.length && !dp.keepEmpty) return;
+    lanes.push({ id: d.id, name: d.name, color: exDeptColor(pr, d, i), below: below.has(d.id), items });
+  });
+  const top = lanes.filter(l => !l.below), bot = lanes.filter(l => l.below), ord = [...top, ...bot];
+  const panelOn = !!(sh.panel && (sh.pStatus || sh.pNext || sh.pIssues));
+  const bx0 = 24, bx1 = panelOn ? EX_W - 24 - 344 - 16 : EX_W - 24, by0 = 122, by1 = sh.legend ? EX_H - 46 : EX_H - 22;
+  const LW = 128, gx0 = bx0 + LW, gx1 = bx1 - 12, GW = gx1 - gx0;
+  const dayW = GW / (R.i1 - R.i0 + 1), X = (i) => gx0 + (i - R.i0) * dayW;
+  // จัดกล่องลงแถวย่อย (ไม่ทับกัน)
+  const MINW = 54; let nBoxes = 0;
+  ord.forEach(l => {
+    const tracks = [];
+    l.boxes = l.items.slice().sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start)).map(it => {
+      const s = Math.max(it.start, R.i0), e = Math.min(it.end, R.i1);
+      let x = X(s) + 1.5, w = (e - s + 1) * dayW - 3;
+      if (w < MINW) { const c = x + w / 2; w = MINW; x = c - w / 2; }   // กล่องสั้น: ขยายรอบจุดกึ่งกลางให้อ่านได้
+      x = Math.max(gx0 + 1, Math.min(gx1 - w - 1, x));
+      let t = tracks.findIndex(rr => rr + 4 <= x); if (t < 0) { tracks.push(0); t = tracks.length - 1; }
+      tracks[t] = x + w; nBoxes++;
+      return { it, x, w, t };
+    });
+    l.nt = Math.max(1, tracks.length);
+  });
+  // ความสูง: แบ่งพื้นที่ตามจำนวนแถวย่อย
+  const axisH = sh.fy ? 54 : 32, topPad = 30, LP = 10;
+  const avail = (by1 - by0) - topPad - axisH - 10;
+  const T = ord.reduce((s, l) => s + l.nt, 0) || 1, nL = ord.length || 1;
+  let trackH = (avail - LP * nL) / T; const dense = trackH < 26;
+  trackH = Math.max(14, Math.min(72, trackH));
+  const extra = Math.max(0, (avail - T * trackH - LP * nL) / nL);   // ที่ว่างเหลือ: เฉลี่ยให้ทุกแถว
+  let y = by0 + topPad;
+  const place = (l) => {
+    l.y = y; l.h = l.nt * trackH + LP + extra;
+    const inner = l.y + (l.h - l.nt * trackH) / 2;
+    l.boxes.forEach(b => { b.y = inner + b.t * trackH + 3; b.h = trackH - 6; });
+    y += l.h;
+  };
+  top.forEach(place); const axisY = y; y += axisH; bot.forEach(place);
+  const r1 = (v) => Math.round(v * 10) / 10;
+  // แกนเดือน / ปีงบ
+  const monthW = GW / R.n;
+  const months = R.months.map(o => {
+    const a = exIdx(o), b = exIdx(exAddM(o, 1)) - 1;
+    const label = monthW >= 44 ? exMLabel(o).replace(' ', '') : monthW >= 26 ? THAI_MONTHS_SHORT[o.m] : String(o.m + 1);
+    return { x: r1(X(a)), w: r1((b - a + 1) * dayW), t: label, past: b < today };
+  });
+  const fy = [];
+  if (sh.fy) R.months.forEach((o, k) => {
+    const f = exFyOf(o), last = fy[fy.length - 1];
+    if (last && last.f === f) { last.w = r1(months[k].x + months[k].w - last.x); return; }
+    fy.push({ f, x: months[k].x, w: months[k].w });
+  });
+  fy.forEach(b => { b.t = b.w >= 150 ? 'ปีงบประมาณ ' + b.f : b.w >= 50 ? 'ปีงบ ' + String(b.f).slice(2) : String(b.f).slice(2); delete b.f; });
+  const inR = today >= R.i0 && today <= R.i1;
+  const todayX = sh.today && inR ? r1(X(today) + nowDayFrac() * dayW) : null;
+  const pastW = !sh.today ? 0 : today > R.i1 ? GW : inR ? r1(todayX - gx0) : 0;
+  // กล่องงาน + หมุดหมาย
+  const boxes = [], ms = [];
+  ord.forEach(l => l.boxes.forEach(b => {
+    const it = b.it, col = sh.color === 'act' && /^#[0-9a-f]{6}$/i.test(it.color || '') ? it.color : l.color;
+    boxes.push({ x: r1(b.x), y: r1(b.y), w: r1(b.w), h: r1(b.h), t: sh.short && it.short ? it.short : it.label,
+      full: it.label + ' · ' + exDateRange(it.start, it.end) + (it.row ? ' · ' + it.row : ''), c: col, bg: barTint(col, 0.16), done: !!(sh.fade && it.done) });
+    if (sh.ms && it.ms) ms.push({ x: r1(b.x + b.w - 2), y: r1(b.y), past: it.end < today });
+  }));
+  // แผงด้านขวา
+  let panel = null;
+  if (panelOn) {
+    const all = ord.flatMap(l => l.items.map(it => ({ ...it, dept: l.name })));
+    const cnt = all.length, doneN = all.filter(i => i.done).length, planN = all.filter(i => i.end < today).length, lateN = all.filter(i => i.late).length;
+    const pct = cnt ? Math.round(doneN * 100 / cnt) : 0, plan = cnt ? Math.round(planN * 100 / cnt) : 0;
+    let lv = lateN === 0 && pct >= plan ? 'ok' : (pct < plan - 10 || lateN >= 3) ? 'late' : 'watch';
+    if (EX_LV[pr.lv]) lv = pr.lv;
+    const line = `งานเสร็จ ${doneN} จาก ${cnt}` + (plan > pct ? ` · ช้ากว่าแผน ${plan - pct}%` : pct > plan ? ` · เร็วกว่าแผน ${pct - plan}%` : ' · ตรงตามแผน') + (lateN ? ` · เลยกำหนด ${lateN} งาน` : '');
+    const nm = (i) => (sh.short && i.short) || i.label;
+    const mi = (i) => { const d = dateFromIndex(i.end); return { d: THAI_MONTHS_SHORT[d.getUTCMonth()] + ' ' + String(d.getUTCFullYear() + 543).slice(2), t: nm(i), s: exRel(i.end - today) + ' · ' + i.dept }; };
+    let nTitle = 'หมุดหมายถัดไป', nList = all.filter(i => i.ms && i.end >= today).sort((a, b) => a.end - b.end);
+    if (!nList.length) { nTitle = 'กำหนดการถัดไป'; nList = all.filter(i => !i.done && i.end >= today && i.type === 'task').sort((a, b) => a.end - b.end); }
+    if (!nList.length) nList = all.filter(i => i.start >= today).sort((a, b) => a.start - b.start);
+    let issues;
+    if (Array.isArray(pr.issues)) issues = pr.issues.filter(x => x && String(x.t || '').trim()).slice(0, 3).map(x => ({ t: String(x.t).trim(), s: String(x.s || '').trim() }));
+    else {
+      issues = [
+        ...all.filter(i => i.late).sort((a, b) => a.end - b.end).map(i => ({ t: nm(i), s: `${i.dept} · เลยกำหนด ${today - i.end} วัน` })),
+        ...all.filter(i => i.wait).map(i => ({ t: 'รอตอบกลับ: ' + nm(i), s: i.dept + (i.fu && i.fu.from ? ' · รอจาก ' + i.fu.from : '') + (i.fu && typeof i.fu.due === 'number' ? ' · ติดตามภายใน ' + exThaiDate(i.fu.due) : '') })),
+        ...all.filter(i => !i.done && i.type === 'task' && i.end >= today && i.end - today <= 14).sort((a, b) => a.end - b.end).map(i => ({ t: nm(i), s: `${i.dept} · ครบกำหนด ${exThaiDate(i.end)}` }))
+      ].slice(0, 3);
+    }
+    panel = { s: sh.pStatus ? { lv, pct, plan, line } : null, n: sh.pNext ? { title: nTitle, items: nList.slice(0, 3).map(mi) } : null, i: sh.pIssues ? { items: issues } : null };
+  }
+  const legend = sh.legend ? [
+    ...(sh.fade ? [{ k: 'fade', t: 'สีจาง = เสร็จแล้ว / ผ่านไปแล้ว' }] : []),
+    ...(sh.ms && ms.length ? [{ k: 'ms', t: 'หมุดหมายสำคัญ' }] : []),
+    ...(pastW > 0 ? [{ k: 'past', t: 'ช่วงที่ผ่านมาแล้ว' }] : []),
+    ...(todayX !== null ? [{ k: 'today', t: 'วันนี้ (' + exThaiDate(today) + ')' }] : [])
+  ] : null;
+  return {
+    v: 1, title: String(pr.title || '').trim() || project.name, asOf: 'ข้อมูล ณ ' + exThaiDate(today), range: exMLabel(R.s) + ' – ' + exMLabel(R.e),
+    stamp: 'สร้างจากระบบบริหารจัดการ · ' + fmtDateTime(Date.now()), logo: sh.logo ? String(lsGet('exec_logo', '') || '') : '',
+    board: { x0: bx0, x1: bx1, y0: by0, y1: by1, gx0, gx1, axisY: r1(axisY), axisH, LW },
+    months, fy, today: todayX, pastW, lanes: ord.map(l => ({ n: l.name, c: l.color, y: r1(l.y), h: r1(l.h) })), boxes, ms, panel, legend,
+    nBoxes, dense, clipped: R.clipped, empty: !ord.length
+  };
+}
+
+// ---------- วาดสไลด์ (data-pp = ชิ้นส่วนที่ส่งออกเป็น PowerPoint) ----------
+const EX_COLOR_RE = /^(#[0-9a-fA-F]{3,8}|rgb\(\d{1,3},\d{1,3},\d{1,3}\))$/;
+function exCol(c, def) { return EX_COLOR_RE.test(String(c || '')) ? c : def; }
+function exRenderSlide(m) {
+  const E = escapeHTML, N = (v) => (Number.isFinite(+v) ? +v : 0);
+  const el = document.createElement('div'); el.className = 'exs';
+  const B = m.board; let h = '';
+  const hasLogo = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(m.logo || '');
+  const tx0 = hasLogo ? 124 : 24;
+  if (hasLogo) h += `<img class="exs-logo" data-pp="i" src="${m.logo}" alt="" style="left:24px;top:20px;width:84px;height:84px">`;
+  h += `<div class="exs-hdr" data-pp="r" style="left:${tx0}px;top:20px;width:${EX_W - 24 - tx0}px;height:84px"></div>`;
+  h += `<div class="exs-ttl ex-fit" data-pp="t" data-va="middle" data-min="20" style="left:${tx0 + 28}px;top:24px;width:${EX_W - 24 - tx0 - 28 - 250}px;height:76px">${E(m.title)}</div>`;
+  h += `<div class="exs-sub" data-pp="t" data-va="middle" style="left:${EX_W - 24 - 246}px;top:34px;width:222px;height:56px">${E(m.asOf)}<br>${E(m.range)}</div>`;
+  h += `<div class="exs-board" data-pp="r" style="left:${N(B.x0)}px;top:${N(B.y0)}px;width:${N(B.x1) - N(B.x0)}px;height:${N(B.y1) - N(B.y0)}px"></div>`;
+  if (N(m.pastW) > 0) h += `<div class="exs-past" data-pp="r" style="left:${N(B.gx0)}px;top:${N(B.y0) + 6}px;width:${N(m.pastW)}px;height:${N(B.y1) - N(B.y0) - 12}px"></div>`;
+  (m.months || []).forEach((mo, k) => { if (k) h += `<div class="exs-grid" data-pp="l" data-col="E3E8F1" style="left:${N(mo.x)}px;top:${N(B.y0) + 8}px;height:${N(B.y1) - N(B.y0) - 16}px"></div>`; });
+  (m.lanes || []).forEach((l, k, arr) => {
+    const ph = Math.min(N(l.h) - 10, 46);
+    if (k < arr.length - 1 && Math.abs(N(l.y) + N(l.h) - N(B.axisY)) > 1) h += `<div class="exs-sep" data-pp="l" data-col="D3DCEB" data-dash="1" style="left:${N(B.x0) + 10}px;top:${N(l.y) + N(l.h)}px;width:${N(B.x1) - N(B.x0) - 20}px"></div>`;
+    h += `<div class="exs-lane ex-fit" data-pp="r" data-tx="1" data-min="8.5" style="left:${N(B.x0) + 10}px;top:${N(l.y) + (N(l.h) - ph) / 2}px;width:${N(B.LW) - 20}px;height:${ph}px;background:${exCol(l.c, '#3A2E6E')}">${E(l.n)}</div>`;
+  });
+  const ay = N(B.axisY), fyOn = (m.fy || []).length > 0;
+  (m.fy || []).forEach(f => { h += `<div class="exs-fy" data-pp="r" data-tx="1" style="left:${N(f.x) + 1}px;top:${ay + 2}px;width:${N(f.w) - 2}px;height:20px">${E(f.t)}</div>`; });
+  (m.months || []).forEach(mo => { h += `<div class="exs-mo${mo.past ? ' past' : ''}" data-pp="r" data-tx="1" style="left:${N(mo.x) + 1}px;top:${ay + (fyOn ? 24 : 3)}px;width:${N(mo.w) - 2}px;height:26px">${E(mo.t)}</div>`; });
+  (m.boxes || []).forEach(b => {
+    h += `<div class="exs-box ex-fit${b.done ? ' done' : ''}" data-pp="r" data-tx="1" data-min="7.5" title="${E(b.full || b.t)}" style="left:${N(b.x)}px;top:${N(b.y)}px;width:${N(b.w)}px;height:${N(b.h)}px;background:${exCol(b.bg, '#EEF2FF')};border-color:${exCol(b.c, '#4F46E5')}">${E(b.t)}</div>`;
+  });
+  (m.ms || []).forEach(d => { h += `<div class="exs-ms${d.past ? ' past' : ''}" data-pp="d" data-col="F59E0B" style="left:${N(d.x) - 9}px;top:${N(d.y) - 9}px"><svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path d="M9 1l8 8-8 8-8-8z" fill="#F59E0B" stroke="#fff" stroke-width="1.6"/></svg></div>`; });
+  if (m.today !== null && m.today !== undefined) {
+    const tx = N(m.today);
+    h += `<div class="exs-today" data-pp="l" data-col="0891B2" style="left:${tx - 1}px;top:${N(B.y0) + 24}px;height:${N(B.y1) - N(B.y0) - 30}px"></div>`;
+    h += `<div class="exs-tpill" data-pp="r" data-tx="1" style="left:${tx - 27}px;top:${N(B.y0) + 4}px">วันนี้</div>`;
+  }
+  if (m.empty) h += `<div class="exs-empty" data-pp="t" style="left:${N(B.x0)}px;top:${N(B.y0) + 40}px;width:${N(B.x1) - N(B.x0)}px">ไม่มีงานในช่วงเวลา / ตัวกรองที่เลือก</div>`;
+  // แผงด้านขวา
+  const P = m.panel;
+  if (P && (P.s || P.n || P.i)) {
+    h += `<div class="exs-panel" style="left:${EX_W - 24 - 344}px;top:${N(B.y0)}px;width:344px;height:${N(B.y1) - N(B.y0)}px">`;
+    if (P.s) {
+      const lv = EX_LV[P.s.lv] ? P.s.lv : 'watch';
+      h += `<div class="exp-card" data-pp="r"><div class="exp-h" data-pp="t">สถานะโครงการ</div>
+        <div class="exp-pill lv-${lv}" data-pp="r" data-tx="1">● ${E(EX_LV[lv])}</div>
+        <div class="exp-big"><span class="exp-pct lv-${lv}" data-pp="t">${N(P.s.pct)}%</span><span class="exp-pl" data-pp="t">ความคืบหน้า (ตามแผน ${N(P.s.plan)}%)</span></div>
+        <div class="exp-bar" data-pp="r"><i class="lv-${lv}" data-pp="r" style="width:${Math.min(100, N(P.s.pct))}%"></i><b data-pp="r" style="left:calc(${Math.min(100, N(P.s.plan))}% - 1px)"></b></div>
+        <div class="exp-line" data-pp="t">${E(P.s.line)}</div></div>`;
+    }
+    if (P.n) {
+      h += `<div class="exp-card" data-pp="r"><div class="exp-h" data-pp="t">${E(P.n.title)}</div>`;
+      (P.n.items || []).forEach(it => { h += `<div class="exp-row"><span class="exp-dia" data-pp="d" data-col="F59E0B"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="#F59E0B"/></svg></span><span class="exp-d" data-pp="t">${E(it.d)}</span><div class="exp-tx"><div class="exp-t" data-pp="t">${E(it.t)}</div><div class="exp-s" data-pp="t">${E(it.s)}</div></div></div>`; });
+      if (!(P.n.items || []).length) h += `<div class="exp-none" data-pp="t">ยังไม่มีรายการ</div>`;
+      h += `</div>`;
+    }
+    if (P.i) {
+      h += `<div class="exp-card" data-pp="r"><div class="exp-h" data-pp="t">ประเด็นที่ต้องติดตาม</div>`;
+      (P.i.items || []).forEach((it, k) => { h += `<div class="exp-row"><span class="exp-no" data-pp="r" data-tx="1">${k + 1}</span><div class="exp-tx"><div class="exp-t" data-pp="t">${E(it.t)}</div>${it.s ? `<div class="exp-s" data-pp="t">${E(it.s)}</div>` : ''}</div></div>`; });
+      if (!(P.i.items || []).length) h += `<div class="exp-none" data-pp="t">ไม่มีประเด็นค้าง 👍</div>`;
+      h += `</div>`;
+    }
+    h += `</div>`;
+  }
+  if (m.legend) {
+    h += `<div class="exs-leg" style="left:24px;top:${EX_H - 36}px;width:${EX_W - 48}px">`;
+    m.legend.forEach(g => {
+      const sw = g.k === 'fade' ? '<i class="exl-sw fade" data-pp="r"></i>' : g.k === 'ms' ? '<span class="exl-ms" data-pp="d" data-col="F59E0B"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="#F59E0B"/></svg></span>' : g.k === 'past' ? '<i class="exl-sw past" data-pp="r"></i>' : '<i class="exl-sw today" data-pp="r"></i>';
+      h += `<span class="exl">${sw}<span data-pp="t" data-va="middle">${E(g.t)}</span></span>`;
+    });
+    h += `<span class="exl-sp"></span><span class="exl-stamp" data-pp="t" data-va="middle">${E(m.stamp || '')}</span></div>`;
+  }
+  el.innerHTML = h;
+  return el;
+}
+// ย่อตัวอักษรจนพอดีกล่อง
+function exFit(root) {
+  root.querySelectorAll('.ex-fit').forEach(el => {
+    let f = parseFloat(getComputedStyle(el).fontSize) || 12, g = 0;
+    const min = +el.dataset.min || 8;
+    while ((el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) && f > min && g++ < 40) { f -= 0.5; el.style.fontSize = f + 'px'; }
+  });
+}
+function exFonts() {
+  if (!document.fonts) return Promise.resolve();
+  return Promise.all([document.fonts.load("600 40px 'Kanit'"), document.fonts.load("500 13px 'IBM Plex Sans Thai'"), document.fonts.load("700 13px 'IBM Plex Sans Thai'")]).catch(() => {}).then(() => document.fonts.ready);
+}
+
+// ---------- หน้า "สรุปผู้บริหาร" ในระบบ ----------
+function exCurProject() {
+  const ps = state.projects || [];
+  return ps.find(x => x.id === view.pid) || ps.find(x => x.id === lsGet('exec_last', '')) || ps.find(x => (x.sourceType || 'work') === activeMainCat) || ps[0] || null;
+}
+function renderExec() {
+  const root = document.createElement('div'); root.className = 'ex-page';
+  root.appendChild(buildPageHead({ crumb: 'เครื่องมือ', title: 'สรุปผู้บริหาร', noGantt: true }));
+  const project = exCurProject();
+  if (!project) { const e = document.createElement('div'); e.className = 'ex-hint'; e.textContent = 'ยังไม่มีโครงการให้สรุป'; root.appendChild(e); return root; }
+  view.pid = project.id; lsSet('exec_last', project.id);
+  const tb = document.createElement('div'); tb.className = 'tb ex-tb';
+  const btn = (id, html, title, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (cls ? ' ' + cls : ''); b.id = id; b.innerHTML = html; if (title) b.title = title; b.setAttribute('aria-haspopup', 'dialog'); tb.appendChild(b); return b; };
+  const bp = btn('exBtnProj', `${ic('folder', 16)}<span class="ex-pn">${escapeHTML(project.name)}</span>${ic('down', 14, 2.2)}`, 'เลือกโครงการ');
+  bp.setAttribute('aria-haspopup', 'menu');
+  bp.onclick = () => menuPop(bp, (state.projects || []).map(p => ({ label: `${CAT_LABELS[p.sourceType || 'work'] || ''} · ${p.name}${p.id === project.id ? '  ✓' : ''}`, fn: () => { view.pid = p.id; render(); } })));
+  const sep = () => { const s = document.createElement('span'); s.className = 'ex-sep'; tb.appendChild(s); };
+  sep();
+  const br = btn('exBtnRange', `${ic('calendar', 16)}<span id="exLblRange"></span>${ic('down', 14, 2.2)}`, 'ช่วงเวลาที่แสดง');
+  br.onclick = () => openPop(br, exRangePop, { cls: 'pop-w ex-pop' });
+  const bd = btn('exBtnDept', `${ic('lanes', 16)}<span id="exLblDept">หน่วยงาน</span>${ic('down', 14, 2.2)}`, 'หน่วยงานที่แสดง');
+  bd.onclick = () => openPop(bd, exDeptPop, { cls: 'ex-pop ex-pop-dept' });
+  const bt = btn('exBtnType', `${ic('filter', 16)}<span id="exLblType">ประเภทแผนงาน</span>`, 'ประเภทแผนงานและสถานะ');
+  bt.onclick = () => openPop(bt, exTypePop, { cls: 'pop-w ex-pop' });
+  const bs = btn('exBtnShow', `${ic('sliders', 16)}<span>แสดงผล</span>`, 'เลือกสิ่งที่แสดงบนสไลด์ (เปิด/ปิดได้)');
+  bs.onclick = () => openPop(bs, exShowPop, { cls: 'pop-w ex-pop ex-pop-show', alignRight: true });
+  const sp = document.createElement('div'); sp.className = 'tb-sp'; tb.appendChild(sp);
+  const warn = document.createElement('span'); warn.className = 'ex-warn'; warn.id = 'exWarn'; tb.appendChild(warn);
+  const bsh = btn('exBtnShare', `${ic('link', 16)}<span>แชร์ลิงก์</span>`, 'สร้างลิงก์ให้ผู้บริหารเปิดดูได้โดยไม่ต้องมีรหัส');
+  bsh.onclick = () => openPop(bsh, exSharePop, { cls: 'pop-w ex-pop ex-pop-share', alignRight: true });
+  const bx = btn('exBtnExport', `${ic('download', 16)}<span>ส่งออก</span>${ic('down', 14, 2.2)}`, 'ส่งออกเป็นไฟล์', 'btn-p');
+  bx.setAttribute('aria-haspopup', 'menu');
+  bx.onclick = () => exExportMenu(bx);
+  root.appendChild(tb);
+  const stage = document.createElement('div'); stage.className = 'ex-stage'; stage.id = 'exStage'; root.appendChild(stage);
+  const zh = document.createElement('p'); zh.className = 'ex-zoomhint'; zh.textContent = 'เลื่อนซ้าย–ขวาเพื่อดูทั้งสไลด์ หรือหมุนจอเป็นแนวนอน'; root.appendChild(zh);
+  const hint = document.createElement('p'); hint.className = 'ex-hint';
+  hint.innerHTML = 'สไลด์อัปเดตตามแผนงานจริงทันที · ตั้ง <b>ชื่อย่อสำหรับสไลด์</b> และ <b>◆ หมุดหมายสำคัญ</b> ได้ในหน้าต่างแก้ไขกิจกรรม · ค่าที่เลือกในหน้านี้จำไว้ในเครื่องนี้ ไม่กระทบผู้ใช้อื่น';
+  root.appendChild(hint);
+  setTimeout(exDraw, 0);
+  return root;
+}
+function exDraw() {
+  const stage = document.getElementById('exStage'); if (!stage) return;
+  const project = exCurProject(); if (!project) return;
+  const m = exBuildModel(project);
+  exDraw.model = m; exDraw.project = project;
+  const slide = exRenderSlide(m), wrap = document.createElement('div'); wrap.className = 'ex-scale';
+  wrap.appendChild(slide); stage.innerHTML = ''; stage.appendChild(wrap);
+  exScale(); exFit(slide); exFonts().then(() => { if (slide.isConnected) exFit(slide); });
+  // ป้ายบนปุ่ม
+  const pr = exPrefs(project.id), R = exRange(project, pr);
+  const set = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
+  set('exLblRange', exMLabel(R.s) + ' – ' + exMLabel(R.e));
+  const ds = exDepts(project, pr), offN = ((pr.depts || {}).off || []).filter(id => ds.some(d => d.id === id)).length;
+  set('exLblDept', `หน่วยงาน · ${ds.length - offN}/${ds.length}`);
+  const tf = (pr.catOff || []).length + (pr.types.length !== 2 || !pr.types.includes('note') || !pr.types.includes('task') ? 1 : 0) + (pr.status !== 'all' ? 1 : 0);
+  set('exLblType', 'ประเภทแผนงาน' + (tf ? ` · ${tf}` : ''));
+  const bt = document.getElementById('exBtnType'); if (bt) bt.classList.toggle('on', !!tf);
+  const w = document.getElementById('exWarn');
+  if (w) {
+    const msg = m.clipped ? 'ช่วงยาวเกิน 48 เดือน แสดง 48 เดือนแรก' : (m.dense || m.nBoxes > 40) ? `${m.nBoxes} กล่อง แน่นเกินไป แนะนำย่อช่วงเวลาหรือกรองเพิ่ม` : '';
+    w.textContent = msg ? '⚠ ' + msg : ''; w.style.display = msg ? '' : 'none';
+  }
+}
+function exScale() {
+  const stage = document.getElementById('exStage'), wrap = stage && stage.querySelector('.ex-scale');
+  if (!wrap) return;
+  const s = Math.min(1, Math.max(0.5, (stage.clientWidth - 2) / EX_W));   // จอเล็ก: ไม่ย่อเกินครึ่ง เลื่อนดูด้านข้างได้
+  wrap.style.width = EX_W * s + 'px'; wrap.style.height = EX_H * s + 'px';
+  wrap.firstChild.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', () => { if (document.getElementById('exStage')) exScale(); });
+
+// ---------- ป๊อปอัปตัวเลือก ----------
+function exRangePop(p) {
+  const project = exCurProject(), pr = exPrefs(project.id), R = exRange(project, pr);
+  const fy0 = R.fy0 + 544;
+  const modes = [['fy0', 'ปีงบ ' + fy0], ['fy1', 'ปีงบ ' + (fy0 + 1)], ['next6', '6 เดือนข้างหน้า'], ['next12', '12 เดือนข้างหน้า'], ['all', 'ทั้งโครงการ']];
+  const opts = (sel) => { let o = ''; for (let y = 2024; y <= 2033; y++) for (let mm = 0; mm < 12; mm++) { const k = exKey({ y, m: mm }); o += `<option value="${k}"${k === sel ? ' selected' : ''}>${THAI_MONTHS_SHORT[mm]} ${y + 543}</option>`; } return o; };
+  p.innerHTML = `<h3 class="pop-h">ช่วงเวลาที่แสดง</h3>
+    <div class="ex-chips" role="group" aria-label="ช่วงเวลาสำเร็จรูป">${modes.map(([k, t]) => `<button type="button" data-k="${k}" aria-pressed="${R.mode === k}">${t}</button>`).join('')}</div>
+    <div class="ex-rg"><label>เริ่ม<select id="exRs" class="text-input">${opts(exKey(R.s))}</select></label><span aria-hidden="true">→</span><label>สิ้นสุด<select id="exRe" class="text-input">${opts(exKey(R.e))}</select></label></div>
+    <p class="pop-note">เลือกเดือนเริ่ม–สิ้นสุดเองได้ (ยาวสุด 48 เดือน) · ตอนนี้ ${R.n} เดือน · ช่วงยิ่งยาว กล่องงานยิ่งเล็ก</p>`;
+  p.querySelectorAll('.ex-chips button').forEach(b => b.onclick = () => { exSetPrefs(project.id, { range: { mode: b.dataset.k } }); exDraw(); exRangePop(p); });
+  const custom = () => { exSetPrefs(project.id, { range: { mode: 'custom', s: p.querySelector('#exRs').value, e: p.querySelector('#exRe').value } }); exDraw(); exRangePop(p); };
+  p.querySelector('#exRs').onchange = custom; p.querySelector('#exRe').onchange = custom;
+}
+function exDeptPop(p) {
+  const project = exCurProject(), pr = exPrefs(project.id), sh = exShow(), R = exRange(project, pr), today = todayBangkokIndex();
+  const dp = { order: [], off: [], below: [], color: {}, ...(pr.depts || {}) };
+  const ds = exDepts(project, pr);
+  const save = (patch) => { exSetPrefs(project.id, { depts: { ...dp, ...patch } }); exDraw(); exDeptPop(p); };
+  p.innerHTML = `<div class="ex-ph"><h3 class="pop-h">หน่วยงานที่แสดง</h3><button type="button" class="ex-lnk" id="exDAll">เลือกทั้งหมด</button></div>
+    <p class="pop-note">ติ๊กเพื่อแสดง · ▲▼ เรียงลำดับ · เลือกว่าอยู่ "บน" หรือ "ล่าง" แกนเดือน · คลิกจุดสีเพื่อเปลี่ยนสี</p><div class="ex-dl"></div>
+    <label class="pop-ck"><input type="checkbox" id="exKeep" ${dp.keepEmpty ? 'checked' : ''}><span>แสดงหน่วยงานที่ไม่มีงานในช่วงนี้ด้วย<small>ปกติจะซ่อนให้อัตโนมัติ</small></span></label>`;
+  const list = p.querySelector('.ex-dl');
+  ds.forEach((d, i) => {
+    const on = !dp.off.includes(d.id), low = dp.below.includes(d.id), col = exDeptColor(pr, d, i);
+    const n = exItems(project, d, pr, sh, R, today).length;
+    const row = document.createElement('div'); row.className = 'ex-dr' + (on ? '' : ' off');
+    row.innerHTML = `<input type="checkbox" ${on ? 'checked' : ''} aria-label="แสดง ${escapeHTML(d.name)}"><button type="button" class="ex-dot" style="background:${col}" aria-label="เปลี่ยนสี ${escapeHTML(d.name)}" title="คลิกเพื่อเปลี่ยนสี"></button><span class="nm">${escapeHTML(d.name)}</span><span class="cnt">${n} งาน</span>
+      <span class="seg ex-seg"><button type="button" aria-pressed="${!low}">บน</button><button type="button" aria-pressed="${low}">ล่าง</button></span>
+      <button type="button" class="btn ibtn ex-mv" aria-label="เลื่อนขึ้น" ${i === 0 ? 'disabled' : ''}>${ic('up', 14, 2.2)}</button><button type="button" class="btn ibtn ex-mv" aria-label="เลื่อนลง" ${i === ds.length - 1 ? 'disabled' : ''}>${ic('down', 14, 2.2)}</button>`;
+    row.querySelector('input').onchange = (e) => save({ off: e.target.checked ? dp.off.filter(x => x !== d.id) : [...dp.off, d.id] });
+    row.querySelector('.ex-dot').onclick = () => { const k = EX_PAL.indexOf(col); save({ color: { ...dp.color, [d.id]: EX_PAL[(k + 1) % EX_PAL.length] } }); };
+    const [bu, bl] = row.querySelectorAll('.ex-seg button');
+    bu.onclick = () => save({ below: dp.below.filter(x => x !== d.id) }); bl.onclick = () => save({ below: [...dp.below.filter(x => x !== d.id), d.id] });
+    const [mu, md] = row.querySelectorAll('.ex-mv');
+    const move = (dir) => { const ids = ds.map(x => x.id), j = i + dir; [ids[i], ids[j]] = [ids[j], ids[i]]; save({ order: ids }); };
+    mu.onclick = () => move(-1); md.onclick = () => move(1);
+    list.appendChild(row);
+  });
+  p.querySelector('#exDAll').onclick = () => save({ off: [] });
+  p.querySelector('#exKeep').onchange = (e) => save({ keepEmpty: e.target.checked });
+}
+function exTypePop(p) {
+  const project = exCurProject(), pr = exPrefs(project.id), cats = rcList(project);
+  const off = new Set(pr.catOff || []), types = new Set(pr.types || []);
+  const save = (patch) => { exSetPrefs(project.id, patch); exDraw(); exTypePop(p); };
+  const m = exDraw.model || {};
+  p.innerHTML = `<h3 class="pop-h">ประเภทแผนงาน</h3>
+    <div class="ex-gt">หมวดของแถว</div>
+    ${cats.length ? [...cats, { id: '_none', name: 'ไม่ระบุหมวด', color: '#CBD1DC' }].map(c => `<label class="pop-ck ex-ck"><input type="checkbox" data-c="${escapeHTML(c.id)}" ${off.has(c.id) ? '' : 'checked'}><span class="ex-sw" style="background:${exCol(c.color, '#94A3B8')}"></span><span>${escapeHTML(c.name)}</span></label>`).join('') : '<p class="pop-note">โครงการนี้ยังไม่ได้ตั้ง "หมวดของแถว" (ตั้งได้ที่แถบหมวดในหน้าแผนงาน)</p>'}
+    <div class="ex-gt">ชนิดงาน</div>
+    <div class="ex-chips">${EX_TYPES.map(([k, t]) => `<button type="button" data-t="${k}" aria-pressed="${types.has(k)}">${t}</button>`).join('')}</div>
+    <div class="ex-gt">สถานะ</div>
+    <div class="ex-chips">${[['all', 'ทั้งหมด'], ['pending', 'ยังไม่เสร็จ'], ['late', 'เลยกำหนด'], ['done', 'เสร็จแล้ว']].map(([k, t]) => `<button type="button" data-s="${k}" aria-pressed="${pr.status === k}">${t}</button>`).join('')}</div>
+    <div class="pop-foot ex-foot"><button type="button" class="ex-lnk" id="exTClr">ล้างตัวกรอง</button><span>แสดง <b>${m.nBoxes || 0}</b> กล่อง</span></div>`;
+  p.querySelectorAll('[data-c]').forEach(i => i.onchange = () => save({ catOff: i.checked ? [...off].filter(x => x !== i.dataset.c) : [...off, i.dataset.c] }));
+  p.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { const t = new Set(types); if (t.has(b.dataset.t)) { if (t.size > 1) t.delete(b.dataset.t); } else t.add(b.dataset.t); save({ types: [...t] }); });
+  p.querySelectorAll('[data-s]').forEach(b => b.onclick = () => save({ status: b.dataset.s }));
+  p.querySelector('#exTClr').onclick = () => save({ catOff: [], types: ['note', 'task'], status: 'all' });
+}
+function exShowPop(p) {
+  const project = exCurProject(), pr = exPrefs(project.id), sh = exShow();
+  const ck = (k, t, sub, dis) => `<label class="pop-ck${dis ? ' dis' : ''}"><input type="checkbox" data-k="${k}" ${sh[k] ? 'checked' : ''} ${dis ? 'disabled' : ''}><span>${t}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
+  const hasLogo = !!lsGet('exec_logo', '');
+  p.innerHTML = `<h3 class="pop-h">สิ่งที่แสดงบนสไลด์</h3>
+    <label class="ex-fl" for="exTitle">หัวเรื่องสไลด์</label><input id="exTitle" class="text-input" maxlength="120" value="${escapeHTML(pr.title || '')}" placeholder="${escapeHTML(project.name)}">
+    <div class="ex-gt">บนสไลด์</div>
+    ${ck('short', 'ใช้ "ชื่อย่อสำหรับสไลด์"', 'ถ้ากิจกรรมนั้นตั้งชื่อย่อไว้ · ปิด = ใช้ชื่อเต็มทุกกล่อง')}
+    ${ck('ms', 'แสดงหมุดหมายสำคัญ ◆', 'งานที่ติ๊ก "หมุดหมายสำคัญ" ในหน้าต่างกิจกรรม')}
+    ${ck('fy', 'แถบปีงบประมาณเหนือเดือน')}
+    ${ck('today', 'เส้น "วันนี้" และพื้นช่วงที่ผ่านมา')}
+    ${ck('fade', 'งานที่เสร็จ / ผ่านไปแล้ว แสดงจางลง')}
+    ${ck('groupRecur', 'รวมงานที่ทำซ้ำเป็นกล่องเดียว', 'เช่น ประชุมทุกสัปดาห์ แสดงเป็น 1 กล่อง (n ครั้ง)')}
+    ${ck('legend', 'คำอธิบายสัญลักษณ์ด้านล่าง')}
+    <div class="ex-lg"><label class="pop-ck"><input type="checkbox" data-k="logo" ${sh.logo ? 'checked' : ''}><span>โลโก้หน่วยงาน${hasLogo ? '' : '<small>ยังไม่ได้เลือกรูป</small>'}</span></label><button type="button" class="btn" id="exLogoUp">${hasLogo ? 'เปลี่ยนรูป' : 'เลือกรูป'}</button>${hasLogo ? '<button type="button" class="btn ibtn" id="exLogoDel" aria-label="ลบโลโก้" title="ลบโลโก้">' + ic('trash', 15) + '</button>' : ''}<input type="file" id="exLogoFile" accept="image/png,image/jpeg,image/webp" hidden></div>
+    <div class="ex-row2"><span>สีกล่องงาน</span><span class="seg"><button type="button" data-col="dept" aria-pressed="${sh.color !== 'act'}">ตามหน่วยงาน</button><button type="button" data-col="act" aria-pressed="${sh.color === 'act'}">ตามสีกิจกรรม</button></span></div>
+    <div class="ex-gt">แผงด้านขวา</div>
+    ${ck('panel', '<b>แสดงแผงด้านขวา</b>', 'ปิด = ตารางเต็มความกว้างสไลด์')}
+    <div class="ex-sub">
+      ${ck('pStatus', 'สถานะโครงการ + % ความคืบหน้า', '', !sh.panel)}
+      ${ck('pNext', 'หมุดหมายถัดไป (3 รายการ)', '', !sh.panel)}
+      ${ck('pIssues', 'ประเด็นที่ต้องติดตาม (สูงสุด 3 ข้อ)', '', !sh.panel)}
+    </div>
+    <div class="ex-row2"><label for="exLv">ระดับสถานะ</label><select id="exLv" class="text-input"><option value="">อัตโนมัติ (คำนวณจากข้อมูล)</option>${Object.entries(EX_LV).map(([k, t]) => `<option value="${k}" ${pr.lv === k ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+    <button type="button" class="btn ex-wide" id="exIssEd">${ic('pencil', 15)}<span>แก้ข้อความ "ประเด็นที่ต้องติดตาม"${Array.isArray(pr.issues) ? ' (แก้เองอยู่)' : ''}</span></button>`;
+  p.querySelectorAll('input[data-k]').forEach(i => i.onchange = () => { exSetShow({ [i.dataset.k]: i.checked }); exDraw(); exShowPop(p); });
+  p.querySelectorAll('[data-col]').forEach(b => b.onclick = () => { exSetShow({ color: b.dataset.col }); exDraw(); exShowPop(p); });
+  const ti = p.querySelector('#exTitle');
+  ti.oninput = () => { clearTimeout(exShowPop._t); exShowPop._t = setTimeout(() => { exSetPrefs(project.id, { title: ti.value }); exDraw(); }, 250); };
+  p.querySelector('#exLv').onchange = (e) => { exSetPrefs(project.id, { lv: e.target.value }); exDraw(); };
+  p.querySelector('#exIssEd').onclick = () => { closePop(); exIssuesModal(project); };
+  const file = p.querySelector('#exLogoFile');
+  p.querySelector('#exLogoUp').onclick = () => file.click();
+  file.onchange = async () => {
+    const f = file.files[0]; if (!f) return;
+    try { const url = await exShrinkImage(f, 220); lsSet('exec_logo', url); exSetShow({ logo: true }); exDraw(); exShowPop(p); }
+    catch (e) { showToast('⚠️ ใช้รูปนี้ไม่ได้: ' + (e.message || e)); }
+  };
+  const del = p.querySelector('#exLogoDel'); if (del) del.onclick = () => { lsSet('exec_logo', ''); exDraw(); exShowPop(p); };
+}
+function exShrinkImage(file, max) {
+  return new Promise((ok, no) => {
+    if (file.size > 8 * 1024 * 1024) { no(new Error('ไฟล์ใหญ่เกิน 8 MB')); return; }
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.width * k)); c.height = Math.max(1, Math.round(img.height * k));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      let out = c.toDataURL('image/png'); if (out.length > 120000) out = c.toDataURL('image/jpeg', 0.85);
+      ok(out);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); no(new Error('อ่านรูปไม่ได้')); };
+    img.src = url;
+  });
+}
+function exIssuesModal(project) {
+  const pr = exPrefs(project.id);
+  const cur = Array.isArray(pr.issues) ? pr.issues : (((exDraw.model || {}).panel || {}).i || {}).items || [];
+  const rows = [0, 1, 2].map(k => cur[k] || { t: '', s: '' });
+  modalOpen = true;
+  const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+  const modal = document.createElement('div'); modal.className = 'modal ex-iss';
+  modal.innerHTML = `<h3>ประเด็นที่ต้องติดตาม</h3>
+    <p class="modal-desc">ระบบดึงจากงานที่เลยกำหนด งานรอตอบกลับ และงานใกล้ครบกำหนดให้อัตโนมัติ · แก้ข้อความให้กระชับก่อนส่งออกได้ (เว้นว่าง = ไม่แสดงข้อนั้น) · บันทึกไว้ในเครื่องนี้</p>
+    ${rows.map((r, k) => `<div class="ex-iss-r"><span class="exp-no">${k + 1}</span><div><input class="text-input" data-t="${k}" maxlength="90" placeholder="ประเด็น" value="${escapeHTML(r.t)}"><input class="text-input ex-iss-s" data-s="${k}" maxlength="90" placeholder="รายละเอียดสั้น ๆ (ไม่บังคับ) เช่น หน่วยงาน · กำหนดส่ง" value="${escapeHTML(r.s || '')}"></div></div>`).join('')}
+    <div class="modal-actions" id="modalActions"></div>`;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  const act = modal.querySelector('#modalActions');
+  const b = (t, cls, fn) => { const x = document.createElement('button'); x.className = cls; x.textContent = t; x.onclick = fn; act.appendChild(x); };
+  b('บันทึก', 'primary-btn', () => { exSetPrefs(project.id, { issues: [0, 1, 2].map(k => ({ t: modal.querySelector(`[data-t="${k}"]`).value.trim(), s: modal.querySelector(`[data-s="${k}"]`).value.trim() })) }); closeModal(overlay); exDraw(); });
+  b('ใช้ข้อความอัตโนมัติ', 'ghost-btn', () => { exSetPrefs(project.id, { issues: null }); closeModal(overlay); exDraw(); });
+  b('ยกเลิก', 'ghost-btn', () => closeModal(overlay));
+  setTimeout(() => { const f = modal.querySelector('input'); if (f) f.focus(); }, 0);
+}
+
+// ---------- ส่งออก ----------
+function exFileName(t) { return ('สรุปผู้บริหาร_' + String(t || '').replace(/[\\/:*?"<>|#%]+/g, ' ').trim()).slice(0, 80).replace(/\s+/g, '_'); }
+function exExportMenu(anchor) {
+  const m = exDraw.model, project = exDraw.project; if (!m) return;
+  const name = exFileName(m.title);
+  menuPop(anchor, [
+    { icon: 'print', label: 'PDF สไลด์ 16:9 (พิมพ์ → บันทึกเป็น PDF)', fn: () => exPrint([m], 'slide', name) },
+    { icon: 'print', label: 'PDF A4 แนวนอน (สำหรับพิมพ์)', fn: () => exPrint([m], 'a4', name) },
+    { icon: 'download', label: 'รูปภาพ PNG (ความละเอียดสูง)', fn: () => exBusy(() => exPng(m, name)) },
+    { icon: 'present', label: 'PowerPoint (.pptx) แก้ข้อความต่อได้', fn: () => exBusy(() => exPptx([m], name)) },
+    '-',
+    { icon: 'folder', label: 'หลายโครงการในไฟล์เดียว…', fn: () => exMultiModal(project) }
+  ], { alignRight: true });
+}
+async function exBusy(fn) {
+  const o = document.createElement('div'); o.className = 'ex-busy'; o.setAttribute('role', 'status');
+  o.innerHTML = '<div><span class="ex-spin"></span>กำลังสร้างไฟล์…</div>';
+  document.body.appendChild(o);
+  try { await fn(); } catch (e) { console.error(e); showToast('⚠️ ส่งออกไม่สำเร็จ: ' + (e && e.message || e)); }
+  finally { o.remove(); }
+}
+function exLoadLib(k) {
+  if (k === 'pptx' && window.PptxGenJS) return Promise.resolve();
+  if (k === 'h2c' && window.html2canvas) return Promise.resolve();
+  exLoadLib._p = exLoadLib._p || {};
+  if (!exLoadLib._p[k]) exLoadLib._p[k] = (async () => {
+    for (const u of EX_LIBS[k]) {
+      try { await new Promise((ok, no) => { const s = document.createElement('script'); s.src = u; s.onload = ok; s.onerror = () => { s.remove(); no(); }; document.head.appendChild(s); }); return; } catch (e) {}
+    }
+    exLoadLib._p[k] = null;
+    throw new Error('โหลดตัวช่วยส่งออกไม่สำเร็จ (ตรวจการเชื่อมต่ออินเทอร์เน็ต)');
+  })();
+  return exLoadLib._p[k];
+}
+async function exMount(m) {
+  const host = document.createElement('div'); host.className = 'ex-off';
+  const sl = exRenderSlide(m); host.appendChild(sl); document.body.appendChild(host);
+  await exFonts(); exFit(sl);
+  return { host, sl };
+}
+function exDownload(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+async function exPng(m, name) {
+  await exLoadLib('h2c');
+  const { host, sl } = await exMount(m);
+  try {
+    const canvas = await window.html2canvas(sl, { scale: 2, backgroundColor: '#EAF1FF', logging: false, useCORS: true, width: EX_W, height: EX_H, windowWidth: Math.max(EX_W, window.innerWidth), windowHeight: Math.max(EX_H, window.innerHeight) });
+    const blob = await new Promise(ok => canvas.toBlob(ok, 'image/png'));
+    exDownload(blob, name + '.png');
+  } finally { host.remove(); }
+}
+function exPrint(models, paper, name) {
+  document.getElementById('exPrint')?.remove();
+  const box = document.createElement('div'); box.id = 'exPrint';
+  models.forEach(m => { const pg = document.createElement('div'); pg.className = 'exp-pg'; pg.appendChild(exRenderSlide(m)); box.appendChild(pg); });
+  document.body.appendChild(box);
+  const oldTitle = document.title;
+  const done = () => { document.body.classList.remove('ex-printing', 'ex-a4'); box.remove(); document.title = oldTitle; window.removeEventListener('afterprint', done); };
+  exFonts().then(() => {
+    box.querySelectorAll('.exs').forEach(exFit);
+    document.body.classList.add('ex-printing'); document.body.classList.toggle('ex-a4', paper === 'a4');
+    document.title = name || oldTitle;
+    window.addEventListener('afterprint', done);
+    setTimeout(() => window.print(), 30);
+  });
+}
+// สี CSS → hex (ผสมกับพื้นขาวตามความโปร่ง)
+function exRGB(str) { const m = /rgba?\(([^)]+)\)/.exec(str || ''); if (!m) return null; const p = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; }
+function exHex(c, op = 1) { const a = (c.a == null ? 1 : c.a) * op; const f = (v) => Math.max(0, Math.min(255, Math.round(v * a + 255 * (1 - a)))); return [f(c.r), f(c.g), f(c.b)].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+function exHexStr(h) { const s = String(h || '').replace('#', ''); return /^[0-9a-fA-F]{6}$/.test(s) ? s.toUpperCase() : 'CBD5E1'; }
+async function exPptx(models, name) {
+  await exLoadLib('pptx');
+  const pptx = new window.PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE'; pptx.title = name; if (USER_NAME) pptx.author = USER_NAME;
+  const K = 13.333 / EX_W, PT = 0.6, FONT = 'Leelawadee UI';
+  for (const m of models) {
+    const { host, sl } = await exMount(m);
+    try {
+      const base = sl.getBoundingClientRect();
+      const s = pptx.addSlide(); s.background = { color: 'E8F0FE' };
+      sl.querySelectorAll('[data-pp]').forEach(el => {
+        const r = el.getBoundingClientRect(); if (r.width < 0.5 && r.height < 0.5) return;
+        const cs = getComputedStyle(el); if (cs.display === 'none' || cs.visibility === 'hidden') return;
+        let op = 1; for (let n = el; n && n !== host; n = n.parentElement) { const o = parseFloat(getComputedStyle(n).opacity); if (!isNaN(o)) op *= o; }
+        const g = { x: (r.left - base.left) * K, y: (r.top - base.top) * K, w: Math.max(0.01, r.width * K), h: Math.max(0.01, r.height * K) };
+        const kind = el.dataset.pp;
+        if (kind === 'i') { s.addImage({ data: el.src, ...g }); return; }
+        if (kind === 'l') {
+          const vert = r.height >= r.width, h6 = exHexStr(el.dataset.col), col = exHex({ r: parseInt(h6.slice(0, 2), 16), g: parseInt(h6.slice(2, 4), 16), b: parseInt(h6.slice(4), 16), a: 1 }, op);
+          const ln = { color: col, width: Math.max(0.5, (vert ? r.width : r.height) * PT), dashType: el.dataset.dash ? 'dash' : 'solid' };
+          s.addShape(pptx.ShapeType.line, vert ? { x: g.x + g.w / 2, y: g.y, w: 0, h: g.h, line: ln } : { x: g.x, y: g.y + g.h / 2, w: g.w, h: 0, line: ln });
+          return;
+        }
+        if (kind === 'd') { s.addShape(pptx.ShapeType.diamond, { ...g, fill: { color: exHex({ r: 245, g: 158, b: 11, a: 1 }, op) }, line: { color: 'FFFFFF', width: 0.75 } }); return; }
+        const txt = (kind === 't' || el.dataset.tx) ? el.innerText.replace(/ /g, ' ').trim() : '';
+        const fc = exRGB(cs.color) || { r: 22, g: 35, b: 59, a: 1 };
+        const tOpt = txt ? {
+          fontFace: FONT, fontSize: Math.max(5, Math.round(parseFloat(cs.fontSize) * PT * 0.94 * 10) / 10), color: exHex(fc, op), bold: (parseInt(cs.fontWeight, 10) || 400) >= 600,
+          align: ({ center: 'center', right: 'right', end: 'right', '-webkit-center': 'center' })[cs.textAlign] || 'left',
+          valign: el.dataset.va || (kind === 't' ? 'top' : 'middle'),
+          margin: kind === 't' ? [0, 0, 0, 0] : ['Left', 'Right', 'Bottom', 'Top'].map(k => Math.max(0.5, (parseFloat(cs['padding' + k]) || 0) * PT)), fit: 'shrink'
+        } : null;
+        if (tOpt) {   // ข้อความบรรทัดเดียว: ไม่ตัดบรรทัด ไม่ย่อ (กันข้อความหายใน PowerPoint)
+          const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.3;
+          if (!txt.includes('\n') && el.scrollHeight < lh * 1.7 + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0)) { tOpt.wrap = false; delete tOpt.fit; }
+        }
+        if (kind === 't') { if (txt) s.addText(txt, { ...g, ...tOpt }); return; }
+        // r = กล่อง (มีพื้น/เส้นขอบ และอาจมีข้อความ)
+        const bg = exRGB(cs.backgroundColor), bc = exRGB(cs.borderTopColor), bw = parseFloat(cs.borderTopWidth) || 0, rad = parseFloat(cs.borderTopLeftRadius) || 0;
+        const opt = { ...g, fill: bg && bg.a > 0.01 ? { color: exHex(bg, op) } : { color: 'FFFFFF', transparency: 100 },
+          line: bw > 0 && bc && bc.a > 0.01 && cs.borderTopStyle !== 'none' ? { color: exHex(bc, op), width: Math.max(0.5, bw * PT) } : { color: 'FFFFFF', transparency: 100, width: 0 } };
+        const shape = rad > 0.5 ? pptx.ShapeType.roundRect : pptx.ShapeType.rect;
+        if (rad > 0.5) opt.rectRadius = Math.min(rad, r.height / 2, r.width / 2) * K;
+        if (txt) s.addText(txt, { shape, ...opt, ...tOpt }); else s.addShape(shape, opt);
+      });
+    } finally { host.remove(); }
+  }
+  await pptx.writeFile({ fileName: name + '.pptx' });
+}
+function exMultiModal(curProject) {
+  modalOpen = true;
+  const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+  const modal = document.createElement('div'); modal.className = 'modal ex-multi';
+  const ps = state.projects || [];
+  const cats = ['work', 'extra', 'personal'].filter(c => ps.some(p => (p.sourceType || 'work') === c));
+  modal.innerHTML = `<h3>ส่งออกหลายโครงการในไฟล์เดียว</h3>
+    <p class="modal-desc">1 หน้า (สไลด์) ต่อ 1 โครงการ · แต่ละโครงการใช้ช่วงเวลา หน่วยงาน และตัวกรองที่ตั้งไว้ล่าสุดของโครงการนั้น · สิ่งที่แสดงบนสไลด์ใช้ค่าเดียวกันทุกหน้า</p>
+    <div class="ex-mp">${cats.map(c => `<div class="ex-gt">${escapeHTML(CAT_LABELS[c] || c)}</div>` + ps.filter(p => (p.sourceType || 'work') === c).map(p => `<label class="pop-ck"><input type="checkbox" data-p="${p.id}" ${curProject && p.id === curProject.id ? 'checked' : ''}><span>${escapeHTML(p.name)}</span></label>`).join('')).join('')}</div>
+    <div class="ex-row2"><span>รูปแบบไฟล์</span><span class="seg" id="exMf"><button type="button" data-f="pptx" aria-pressed="true">PowerPoint</button><button type="button" data-f="slide" aria-pressed="false">PDF 16:9</button><button type="button" data-f="a4" aria-pressed="false">PDF A4</button></span></div>
+    <div class="modal-actions" id="modalActions"></div>`;
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  let fmt = 'pptx';
+  modal.querySelectorAll('#exMf button').forEach(b => b.onclick = () => { fmt = b.dataset.f; modal.querySelectorAll('#exMf button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  const act = modal.querySelector('#modalActions');
+  const go = document.createElement('button'); go.className = 'primary-btn'; go.textContent = 'ส่งออก';
+  go.onclick = () => {
+    const sel = [...modal.querySelectorAll('[data-p]:checked')].map(i => ps.find(p => p.id === i.dataset.p)).filter(Boolean);
+    if (!sel.length) { showToast('เลือกอย่างน้อย 1 โครงการ'); return; }
+    closeModal(overlay);
+    const models = sel.map(p => exBuildModel(p)), name = 'สรุปผู้บริหาร_' + sel.length + '_โครงการ';
+    if (fmt === 'pptx') exBusy(() => exPptx(models, name)); else exPrint(models, fmt, name);
+  };
+  act.appendChild(go);
+  const c = document.createElement('button'); c.className = 'ghost-btn'; c.textContent = 'ยกเลิก'; c.onclick = () => closeModal(overlay); act.appendChild(c);
+}
+
+// ---------- ลิงก์แชร์ (เก็บ "ภาพสรุป ณ เวลาที่กดแชร์" ไว้ที่ Apps Script ของหมวดนั้น) ----------
+function exShares() { return (lsGet('exec_shares', []) || []).filter(x => x && x.id && (!x.expires || x.expires > Date.now())); }
+function exShareUrl(x) { return `${location.origin}${location.pathname}#share=${x.cat}.${x.id}`; }
+async function exShareApi(cat, body) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 30000);
+  try {
+    const r = await fetch(URLS[cat], { method: 'POST', body: JSON.stringify({ token: API_TOKEN, ...body }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal });
+    let d; try { d = JSON.parse(await r.text()); } catch (e) { throw new Error('เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ'); }
+    if (d.error) throw new Error(d.error === 'ข้อมูลไม่ถูกต้อง' ? 'เซิร์ฟเวอร์ยังไม่รองรับลิงก์แชร์ — ต้อง Deploy Apps Script เวอร์ชันใหม่ก่อน' : d.error);
+    return d;
+  } catch (e) {
+    if (e.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์'); throw e;
+  } finally { clearTimeout(t); }
+}
+function exSnapshot(m) { const s = clone(m); s.by = USER_NAME || ''; return s; }
+function exSharePop(p) {
+  const project = exCurProject(), cat = project.sourceType || 'work';
+  const mine = exShares().filter(x => x.pid === project.id);
+  const fmtExp = (x) => x.expires ? 'หมดอายุ ' + fmtDateTime(x.expires) : 'ไม่หมดอายุ';
+  p.innerHTML = `<h3 class="pop-h">แชร์ลิงก์ให้ผู้บริหาร</h3>
+    <p class="pop-note">ผู้รับเปิดดูได้โดยไม่ต้องมีรหัส เห็นเฉพาะสไลด์นี้ แก้ไขข้อมูลไม่ได้ และดาวน์โหลด PDF / รูป / PowerPoint ได้ · ข้อมูลในลิงก์เป็นภาพ ณ เวลาที่กดแชร์ — กด "อัปเดต" เพื่อส่งข้อมูลล่าสุดไปที่ลิงก์เดิม</p>
+    <div class="ex-shl">${mine.map(x => `<div class="ex-sh" data-id="${x.id}"><div class="ex-sh-i"><b>ลิงก์ที่สร้างไว้</b><small>อัปเดต ${escapeHTML(fmtDateTime(x.updated || x.created))} · ${escapeHTML(fmtExp(x))}</small><input class="text-input ex-url" readonly value="${escapeHTML(exShareUrl(x))}" aria-label="ลิงก์แชร์"></div>
+      <div class="ex-sh-a"><button type="button" class="btn btn-p" data-a="copy">${ic('copy', 15)}<span>คัดลอก</span></button><button type="button" class="btn" data-a="upd">อัปเดตข้อมูล</button><button type="button" class="btn ex-danger" data-a="del">ยกเลิกลิงก์</button></div></div>`).join('')}</div>
+    <div class="ex-row2"><label for="exShDays">${mine.length ? 'สร้างลิงก์ใหม่ · หมดอายุ' : 'หมดอายุ'}</label><select id="exShDays" class="text-input"><option value="7">7 วัน</option><option value="30" selected>30 วัน</option><option value="90">90 วัน</option><option value="365">1 ปี</option><option value="0">ไม่หมดอายุ</option></select></div>
+    <button type="button" class="btn ${mine.length ? '' : 'btn-p '}ex-wide" id="exShNew">${ic('link', 15)}<span>${mine.length ? 'สร้างลิงก์ใหม่อีกลิงก์' : 'สร้างลิงก์'}</span></button>
+    <div class="ex-msg" id="exShMsg" role="status"></div>`;
+  const msg = (t, bad) => { const e = p.querySelector('#exShMsg'); e.textContent = t; e.classList.toggle('bad', !!bad); };
+  const busy = (b, on) => { b.disabled = on; };
+  const copy = async (url, inp) => {
+    try { await navigator.clipboard.writeText(url); msg('✓ คัดลอกลิงก์แล้ว นำไปวางในไลน์ / อีเมลได้เลย'); }
+    catch (e) { if (inp) { inp.focus(); inp.select(); } msg('กด Ctrl+C เพื่อคัดลอกลิงก์ที่เลือกไว้'); }
+  };
+  const store = (list) => lsSet('exec_shares', list);
+  p.querySelector('#exShNew').onclick = async (ev) => {
+    const b = ev.currentTarget, m = exDraw.model; if (!m) return;
+    const snap = exSnapshot(m);
+    if (JSON.stringify(snap).length > 380000) { msg('ข้อมูลใหญ่เกินไป ลองลบโลโก้หรือย่อช่วงเวลา', true); return; }
+    busy(b, true); msg('กำลังสร้างลิงก์…');
+    try {
+      const days = +p.querySelector('#exShDays').value;
+      const d = await exShareApi(cat, { action: 'shareCreate', days, snapshot: snap });
+      const rec = { id: d.id, cat, pid: project.id, title: m.title, created: Date.now(), updated: Date.now(), expires: d.expires || 0 };
+      store([...exShares(), rec]); exSharePop(p);
+      const inp = p.querySelector(`.ex-sh[data-id="${rec.id}"] .ex-url`);
+      await copy(exShareUrl(rec), inp);
+    } catch (e) { busy(b, false); msg('⚠️ ' + (e.message || e), true); }
+  };
+  p.querySelectorAll('.ex-sh').forEach(row => {
+    const x = mine.find(s => s.id === row.dataset.id), inp = row.querySelector('.ex-url');
+    row.querySelector('[data-a="copy"]').onclick = () => copy(exShareUrl(x), inp);
+    row.querySelector('[data-a="upd"]').onclick = async (ev) => {
+      const b = ev.currentTarget, m = exDraw.model; busy(b, true); msg('กำลังอัปเดตข้อมูลในลิงก์…');
+      try { await exShareApi(x.cat, { action: 'shareCreate', id: x.id, snapshot: exSnapshot(m) }); store(exShares().map(s => s.id === x.id ? { ...s, updated: Date.now(), title: m.title } : s)); exSharePop(p); msg('✓ อัปเดตแล้ว ผู้ที่เปิดลิงก์เดิมจะเห็นข้อมูลล่าสุด'); }
+      catch (e) { busy(b, false); msg('⚠️ ' + (e.message || e), true); }
+    };
+    row.querySelector('[data-a="del"]').onclick = async (ev) => {
+      const b = ev.currentTarget; busy(b, true); msg('กำลังยกเลิกลิงก์…');
+      try { await exShareApi(x.cat, { action: 'shareDelete', id: x.id }); store(exShares().filter(s => s.id !== x.id)); exSharePop(p); msg('ยกเลิกลิงก์แล้ว ลิงก์เดิมจะเปิดไม่ได้อีก'); }
+      catch (e) { busy(b, false); msg('⚠️ ' + (e.message || e), true); }
+    };
+  });
+}
+
+// ---------- หน้าดูผ่านลิงก์แชร์ (ไม่ต้องล็อกอิน) ----------
+function exSanitize(s) {
+  if (!s || typeof s !== 'object') throw new Error('ข้อมูลไม่ถูกต้อง');
+  const N = (v) => (Number.isFinite(+v) ? +v : 0), S = (v, n = 300) => String(v == null ? '' : v).slice(0, n), A = (v, n) => (Array.isArray(v) ? v.slice(0, n) : []);
+  const b = s.board || {};
+  const out = {
+    v: 1, title: S(s.title, 200), asOf: S(s.asOf, 80), range: S(s.range, 80), stamp: S(s.stamp, 160), logo: S(s.logo, 300000), by: S(s.by, 80),
+    board: { x0: N(b.x0), x1: N(b.x1), y0: N(b.y0), y1: N(b.y1), gx0: N(b.gx0), gx1: N(b.gx1), axisY: N(b.axisY), axisH: N(b.axisH), LW: N(b.LW) || 128 },
+    months: A(s.months, 60).map(x => ({ x: N(x.x), w: N(x.w), t: S(x.t, 20), past: !!x.past })),
+    fy: A(s.fy, 10).map(x => ({ x: N(x.x), w: N(x.w), t: S(x.t, 30) })),
+    today: s.today === null || s.today === undefined ? null : N(s.today), pastW: N(s.pastW),
+    lanes: A(s.lanes, 60).map(x => ({ n: S(x.n, 120), c: exCol(x.c, '#3A2E6E'), y: N(x.y), h: N(x.h) })),
+    boxes: A(s.boxes, 1500).map(x => ({ x: N(x.x), y: N(x.y), w: N(x.w), h: N(x.h), t: S(x.t, 200), full: S(x.full, 400), c: exCol(x.c, '#4F46E5'), bg: exCol(x.bg, '#EEF2FF'), done: !!x.done })),
+    ms: A(s.ms, 300).map(x => ({ x: N(x.x), y: N(x.y), past: !!x.past })),
+    legend: s.legend ? A(s.legend, 8).map(x => ({ k: ['fade', 'ms', 'past', 'today'].includes(x.k) ? x.k : 'fade', t: S(x.t, 80) })) : null,
+    empty: !!s.empty, panel: null
+  };
+  const P = s.panel;
+  if (P && typeof P === 'object') {
+    const L = (arr) => A(arr, 3).map(x => ({ d: S(x.d, 20), t: S(x.t, 200), s: S(x.s, 200) }));
+    out.panel = {
+      s: P.s ? { lv: EX_LV[P.s.lv] ? P.s.lv : 'watch', pct: N(P.s.pct), plan: N(P.s.plan), line: S(P.s.line, 200) } : null,
+      n: P.n ? { title: S(P.n.title, 40), items: L(P.n.items) } : null,
+      i: P.i ? { items: L(P.i.items) } : null
+    };
+  }
+  return out;
+}
+function exShareBoot() {
+  const mm = location.hash.match(/[#&]share=(work|extra|personal)\.([a-f0-9]{32})/);
+  if (!mm) return false;
+  const ls = document.getElementById('login-screen'); if (ls) ls.style.display = 'none';
+  document.body.classList.add('ex-viewing');
+  const v = document.createElement('div'); v.id = 'exViewer'; v.className = 'exv';
+  v.innerHTML = `<header class="exv-top"><span class="exv-logo">${BRAND_SVG}</span><div class="exv-tt"><b id="exvTitle">สรุปผู้บริหาร</b><small id="exvMeta">กำลังโหลด…</small></div><div class="exv-act" id="exvAct"></div></header>
+    <main class="exv-main"><div class="ex-stage" id="exStage"><div class="exv-msg">⏳ กำลังโหลดสรุปผู้บริหาร…</div></div><p class="ex-zoomhint">เลื่อนซ้าย–ขวาเพื่อดูทั้งสไลด์ หรือหมุนจอเป็นแนวนอน</p></main>`;
+  document.body.appendChild(v);
+  const fail = (t) => { document.getElementById('exStage').innerHTML = `<div class="exv-msg bad"><b>เปิดลิงก์นี้ไม่ได้</b><br>${escapeHTML(t)}<br><small>ติดต่อผู้ส่งลิงก์เพื่อขอลิงก์ใหม่</small></div>`; document.getElementById('exvMeta').textContent = ''; };
+  fetch(`${URLS[mm[1]]}?action=share&id=${mm[2]}`).then(r => r.text()).then(t => {
+    let d; try { d = JSON.parse(t); } catch (e) { throw new Error('เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ'); }
+    if (d.error) throw new Error(d.error);
+    const m = exSanitize(d.snapshot);
+    exDraw.model = m;
+    document.title = m.title + ' · สรุปผู้บริหาร';
+    document.getElementById('exvTitle').textContent = m.title;
+    document.getElementById('exvMeta').textContent = [m.asOf, d.createdBy || m.by ? 'แชร์โดย ' + (d.createdBy || m.by) : '', d.updatedAt ? 'อัปเดต ' + fmtDateTime(d.updatedAt) : ''].filter(Boolean).join(' · ');
+    const act = document.getElementById('exvAct'), name = exFileName(m.title);
+    const b = (icn, t, fn) => { const x = document.createElement('button'); x.type = 'button'; x.className = 'btn'; x.innerHTML = ic(icn, 16) + `<span>${t}</span>`; x.onclick = fn; act.appendChild(x); };
+    b('print', 'PDF', () => exPrint([m], 'slide', name));
+    b('download', 'รูปภาพ', () => exBusy(() => exPng(m, name)));
+    b('present', 'PowerPoint', () => exBusy(() => exPptx([m], name)));
+    const stage = document.getElementById('exStage'), slide = exRenderSlide(m), wrap = document.createElement('div'); wrap.className = 'ex-scale';
+    wrap.appendChild(slide); stage.innerHTML = ''; stage.appendChild(wrap);
+    exScale(); exFit(slide); exFonts().then(() => exFit(slide));
+  }).catch(e => fail(e.message === 'Failed to fetch' ? 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้' : (e.message || String(e))));
+  return true;
+}
+// ฟิลด์เสริมในหน้าต่างกิจกรรม
+function exActFieldsHTML(a) {
+  const open = a && (a.shortName || a.milestone);
+  return `<details class="ex-af"${open ? ' open' : ''}><summary>${ic('present', 16)}<span>สำหรับหน้าสรุปผู้บริหาร</span><small>(ไม่บังคับ)</small></summary>
+    <label class="field-label" for="actShort">ชื่อย่อสำหรับสไลด์</label>
+    <input type="text" id="actShort" class="text-input" maxlength="40" value="${escapeHTML((a && a.shortName) || '')}" placeholder="เช่น ชี้แจง สงป. (ถ้าว่าง ใช้ชื่อกิจกรรม)">
+    <label class="pop-ck"><input type="checkbox" id="actMs" ${a && a.milestone ? 'checked' : ''}><span><b>◆ หมุดหมายสำคัญ</b><small>แสดงเป็น ◆ บนสไลด์ และขึ้นในรายการ "หมุดหมายถัดไป"</small></span></label>
+  </details>`;
+}
+function exApplyActFields(a, modal) {
+  if (!a || !modal || !modal.querySelector('#actShort')) return;
+  const s = modal.querySelector('#actShort').value.trim();
+  if (s) a.shortName = s.slice(0, 40); else delete a.shortName;
+  if (modal.querySelector('#actMs').checked) a.milestone = true; else delete a.milestone;
+}
+
+// ==========================================
 // --- ลิงก์เข้าระบบอัตโนมัติ: https://.../#k=รหัสผ่าน ---
 // (ส่วนหลัง # ไม่ถูกส่งไปที่เซิร์ฟเวอร์ GitHub และจะถูกลบออกจากแถบที่อยู่ทันที)
 // ==========================================
 applyGanttHeightMode();   // ความสูงตารางที่เลือกไว้ครั้งก่อน
+exShareBoot();            // เปิดผ่านลิงก์แชร์สรุปผู้บริหาร (#share=...) ไม่ต้องล็อกอิน
 
 (function autoLoginFromLink() {
   const m = location.hash.match(/[#&]k=([^&]+)/);
