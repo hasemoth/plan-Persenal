@@ -1310,6 +1310,48 @@ body.ex-viewing { background: #E4E8F0; }
   body.ex-printing.ex-a4 .exp-pg { page: exa4; width: 297mm; height: 209mm; display: flex; align-items: center; justify-content: center; }
   body.ex-printing.ex-a4 .exs { zoom: .7; flex-shrink: 0; }
 }
+/* ===== เลือกหลายงาน (โหมดแก้ไข) ===== */
+.act-bar.sel .act-fill { border-color: #0891B2 !important; box-shadow: inset 0 0 0 1.5px #0891B2, inset 0 0 0 3px #fff !important; }
+.act-bar.sel .act-in::before { content: '✓'; flex-shrink: 0; width: 15px; height: 15px; border-radius: 50%; background: #0891B2; color: #fff; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+.act-bar.sel-part .act-fill { border-style: dashed !important; border-color: #0891B2 !important; }
+.act-bar.gs-moving { z-index: 6; opacity: .9; transition: none; }
+.act-bar.gs-moving .act-fill { box-shadow: 0 4px 12px rgba(8,145,178,.35), inset 0 0 0 1.5px #0891B2 !important; }
+.gs-tip { position: fixed; z-index: 3000; pointer-events: none; background: #0891B2; color: #fff; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 3px 10px; box-shadow: 0 4px 12px rgba(8,145,178,.35); white-space: nowrap; }
+.gs-bar { position: fixed; bottom: 16px; left: calc(var(--side-w) + 12px); right: 12px; width: fit-content; margin: 0 auto; z-index: 65; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; background: #fff; border: 1px solid #D5D9E3; border-radius: 16px; box-shadow: 0 12px 32px rgba(22,35,59,.2); padding: 8px 10px 8px 14px; box-sizing: border-box; font-size: 14px; color: var(--ink, #16233B); }
+.gs-bar.empty { background: #F7F8FC; box-shadow: 0 6px 18px rgba(22,35,59,.12); padding: 8px 14px; }
+.gs-hint { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #4A5773; }
+.gs-hint .ic { color: #0891B2; flex-shrink: 0; }
+.gs-n { display: flex; flex-direction: column; line-height: 1.25; padding-right: 2px; }
+.gs-n b { color: #0E7490; font-size: 16px; }
+.gs-n > span { white-space: nowrap; }
+.gs-n small { color: #5B6680; font-size: 12px; }
+.gs-sep { width: 1px; height: 26px; background: #E1E4EC; }
+.gs-mv { display: inline-flex; align-items: center; gap: 4px; }
+.gs-mv .btn { padding: 0 10px; min-width: 38px; justify-content: center; }
+.gs-mvl { font-size: 12.5px; color: #5B6680; padding: 0 2px; }
+.gs-fl { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #4A5773; margin: 0 6px 6px; }
+.gs-fl .text-input { margin: 0; }
+.gs-or { text-align: center; font-size: 12px; color: #94A3B8; margin: 2px 0 6px; }
+body.gs-on .toast { bottom: 96px; }
+body.gs-on .content { padding-bottom: 90px; }
+@media (max-width: 900px) { .gs-bar { left: 8px; right: 8px; bottom: 10px; } .gs-hint { font-size: 12px; } }
+@media print { .gs-bar, .gs-tip { display: none !important; } }
+
+/* หัวหน่วยงานในโหมดแก้ไข: เห็นชื่อชัด ปุ่มรวมไว้ในเมนู ⋮ */
+.dg-edit > .dg-head .dg-hl { background: #EFEDF9 !important; box-shadow: inset 3px 0 0 #3A2E6E; padding-left: 8px !important; }
+.dg-edit > .dg-head { border-top-color: #D9D5EE; }
+.dg-edit .dg-tog { padding: 0 4px; gap: 4px; }
+.dg-edit .dg-name { color: #241C4D; font-size: 14px; line-height: 1.15; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.dg-edit .dg-meta { display: none; }   /* โหมดแก้ไข: ให้ที่กับชื่อหน่วยงานก่อน */
+.dg-move { margin-right: 0; }
+.dg-move button { width: 18px; height: 15px; font-size: 8px; }
+.dg-ctrls2 { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.dg-ib { width: 30px; height: 30px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #4A5773; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+.dg-ib:hover { background: #fff; border-color: #D5D9E3; color: #241C4D; }
+.dg-ib:focus-visible { outline: 2px solid var(--today, #0891B2); outline-offset: 1px; }
+.dg-edit .dg-hl .hidden-chip { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 720px) { .dg-move { display: none; } .dg-ctrls2 .dg-ib:first-child { display: none; } }   /* จอแคบ: ใช้เมนู ⋮ แทน */
+@media print { .dg-move, .dg-ctrls2 { display: none !important; } }
 </style>
 </head>
 <body>
@@ -2539,6 +2581,7 @@ function render() {
   const keepSearch = ae && ae.id === 'actSearch' ? ae.selectionStart : null;   // กำลังพิมพ์ค้นหาอยู่
   if (window.tinymce) tinymce.remove();
   closePop();
+  gsel.cache = null;
   const topbarHTML = app.querySelector('.topbar').outerHTML;
   app.innerHTML = '';
   
@@ -2570,6 +2613,7 @@ function render() {
   else content.appendChild(renderProjectDetail(view.id));
   
   mainCol.appendChild(content);
+  gselMount(mainCol);
   if (keepSearch !== null) {
     const inp = document.getElementById('actSearch');
     if (inp) { inp.focus(); try { inp.setSelectionRange(keepSearch, keepSearch); } catch (e) {} }
@@ -4141,14 +4185,33 @@ function buildDeptBlock(project, dept, index, totalDepts, colw, totalWidth, rSta
   };
   hl.appendChild(tog);
   if (dragMode) {
-    const ctrls = document.createElement('div'); ctrls.className = 'dept-ctrls dg-ctrls';
-    const b = (txt, title, fn, cls) => { const x = document.createElement('button'); x.type = 'button'; x.className = 'icon-btn' + (cls ? ' ' + cls : ''); x.innerHTML = txt; x.title = title; x.setAttribute('aria-label', title); x.onclick = (e) => { e.stopPropagation(); fn(); }; ctrls.appendChild(x); };
-    b('▲', 'เลื่อนหน่วยงานขึ้น', () => moveDepartmentUp(project.id, dept.id));
-    b('▼', 'เลื่อนหน่วยงานลง', () => moveDepartmentDown(project.id, dept.id));
-    b('+ แถว', 'เพิ่มแถว', () => addRow(project.id, dept.id));
-    b(ic('pencil', 13), 'เปลี่ยนชื่อหน่วยงาน', () => renameDepartment(project.id, dept.id));
-    b('ซ่อน', 'ซ่อนหน่วยงานนี้', () => setDeptHidden(project.id, dept.id, true));
-    b(ic('trash', 13), 'ลบหน่วยงาน', () => deleteDepartment(project.id, dept.id), 'danger');
+    // โหมดแก้ไข: ชื่อหน่วยงานต้องเห็นชัดเสมอ · ปุ่มย่อเหลือ ▲▼ (ซ้าย) + เพิ่มแถว + เมนู ⋮ (ขวา)
+    block.classList.add('dg-edit');
+    const di = project.departments.indexOf(dept);
+    const mv = document.createElement('div'); mv.className = 'row-move dg-move';
+    mv.innerHTML = `<button type="button" aria-label="เลื่อนหน่วยงาน ${escapeHTML(dept.name)} ขึ้น" title="เลื่อนหน่วยงานขึ้น" ${di <= 0 ? 'disabled' : ''}>▲</button><button type="button" aria-label="เลื่อนหน่วยงาน ${escapeHTML(dept.name)} ลง" title="เลื่อนหน่วยงานลง" ${di >= project.departments.length - 1 ? 'disabled' : ''}>▼</button>`;
+    const [mu, md] = mv.querySelectorAll('button');
+    mu.onclick = (e) => { e.stopPropagation(); moveDepartmentUp(project.id, dept.id); };
+    md.onclick = (e) => { e.stopPropagation(); moveDepartmentDown(project.id, dept.id); };
+    hl.insertBefore(mv, tog);
+    const ctrls = document.createElement('div'); ctrls.className = 'dg-ctrls2';
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'dg-ib'; add.innerHTML = ic('plus', 15, 2.2);
+    add.title = 'เพิ่มแถวในหน่วยงานนี้'; add.setAttribute('aria-label', 'เพิ่มแถวใน ' + dept.name);
+    add.onclick = (e) => { e.stopPropagation(); addRow(project.id, dept.id); };
+    const more = document.createElement('button'); more.type = 'button'; more.className = 'dg-ib'; more.innerHTML = ic('dotsV', 16, 2.4);
+    more.title = 'ตัวเลือกหน่วยงาน'; more.setAttribute('aria-label', 'ตัวเลือกของหน่วยงาน ' + dept.name); more.setAttribute('aria-haspopup', 'menu');
+    more.onclick = (e) => { e.stopPropagation(); menuPop(more, [
+      { icon: 'plus', label: 'เพิ่มแถว', fn: () => addRow(project.id, dept.id) },
+      { icon: 'pencil', label: 'เปลี่ยนชื่อหน่วยงาน', fn: () => renameDepartment(project.id, dept.id) },
+      di > 0 ? { icon: 'up', label: 'เลื่อนขึ้น', fn: () => moveDepartmentUp(project.id, dept.id) } : null,
+      di < project.departments.length - 1 ? { icon: 'down', label: 'เลื่อนลง', fn: () => moveDepartmentDown(project.id, dept.id) } : null,
+      '-',
+      { icon: 'eye', label: 'ซ่อนหน่วยงานนี้ (ทุกคน)', fn: () => setDeptHidden(project.id, dept.id, true) },
+      { icon: 'eye', label: 'ซ่อนเฉพาะในเครื่องของฉัน', fn: () => setDeptHidden(project.id, dept.id, true, true) },
+      '-',
+      { icon: 'trash', label: 'ลบหน่วยงาน', danger: true, fn: () => deleteDepartment(project.id, dept.id) }
+    ], { alignRight: true }); };
+    ctrls.append(add, more);
     hl.appendChild(ctrls);
   }
   if (hiddenRowCount > 0) {
@@ -4252,6 +4315,7 @@ const ST_ICON = {
   done: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="เสร็จแล้ว"><circle cx="8" cy="8" r="8" fill="#15803D"/><path d="M4.5 8.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   today: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="ครบกำหนดวันนี้"><circle cx="8" cy="8" r="8" fill="#B45309"/><circle cx="8" cy="8" r="3" fill="#fff"/></svg>',
   wait: '<svg class="st" width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="รอตอบกลับ"><circle cx="8" cy="8" r="8" fill="#6D28D9"/><rect x="4" y="5.2" width="8" height="5.8" rx="1" stroke="#fff" stroke-width="1.3" fill="none"/><path d="M4.3 5.8L8 8.4l3.7-2.6" stroke="#fff" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>',
+  grp: '<svg class="st" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E7490" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="อยู่ในกลุ่ม (เลื่อนพร้อมกัน)"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
   rec: '<svg class="st" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3A2E6E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="งานที่ทำซ้ำ"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>'
 };
 function barTint(hex, a) {
@@ -4309,9 +4373,12 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   }
   if (act.type !== 'meeting' && timeTxt) statusText += `\nเวลา ${act.startTime}–${act.endTime || ''} น.`;
   if (act.seriesId) { st.push('rec'); statusText += '\nทำซ้ำ: ' + recDescribe(act.rec); }
+  if (dragMode && project && act.grp && view.type === 'project') { const gn = gselGrpSize(project, act.grp); if (gn > 1) { st.push('grp'); statusText += `\nอยู่ในกลุ่ม: เลื่อนพร้อมกัน ${gn} งาน`; } }
   if (fuWaiting(act)) statusText += '\nรอติดตามผล' + (act.followUp.from ? ' จาก ' + act.followUp.from : '') + (act.followUp.due != null ? ' · ติดตามภายใน ' + formatDateThai(dateFromIndex(act.followUp.due)) : '');
   const bar = document.createElement('div');
   bar.className = 'act-bar' + (dragMode && project ? ' draggable' : '') + (done ? ' is-done' : '');
+  bar.dataset.aid = act.id;
+  if (dragMode && project && gsel.ids.has(act.id)) bar.classList.add('sel');
   bar.style.position = 'absolute';
   bar.style.left = actStartOffset + 'px';
   bar.style.width = 'max-content';
@@ -4348,17 +4415,31 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.appendChild(content);
 
   if (dragMode && project) {
+      const multiOK = view.type === 'project' && !READ_ONLY;   // เลือกหลายงานได้เฉพาะหน้าแผนงานของโครงการ
       const startDrag = (e) => {
+          if (e.type === 'mousedown' && (e.button !== 0 || Date.now() - gsel.lastTouch < 800)) return;   // กันเหตุการณ์เมาส์จำลองหลังแตะจอ
           e.stopPropagation(); 
           let clientX = e.clientX;
           if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
           let startX = clientX, initialActStart = act.start, duration = act.end - act.start, hasMoved = false;
+          const groupIds = multiOK ? gselMoveSet(project, act) : null;   // งานที่เลือกไว้ / ทั้งกลุ่ม: เลื่อนพร้อมกัน
+          let gShift = 0, gBars = null;
           
           function onMove(moveEvent) {
               if (moveEvent.touches && moveEvent.cancelable) moveEvent.preventDefault();
               let curX = moveEvent.clientX;
               if (moveEvent.touches && moveEvent.touches.length > 0) curX = moveEvent.touches[0].clientX;
               let dx = curX - startX, dayShift = Math.round(dx / colw);
+              if (groupIds) {
+                  if (dayShift !== 0) hasMoved = true;
+                  if (!hasMoved) return;
+                  gShift = dayShift;
+                  if (!gBars) gBars = gselBarsOf(groupIds);
+                  gBars.forEach(b => { b.classList.add('gs-moving'); b.style.transform = `translateX(${dayShift * colw}px)`; });
+                  const cy = moveEvent.touches && moveEvent.touches[0] ? moveEvent.touches[0].clientY : moveEvent.clientY;
+                  gselDragTip(curX, cy, dayShift, groupIds.size);
+                  return;
+              }
               if (dayShift !== 0) {
                   hasMoved = true; 
                   act.start = initialActStart + dayShift; 
@@ -4383,12 +4464,21 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
               }
           }
           
-          function onEnd() { 
+          function onEnd(ev) { 
               window.removeEventListener('mousemove', onMove); 
               window.removeEventListener('mouseup', onEnd); 
               window.removeEventListener('touchmove', onMove); 
               window.removeEventListener('touchend', onEnd); 
+              if (ev && ev.type === 'touchend') gsel.lastTouch = Date.now();
+              if (groupIds) {
+                  gselDragTip(null);
+                  if (hasMoved && gShift) { gselApplyShift(project, groupIds, gShift); return; }
+                  if (gBars) gBars.forEach(b => { b.classList.remove('gs-moving'); b.style.transform = ''; });
+                  if (!hasMoved) gselToggle(project, act);
+                  return;
+              }
               if (hasMoved) persistAndRender(); 
+              else if (multiOK) gselToggle(project, act);   // คลิก (ไม่ได้ลาก) = เลือก / เลิกเลือก
           }
           
           window.addEventListener('mousemove', onMove); 
@@ -4398,6 +4488,7 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
       };
       bar.onmousedown = startDrag;
       bar.addEventListener('touchstart', startDrag, { passive: true });
+      if (multiOK) bar.ondblclick = (e) => { e.stopPropagation(); openActivityModal(project.id, dept.id, row.id, act.id); };
   } else if (project) {
       bar.onclick = (e) => { e.stopPropagation(); openActivityModal(project.id, dept.id, row.id, act.id); };
   }
@@ -4434,6 +4525,7 @@ function appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept
     const bar = createSmartActivityBar(rep, colw, rStart, rEnd, totalWidth, repActs, project, dept, row, all ? 34 : 0);
     if (!bar) return;
     if (all) {
+      bar.dataset.more = all.map(a => a.id).join(',');
       const chip = document.createElement('span'); chip.className = 'ov-more'; chip.textContent = '+' + (all.length - 1);
       chip.setAttribute('aria-label', `มีอีก ${all.length - 1} งานในวันเดียวกัน`);
       chip.addEventListener('mouseenter', () => ovShowPop(chip, all, ctxP, ctxD, row));
@@ -8052,6 +8144,182 @@ function tdFromTrello(j, vis) {
     }
   };
 })();
+
+// ==========================================
+// --- โหมดแก้ไข: เลือกหลายกิจกรรม (ต่างแถว/ต่างหน่วยงานได้) แล้วเลื่อนพร้อมกัน + จับกลุ่มถาวร (a.grp) ---
+// คลิกงาน = เลือก/เลิกเลือก · ลากงานที่เลือก = เลื่อนทั้งชุด · ดับเบิลคลิก = เปิดแก้ไข
+// ==========================================
+const gsel = { pid: null, ids: new Set(), lastTouch: 0, cache: null };
+function gselProject() { return view.type === 'project' && state ? state.projects.find(p => p.id === view.id) || null : null; }
+function gselAll(project) {
+  const m = new Map();
+  project.departments.forEach(d => d.rows.forEach(r => (r.activities || []).forEach(a => m.set(a.id, { a, r, d }))));
+  return m;
+}
+function gselGroupIds(project, grp) { const out = []; if (!grp) return out; gselAll(project).forEach((x, id) => { if (x.a.grp === grp) out.push(id); }); return out; }
+function gselGrpSize(project, grp) {
+  if (!grp) return 0;
+  if (!gsel.cache || gsel.cache.pid !== project.id) {
+    const c = new Map(); gselAll(project).forEach(x => { if (x.a.grp) c.set(x.a.grp, (c.get(x.a.grp) || 0) + 1); });
+    gsel.cache = { pid: project.id, c };
+  }
+  return gsel.cache.c.get(grp) || 0;
+}
+function gselValidate() {
+  const p = gselProject();
+  if (!p || !dragMode || READ_ONLY || gsel.pid !== p.id) { gsel.ids.clear(); gsel.pid = p ? p.id : null; return p; }
+  const all = gselAll(p); [...gsel.ids].forEach(id => { if (!all.has(id)) gsel.ids.delete(id); });
+  return p;
+}
+// งานที่จะเลื่อนพร้อมกันเมื่อเริ่มลาก act (null = ลากงานเดียวแบบเดิม)
+function gselMoveSet(project, act) {
+  if (gsel.pid === project.id && gsel.ids.has(act.id) && gsel.ids.size > 1) return new Set(gsel.ids);
+  if (act.grp && gselGrpSize(project, act.grp) > 1) return new Set(gselGroupIds(project, act.grp));
+  return null;
+}
+function gselToggle(project, act) {
+  if (gsel.pid !== project.id) { gsel.ids.clear(); gsel.pid = project.id; }
+  const ids = act.grp && gselGrpSize(project, act.grp) > 1 ? gselGroupIds(project, act.grp) : [act.id];
+  const on = !gsel.ids.has(act.id);
+  ids.forEach(id => (on ? gsel.ids.add(id) : gsel.ids.delete(id)));
+  gselPaint();
+}
+function gselBarsOf(ids) { return [...document.querySelectorAll('.act-bar[data-aid]')].filter(b => ids.has(b.dataset.aid)); }
+function gselPaint() {
+  document.querySelectorAll('.act-bar[data-aid]').forEach(b => {
+    const more = (b.dataset.more || '').split(',').filter(Boolean);
+    b.classList.toggle('sel', gsel.ids.has(b.dataset.aid));
+    b.classList.toggle('sel-part', !gsel.ids.has(b.dataset.aid) && more.some(id => gsel.ids.has(id)));
+  });
+  const old = document.getElementById('gsBar'); if (old) gselBar(old.parentNode);
+}
+function gselClear() { gsel.ids.clear(); gselPaint(); }
+async function gselApplyShift(project, ids, days) {
+  if (!days) return;
+  const all = gselAll(project); let n = 0;
+  ids.forEach(id => { const x = all.get(id); if (x) { x.a.start += days; x.a.end += days; n++; } });
+  if (!n) return;
+  await persistAndRender();
+  showToast(`เลื่อน ${n} งาน ${days > 0 ? 'ไปข้างหน้า ' + days : 'ย้อนหลัง ' + (-days)} วัน`, 'เลิกทำ', undo);
+}
+function gselShift(days) { const p = gselValidate(); if (p && gsel.ids.size) gselApplyShift(p, new Set(gsel.ids), days); }
+function gselSelInfo(project) {
+  const all = gselAll(project), sel = [...gsel.ids].map(id => all.get(id)).filter(Boolean);
+  if (!sel.length) return null;
+  const s = Math.min(...sel.map(x => x.a.start)), e = Math.max(...sel.map(x => x.a.end));
+  return { sel, s, e, rows: new Set(sel.map(x => x.r.id)).size, depts: new Set(sel.map(x => x.d.id)).size };
+}
+// เพิ่ม "งานที่เริ่มตั้งแต่งานแรกที่เลือกเป็นต้นไป" เข้าในชุด
+function gselAddAfter(scope) {
+  const p = gselValidate(); if (!p) return;
+  const info = gselSelInfo(p); if (!info) return;
+  const rows = new Set(info.sel.map(x => x.r.id)), depts = new Set(info.sel.map(x => x.d.id));
+  let added = 0, skipped = 0;
+  p.departments.forEach(d => {
+    if (scope === 'dept' && !depts.has(d.id)) return;
+    d.rows.forEach(r => {
+      if (scope === 'row' && !rows.has(r.id)) return;
+      const hidden = isHid(d) || isHid(r) || rcRowOut(p, r);
+      (r.activities || []).forEach(a => {
+        if (a.start < info.s || gsel.ids.has(a.id)) return;
+        if (hidden) { skipped++; return; }
+        gsel.ids.add(a.id); added++;
+        if (a.grp && gselGrpSize(p, a.grp) > 1) gselGroupIds(p, a.grp).forEach(id => gsel.ids.add(id));
+      });
+    });
+  });
+  gselPaint();
+  showToast(added ? `เพิ่ม ${added} งานที่เริ่มตั้งแต่ ${formatDateThai(dateFromIndex(info.s))} เป็นต้นไป` + (skipped ? ` · ข้าม ${skipped} งานในแถวที่ซ่อน/กรองอยู่` : '') : 'ไม่มีงานถัดไปให้เพิ่ม' + (skipped ? ` (มี ${skipped} งานในแถวที่ซ่อน/กรองอยู่)` : ''));
+}
+async function gselGroup() {
+  const p = gselValidate(); if (!p) return;
+  if (gsel.ids.size < 2) { showToast('เลือกอย่างน้อย 2 งานเพื่อจับกลุ่ม'); return; }
+  const g = uid('grp'), all = gselAll(p);
+  gsel.ids.forEach(id => { const x = all.get(id); if (x) x.a.grp = g; });
+  gsel.cache = null;
+  await persistAndRender();
+  showToast(`🔗 จับกลุ่ม ${gsel.ids.size} งานแล้ว · ต่อไปลากงานใดในกลุ่ม งานอื่นจะเลื่อนตามเสมอ`, 'เลิกทำ', undo);
+}
+async function gselUngroup() {
+  const p = gselValidate(); if (!p) return;
+  const all = gselAll(p); let n = 0;
+  gsel.ids.forEach(id => { const x = all.get(id); if (x && x.a.grp) { delete x.a.grp; n++; } });
+  if (!n) return;
+  gsel.cache = null;
+  await persistAndRender();
+  showToast(`แยกกลุ่มแล้ว ${n} งาน (เลื่อนแยกกันได้)`, 'เลิกทำ', undo);
+}
+// ป้ายบอกจำนวนวันระหว่างลาก
+function gselDragTip(x, y, days, n) {
+  let t = document.getElementById('gsTip');
+  if (x === null) { if (t) t.remove(); return; }
+  if (!t) { t = document.createElement('div'); t.id = 'gsTip'; t.className = 'gs-tip'; document.body.appendChild(t); }
+  t.textContent = `${n} งาน · ${days > 0 ? '+' : ''}${days} วัน`;
+  t.style.left = (x + 14) + 'px'; t.style.top = (y - 34) + 'px';
+}
+// แถบคำสั่งลอยด้านล่าง (แสดงเฉพาะหน้าแผนงานตอนเปิดโหมดแก้ไข)
+function gselMount(host) {
+  const p = gselValidate();
+  document.body.classList.toggle('gs-on', !!(p && dragMode && !READ_ONLY));
+  if (!p || !dragMode || READ_ONLY) return;
+  gselPaint(); gselBar(host);
+}
+function gselBar(host) {
+  const p = gselProject(); if (!p || !host) return;
+  let bar = document.getElementById('gsBar');
+  if (!bar) { bar = document.createElement('div'); bar.id = 'gsBar'; bar.className = 'gs-bar'; bar.setAttribute('role', 'toolbar'); bar.setAttribute('aria-label', 'เลือกหลายงาน'); host.appendChild(bar); }
+  const info = gselSelInfo(p);
+  if (!info) {
+    bar.className = 'gs-bar empty';
+    bar.innerHTML = `<span class="gs-hint">${ic('todo', 17)}<span><b>เลือกหลายงาน:</b> คลิกที่งานเพื่อเลือก (ต่างแถว / ต่างหน่วยงานได้) แล้วลากหรือกดปุ่มเลื่อนพร้อมกัน · ดับเบิลคลิก = เปิดแก้ไข</span></span>`;
+    return;
+  }
+  const anyGrp = info.sel.some(x => x.a.grp);
+  const fmt = (i) => { const d = dateFromIndex(i); return `${d.getUTCDate()} ${THAI_MONTHS_SHORT[d.getUTCMonth()]} ${String(d.getUTCFullYear() + 543).slice(2)}`; };
+  bar.className = 'gs-bar';
+  bar.innerHTML = `<span class="gs-n"><span><b>${info.sel.length}</b> งานที่เลือก</span><small>${fmt(info.s)} – ${fmt(info.e)}${info.depts > 1 ? ` · ${info.depts} หน่วยงาน` : info.rows > 1 ? ` · ${info.rows} แถว` : ''}</small></span>
+    <span class="gs-sep"></span>
+    <span class="gs-mv" role="group" aria-label="เลื่อนวัน"><button type="button" class="btn" data-d="-7" title="ย้อนหลัง 7 วัน (Shift+←)">−7</button><button type="button" class="btn" data-d="-1" title="ย้อนหลัง 1 วัน (←)">−1</button><span class="gs-mvl">วัน</span><button type="button" class="btn" data-d="1" title="เลื่อนไป 1 วัน (→)">+1</button><button type="button" class="btn" data-d="7" title="เลื่อนไป 7 วัน (Shift+→)">+7</button><button type="button" class="btn" id="gsCustom" aria-haspopup="dialog">ระบุ…</button></span>
+    <span class="gs-sep"></span>
+    <button type="button" class="btn" id="gsAfter" aria-haspopup="menu" title="เพิ่มงานที่เริ่มตั้งแต่งานแรกที่เลือกเป็นต้นไป">${ic('plus', 15, 2.2)}<span>เลือกงานถัดไป</span>${ic('down', 13, 2.2)}</button>
+    <button type="button" class="btn" id="gsGroup" title="จับกลุ่มถาวร: ลากงานใดในกลุ่ม งานอื่นเลื่อนตามเสมอ">${ic('link', 15)}<span>จับกลุ่ม</span></button>
+    ${anyGrp ? `<button type="button" class="btn" id="gsUngroup" title="ยกเลิกการจับกลุ่มของงานที่เลือก">แยกกลุ่ม</button>` : ''}
+    <button type="button" class="btn ibtn" id="gsClear" aria-label="ล้างการเลือก (Esc)" title="ล้างการเลือก (Esc)">${ic('x', 16, 2.2)}</button>`;
+  bar.querySelectorAll('[data-d]').forEach(b => b.onclick = () => gselShift(+b.dataset.d));
+  bar.querySelector('#gsAfter').onclick = (e) => menuPop(e.currentTarget, [
+    { icon: 'lanes', label: 'ในแถวเดียวกัน', fn: () => gselAddAfter('row') },
+    { icon: 'folder', label: 'ในหน่วยงานเดียวกัน', fn: () => gselAddAfter('dept') },
+    { icon: 'grid', label: 'ทั้งโครงการ', fn: () => gselAddAfter('project') }
+  ], { up: true });
+  bar.querySelector('#gsGroup').onclick = gselGroup;
+  const ug = bar.querySelector('#gsUngroup'); if (ug) ug.onclick = gselUngroup;
+  bar.querySelector('#gsClear').onclick = gselClear;
+  bar.querySelector('#gsCustom').onclick = (e) => openPop(e.currentTarget, (pp) => {
+    pp.classList.add('pop-w');
+    pp.innerHTML = `<h3 class="pop-h">เลื่อนงานที่เลือก</h3>
+      <label class="gs-fl">เลื่อนกี่วัน (ติดลบ = ย้อนหลัง)<input type="number" id="gsDays" class="text-input" value="0" step="1" min="-730" max="730"></label>
+      <div class="gs-or">หรือ</div>
+      <label class="gs-fl">ให้งานแรกเริ่มวันที่<input type="date" id="gsDate" class="text-input" value="${dateToInputStr(dateFromIndex(info.s))}"></label>
+      <p class="pop-note" id="gsPrev"></p>
+      <div class="pop-foot"><button type="button" class="btn btn-p" id="gsGo">เลื่อน</button></div>`;
+    const di = pp.querySelector('#gsDays'), dd = pp.querySelector('#gsDate'), pv = pp.querySelector('#gsPrev');
+    const val = () => Math.round(+di.value || 0);
+    const show = () => { const v = val(); pv.textContent = v ? `${info.sel.length} งาน: ${fmt(info.s + v)} – ${fmt(info.e + v)}` : 'ใส่จำนวนวัน หรือเลือกวันเริ่มใหม่'; };
+    di.oninput = () => { dd.value = dateToInputStr(dateFromIndex(info.s + val())); show(); };
+    dd.oninput = () => { const d = inputStrToDate(dd.value); if (d) { di.value = indexFromDate(d) - info.s; show(); } };
+    const go = () => { const v = val(); closePop(); if (v) gselShift(v); };
+    pp.querySelector('#gsGo').onclick = go;
+    di.onkeydown = (ev) => { if (ev.key === 'Enter') go(); };
+    show(); setTimeout(() => di.select(), 0);
+  }, { up: true });
+}
+document.addEventListener('keydown', (e) => {
+  if (!dragMode || !gsel.ids.size || modalOpen || popEl || view.type !== 'project') return;
+  const t = e.target; if (t && (t.closest('input, textarea, select, [contenteditable="true"]'))) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'Escape') { e.preventDefault(); gselClear(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); gselShift((e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 7 : 1)); }
+});
 
 // ==========================================
 // --- หน้าสรุปผู้บริหาร: สไลด์ 16:9 สร้างจากแผนงานจริง · PDF / PNG / PowerPoint · ลิงก์แชร์ ---
