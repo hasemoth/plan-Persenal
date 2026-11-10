@@ -642,6 +642,34 @@ body.cal-drag-on, body.cal-drag-on * { cursor: grabbing !important; user-select:
 .cal-only:hover { color: var(--indigo-deep); text-decoration: underline; }
 @media (max-width: 900px) { .cal-layout { flex-direction: column; } .cal-side { width: 100%; position: static; } .cal-li { grid-template-columns: 90px 12px 1fr; } .cal-li small { display: none; } }
 
+.prep-box { margin: 12px 0 4px; border: 1px solid #C7D2FE; background: #F7F7FF; border-radius: 12px; padding: 10px 12px; }
+.prep-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.prep-h b { color: var(--indigo-deep, #241C4D); font-size: 14px; }
+.prep-h span { font-size: 12px; color: var(--ink-soft); }
+.prep-hint { font-size: 11.5px; color: var(--ink-soft); margin: 2px 0 8px; line-height: 1.5; }
+.prep-sep { font-size: 11.5px; font-weight: 600; color: var(--ink-soft); margin: 6px 0 4px; display: flex; align-items: center; gap: 6px; }
+.prep-sep::after { content: ''; flex: 1; border-top: 1px dashed #C7CBE0; }
+.prep-anchor { background: #241C4D; color: #fff; border-radius: 8px; padding: 5px 10px; font-weight: 600; font-size: 12.5px; margin: 6px 0; }
+.prep-row { background: #fff; border: 1px solid #E3E6EE; border-radius: 9px; padding: 6px 8px; margin-bottom: 6px; display: grid; grid-template-columns: 20px minmax(0,1fr) 120px 26px; gap: 6px 8px; align-items: center; }
+.prep-row.today { border-color: #F59E0B; background: #FFFBEB; }
+.prep-row.late { border-color: #F87171; background: #FEF2F2; }
+.prep-row.done .prep-t { text-decoration: line-through; color: var(--ink-soft); }
+.prep-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+.prep-row .prep-t, .prep-row .prep-who { border: 1px solid #DCE0E8; border-radius: 7px; padding: 5px 8px; font: inherit; font-size: 13px; min-width: 0; }
+.prep-row .prep-x { border: none; background: none; color: #9CA3AF; cursor: pointer; font-size: 15px; }
+.prep-row .prep-x:hover { color: #DC2626; }
+.prep-when { grid-column: 2 / 5; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12.5px; }
+.prep-when select, .prep-when input { border: 1px solid #DCE0E8; border-radius: 7px; padding: 3px 6px; font: inherit; font-size: 12.5px; background: #fff; }
+.prep-when .prep-n { width: 52px; }
+.prep-calc { font-weight: 600; color: #4338CA; }
+.prep-calc.late { color: #B91C1C; } .prep-calc.today { color: #92400E; }
+.prep-add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.prep-add button, .prep-add select { border: 1px dashed #A5A3E8; border-radius: 8px; padding: 5px 10px; color: #4338CA; font: inherit; font-weight: 600; font-size: 12.5px; background: #fff; cursor: pointer; }
+.prep-pin { position: absolute; bottom: 2px; height: 16px; min-width: 16px; padding: 0 5px; border-radius: 8px; background: #fff; border: 1.5px solid #F59E0B; color: #92400E; font-size: 10.5px; font-weight: 600; line-height: 13px; white-space: nowrap; cursor: pointer; z-index: 3; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+.prep-pin.late { border-color: #EF4444; color: #B91C1C; background: #FEF2F2; }
+.prep-pin.done { border-color: #30A46C; color: #166534; opacity: .75; }
+.prep-pin:hover { z-index: 6; max-width: none; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.td-prep-link { font-size: 11.5px; color: #4338CA; background: #EEF2FF; border-radius: 6px; padding: 2px 7px; display: inline-block; margin: 2px 0 4px; }
 .fu-box { margin-top: 10px; border: 1px solid #DDD6FE; background: #FAF8FF; border-radius: 10px; padding: 8px 10px; }
 .fu-toggle { display: flex; gap: 8px; align-items: center; font-weight: 600; color: #5B21B6; cursor: pointer; font-size: 13px; }
 .fu-toggle input { width: 16px; height: 16px; }
@@ -4235,7 +4263,10 @@ function calCollect(projects, rowOk, flt) {
       if (isHid(d)) return;
       (d.rows || []).forEach(r => {
         if (isHid(r) || (rowOk && !rowOk(p, d, r))) return;
-        (r.activities || []).forEach(a => { if (pass(a)) mk(a, p, d, r, false); });
+        (r.activities || []).forEach(a => {
+          if (pass(a)) mk(a, p, d, r, false);
+          if (a.prep && a.prep.length && (!types || types.task)) prepEntries(a).forEach(x => { if (!pass(x)) return; mk(x, p, d, r, false); const it = items[items.length - 1]; it.prep = true; it.label = '📌 ' + it.label; it.title += `\n🔗 ${x._prep.it.rel && x._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'}: ${a.label || ''} (${prepAnchorText(a)}) · ${prepRelText(x._prep.it)}${x._prep.it.who ? '\n👤 ' + x._prep.it.who : ''}`; });
+        });
       });
     });
     if (showExtra) (p.extraTasks || []).forEach(a => { if (pass(a)) mk(a, p, null, null, true); });
@@ -4266,6 +4297,7 @@ function calHolidayItems(s, e) {
 // ---------- หาออบเจกต์จริง (ข้อมูลอาจถูกโหลดใหม่ระหว่างนี้) ----------
 function calLiveAct(it) {
   if (it.plan) return null;
+  if (it.prep) { const ref = prepParseId(it.a.id), row = ref && findLiveRow(it.p.id, it.d.id, it.r.id); const pa = row && row.activities.find(x => x.id === ref.aid); const pi = pa && (pa.prep || []).find(x => x.id === ref.pid); return pi ? prepProxy(pa, pi) : null; }
   const lp = state.projects.find(x => x.id === it.p.id); if (!lp) return null;
   if (it.extra) return (lp.extraTasks || []).find(x => x.id === it.a.id) || null;
   const row = findLiveRow(it.p.id, it.d.id, it.r.id); return row ? row.activities.find(x => x.id === it.a.id) || null : null;
@@ -5083,6 +5115,20 @@ function appendRowBars(track, row, colw, rStart, rEnd, totalWidth, project, dept
     }
     track.appendChild(bar);
   });
+  // งานเตรียมการ: หมุดเล็กที่วันกำหนดเสร็จ (คลิก = เปิดกิจกรรมหลัก)
+  const tdy = todayBangkokIndex();
+  row.activities.forEach(a => (a.prep || []).forEach(it => {
+    if (!(it.text || '').trim()) return;
+    const day = prepDay(a, it); if (day < rStart || day > rEnd) return;
+    const pin = document.createElement('div');
+    pin.className = 'prep-pin' + (it.done ? ' done' : day < tdy ? ' late' : '');
+    pin.style.left = ((day - rStart) * colw + 1) + 'px';
+    pin.textContent = (it.done ? '✓ ' : '📌 ') + (colw >= 40 ? it.text : '');
+    pin.title = `📌 ${it.text}\nกำหนดเสร็จ ${formatDateThai(dateFromIndex(day))} (${prepRelText(it)})\nเตรียมสำหรับ: ${a.label || ''} · ${prepAnchorText(a)}${it.who ? '\nผู้รับผิดชอบ: ' + it.who : ''}${it.done ? '\n✔ เสร็จแล้ว' : day < tdy ? '\n⚠ เลยกำหนด' : ''}`;
+    pin.addEventListener('mousedown', (e) => e.stopPropagation());
+    pin.addEventListener('click', (e) => { e.stopPropagation(); const pp = ctxP || project, dd = ctxD || dept; if (pp && dd) openActivityModal(pp.id, dd.id, row.id, 'prep:' + a.id + ':' + it.id); });
+    track.appendChild(pin);
+  }));
 }
 
 let ovPopEl = null, ovPopTimer = null;
@@ -5664,6 +5710,7 @@ function findLiveRow(projectId, deptId, rowId) {
 }
 
 function openActivityModal(projectId, deptId, rowId, actId, preset) {
+  const prepRef = prepParseId(actId); if (prepRef) actId = prepRef.aid;   // เปิดจากงานเตรียมการ → เปิดกิจกรรมหลัก
   const p = state.projects.find(x => x.id === projectId), d = p.departments.find(x => x.id === deptId), r = d.rows.find(x => x.id === rowId);
   const existing = actId ? r.activities.find(a => a.id === actId) : null;
   modalOpen = true; const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
@@ -5720,6 +5767,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     </div>
     <div id="recurHome">${recurFormHTML(existing)}</div>
 
+    <div id="prepHome"></div>
     <label class="field-label" style="margin-top:10px;">สีกิจกรรม</label>
     <div class="color-picker" id="colorPicker"></div>
     <div class="modal-actions" id="modalActions"></div>
@@ -5760,6 +5808,8 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
   });
   initMeetingForm(modal, existing);
   const recur = initRecurForm(modal, existing);
+  const prepForm = initPrepForm(modal, existing);
+  if (prepRef) setTimeout(() => prepForm.focus(prepRef.pid), 60);
   if (!existing && preset && preset.type && preset.type !== 'note') { const ts = modal.querySelector('#actType'); ts.value = preset.type; ts.dispatchEvent(new Event('change')); }
   
   let currentDuration = existing ? (existing.end - existing.start) : 0;
@@ -5806,6 +5856,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
       const done = await saveRecurring({ modal, overlay, liveRow, existing, rule, sIdx, eIdx, label, type, completed, remark, color: chosenColor });
       if (done && ppLink && ppLink.sel) { const lr = findLiveRow(projectId, deptId, rowId) || liveRow; lr.activities.forEach(a => { if (!ppBefore.has(a.id) || (existing && existing.seriesId && a.seriesId === existing.seriesId) || (existing && a.id === existing.id)) ppApplyLink(a); }); }
       if (done && existing) exApplyActFields(liveRow.activities.find(a => a.id === existing.id), modal);
+      if (done && existing) prepApply((findLiveRow(projectId, deptId, rowId) || liveRow).activities.find(a => a.id === existing.id), prepForm);
       if (done) { closeModal(overlay); await persistAndRender(); }
       return;
     }
@@ -5815,6 +5866,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     applyMeetingFields(target || liveRow.activities[liveRow.activities.length - 1], modal, type);
     exApplyActFields(target || liveRow.activities[liveRow.activities.length - 1], modal);
     ppApplyLink(target || liveRow.activities[liveRow.activities.length - 1]);
+    prepApply(target || liveRow.activities[liveRow.activities.length - 1], prepForm);
     closeModal(overlay); await persistAndRender();
   };
   actions.appendChild(saveBtn);
@@ -6086,6 +6138,7 @@ function collectTasks(categoryFilter) {
     if (categoryFilter && cat !== categoryFilter) return;
     (p.departments || []).forEach(d => (d.rows || []).forEach(r => (r.activities || []).forEach(a => {
       if (a.type === 'task') out.push({ a, p, d, r });
+      if (a.prep && a.prep.length) prepEntries(a).forEach(x => out.push({ a: x, p, d, r, prep: a }));
     })));
   });
   return out;
@@ -6143,7 +6196,7 @@ function buildWatchPanel(categoryFilter) {
     else if (watchTab === 'soon') badge = `<span class="wi-badge b-blue">อีก ${a.start - today} วัน</span>`;
     else badge = `<span class="wi-badge b-green">เสร็จแล้ว</span>`;
     const row = document.createElement('div'); row.className = 'watch-item'; row.title = 'คลิกเพื่อเปิดงานนี้';
-    row.innerHTML = `<div class="wi-main"><div class="wi-name">${escapeHTML(a.label)}</div><div class="wi-path">${escapeHTML(p.name)} › ${escapeHTML(d.name)} › ${escapeHTML(r.name)}${a.updatedBy ? ' · แก้ล่าสุดโดย ' + escapeHTML(a.updatedBy) : ''}</div></div>
+    row.innerHTML = `<div class="wi-main"><div class="wi-name">${a._prep ? '📌 ' : ''}${escapeHTML(a.label)}${a._prep ? ` <span style="font-weight:400;color:var(--ink-soft);font-size:12px">· เตรียมสำหรับ ${escapeHTML(a._prep.a.label || '')} (${prepAnchorText(a._prep.a)})</span>` : ''}</div><div class="wi-path">${escapeHTML(p.name)} › ${escapeHTML(d.name)} › ${escapeHTML(r.name)}${a.updatedBy ? ' · แก้ล่าสุดโดย ' + escapeHTML(a.updatedBy) : ''}</div></div>
       <span class="wi-date">${formatDateThai(dateFromIndex(a.start))} – ${formatDateThai(dateFromIndex(a.end))}</span>${badge}`;
     if (watchTab !== 'done') {
       const doneBtn = document.createElement('button'); doneBtn.type = 'button'; doneBtn.className = 'wi-done'; doneBtn.textContent = '✓ เสร็จแล้ว';
@@ -6907,6 +6960,147 @@ function tdProjList() {
   return state.projects.map(p => ({ p, tasks: all.filter(x => x.p.id === p.id) }));
 }
 
+// ---- งานเตรียมการ / งานหลังกิจกรรม: รายการย่อยที่มีวันกำหนดเสร็จของตัวเอง ----
+// a.prep = [{ id, text, done, doneAt, doneBy, who, rel: { n, dir: -1 ก่อน | 1 หลัง, unit: 'wd' วันทำการ | 'd' วัน } | null, day (ใช้เมื่อ rel = null) }]
+// rel: ผูกกับวันของกิจกรรม (ก่อน = นับจากวันเริ่ม, หลัง = นับจากวันสิ้นสุด) → เลื่อนกิจกรรมแล้ววันกำหนดเลื่อนตามเอง
+const PREP_TPL = [
+  { name: 'ประชุมคณะกรรมการ', items: [['จองห้องประชุม', 4, -1], ['ส่งหนังสือเชิญ', 3, -1], ['ส่งเอกสารประกอบการประชุม', 2, -1], ['ร่างรายงานการประชุม', 5, 1]] },
+  { name: 'ประชุมทั่วไป', items: [['ส่งหนังสือเชิญ', 3, -1], ['ร่างรายงานการประชุม', 3, 1]] },
+  { name: 'ลงพื้นที่', items: [['ขออนุมัติเดินทาง', 7, -1], ['แจ้งหน่วยงานที่จะไป', 5, -1], ['รายงานผลการลงพื้นที่', 3, 1]] },
+  { name: 'ส่งหนังสือ / รอตอบกลับ', items: [['ร่างหนังสือเสนอลงนาม', 2, -1]] }
+];
+function isWorkday(i) { const g = dateFromIndex(i).getUTCDay(); return g !== 0 && g !== 6 && !calHoliday(i); }
+function wdShift(idx, n, dir, unit) {
+  n = Math.max(0, Math.round(Number(n) || 0)); dir = dir < 0 ? -1 : 1;
+  if (unit === 'd') return idx + dir * n;
+  let i = idx, k = 0, guard = 0;
+  while (k < n && guard++ < 400) { i += dir; if (isWorkday(i)) k++; }
+  return i;
+}
+function prepDay(a, it) {
+  if (it && it.rel) return wdShift(it.rel.dir < 0 ? a.start : a.end, it.rel.n, it.rel.dir, it.rel.unit);
+  return it && typeof it.day === 'number' ? it.day : a.start;
+}
+function prepRelText(it) { return it.rel ? `${it.rel.dir < 0 ? 'ก่อน' : 'หลัง'} ${it.rel.n} ${it.rel.unit === 'd' ? 'วัน' : 'วันทำการ'}` : 'วันที่แน่นอน'; }
+// ตัวแทนของงานเตรียมการ ให้หน้า To-do / งานที่ต้องจับตา / ปฏิทิน ใช้เหมือน "กำหนดการ" ทั่วไป (อ่าน/เขียนลงรายการจริง)
+function prepProxy(a, it) {
+  const M = { label: 'text', completed: 'done', completedAt: 'doneAt', completedBy: 'doneBy', followUp: 'fu', updatedBy: 'updatedBy', updatedAt: 'updatedAt' };
+  const fixed = { type: 'task', allDay: true };
+  return new Proxy({}, {
+    get(t, k) {
+      if (k === 'id') return 'prep:' + a.id + ':' + it.id;
+      if (k === 'start' || k === 'end') return prepDay(a, it);
+      if (k === 'color') return a.color;
+      if (k === 'checklist') return [];
+      if (k === '_prep') return { a, it };
+      if (k in fixed) return fixed[k];
+      if (k in M) return k === 'completed' ? !!it.done : it[M[k]];
+      return undefined;
+    },
+    set(t, k, v) {
+      if (k in M) { it[M[k]] = v; if (k === 'updatedAt') { a.updatedAt = v; a.updatedBy = it.updatedBy || USER_NAME; } }
+      else if ((k === 'start' || k === 'end') && !it.rel && typeof v === 'number') it.day = v;
+      return true;
+    },
+    deleteProperty(t, k) { if (k in M) delete it[M[k]]; return true; },
+    has(t, k) { return k in M || k in fixed || ['id', 'start', 'end', 'color', 'checklist', '_prep'].includes(k); }
+  });
+}
+function prepEntries(a) { return (a.prep || []).filter(it => it && (it.text || '').trim()).map(it => prepProxy(a, it)); }
+function prepParseId(id) { const m = /^prep:([^:]+):(.+)$/.exec(String(id || '')); return m ? { aid: m[1], pid: m[2] } : null; }
+function prepAnchorText(a) { const s = calShortDate(a.start); return s + (a.end !== a.start ? '–' + calShortDate(a.end) : ''); }
+
+// ฟอร์ม "งานเตรียมการ" ในหน้าต่างกิจกรรม
+function initPrepForm(modal, existing) {
+  const W = clone((existing && existing.prep) || []);
+  const box = modal.querySelector('#prepHome'); if (!box) return { get: () => W };
+  const today = todayBangkokIndex();
+  const anchor = () => {
+    let s = indexFromDate(inputStrToDate(modal.querySelector('#actStart').value)), e = indexFromDate(inputStrToDate(modal.querySelector('#actEnd').value));
+    if (!(e >= s)) e = s; return { start: s, end: e, id: 'tmp' };
+  };
+  const users = [...new Set([...(todo.users || []), USER_NAME].filter(Boolean))];
+  const typeName = () => { const t = modal.querySelector('#actType').value; return t === 'meeting' ? 'ประชุม/นัดหมาย' : t === 'task' ? 'วันกำหนด' : 'กิจกรรม'; };
+  const calcHTML = (it) => {
+    const d = prepDay(anchor(), it), dt = dateFromIndex(d);
+    const cls = it.done ? '' : d < today ? ' late' : d === today ? ' today' : '';
+    const tail = it.done ? ' · ✔ เสร็จแล้ว' : d < today ? ` · เลย ${today - d} วัน` : d === today ? ' · ครบกำหนดวันนี้' : '';
+    return `<span class="prep-calc${cls}">= ${THAI_WEEKDAY_SHORT[dt.getUTCDay()]}. ${calShortDate(d)} ${String(dt.getUTCFullYear() + 543).slice(2)}${tail}</span>`;
+  };
+  const rowCls = (it) => { const d = prepDay(anchor(), it); return 'prep-row' + (it.done ? ' done' : d < today ? ' late' : d === today ? ' today' : ''); };
+  const rowHTML = (it, i) => {
+    const mode = it.rel ? (it.rel.dir < 0 ? 'b' : 'a') : 'f';
+    return `<div class="${rowCls(it)}" data-i="${i}">
+      <input type="checkbox" class="prep-done" ${it.done ? 'checked' : ''} ${READ_ONLY ? 'disabled' : ''} title="ติ๊กเมื่อเสร็จ" aria-label="เสร็จแล้ว">
+      <input type="text" class="prep-t" value="${escapeHTML(it.text || '')}" placeholder="เช่น ส่งหนังสือเชิญ" aria-label="ชื่องานเตรียมการ">
+      <input type="text" class="prep-who" list="prepUsers" value="${escapeHTML(it.who || '')}" placeholder="ผู้รับผิดชอบ" aria-label="ผู้รับผิดชอบ">
+      <button type="button" class="prep-x" title="ลบรายการนี้" aria-label="ลบ">✕</button>
+      <div class="prep-when">กำหนดเสร็จ
+        <select class="prep-mode" aria-label="วิธีกำหนดวัน"><option value="b" ${mode === 'b' ? 'selected' : ''}>ก่อน${typeName()}</option><option value="a" ${mode === 'a' ? 'selected' : ''}>หลัง${typeName()}</option><option value="f" ${mode === 'f' ? 'selected' : ''}>วันที่แน่นอน</option></select>
+        ${it.rel ? `<input type="number" min="0" max="120" class="prep-n" value="${it.rel.n}" aria-label="จำนวนวัน"><select class="prep-u" aria-label="หน่วย"><option value="wd" ${it.rel.unit !== 'd' ? 'selected' : ''}>วันทำการ</option><option value="d" ${it.rel.unit === 'd' ? 'selected' : ''}>วัน</option></select>`
+                 : `<input type="date" class="prep-d" value="${dateToInputStr(dateFromIndex(prepDay(anchor(), it)))}" aria-label="วันที่กำหนดเสร็จ">`}
+        ${calcHTML(it)}
+      </div></div>`;
+  };
+  const draw = () => {
+    const A = anchor();
+    const order = W.map((it, i) => ({ it, i, d: prepDay(A, it) })).sort((x, y) => x.d - y.d || x.i - y.i);
+    const before = order.filter(x => x.d < A.start || (x.it.rel && x.it.rel.dir < 0)), after = order.filter(x => !before.includes(x));
+    const n = W.filter(x => (x.text || '').trim()).length, k = W.filter(x => x.done && (x.text || '').trim()).length;
+    box.innerHTML = `<div class="prep-box">
+      <div class="prep-h"><b>✅ งานเตรียมการ / งานหลังกิจกรรม</b><span>${n ? `${n} ข้อ · เสร็จ ${k}` : ''}</span></div>
+      <div class="prep-hint">เช่น หนังสือเชิญต้องเสร็จก่อนวันประชุม · แต่ละข้อมีวันกำหนดเสร็จของตัวเอง และขึ้นเป็นงานแยกใน To-do · งานที่ต้องจับตา · ไทม์ไลน์ · ปฏิทิน · แบบ "ก่อน/หลัง" จะเลื่อนตามเมื่อเลื่อนกิจกรรม</div>
+      ${W.length ? `${before.length ? '<div class="prep-sep">ก่อน</div>' + before.map(x => rowHTML(x.it, x.i)).join('') : ''}
+      <div class="prep-anchor">📍 ${escapeHTML(typeName())} · ${prepAnchorText(A)}</div>
+      ${after.length ? '<div class="prep-sep">หลัง</div>' + after.map(x => rowHTML(x.it, x.i)).join('') : ''}` : ''}
+      ${READ_ONLY ? '' : `<div class="prep-add"><button type="button" class="prep-new">+ เพิ่มงานเตรียมการ</button>
+        <select class="prep-tpl" aria-label="ชุดสำเร็จรูป"><option value="">📋 ใช้ชุดสำเร็จรูป…</option>${PREP_TPL.map((t, i) => `<option value="${i}">${escapeHTML(t.name)} (${t.items.length} ข้อ)</option>`).join('')}</select></div>`}
+      <datalist id="prepUsers">${users.map(u => `<option value="${escapeHTML(u)}">`).join('')}</datalist></div>`;
+    box.querySelectorAll('.prep-row').forEach(rowEl => {
+      const it = W[+rowEl.dataset.i], q = (c) => rowEl.querySelector(c);
+      const refresh = () => { rowEl.className = rowCls(it); const c = q('.prep-calc'); if (c) c.outerHTML = calcHTML(it); };
+      q('.prep-t').oninput = (e) => { it.text = e.target.value; };
+      q('.prep-who').oninput = (e) => { it.who = e.target.value.trim(); if (!it.who) delete it.who; };
+      q('.prep-done').onchange = (e) => { it.done = e.target.checked; if (it.done) { it.doneAt = Date.now(); it.doneBy = USER_NAME; } else { delete it.doneAt; delete it.doneBy; } refresh(); };
+      q('.prep-x').onclick = () => { W.splice(+rowEl.dataset.i, 1); draw(); };
+      q('.prep-mode').onchange = (e) => {
+        const v = e.target.value, cur = prepDay(anchor(), it);
+        if (v === 'f') { it.rel = null; it.day = cur; }
+        else { const dir = v === 'b' ? -1 : 1, u = (it.rel && it.rel.unit) || 'wd', base = dir < 0 ? anchor().start : anchor().end;
+          let n = 0; while (n < 120 && (dir < 0 ? wdShift(base, n, dir, u) > cur : wdShift(base, n, dir, u) < cur)) n++;
+          it.rel = { n: it.rel ? it.rel.n : n, dir, unit: u }; delete it.day; }
+        draw();
+      };
+      const nIn = q('.prep-n'), uIn = q('.prep-u'), dIn = q('.prep-d');
+      if (nIn) nIn.oninput = () => { it.rel.n = Math.max(0, Math.min(120, parseInt(nIn.value, 10) || 0)); refresh(); };
+      if (uIn) uIn.onchange = () => { it.rel.unit = uIn.value; refresh(); };
+      if (dIn) dIn.onchange = () => { const d = inputStrToDate(dIn.value); if (d) { it.day = indexFromDate(d); refresh(); } };
+    });
+    const nb = box.querySelector('.prep-new');
+    if (nb) nb.onclick = () => { W.push({ id: uid('prp'), text: '', rel: { n: 3, dir: -1, unit: 'wd' } }); draw(); const ins = box.querySelectorAll('.prep-t'); const last = [...ins].find(x => x.closest('.prep-row').dataset.i == W.length - 1); if (last) last.focus(); };
+    const tp = box.querySelector('.prep-tpl');
+    if (tp) tp.onchange = () => {
+      const t = PREP_TPL[+tp.value]; if (!t) return;
+      const have = new Set(W.map(x => (x.text || '').trim()));
+      t.items.forEach(([text, n, dir]) => { if (!have.has(text)) W.push({ id: uid('prp'), text, rel: { n, dir, unit: 'wd' } }); });
+      draw();
+    };
+  };
+  const later = () => setTimeout(draw, 0);
+  ['#actStart', '#actEnd'].forEach(sel => { const el = modal.querySelector(sel); el.addEventListener('input', later); el.addEventListener('change', later); });
+  modal.querySelector('#actType').addEventListener('change', later);
+  draw();
+  return {
+    get: () => W.filter(x => (x.text || '').trim()).map(x => { const o = { ...x, text: x.text.trim() }; if (o.rel) delete o.day; else delete o.rel; return o; }),
+    focus: (pid) => { const i = W.findIndex(x => x.id === pid); const el = box.querySelector(`.prep-row[data-i="${i}"]`); if (el) { el.scrollIntoView({ block: 'center' }); el.querySelector('.prep-t').focus(); } }
+  };
+}
+function prepApply(a, prepForm) {
+  if (!a || !prepForm) return;
+  const list = prepForm.get();
+  if (list.length) a.prep = list; else delete a.prep;
+}
+
 // ---- ติดตามผล: ส่งหนังสือ/ทำเสร็จแล้ว แต่ยังรอเขาส่งข้อมูลกลับ ----
 // a.followUp = { from, due(index), received, receivedAt, receivedBy }
 function fuWaiting(a) { return !!(a && a.completed && a.followUp && !a.followUp.received); }
@@ -7107,6 +7301,7 @@ function tdLocText(pid, did, rid) {
 
 // ---------- หน้าต่างการ์ดของงานจากแผนงาน: แก้ชื่อ / วันที่ / รายการย่อย (Template) ----------
 function tdOpenProjCard(pid, did, rid, aid) {
+  if (prepParseId(aid) && did) { openActivityModal(pid, did, rid, aid); return; }
   const isExtra = !did;
   const findA = () => {
     if (isExtra) { const lp = state.projects.find(x => x.id === pid); return lp ? (lp.extraTasks || []).find(x => x.id === aid) || null : null; }
@@ -7887,7 +8082,7 @@ function renderProjTodo(pid) {
       const key = 'proj-' + pid + '-' + col.key;
       const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
       if (!col.items.length) ul.innerHTML = col.key === 'wait' ? '<div style="font-size:11.5px; color:var(--ink-soft); padding:6px 4px; line-height:1.5;">— ไม่มีงานที่รอตอบกลับ —<br>งานที่ส่งหนังสือแล้วแต่ต้องรอข้อมูลกลับ: เปิดการ์ด → ติ๊ก "📮 ต้องติดตามผล" หรือกด "📮 รอตอบกลับ" หลังติ๊กเสร็จ</div>' : '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
-      shown.forEach(({ a, d, r, extra }) => {
+      shown.forEach(({ a, d, r, extra, prep }) => {
         const cl = a.checklist || [], clDone = cl.filter(i => i.done).length, exp = cl.length && todo.expanded.has(a.id);
         const isWait = col.key === 'wait', fu = a.followUp;
         const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '') + (isWait ? ' fu-card' : '');
@@ -7907,11 +8102,13 @@ function renderProjTodo(pid) {
         else badge = `<span class="td-b">อีก ${a.start - today} วันเริ่ม</span>`;
         if (!col.isDone && !isWait && fu) badge += '<span class="td-b fu-plan" title="เมื่อติ๊กเสร็จ จะไปรอติดตามผล">📮 ติดตามผลต่อ</span>';
         const tickTitle = isWait ? 'ติ๊กเมื่อได้รับข้อมูลกลับแล้ว → ย้ายไป "เสร็จแล้ว"' : col.isDone ? (fu && fu.received ? 'เอาติ๊กออก = กลับไปรอติดตามผล' : 'เอาติ๊กออก = กลับเป็นงานค้าง') : (fu ? 'ติ๊กเมื่อทำเสร็จ → ไปรอติดตามผล' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)');
-        card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${tickTitle}" aria-label="${isWait ? 'ได้รับข้อมูลแล้ว' : col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : isWait ? '📬' : ''}</button><span>${escapeHTML(a.label)}</span></div>
+        card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${tickTitle}" aria-label="${isWait ? 'ได้รับข้อมูลแล้ว' : col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : isWait ? '📬' : ''}</button><span>${prep ? '📌 ' : ''}${escapeHTML(a.label)}</span></div>
           <div class="td-path">${extra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}</div>
+          ${prep ? `<div class="td-prep-link" title="${escapeHTML(prepRelText(a._prep.it))}">🔗 ${a._prep.it.rel && a._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'}: ${escapeHTML(prep.label || '')} · ${prepAnchorText(prep)}</div>` : ''}
           ${isWait && fu.from ? `<div class="td-fu-from">⏳ รอข้อมูลจาก <b>${escapeHTML(fu.from)}</b></div>` : ''}
           <div class="td-badges"><span class="td-b" title="ช่วงวันที่ในแผนงาน">🗓 ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.start))))}${a.end !== a.start ? ' – ' + escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.end)))) : ''}</span>${badge}
           ${cl.length ? `<button type="button" class="td-b td-clbtn ${clDone === cl.length ? 'cl-done' : ''}" title="${exp ? 'ซ่อนรายการย่อย' : 'ดู/ติ๊กรายการย่อยบนการ์ด'}">☑ ${clDone}/${cl.length} ${exp ? '▴' : '▾'}</button>` : ''}
+          ${prep && !col.isDone && a._prep.it.who ? `<span class="td-avs" title="ผู้รับผิดชอบ: ${escapeHTML(a._prep.it.who)}"><span class="td-av" style="background:${tdAvColor(a._prep.it.who)}">${escapeHTML(tdInitial(a._prep.it.who))}</span></span>` : ''}
           ${col.isDone && a.completedBy ? `<span class="td-avs" title="ติ๊กเสร็จโดย ${escapeHTML(a.completedBy)}"><span class="td-av" style="background:${tdAvColor(a.completedBy)}">${escapeHTML(tdInitial(a.completedBy))}</span></span>` : ''}</div>
           ${exp ? `<div class="td-cl-inline">${cl.map((it, i) => `<label class="${it.done ? 'done' : ''}"><input type="checkbox" data-i="${i}" ${it.done ? 'checked' : ''} ${edit ? '' : 'disabled'}><span>${escapeHTML(it.text)}</span></label>`).join('')}</div>` : ''}
           ${cl.length && !col.isDone ? `<div class="td-prog"><i style="width:${Math.round(clDone / cl.length * 100)}%"></i></div>` : ''}`;
