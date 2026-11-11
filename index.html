@@ -438,6 +438,14 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .dp-rep { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
 .dp-prev { margin-top: 10px; background: #F7F7FF; border: 1px solid #E0E7FF; border-radius: 8px; padding: 8px 10px; font-size: 12.5px; max-height: 170px; overflow: auto; }
 .dp-prev ul { margin: 4px 0 0; padding-left: 18px; } .dp-prev li { margin-bottom: 3px; }
+.pp-stseg { display: flex; gap: 6px; margin: 4px 0 10px; }
+.pp-stseg label { flex: 1; cursor: pointer; }
+.pp-stseg input { position: absolute; opacity: 0; pointer-events: none; }
+.pp-stseg span { display: block; text-align: center; border: 1.5px solid #DCE0E8; border-radius: 9px; padding: 8px 6px; font-weight: 600; font-size: 13px; color: #4A5773; background: #fff; white-space: nowrap; }
+.pp-stseg input:focus-visible + span { outline: 2px solid #4F46E5; outline-offset: 2px; }
+.pp-stseg .st-todo input:checked + span { border-color: #94A3B8; background: #F1F5F9; color: #334155; }
+.pp-stseg .st-wip input:checked + span { border-color: #3E63DD; background: #EEF2FF; color: #3730A3; }
+.pp-stseg .st-done input:checked + span { border-color: #30A46C; background: #DCFCE7; color: #166534; }
 .td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
 .td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
 .td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
@@ -10100,7 +10108,8 @@ function ppRow(plan, r, i, g) {
   const pct = Math.round(C.pct);
   let st = '';
   if (C.leaf) {
-    if (C.st === 'late') st = `<span class="gp-pill gp-p-late">เลยกำหนด ${C.lateMax} วัน</span>`;
+    if (C.st === 'late') st = `${t.wip ? '<span class="gp-pill gp-p-wip">▶ กำลังดำเนินการ</span> ' : ''}<span class="gp-pill gp-p-late">${t.wip ? 'เลย' : 'เลยกำหนด'} ${C.lateMax} วัน</span>`;
+    else if (t.wip && C.st !== 'done') st = `<span class="gp-pill gp-p-wip">▶ กำลังดำเนินการ</span>`;
     else if (C.st === 'done') st = `<span class="gp-pill gp-p-done">✓ เสร็จแล้ว${t.doneAt != null ? ' ' + gpFmt(t.doneAt) : ''}</span>`;
     else st = `<span class="gp-pill ${PP_ST[C.st][1]}">${PP_ST[C.st][0]}</span>`;
     if (ppIsStale(plan, g.ix, t, g.today)) st += `<span class="pp-stale" title="ยังไม่อัปเดต % รอบนี้ (ภายในวันที่ 5 ของทุกเดือน)">⏰</span>`;
@@ -10422,7 +10431,8 @@ function ppDonePop(anchor, pid, tid) {
     const usePct = m === 'durpct' && t.kind !== 'ms';
     const u = t.units && +t.units.of > 0 ? t.units : null;
     p.innerHTML = `<h3 class="pop-h">${escapeHTML(wb[tid] + ' ' + t.name)}</h3>
-      <label class="pp-ckbig"><input type="checkbox" id="ppDone" ${t.done ? 'checked' : ''} ${ed ? '' : 'disabled'}><span>เสร็จแล้ว ✓</span></label>
+      <div class="pp-stseg" role="radiogroup" aria-label="สถานะ">${[['todo', 'ยังไม่เริ่ม'], ['wip', '▶ กำลังดำเนินการ'], ['done', '✓ เสร็จแล้ว']].map(([v, l]) => `<label class="st-${v}"><input type="radio" name="ppSt" value="${v}" ${(t.done ? 'done' : t.wip ? 'wip' : 'todo') === v ? 'checked' : ''} ${ed ? '' : 'disabled'}><span>${l}</span></label>`).join('')}</div>
+      <input type="checkbox" id="ppDone" hidden ${t.done ? 'checked' : ''}>
       <div id="ppDAtW" ${t.done ? '' : 'hidden'}><label class="gp-fl" for="ppDAt">วันที่เสร็จจริง</label>${dIn(t.doneAt != null ? t.doneAt : Math.min(today, Math.max(t.start, today)))}</div>
       ${usePct ? `<div id="ppPctW" ${t.done ? 'hidden' : ''}>${u ? `<label class="gp-fl" for="ppUn">ผลงานที่ได้รับอนุมัติแล้ว</label><div class="pp-un"><input type="number" id="ppUn" class="text-input" min="0" max="${+u.of}" value="${+u.n || 0}" ${ed ? '' : 'disabled'}><span>/ ${+u.of} ${escapeHTML(u.u || 'หน่วย')} = <b id="ppUnP">${Math.round(Math.min(+u.n || 0, +u.of) / +u.of * 100)}%</b></span></div>`
         : `<label class="gp-fl">ความคืบหน้า (%)</label><div class="gp-pcs">${[0, 25, 50, 75].map(v => `<button type="button" data-v="${v}" aria-pressed="${(t.pct || 0) === v}" ${ed ? '' : 'disabled'}>${v}</button>`).join('')}<input type="number" id="ppPct" class="text-input" min="0" max="99" value="${Math.min(99, t.pct || 0)}" aria-label="ความคืบหน้า (%)" ${ed ? '' : 'disabled'}></div>`}
@@ -10430,6 +10440,8 @@ function ppDonePop(anchor, pid, tid) {
       ${ed ? '<div class="pp-dp-acts"><span class="tb-sp"></span><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok>บันทึก</button></div>' : ''}`;
     const D = p.querySelector('#ppDone'), DW = p.querySelector('#ppDAtW'), PW = p.querySelector('#ppPctW');
     D.onchange = () => { DW.hidden = !D.checked; if (PW) PW.hidden = D.checked; };
+    const stv = () => (p.querySelector('input[name="ppSt"]:checked') || {}).value || 'todo';
+    p.querySelectorAll('input[name="ppSt"]').forEach(rb => rb.onchange = () => { D.checked = stv() === 'done'; D.onchange(); });
     const P = p.querySelector('#ppPct');
     p.querySelectorAll('.gp-pcs [data-v]').forEach(b => b.onclick = () => { P.value = b.dataset.v; p.querySelectorAll('.gp-pcs [data-v]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); });
     const UN = p.querySelector('#ppUn'); if (UN) UN.oninput = () => { p.querySelector('#ppUnP').textContent = Math.round(Math.min(+UN.value || 0, +u.of) / +u.of * 100) + '%'; };
@@ -10437,14 +10449,15 @@ function ppDonePop(anchor, pid, tid) {
     const OK = p.querySelector('[data-ok]');
     const save = async () => {
       const [p2, x] = ppT(pid, tid); if (!x) return;
-      const was = !!x.done, wasP = x.pct || 0, wasN = x.units ? +x.units.n || 0 : null;
+      const was = !!x.done, wasP = x.pct || 0, wasN = x.units ? +x.units.n || 0 : null, wasW = !!x.wip;
       x.done = D.checked;
+      if (!x.done && stv() === 'wip') x.wip = true; else delete x.wip;
       if (x.done) { const v = inputStrToDate(p.querySelector('#ppDAt').value); x.doneAt = v ? Math.min(today, indexFromDate(v)) : today; if (usePct) x.pct = 100; }
       else { delete x.doneAt; if (P) x.pct = Math.max(0, Math.min(99, Math.round(+P.value || 0))); else if ((x.pct || 0) >= 100) x.pct = 0; if (UN) x.units.n = Math.max(0, Math.min(+u.of, Math.round(+UN.value || 0))); }
       closePop();
-      if (was === x.done && wasP === (x.pct || 0) && wasN === (x.units ? +x.units.n || 0 : null) && !(x.done && was)) { if (usePct && !x.done) { ppLogPct(p2, x); gpStamp(x); await ppCommit(p2, `${x.name}: ยืนยัน % เดิม (อัปเดตรอบนี้แล้ว)`); } return; }
+      if (was === x.done && wasW === !!x.wip && wasP === (x.pct || 0) && wasN === (x.units ? +x.units.n || 0 : null) && !(x.done && was)) { if (usePct && !x.done) { ppLogPct(p2, x); gpStamp(x); await ppCommit(p2, `${x.name}: ยืนยัน % เดิม (อัปเดตรอบนี้แล้ว)`); } return; }
       ppLogPct(p2, x); gpStamp(x);
-      await ppCommit(p2, `${x.name}: ${x.done ? '✓ เสร็จแล้ว ' + gpFmt(x.doneAt, true) : ppLeafPct(p2, x) + '%'}`);
+      await ppCommit(p2, `${x.name}: ${x.done ? '✓ เสร็จแล้ว ' + gpFmt(x.doneAt, true) : x.wip ? '▶ กำลังดำเนินการ' + (usePct ? ' ' + ppLeafPct(p2, x) + '%' : '') : ppLeafPct(p2, x) + '%'}`);
     };
     if (OK) OK.onclick = save;
     p.addEventListener('keydown', (e) => { if (e.key === 'Enter' && OK && e.target.tagName !== 'BUTTON') { e.preventDefault(); save(); } });
