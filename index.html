@@ -427,6 +427,17 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .td-card.done .td-card-title { color: var(--ink-soft); }
 .td-proj-chip { display: inline-block; font-weight: 600; color: #3730A3; background: #EEF2FF; border-left: 3px solid var(--pc, #6366F1); border-radius: 5px; padding: 0 6px; margin-right: 2px; }
 .td-all-proj { width: auto !important; min-width: 190px; max-width: 260px; padding: 7px 10px; margin: 0 !important; font-size: 13px; }
+.dp-modal { max-width: 620px; }
+.dp-sub { font-size: 12.5px; color: var(--ink-soft); margin: -4px 0 8px; }
+.dp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dp-shift { display: flex; gap: 6px; } .dp-shift input { width: 80px; }
+.dp-opts { display: flex; flex-direction: column; gap: 4px; margin: 10px 0 4px; font-size: 13px; }
+.dp-opts label, .dp-depts label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.dp-depts { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 12px; font-size: 13px; max-height: 170px; overflow: auto; border: 1px solid #E3E6EE; border-radius: 8px; padding: 8px 10px; }
+.dp-depts small { color: var(--ink-soft); }
+.dp-rep { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+.dp-prev { margin-top: 10px; background: #F7F7FF; border: 1px solid #E0E7FF; border-radius: 8px; padding: 8px 10px; font-size: 12.5px; max-height: 170px; overflow: auto; }
+.dp-prev ul { margin: 4px 0 0; padding-left: 18px; } .dp-prev li { margin-bottom: 3px; }
 .td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
 .td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
 .td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
@@ -3322,6 +3333,7 @@ function renderSidebar() {
           ps.length > 1 ? '-' : null,
           { icon: 'pencil', label: 'เปลี่ยนชื่อโครงการ', fn: () => renameProject(p.id) },
           { icon: 'palette', label: 'เปลี่ยนสีโครงการ', fn: () => openProjectColorModal(p.id) },
+          { icon: 'copy', label: 'ทำสำเนาโครงการ…', fn: () => openDupProject(p.id) },
           '-', { icon: 'trash', label: 'ลบโครงการ', danger: true, fn: () => deleteProject(p.id) }] });
         if (!READ_ONLY && ps.length > 1) {   // ลากเพื่อสลับลำดับโครงการ
           row.draggable = true; row.dataset.pid = p.id; row.dataset.cat = c; row.title = 'ลากเพื่อสลับลำดับ';
@@ -5935,6 +5947,151 @@ function addPersonalProject() {
   });
 }
 function renameProject(id) { const p = state.projects.find(x => x.id === id); openTextModal('เปลี่ยนชื่อโครงการ', 'ชื่อโครงการ', p.name, async (name) => { if (!name) return; p.name = name; await persistAndRender(); }); }
+// ---------- ทำสำเนาโครงการ (เช่น ระยะที่ 2 → ระยะที่ 3): หน่วยงาน · กิจกรรม · แผนโครงการ เลื่อนวันตามที่เลือก ----------
+function dpShiftIdx(i, n, unit) {
+  if (typeof i !== 'number' || !n) return i;
+  if (unit === 'd') return i + n;
+  const months = unit === 'y' ? n * 12 : n;
+  const d = dateFromIndex(i), y = d.getUTCFullYear(), m = d.getUTCMonth(), day = d.getUTCDate();
+  const dim = (yy, mm) => new Date(Date.UTC(yy, mm + 1, 0)).getUTCDate();
+  const t = new Date(Date.UTC(y, m + months, 1)), ty = t.getUTCFullYear(), tm = t.getUTCMonth();
+  const nd = day === dim(y, m) ? dim(ty, tm) : Math.min(day, dim(ty, tm));   // วันสิ้นเดือน → วันสิ้นเดือน
+  return indexFromDate(new Date(Date.UTC(ty, tm, nd)));
+}
+// เลขปีในชื่อ: 25xx ทุกตำแหน่ง · ปี 2 หลัก (60–99) เมื่อตามหลัง ปี/ปีงบ/คำขอ/งบ/พ.ศ./ชื่อเดือนย่อ เช่น ส.ค. 69
+function dpYearBump(text, years) {
+  if (!text || !years) return text;
+  return String(text)
+    .replace(/(^|[^\d])(25\d\d)(?!\d)/g, (m, a, y) => a + (Number(y) + years))
+    .replace(/((?:ปีงบประมาณ|ปีงบ|ปี|คำขอเงินกู้|คำขอ|งบ|พ\.ศ\.|[ก-ฮ]\.[ก-ฮ]\.)\s*)([6-9]\d)(?!\d)/g, (m, a, y) => a + String((Number(y) + years) % 100).padStart(2, '0'));
+}
+function openDupProject(pid) {
+  if (READ_ONLY) return;
+  const src = state.projects.find(x => x.id === pid); if (!src) return;
+  const plan = ppPlanOf(src);
+  const nm = /ระยะที่\s*(\d+)/.test(src.name) ? src.name.replace(/ระยะที่\s*(\d+)/, (m, n) => 'ระยะที่ ' + (Number(n) + 1)) : src.name + ' (สำเนา)';
+  const actCount = (d) => d.rows.reduce((n, r) => n + r.activities.length, 0);
+  const rcName = (r) => { const c = (src.rowCats || []).find(x => x.id === r.cat); return (c ? c.name : '') + ' ' + r.name; };
+  const planRows = new Set(); src.departments.forEach(d => d.rows.forEach(r => { if (/แผนการดำเนินงาน/.test(rcName(r))) planRows.add(r.id); }));
+  const mPhase = /ระยะที่\s*(\d+)/.exec(src.name);
+  const linked = new Set(); if (plan) plan.tasks.forEach(t => (t.src || []).forEach(id => linked.add(id)));
+  src.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => { if (a.planRef && plan && plan.tasks.some(t => t.id === a.planRef)) linked.add(a.id); })));
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal dp-modal';
+  const cnt = (f) => src.departments.reduce((n, d) => n + d.rows.reduce((k, r) => k + r.activities.filter(a => f(a, r)).length, 0), 0);
+  const cLinked = cnt((a) => linked.has(a.id)), cPlanRow = cnt((a, r) => linked.has(a.id) || planRows.has(r.id)), cAll = cnt(() => true);
+  m.innerHTML = `<h3>📋 ทำสำเนาโครงการ</h3>
+    <div class="dp-sub">จาก <b>${escapeHTML(src.name)}</b>${plan ? ` · แผนโครงการ ${plan.tasks.length} ขั้นตอน` : ''}</div>
+    <label class="field-label" for="dpName">ชื่อโครงการใหม่</label><input id="dpName" class="text-input" value="${escapeHTML(nm)}">
+    <div class="dp-grid">
+      <div><label class="field-label">เลื่อนวันทั้งหมด</label><div class="dp-shift"><input type="number" id="dpN" class="text-input" value="1" min="0" max="120"><select id="dpU" class="text-input"><option value="y" selected>ปี</option><option value="m">เดือน</option><option value="d">วัน</option></select></div></div>
+      <div><label class="field-label">กิจกรรมบนไทม์ไลน์</label><select id="dpActs" class="text-input">
+        <option value="planrow" selected>ในแผนโครงการ + แถวแผนการดำเนินงาน (${cPlanRow})</option>${plan ? `<option value="linked">เฉพาะที่อยู่ในแผนโครงการ (${cLinked})</option>` : ''}<option value="all">ทั้งหมด (${cAll})</option><option value="none">ไม่คัดลอก (เอาแค่หน่วยงาน/แถว)</option></select></div>
+    </div>
+    <div class="dp-opts">
+      ${plan ? '<label><input type="checkbox" id="dpPlan" checked> คัดลอกแผนโครงการ</label>' : ''}
+      <label><input type="checkbox" id="dpClear" checked> ล้างสถานะเสร็จ / ความคืบหน้า / รอตอบกลับ (เริ่มใหม่ 0%)</label>
+      <label><input type="checkbox" id="dpYear" checked> เพิ่มเลขปีในชื่อตามที่เลื่อน (เช่น 2571 → 2572 · คำขอ 71 → 72)</label>
+      <label><input type="checkbox" id="dpPrep" checked> คัดลอกงานเตรียมการในกิจกรรม</label>
+    </div>
+    <label class="field-label">หน่วยงานที่คัดลอก</label>
+    <div class="dp-depts">${src.departments.map(d => `<label><input type="checkbox" data-d="${d.id}" ${/^รพ\.?\s|โรงพยาบาล/.test(d.name) ? '' : 'checked'}> ${escapeHTML(d.name)} <small>${actCount(d)} งาน</small></label>`).join('')}</div>
+    <label class="field-label" for="dpNew">เพิ่มหน่วยงานใหม่ <small style="font-weight:400;color:var(--ink-soft)">(บรรทัดละ 1 เช่น รพ วชิระภูเก็ต)</small></label>
+    <textarea id="dpNew" class="text-input" rows="2" placeholder="รพ วชิระภูเก็ต"></textarea>
+    <label class="field-label">แทนที่คำในชื่อ <small style="font-weight:400;color:var(--ink-soft)">(ไม่บังคับ)</small></label>
+    <div class="dp-rep">${[0, 1].map(i => `<input class="text-input" data-f="${i}" placeholder="คำเดิม" value="${i === 0 && mPhase ? escapeHTML(mPhase[0]) : ''}"><span>→</span><input class="text-input" data-t="${i}" placeholder="คำใหม่" value="${i === 0 && mPhase ? 'ระยะที่ ' + (Number(mPhase[1]) + 1) : ''}">`).join('')}</div>
+    <div class="dp-prev" id="dpPrev"></div>
+    <div class="modal-actions"><button class="ghost-btn" id="dpCancel">ยกเลิก</button><button class="primary-btn" id="dpOk">สร้างสำเนา</button></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  const q = (x) => m.querySelector(x);
+  const opts = () => {
+    const n = Math.max(0, Math.min(120, parseInt(q('#dpN').value, 10) || 0)), unit = q('#dpU').value;
+    const reps = [0, 1].map(i => [m.querySelector(`[data-f="${i}"]`).value, m.querySelector(`[data-t="${i}"]`).value]).filter(x => x[0]);
+    const yrs = q('#dpYear').checked ? (unit === 'y' ? n : unit === 'm' && n % 12 === 0 ? n / 12 : 0) : 0;
+    const txt = (t) => { if (t == null) return t; let o = String(t); reps.forEach(([f, to]) => { o = o.split(f).join(to); }); return dpYearBump(o, yrs); };
+    return { n, unit, txt, yrs, acts: q('#dpActs').value, plan: !!(q('#dpPlan') && q('#dpPlan').checked), clear: q('#dpClear').checked, prep: q('#dpPrep').checked,
+      depts: new Set([...m.querySelectorAll('.dp-depts input:checked')].map(x => x.dataset.d)),
+      newDepts: q('#dpNew').value.split('\n').map(x => x.trim()).filter(Boolean) };
+  };
+  const preview = () => {
+    const o = opts(), seen = new Set(), ch = [];
+    const add = (t) => { if (!t || seen.has(t)) return; seen.add(t); const u = o.txt(t); if (u !== t) ch.push([t, u]); };
+    if (o.plan && plan) plan.tasks.forEach(t => add(t.name));
+    src.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => add(a.label))));
+    const ex = plan && plan.tasks.find(t => !t.parent);
+    const sh = ex ? `ตัวอย่างวันที่: ${gpFmt(ex.start, 1)} → <b>${gpFmt(dpShiftIdx(ex.start, o.n, o.unit), 1)}</b>` : '';
+    q('#dpPrev').innerHTML = `${sh}${ch.length ? `<div style="margin-top:4px">ชื่อที่จะเปลี่ยน ${ch.length} รายการ:</div><ul>${ch.slice(0, 8).map(([a, b]) => `<li>${escapeHTML(a)}<br>→ <b>${escapeHTML(b)}</b></li>`).join('')}${ch.length > 8 ? `<li>…และอีก ${ch.length - 8} รายการ</li>` : ''}</ul>` : '<div style="margin-top:4px;color:var(--ink-soft)">ไม่มีชื่อที่ต้องเปลี่ยน</div>'}`;
+  };
+  m.querySelectorAll('input, select, textarea').forEach(el => { el.addEventListener('input', preview); el.addEventListener('change', preview); });
+  preview();
+  q('#dpCancel').onclick = () => closeModal(ov);
+  q('#dpOk').onclick = async () => {
+    const name = q('#dpName').value.trim(); if (!name) { q('#dpName').focus(); return; }
+    const o = opts();
+    const live = state.projects.find(x => x.id === pid); if (!live) return;
+    const lplan = ppPlanOf(live);
+    const S = (i) => dpShiftIdx(i, o.n, o.unit);
+    const actMap = {}, rowTpl = (live.departments.find(d => d.rows.length) || { rows: [] }).rows;
+    const keepAct = (a, r) => o.acts === 'all' || (o.acts === 'linked' && linked.has(a.id)) || (o.acts === 'planrow' && (linked.has(a.id) || planRows.has(r.id)));
+    const np = { ...clone(live), id: uid('proj'), name, departments: [] };
+    delete np.todoRank; delete np.boardNotes; delete np.extraTasks;
+    live.departments.forEach(d => {
+      if (!o.depts.has(d.id)) return;
+      const nd = { ...clone(d), id: uid('dept'), rows: [] };
+      d.rows.forEach(r => {
+        const nr = { ...clone(r), id: uid('row'), activities: [] };
+        r.activities.forEach(a => {
+          if (!keepAct(a, r)) return;
+          const na = clone(a); na.id = uid('act'); actMap[a.id] = na.id;
+          na.start = S(a.start); na.end = S(a.end); na.label = o.txt(a.label);
+          if (na.remark) na.remark = o.txt(na.remark);
+          if (na.sname) na.sname = o.txt(na.sname);
+          if (o.clear) { na.completed = false; delete na.completedAt; delete na.completedBy; delete na.followUp; }
+          if (na.type === 'meeting') na.calSync = false;   // ไม่ส่งนัดหมายของสำเนาไป Google Calendar เอง
+          delete na.seriesId; delete na.rec; delete na.grp;
+          if (na.prep && o.prep) na.prep = na.prep.map(it => { const x = { ...clone(it), id: uid('prp'), text: o.txt(it.text) }; if (!x.rel && typeof x.day === 'number') x.day = S(x.day); if (o.clear) { delete x.done; delete x.doneAt; delete x.doneBy; delete x.fu; } return x; });
+          else delete na.prep;
+          na.updatedBy = USER_NAME; na.updatedAt = Date.now();
+          nr.activities.push(na);
+        });
+        nd.rows.push(nr);
+      });
+      np.departments.push(nd);
+    });
+    o.newDepts.forEach(nmD => np.departments.push({ id: uid('dept'), name: nmD, rows: (rowTpl.length ? rowTpl : [{ name: 'แถว 1' }]).map(r => ({ id: uid('row'), name: r.name, ...(r.cat ? { cat: r.cat } : {}), activities: [] })) }));
+    if (!np.departments.length) np.departments.push(mkDept('หน่วยงานที่ 1', [mkRow([])]));
+    let newPlan = null;
+    if (o.plan && lplan) {
+      const tMap = {}; lplan.tasks.forEach(t => { tMap[t.id] = uid('gt'); });
+      newPlan = { ...clone(lplan), id: uid('gplan'), name, projectId: np.id, createdBy: USER_NAME, createdAt: Date.now(), tasks: lplan.tasks.map(t => {
+        const x = clone(t); x.id = tMap[t.id]; x.parent = t.parent ? tMap[t.parent] || null : null;
+        x.deps = (t.deps || []).map(id => tMap[id]).filter(Boolean);
+        x.start = S(t.start); x.end = S(t.end); x.name = o.txt(t.name);
+        ['note', 'sname', 'ssub'].forEach(k => { if (x[k]) x[k] = o.txt(x[k]); });
+        x.src = (t.src || []).map(id => actMap[id]).filter(Boolean); if (!x.src.length) delete x.src;
+        delete x.sync; delete x.bs; delete x.be; delete x.fin;
+        if (o.clear) { x.done = false; x.pct = 0; delete x.doneAt; delete x.pctDay; delete x.pctLog; if (x.units) x.units = { ...x.units, n: 0 }; }
+        return x;
+      }) };
+      np.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => { if (a.planRef) { if (tMap[a.planRef]) a.planRef = tMap[a.planRef]; else delete a.planRef; } })));
+    } else np.departments.forEach(d => d.rows.forEach(r => r.activities.forEach(a => { delete a.planRef; })));
+    const used = new Set(state.projects.map(x => x.color)); const col = (state.colors || []).map(c => c.hex).find(h => !used.has(h)); if (col) np.color = col;
+    const at = state.projects.indexOf(live);
+    state.projects.splice(at + 1, 0, np);
+    if (newPlan) { state.gplans = state.gplans || []; state.gplans.push(newPlan); }
+    closeModal(ov);
+    activeMainCat = np.sourceType || 'work'; view = { type: 'project', id: np.id };
+    await persistAndRender();
+    const nActs = np.departments.reduce((n, d) => n + d.rows.reduce((k, r) => k + r.activities.length, 0), 0);
+    showToast(`📋 สร้าง "${name}" แล้ว · ${np.departments.length} หน่วยงาน · ${nActs} กิจกรรม${newPlan ? ' · แผน ' + newPlan.tasks.length + ' ขั้นตอน' : ''}`, 'เลิกทำ', async () => {
+      state.projects = state.projects.filter(x => x.id !== np.id);
+      if (newPlan) state.gplans = state.gplans.filter(g => g.id !== newPlan.id);
+      view = { type: 'project', id: pid }; await persistAndRender();
+    });
+  };
+  setTimeout(() => q('#dpName').select(), 0);
+}
 function deleteProject(id) {
   const proj = state.projects.find(p => p.id === id);
   openTypeConfirmModal('ลบโครงการนี้?', 'หน่วยงาน แถว และกิจกรรมทั้งหมดในโครงการนี้จะถูกลบ (กด Ctrl+Z ย้อนกลับได้ก่อนรีเฟรชหน้า)', proj ? proj.name : '', async () => {
