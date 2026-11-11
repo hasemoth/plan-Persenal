@@ -425,6 +425,8 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .td-card:hover { border-color: #C7D2FE; }
 .td-card.dragging { opacity: 0.4; }
 .td-card.done .td-card-title { color: var(--ink-soft); }
+.td-proj-chip { display: inline-block; font-weight: 600; color: #3730A3; background: #EEF2FF; border-left: 3px solid var(--pc, #6366F1); border-radius: 5px; padding: 0 6px; margin-right: 2px; }
+.td-all-proj { width: auto !important; min-width: 190px; max-width: 260px; padding: 7px 10px; margin: 0 !important; font-size: 13px; }
 .td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
 .td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
 .td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
@@ -6937,6 +6939,13 @@ function renderTodoTabs(subBar) {
   if (projs.length) {
     const sep = document.createElement('span'); sep.className = 'td-sep'; sep.textContent = 'จากแผนงาน:'; subBar.appendChild(sep);
     const today = todayBangkokIndex();
+    { const allT = projs.flatMap(x => x.tasks), lateA = allT.filter(x => !x.a.completed && x.a.end < today).length;
+      const t = document.createElement('button');
+      t.className = 'tab td-proj-tab td-all-tab' + (todo.activeId === 'proj:' + TD_ALL ? ' active' : ''); t.style.paddingRight = '14px';
+      t.innerHTML = `<span class="td-tab-ico">🗂</span><span>ภาพรวมทุกแผนงาน</span>${lateA ? `<span class="td-cnt" title="เลยกำหนด ${lateA} งาน">${lateA}</span>` : ''}`;
+      t.title = 'รวมงานจากทุกแผนงานไว้ในบอร์ดเดียว · ติ๊ก/แก้ที่นี่ = เปลี่ยนในแผนงานนั้นด้วย';
+      t.onclick = () => { todo.activeId = 'proj:' + TD_ALL; lsSet('todo_active', todo.activeId); render(); };
+      subBar.appendChild(t); }
     projs.forEach(({ p, tasks }) => {
       const open = tasks.filter(x => !x.a.completed), late = open.filter(x => x.a.end < today).length;
       const t = document.createElement('button');
@@ -7161,8 +7170,14 @@ function tdSetTaskDone(pid, aid, done, cardEl) {
 }
 
 // ---------- เพิ่มงานจากหน้า To-do -> สร้างเป็น "กำหนดการที่ต้องทำให้เสร็จ" ในแผนงาน ----------
-function tdOpenProjAdd(pid, colKey) {
+function tdOpenProjAdd(pid, colKey, opts) {
   if (READ_ONLY) return;
+  opts = opts || {};
+  if (!pid) {   // เพิ่มจากหน้าภาพรวมทุกแผนงาน: ให้เลือกแผนงาน
+    const lastP = lsGet('td_all_last_proj', '');
+    pid = state.projects.some(x => x.id === lastP) ? lastP : (state.projects[0] || {}).id;
+    opts.pick = true;
+  }
   const p = state.projects.find(x => x.id === pid); if (!p) return;
   const depts = p.departments.filter(d => d.rows.length);
   const today = todayBangkokIndex();
@@ -7172,7 +7187,8 @@ function tdOpenProjAdd(pid, colKey) {
   modalOpen = true;
   const ov = document.createElement('div'); ov.className = 'modal-overlay';
   const m = document.createElement('div'); m.className = 'modal td-modal';
-  m.innerHTML = `<h3>+ เพิ่มงานใน ${escapeHTML(p.name)}</h3>
+  m.innerHTML = `<h3>+ เพิ่มงาน${opts.pick ? '' : ' ใน ' + escapeHTML(p.name)}</h3>
+    ${opts.pick ? `<label class="field-label" for="paProj">📊 อยู่ในแผนงาน</label><select id="paProj" class="text-input">${state.projects.map(x => `<option value="${x.id}" ${x.id === pid ? 'selected' : ''}>${escapeHTML(x.name)}</option>`).join('')}</select>` : ''}
     <div class="pa-mode" id="paMode">
       <button type="button" data-m="plan" ${depts.length ? '' : 'disabled style="opacity:.5; cursor:not-allowed;"'}><b>📊 แสดงในแผนงานด้วย</b><small>สร้างเป็น "🎯 กำหนดการที่ต้องทำให้เสร็จ" ในตาราง Gantt ของโครงการ${depts.length ? '' : ' (โครงการยังไม่มีหน่วยงาน)'}</small></button>
       <button type="button" data-m="todo"><b>📝 เฉพาะใน To-do</b><small>งานย่อย/งานติดตามทั่วไป ไม่แสดงในตารางแผนงาน</small></button>
@@ -7190,6 +7206,14 @@ function tdOpenProjAdd(pid, colKey) {
     <div class="modal-actions"><button class="ghost-btn" id="paCancel">ยกเลิก</button><button class="primary-btn" id="paOk">เพิ่มงาน</button></div>`;
   ov.appendChild(m); document.body.appendChild(ov);
   const dSel = m.querySelector('#paDept'), rSel = m.querySelector('#paRow');
+  const pSel = m.querySelector('#paProj');
+  if (opts.name) m.querySelector('#paName').value = opts.name;
+  if (opts.start) m.querySelector('#paStart').value = opts.start;
+  if (opts.end) m.querySelector('#paEnd').value = opts.end;
+  if (pSel) pSel.onchange = () => {   // เปลี่ยนแผนงาน: เปิดฟอร์มใหม่ของแผนงานนั้น (เก็บชื่อ/วันที่ที่กรอกไว้)
+    const keep = { pick: true, name: m.querySelector('#paName').value, start: m.querySelector('#paStart').value, end: m.querySelector('#paEnd').value };
+    lsSet('td_all_last_proj', pSel.value); closeModal(ov); tdOpenProjAdd(pSel.value, colKey, keep);
+  };
   const drawMode = () => {
     m.querySelectorAll('#paMode button').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
     m.querySelectorAll('.pa-plan').forEach(x => { x.style.display = mode === 'plan' ? '' : 'none'; });
@@ -7214,6 +7238,7 @@ function tdOpenProjAdd(pid, colKey) {
   const ok = async () => {
     const label = m.querySelector('#paName').value.trim();
     if (!label) { m.querySelector('#paName').focus(); return; }
+    if (opts.pick) lsSet('td_all_last_proj', pid);
     let sIdx = indexFromDate(inputStrToDate(st.value)), eIdx = indexFromDate(inputStrToDate(en.value));
     if (eIdx < sIdx) eIdx = sIdx;
     if (mode === 'todo') {   // งานเพิ่มเติม: เก็บในโครงการ แต่ไม่แสดงในตารางแผนงาน
@@ -7232,7 +7257,7 @@ function tdOpenProjAdd(pid, colKey) {
     lsSet('td_proj_add_' + pid, { deptId: dSel.value, rowId: rSel.value, color, mode: 'plan' });
     closeModal(ov);
     await persistAndRender();
-    showToast(`เพิ่มงาน "${label}" แล้ว (แสดงในแผนงานด้วย)`);
+    showToast(`เพิ่มงาน "${label}" แล้ว${opts.pick ? ' ใน ' + p.name : ''} (แสดงในแผนงานด้วย)`);
     tdOpenProjCard(pid, dSel.value, rSel.value, act.id);
   };
   m.querySelector('#paOk').onclick = ok;
@@ -8041,23 +8066,40 @@ function renderNotesColumn(opts) {
   return col;
 }
 
+const TD_ALL = '__all';
 function renderProjTodo(pid) {
   const root = document.createElement('div');
-  const entry = tdProjList().find(x => x.p.id === pid);
+  const ALL = pid === TD_ALL;
+  const plist = ALL ? tdProjList() : [];
+  const entry = ALL ? { p: null, tasks: plist.flatMap(x => x.tasks) } : tdProjList().find(x => x.p.id === pid);
   if (!entry) {
     root.innerHTML = '<div class="td-empty"><h3>โครงการนี้ไม่มีงาน "กำหนดการที่ต้องทำให้เสร็จ"</h3><p>เพิ่มกิจกรรมประเภทนี้ในแผนงาน แล้วงานจะมาแสดงที่นี่อัตโนมัติ</p></div>';
     return root;
   }
-  const { p, tasks } = entry;
+  const { p } = entry;
+  let tasks = entry.tasks;
   const today = todayBangkokIndex();
   const edit = !READ_ONLY;
   const head = document.createElement('div'); head.className = 'td-head';
+  if (ALL) {
+    const projF = todo.filter.proj && plist.some(x => x.p.id === todo.filter.proj) ? todo.filter.proj : '';
+    if (projF) tasks = tasks.filter(x => x.p.id === projF);
+    head.innerHTML = `<div class="td-title"><h2 style="cursor:default;">🗂 ภาพรวม To-do ทุกแผนงาน</h2><span class="td-link-badge">🔗 รวมทุกแผนงาน · ติ๊กเสร็จ / แก้ที่นี่ = เปลี่ยนในแผนงานนั้นด้วย</span></div>`;
+    const right = document.createElement('div'); right.style.cssText = 'display:flex; gap:6px; flex-wrap:nowrap; align-items:center; flex:none;';
+    const sel = document.createElement('select'); sel.className = 'text-input td-all-proj'; sel.setAttribute('aria-label', 'กรองตามแผนงาน');
+    sel.innerHTML = `<option value="">📊 ทุกแผนงาน (${plist.length})</option>` + plist.map(x => `<option value="${x.p.id}" ${x.p.id === projF ? 'selected' : ''}>${escapeHTML(x.p.name)}</option>`).join('');
+    sel.onchange = () => { todo.filter.proj = sel.value; render(); };
+    right.appendChild(sel);
+    if (edit) { const ad = document.createElement('button'); ad.className = 'primary-btn'; ad.textContent = '+ เพิ่มงาน'; ad.onclick = () => tdOpenProjAdd(projF || null, 'now'); right.appendChild(ad); }
+    head.appendChild(right); root.appendChild(head);
+  } else {
   head.innerHTML = `<div class="td-title"><h2 style="cursor:default;">📊 ${escapeHTML(p.name)}</h2><span class="td-link-badge">🔗 เชื่อมกับแผนงาน · ติ๊กเสร็จที่นี่ = ติ๊กในแผนงานด้วย</span></div>`;
   const right = document.createElement('div'); right.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap;';
   const go = document.createElement('button'); go.className = 'ghost-btn'; go.textContent = '↗ เปิดหน้าแผนงานของโครงการ';
   go.onclick = () => { activeMainCat = p.sourceType || 'work'; view = { type: 'project', id: p.id }; render(); };
   if (edit) { const ad = document.createElement('button'); ad.className = 'primary-btn'; ad.textContent = '+ เพิ่มงาน'; ad.onclick = () => tdOpenProjAdd(pid, 'now'); right.appendChild(ad); }
   right.appendChild(go); head.appendChild(right); root.appendChild(head);
+  }
 
   const tools = document.createElement('div'); tools.className = 'td-tools';
   tools.innerHTML = `<div class="search-box"><span class="s-icon">🔍</span><input type="search" id="tdSearch" placeholder="ค้นหางาน / หน่วยงาน" value="${escapeHTML(todo.filter.q)}" aria-label="ค้นหางาน"></div><div class="td-stats" id="tdStats"></div>`;
@@ -8066,7 +8108,7 @@ function renderProjTodo(pid) {
 
   const draw = () => {
     const q = todo.filter.q.toLowerCase();
-    const match = (x) => !q || [x.a.label, x.d ? x.d.name : 'งานเพิ่มเติม', x.r ? x.r.name : ''].join(' ').toLowerCase().includes(q);
+    const match = (x) => !q || [x.a.label, x.d ? x.d.name : 'งานเพิ่มเติม', x.r ? x.r.name : '', ALL ? x.p.name : ''].join(' ').toLowerCase().includes(q);
     const list = tasks.filter(match);
     const cols = [
       { key: 'late', name: 'เลยกำหนด', color: '#E5484D', items: list.filter(x => !x.a.completed && x.a.end < today).sort((a, b) => a.a.end - b.a.end) },
@@ -8076,7 +8118,18 @@ function renderProjTodo(pid) {
       { key: 'done', name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, items: list.filter(x => x.a.completed && !fuWaiting(x.a)).sort((a, b) => (b.a.completedAt || 0) - (a.a.completedAt || 0) || b.a.end - a.a.end) }
     ];
     // ลำดับที่ลากจัดเอง (เก็บในโครงการ ใช้ร่วมกันทุกคน) · งานที่ยังไม่เคยจัด = ขึ้นบนสุดตามลำดับอัตโนมัติ
-    const rk = p.todoRank || {};
+    const rkGet = () => ALL ? (lsGet('td_all_rank', {}) || {}) : ((state.projects.find(x => x.id === pid) || {}).todoRank || {});
+    const rkSet = async (obj, undoObj, msg) => {
+      const apply = async (o) => {
+        if (ALL) { if (o && Object.keys(o).length) lsSet('td_all_rank', o); else lsSet('td_all_rank', {}); draw(); return; }
+        const lp = state.projects.find(x => x.id === pid); if (!lp) return;
+        if (o && Object.keys(o).length) lp.todoRank = o; else delete lp.todoRank;
+        await persistAndRender();
+      };
+      await apply(obj);
+      showToast(msg, 'เลิกทำ', () => apply(undoObj));
+    };
+    const rk = rkGet();
     cols.forEach(col => {
       const un = col.items.filter(x => rk[x.a.id] == null), rd = col.items.filter(x => rk[x.a.id] != null).sort((x, y) => rk[x.a.id] - rk[y.a.id]);
       col.items = un.concat(rd); col.manual = rd.length > 0;
@@ -8087,12 +8140,13 @@ function renderProjTodo(pid) {
       const el = document.createElement('div'); el.className = 'td-col'; el.style.setProperty('--colc', col.color);
       el.innerHTML = `<div class="td-col-h"><div class="td-col-name" style="cursor:default;">${col.isDone ? '✔ ' : ''}${col.name}</div>${col.manual && edit ? '<button type="button" class="td-rk-reset" title="กลับไปเรียงอัตโนมัติตามวันที่">↺</button>' : ''}<span class="td-count">${col.items.length}</span></div>`;
       const rsb = el.querySelector('.td-rk-reset');
-      if (rsb) rsb.onclick = async () => { const lp = state.projects.find(x => x.id === pid); if (!lp || !lp.todoRank) return; const prev = clone(lp.todoRank); col.items.forEach(x => delete lp.todoRank[x.a.id]); if (!Object.keys(lp.todoRank).length) delete lp.todoRank; await persistAndRender(); showToast(`↺ "${col.name}" กลับไปเรียงตามวันที่`, 'เลิกทำ', async () => { const q2 = state.projects.find(x => x.id === pid); if (q2) { q2.todoRank = prev; await persistAndRender(); } }); };
+      if (rsb) rsb.onclick = async () => { const prev = clone(rkGet()), nx = clone(prev); col.items.forEach(x => delete nx[x.a.id]); await rkSet(nx, prev, `↺ "${col.name}" กลับไปเรียงตามวันที่`); };
       const ul = document.createElement('div'); ul.className = 'td-list';
       const key = 'proj-' + pid + '-' + col.key;
       const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
       if (!col.items.length) ul.innerHTML = col.key === 'wait' ? '<div style="font-size:11.5px; color:var(--ink-soft); padding:6px 4px; line-height:1.5;">— ไม่มีงานที่รอตอบกลับ —<br>งานที่ส่งหนังสือแล้วแต่ต้องรอข้อมูลกลับ: เปิดการ์ด → ติ๊ก "📮 ต้องติดตามผล" หรือกด "📮 รอตอบกลับ" หลังติ๊กเสร็จ</div>' : '<div style="font-size:12px; color:var(--ink-soft); padding:6px 4px;">— ไม่มีงาน —</div>';
-      shown.forEach(({ a, d, r, extra, prep }) => {
+      shown.forEach(({ a, d, r, extra, prep, p: cp }) => {
+        const cpid = cp.id;
         const cl = a.checklist || [], clDone = cl.filter(i => i.done).length, exp = cl.length && todo.expanded.has(a.id);
         const isWait = col.key === 'wait', fu = a.followUp;
         const card = document.createElement('div'); card.className = 'td-card' + (col.isDone ? ' done' : '') + (col.key === 'late' ? ' overdue' : '') + (isWait ? ' fu-card' : '');
@@ -8113,7 +8167,7 @@ function renderProjTodo(pid) {
         if (!col.isDone && !isWait && fu) badge += '<span class="td-b fu-plan" title="เมื่อติ๊กเสร็จ จะไปรอติดตามผล">📮 ติดตามผลต่อ</span>';
         const tickTitle = isWait ? 'ติ๊กเมื่อได้รับข้อมูลกลับแล้ว → ย้ายไป "เสร็จแล้ว"' : col.isDone ? (fu && fu.received ? 'เอาติ๊กออก = กลับไปรอติดตามผล' : 'เอาติ๊กออก = กลับเป็นงานค้าง') : (fu ? 'ติ๊กเมื่อทำเสร็จ → ไปรอติดตามผล' : 'ติ๊กเมื่อทำเสร็จ (อัปเดตในแผนงานด้วย)');
         card.innerHTML = `<div class="td-card-title"><button type="button" class="td-tick ${col.isDone ? 'on' : ''}" ${edit ? '' : 'disabled'} title="${tickTitle}" aria-label="${isWait ? 'ได้รับข้อมูลแล้ว' : col.isDone ? 'ยกเลิกสถานะเสร็จ' : 'ทำเสร็จแล้ว'}">${col.isDone ? '✓' : isWait ? '📬' : ''}</button><span>${prep ? '📌 ' : ''}${escapeHTML(a.label)}</span></div>
-          <div class="td-path">${extra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}</div>
+          <div class="td-path">${ALL ? `<span class="td-proj-chip" style="--pc:${calProjColor(cp)}">📊 ${escapeHTML(cp.name)}</span> ` : ''}${extra ? '<span class="td-extra">📝 งานเพิ่มเติม · ไม่แสดงในแผนงาน</span>' : escapeHTML(d.name) + ' › ' + escapeHTML(r.name)}</div>
           ${prep ? `<div class="td-prep-link" title="${escapeHTML(prepRelText(a._prep.it))}">🔗 ${a._prep.it.rel && a._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'}: ${escapeHTML(prep.label || '')} · ${prepAnchorText(prep)}</div>` : ''}
           ${isWait && fu.from ? `<div class="td-fu-from">⏳ รอข้อมูลจาก <b>${escapeHTML(fu.from)}</b></div>` : ''}
           <div class="td-badges"><span class="td-b" title="ช่วงวันที่ในแผนงาน">🗓 ${escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.start))))}${a.end !== a.start ? ' – ' + escapeHTML(tdFmtDate(dateToInputStr(dateFromIndex(a.end)))) : ''}</span>${badge}
@@ -8130,7 +8184,7 @@ function renderProjTodo(pid) {
           inl.querySelectorAll('input').forEach(inp => inp.onchange = async () => {
             const was = cl.every(i => i.done);
             cl[+inp.dataset.i].done = inp.checked; a.updatedBy = USER_NAME; a.updatedAt = Date.now();
-            if (!was && cl.every(i => i.done) && !col.isDone) { tdSetTaskDone(pid, a.id, true, card); return; }   // ครบทุกรายการ = งานเสร็จ
+            if (!was && cl.every(i => i.done) && !col.isDone) { tdSetTaskDone(cpid, a.id, true, card); return; }   // ครบทุกรายการ = งานเสร็จ
             await persistAndRender();
           });
         }
@@ -8138,11 +8192,11 @@ function renderProjTodo(pid) {
         const tk = card.querySelector('.td-tick');
         tk.onclick = (e) => {
           e.stopPropagation(); if (!edit) return;
-          if (isWait) tdMarkReceived(pid, a.id, true, card);
-          else if (col.isDone && fu && fu.received) tdMarkReceived(pid, a.id, false, card);
-          else tdSetTaskDone(pid, a.id, !col.isDone, card);
+          if (isWait) tdMarkReceived(cpid, a.id, true, card);
+          else if (col.isDone && fu && fu.received) tdMarkReceived(cpid, a.id, false, card);
+          else tdSetTaskDone(cpid, a.id, !col.isDone, card);
         };
-        card.onclick = () => tdOpenProjCard(p.id, d ? d.id : null, r ? r.id : null, a.id);
+        card.onclick = () => tdOpenProjCard(cpid, d ? d.id : null, r ? r.id : null, a.id);
         card.title = 'คลิกเพื่อเปิดการ์ด (รายการย่อย / Template)' + (edit ? ' · ลากขึ้น-ลงเพื่อสลับลำดับ' : '');
         card.dataset.id = a.id;
         if (edit) {
@@ -8174,15 +8228,12 @@ function renderProjTodo(pid) {
           let at = beforeId ? ids.indexOf(beforeId) : -1;
           if (at < 0) at = shown.length < col.items.length ? Math.min(ids.length, shown.length - 1) : ids.length;
           ids.splice(at, 0, dragId);
-          const lp = state.projects.find(x => x.id === pid); if (!lp) return;
           const before = col.items.map(x => x.a.id).join('|'); if (before === ids.join('|')) return;
-          const prev = lp.todoRank ? clone(lp.todoRank) : null;
-          const live = new Set(tdProjTasks().filter(x => x.p.id === pid).map(x => x.a.id));
-          const nr = {}; Object.keys(lp.todoRank || {}).forEach(k => { if (live.has(k)) nr[k] = lp.todoRank[k]; });
+          const prev = clone(rkGet());
+          const live = new Set(tdProjTasks().filter(x => ALL || x.p.id === pid).map(x => x.a.id));
+          const nr = {}; Object.keys(prev).forEach(k => { if (live.has(k)) nr[k] = prev[k]; });
           ids.forEach((id, i) => { nr[id] = (i + 1) * 10; });
-          lp.todoRank = nr;
-          await persistAndRender();
-          showToast('สลับลำดับแล้ว', 'เลิกทำ', async () => { const q2 = state.projects.find(x => x.id === pid); if (!q2) return; if (prev) q2.todoRank = prev; else delete q2.todoRank; await persistAndRender(); });
+          await rkSet(nr, prev, 'สลับลำดับแล้ว');
         });
       }
       if (shown.length < col.items.length) {
@@ -8194,19 +8245,19 @@ function renderProjTodo(pid) {
       if (edit && (col.key === 'now' || col.key === 'next')) {
         const add = document.createElement('div'); add.className = 'td-add';
         add.innerHTML = '<button type="button" class="td-add-btn">+ เพิ่มการ์ด</button>';
-        add.querySelector('button').onclick = () => tdOpenProjAdd(pid, col.key);
+        add.querySelector('button').onclick = () => tdOpenProjAdd(ALL ? (todo.filter.proj || null) : pid, col.key);
         el.appendChild(add);
       }
       board.appendChild(el);
     });
-    board.appendChild(renderNotesColumn({ key: 'p:' + pid, q: todo.filter.q, edit,
+    if (!ALL) board.appendChild(renderNotesColumn({ key: 'p:' + pid, q: todo.filter.q, edit,
       peek: () => { const lp = state.projects.find(x => x.id === pid); return lp ? lp.boardNotes || [] : []; },
       getList: () => { const lp = state.projects.find(x => x.id === pid); if (!lp) return []; lp.boardNotes = lp.boardNotes || []; return lp.boardNotes; },
       commit: () => persistAndRender(), redraw: () => draw() }));
     area.appendChild(board);
     const st = root.querySelector('#tdStats');
     const cw = cols.find(c => c.key === 'wait').items, cn = cols.find(c => c.key === 'next').items;
-    st.innerHTML = `<span>รอดำเนินการ <b>${cols[0].items.length + cols[1].items.length + cn.length}</b></span><span class="red">เลยกำหนด <b>${cols[0].items.length}</b></span><span class="amber">ครบวันนี้ <b>${cols[1].items.filter(x => x.a.end === today).length}</b></span><span style="color:#A16207;">โน้ต <b>${(p.boardNotes || []).length}</b></span><span style="color:#6B21A8;">รอตอบกลับ <b>${cw.length}</b>${cw.some(x => x.a.followUp.due != null && x.a.followUp.due <= today) ? ' 🔔' : ''}</span>`;
+    st.innerHTML = `<span>รอดำเนินการ <b>${cols[0].items.length + cols[1].items.length + cn.length}</b></span><span class="red">เลยกำหนด <b>${cols[0].items.length}</b></span><span class="amber">ครบวันนี้ <b>${cols[1].items.filter(x => x.a.end === today).length}</b></span>${ALL ? '' : `<span style="color:#A16207;">โน้ต <b>${(p.boardNotes || []).length}</b></span>`}<span style="color:#6B21A8;">รอตอบกลับ <b>${cw.length}</b>${cw.some(x => x.a.followUp.due != null && x.a.followUp.due <= today) ? ' 🔔' : ''}</span>`;
   };
   const qIn = tools.querySelector('#tdSearch');
   qIn.oninput = () => { clearTimeout(qIn._t); qIn._t = setTimeout(() => { todo.filter.q = qIn.value.trim(); draw(); }, 200); };
