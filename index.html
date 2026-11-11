@@ -6942,7 +6942,7 @@ function renderTodoTabs(subBar) {
     { const allT = projs.flatMap(x => x.tasks), lateA = allT.filter(x => !x.a.completed && x.a.end < today).length;
       const t = document.createElement('button');
       t.className = 'tab td-proj-tab td-all-tab' + (todo.activeId === 'proj:' + TD_ALL ? ' active' : ''); t.style.paddingRight = '14px';
-      t.innerHTML = `<span class="td-tab-ico">🗂</span><span>ภาพรวมทุกแผนงาน</span>${lateA ? `<span class="td-cnt" title="เลยกำหนด ${lateA} งาน">${lateA}</span>` : ''}`;
+      t.innerHTML = `<span class="td-tab-ico">🗂️</span><span>ภาพรวมทุกแผนงาน</span>${lateA ? `<span class="td-cnt" title="เลยกำหนด ${lateA} งาน">${lateA}</span>` : ''}`;
       t.title = 'รวมงานจากทุกแผนงานไว้ในบอร์ดเดียว · ติ๊ก/แก้ที่นี่ = เปลี่ยนในแผนงานนั้นด้วย';
       t.onclick = () => { todo.activeId = 'proj:' + TD_ALL; lsSet('todo_active', todo.activeId); render(); };
       subBar.appendChild(t); }
@@ -8084,7 +8084,7 @@ function renderProjTodo(pid) {
   if (ALL) {
     const projF = todo.filter.proj && plist.some(x => x.p.id === todo.filter.proj) ? todo.filter.proj : '';
     if (projF) tasks = tasks.filter(x => x.p.id === projF);
-    head.innerHTML = `<div class="td-title"><h2 style="cursor:default;">🗂 ภาพรวม To-do ทุกแผนงาน</h2><span class="td-link-badge">🔗 รวมทุกแผนงาน · ติ๊กเสร็จ / แก้ที่นี่ = เปลี่ยนในแผนงานนั้นด้วย</span></div>`;
+    head.innerHTML = `<div class="td-title"><h2 style="cursor:default;">🗂️ ภาพรวม To-do ทุกแผนงาน</h2><span class="td-link-badge">🔗 รวมทุกแผนงาน · ติ๊กเสร็จ / แก้ที่นี่ = เปลี่ยนในแผนงานนั้นด้วย</span></div>`;
     const right = document.createElement('div'); right.style.cssText = 'display:flex; gap:6px; flex-wrap:nowrap; align-items:center; flex:none;';
     const sel = document.createElement('select'); sel.className = 'text-input td-all-proj'; sel.setAttribute('aria-label', 'กรองตามแผนงาน');
     sel.innerHTML = `<option value="">📊 ทุกแผนงาน (${plist.length})</option>` + plist.map(x => `<option value="${x.p.id}" ${x.p.id === projF ? 'selected' : ''}>${escapeHTML(x.p.name)}</option>`).join('');
