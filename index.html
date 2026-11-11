@@ -425,6 +425,8 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .td-card:hover { border-color: #C7D2FE; }
 .td-card.dragging { opacity: 0.4; }
 .td-card.done .td-card-title { color: var(--ink-soft); }
+.td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
+.td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
 .td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
 .td-labels { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
 .td-label { font-size: 10.5px; font-weight: 700; color: #fff; border-radius: 4px; padding: 1px 7px; line-height: 16px; }
@@ -2946,7 +2948,7 @@ async function init() {
       if (unsavedChanges && !wasIncomplete) return;
       applyLoaded(res);
       if (view.type !== 'todo') reRenderWithScroll();
-      else if (String(todo.activeId || '').startsWith('proj:') && !(document.activeElement && document.activeElement.id === 'tdSearch') && !noteEditing.id) render();
+      else if (String(todo.activeId || '').startsWith('proj:') && !todo.drag && !(document.activeElement && document.activeElement.id === 'tdSearch') && !noteEditing.id) render();
       if (!wasIncomplete && view.type !== 'todo') showToast('🔄 มีผู้ใช้อื่นอัปเดตข้อมูล แสดงข้อมูลล่าสุดแล้ว');
       return true;
     } catch (e) {
@@ -8073,11 +8075,19 @@ function renderProjTodo(pid) {
       { key: 'next', name: 'ยังไม่ถึงกำหนดเริ่ม', color: '#94A3B8', items: list.filter(x => !x.a.completed && x.a.start > today).sort((a, b) => a.a.start - b.a.start) },
       { key: 'done', name: 'เสร็จแล้ว', color: '#30A46C', isDone: true, items: list.filter(x => x.a.completed && !fuWaiting(x.a)).sort((a, b) => (b.a.completedAt || 0) - (a.a.completedAt || 0) || b.a.end - a.a.end) }
     ];
+    // ลำดับที่ลากจัดเอง (เก็บในโครงการ ใช้ร่วมกันทุกคน) · งานที่ยังไม่เคยจัด = ขึ้นบนสุดตามลำดับอัตโนมัติ
+    const rk = p.todoRank || {};
+    cols.forEach(col => {
+      const un = col.items.filter(x => rk[x.a.id] == null), rd = col.items.filter(x => rk[x.a.id] != null).sort((x, y) => rk[x.a.id] - rk[y.a.id]);
+      col.items = un.concat(rd); col.manual = rd.length > 0;
+    });
     area.innerHTML = '';
     const board = document.createElement('div'); board.className = 'td-board';
     cols.forEach(col => {
       const el = document.createElement('div'); el.className = 'td-col'; el.style.setProperty('--colc', col.color);
-      el.innerHTML = `<div class="td-col-h"><div class="td-col-name" style="cursor:default;">${col.isDone ? '✔ ' : ''}${col.name}</div><span class="td-count">${col.items.length}</span></div>`;
+      el.innerHTML = `<div class="td-col-h"><div class="td-col-name" style="cursor:default;">${col.isDone ? '✔ ' : ''}${col.name}</div>${col.manual && edit ? '<button type="button" class="td-rk-reset" title="กลับไปเรียงอัตโนมัติตามวันที่">↺</button>' : ''}<span class="td-count">${col.items.length}</span></div>`;
+      const rsb = el.querySelector('.td-rk-reset');
+      if (rsb) rsb.onclick = async () => { const lp = state.projects.find(x => x.id === pid); if (!lp || !lp.todoRank) return; const prev = clone(lp.todoRank); col.items.forEach(x => delete lp.todoRank[x.a.id]); if (!Object.keys(lp.todoRank).length) delete lp.todoRank; await persistAndRender(); showToast(`↺ "${col.name}" กลับไปเรียงตามวันที่`, 'เลิกทำ', async () => { const q2 = state.projects.find(x => x.id === pid); if (q2) { q2.todoRank = prev; await persistAndRender(); } }); };
       const ul = document.createElement('div'); ul.className = 'td-list';
       const key = 'proj-' + pid + '-' + col.key;
       const shown = col.isDone && !todo.showAll[key] && !q ? col.items.slice(0, 15) : col.items;
@@ -8133,9 +8143,48 @@ function renderProjTodo(pid) {
           else tdSetTaskDone(pid, a.id, !col.isDone, card);
         };
         card.onclick = () => tdOpenProjCard(p.id, d ? d.id : null, r ? r.id : null, a.id);
-        card.title = 'คลิกเพื่อเปิดการ์ด (รายการย่อย / Template)';
+        card.title = 'คลิกเพื่อเปิดการ์ด (รายการย่อย / Template)' + (edit ? ' · ลากขึ้น-ลงเพื่อสลับลำดับ' : '');
+        card.dataset.id = a.id;
+        if (edit) {
+          card.draggable = true;
+          card.addEventListener('dragstart', (e) => { todo.drag = { proj: pid, col: col.key, id: a.id }; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', a.id); } catch (x) {} });
+          card.addEventListener('dragend', () => { card.classList.remove('dragging'); document.querySelectorAll('.td-ph').forEach(x => x.remove()); setTimeout(() => { todo.drag = null; }, 0); });
+        }
         ul.appendChild(card);
       });
+      if (edit) {
+        const ok = () => todo.drag && todo.drag.proj === pid && todo.drag.col === col.key;
+        ul.addEventListener('dragover', (e) => {
+          if (!todo.drag || !todo.drag.proj) return;
+          if (!ok()) { e.dataTransfer.dropEffect = 'none'; return; }   // ย้ายข้ามสถานะไม่ได้ (สถานะมาจากวันที่/การติ๊กเสร็จ)
+          e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+          document.querySelectorAll('.td-ph').forEach(x => { if (x.parentElement !== ul) x.remove(); });
+          const cs = [...ul.querySelectorAll('.td-card:not(.dragging)')];
+          const after = cs.find(c => { const b = c.getBoundingClientRect(); return e.clientY < b.top + b.height / 2; });
+          let ph = ul.querySelector('.td-ph'); if (!ph) { ph = document.createElement('div'); ph.className = 'td-ph'; }
+          if (after) ul.insertBefore(ph, after); else ul.insertBefore(ph, ul.querySelector('.td-more'));
+        });
+        ul.addEventListener('drop', async (e) => {
+          if (!ok()) return;
+          e.preventDefault();
+          const ph = ul.querySelector('.td-ph'), nx = ph ? ph.nextElementSibling : null;
+          const beforeId = nx && nx.classList.contains('td-card') ? nx.dataset.id : null, dragId = todo.drag.id;
+          todo.drag = null; if (ph) ph.remove();
+          const ids = col.items.map(x => x.a.id).filter(id => id !== dragId);
+          let at = beforeId ? ids.indexOf(beforeId) : -1;
+          if (at < 0) at = shown.length < col.items.length ? Math.min(ids.length, shown.length - 1) : ids.length;
+          ids.splice(at, 0, dragId);
+          const lp = state.projects.find(x => x.id === pid); if (!lp) return;
+          const before = col.items.map(x => x.a.id).join('|'); if (before === ids.join('|')) return;
+          const prev = lp.todoRank ? clone(lp.todoRank) : null;
+          const live = new Set(tdProjTasks().filter(x => x.p.id === pid).map(x => x.a.id));
+          const nr = {}; Object.keys(lp.todoRank || {}).forEach(k => { if (live.has(k)) nr[k] = lp.todoRank[k]; });
+          ids.forEach((id, i) => { nr[id] = (i + 1) * 10; });
+          lp.todoRank = nr;
+          await persistAndRender();
+          showToast('สลับลำดับแล้ว', 'เลิกทำ', async () => { const q2 = state.projects.find(x => x.id === pid); if (!q2) return; if (prev) q2.todoRank = prev; else delete q2.todoRank; await persistAndRender(); });
+        });
+      }
       if (shown.length < col.items.length) {
         const more = document.createElement('button'); more.className = 'td-more'; more.type = 'button';
         more.textContent = `แสดงทั้งหมด (${col.items.length} งาน)`; more.onclick = () => { todo.showAll[key] = true; draw(); };
