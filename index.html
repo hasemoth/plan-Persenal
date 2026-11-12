@@ -760,6 +760,69 @@ body.cal-drag-on, body.cal-drag-on * { cursor: grabbing !important; user-select:
 .prep-calc.late { color: #B91C1C; } .prep-calc.today { color: #92400E; }
 .prep-add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
 .prep-add button, .prep-add select { border: 1px dashed #A5A3E8; border-radius: 8px; padding: 5px 10px; color: #4338CA; font: inherit; font-weight: 600; font-size: 12.5px; background: #fff; cursor: pointer; }
+/* ชุดสำเร็จรูปงานเตรียมการ */
+.prep-add .prep-gear { border-style: solid; padding: 5px 9px; }
+.tpm-ov { z-index: 60; }
+.modal.tpm-modal { max-width: 1040px; width: calc(100vw - 32px); padding: 0; display: flex; flex-direction: column; max-height: calc(100vh - 32px); overflow: hidden; }
+.modal.tpm-save { max-width: 520px; width: calc(100vw - 32px); }
+.tpm-top { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #EEF0F5; }
+.tpm-save .tpm-top { padding: 0 0 10px; margin-bottom: 10px; }
+.tpm-top h3 { margin: 0; font-size: 17px; color: #241C4D; }
+.tpm-top small { color: #5B6680; flex: 1; }
+.tpm-save .tpm-top h3 { flex: 1; }
+.tpm-body { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 0; flex: 1; overflow: hidden; }
+.tpm-left { background: #F7F8FB; border-right: 1px solid #EEF0F5; padding: 10px; overflow-y: auto; }
+.tpm-set { display: flex; align-items: center; gap: 8px; padding: 8px 8px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; margin-bottom: 4px; }
+.tpm-set:hover { background: #EEF0F7; }
+.tpm-set.on { background: #fff; border-color: #C7D2FE; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.tpm-si { font-size: 18px; width: 24px; text-align: center; }
+.tpm-sn { flex: 1; min-width: 0; }
+.tpm-sn b { display: block; font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tpm-sn small { color: #5B6680; font-size: 11.5px; }
+.tpm-mv { display: flex; flex-direction: column; }
+.tpm-mv button { border: none; background: none; color: #8A93A8; font-size: 10px; line-height: 1; padding: 2px 4px; cursor: pointer; }
+.tpm-mv button:disabled { opacity: .3; cursor: default; }
+.tpm-newset, .tpm-add { border: 1px dashed #A5A3E8; border-radius: 8px; padding: 6px 10px; color: #4338CA; font: inherit; font-weight: 600; font-size: 13px; background: #fff; cursor: pointer; width: 100%; margin-top: 4px; }
+.tpm-add { width: auto; margin-top: 8px; }
+.tpm-meta { font-size: 11.5px; color: #5B6680; margin-top: 12px; line-height: 1.5; }
+.tpm-right { padding: 12px 16px; overflow-y: auto; }
+.tpm-empty { color: #5B6680; padding: 30px; text-align: center; }
+.tpm-f1 { display: flex; gap: 10px; }
+.tpm-lb { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; font-weight: 600; color: #4A5773; margin-bottom: 8px; }
+.tpm-lb small { font-weight: 400; }
+.tpm-icon { width: 70px; } .tpm-icon input { text-align: center; font-size: 18px; padding: 4px; }
+.tpm-name { flex: 1; }
+.tpm-kinds { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: -2px 0 12px; font-size: 13px; }
+.tpm-kinds label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.tpm-hrow, .tpm-row { display: grid; grid-template-columns: minmax(0, 1fr) 58px 72px 92px 150px 26px; gap: 6px; align-items: center; }
+.tpm-hrow { font-size: 11.5px; color: #5B6680; font-weight: 600; padding: 0 2px 4px; }
+.tpm-row { background: #fff; border: 1px solid #E3E6EE; border-radius: 9px; padding: 5px 6px; margin-bottom: 5px; }
+.tpm-row input, .tpm-row select { border: 1px solid #DCE0E8; border-radius: 7px; padding: 4px 6px; font: inherit; font-size: 13px; min-width: 0; background: #fff; }
+.tpm-x { border: none; background: none; color: #9CA3AF; cursor: pointer; font-size: 15px; }
+.tpm-x:hover { color: #DC2626; }
+.tpm-pv { margin-top: 12px; background: #F7F7FF; border: 1px solid #E0E3F5; border-radius: 10px; padding: 8px 10px; font-size: 12.5px; line-height: 1.9; }
+.tpm-pv span { display: inline-block; background: #fff; border: 1px solid #DCE0E8; border-radius: 7px; padding: 0 7px; margin: 0 4px 0 0; line-height: 1.7; }
+.tpm-pv span.b { border-color: #C7D2FE; } .tpm-pv span.a { border-color: #FCD9A8; }
+.tpm-pv i { font-style: normal; color: #4338CA; font-weight: 600; }
+.tpm-pv small { display: block; color: #5B6680; line-height: 1.5; }
+.tpm-foot { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-top: 1px solid #EEF0F5; }
+.tpm-save .tpm-foot { padding: 12px 0 0; margin-top: 8px; }
+.tpm-foot > span { flex: 1; display: flex; gap: 6px; flex-wrap: wrap; }
+.tpm-foot .btn.danger { color: #B91C1C; }
+.tpm-dup { background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; margin: -2px 0 8px; }
+.tps-list { display: flex; flex-direction: column; gap: 4px; max-height: 46vh; overflow-y: auto; }
+.tps-it { display: grid; grid-template-columns: 20px 1fr; gap: 0 8px; align-items: center; background: #fff; border: 1px solid #E3E6EE; border-radius: 8px; padding: 6px 8px; cursor: pointer; font-size: 13.5px; }
+.tps-it small { grid-column: 2; color: #5B6680; font-size: 12px; }
+.tpm-note { font-size: 12px; color: #5B6680; margin: 8px 0 0; line-height: 1.5; }
+@media (max-width: 760px) {
+  .tpm-body { grid-template-columns: 1fr; overflow-y: auto; }
+  .tpm-left { border-right: none; border-bottom: 1px solid #EEF0F5; max-height: 30vh; }
+  .tpm-right { overflow: visible; }
+  .tpm-hrow { display: none; }
+  .tpm-row { grid-template-columns: 1fr 58px 72px 26px; }
+  .tpm-row .tpm-t { grid-column: 1 / 4; } .tpm-row .tpm-x { grid-column: 4; grid-row: 1; }
+  .tpm-row .tpm-u { grid-column: 3; } .tpm-row .tpm-w { grid-column: 1 / 5; }
+}
 .prep-pin { position: absolute; bottom: 2px; height: 16px; min-width: 16px; padding: 0 5px; border-radius: 8px; background: #fff; border: 1.5px solid #F59E0B; color: #92400E; font-size: 10.5px; font-weight: 600; line-height: 13px; white-space: nowrap; cursor: pointer; z-index: 3; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
 .prep-pin.late { border-color: #EF4444; color: #B91C1C; background: #FEF2F2; }
 .prep-pin.done { border-color: #30A46C; color: #166534; opacity: .75; }
@@ -2574,7 +2637,7 @@ async function loadUnifiedState() {
             e => { if (bs) Object.assign(bs[t], { state: 'fail', t1: Date.now(), err: e.message }); return { ok: false, e }; });
   }));
 
-  let allProjects = [], allGplans = [], latestMod = 0, settingsSource = null;
+  let allProjects = [], allGplans = [], latestMod = 0, settingsSource = null, tplSrc = null;
   const okMap = {}, modMap = {}, rawMap = {}, errMap = {};
 
   order.forEach((type, i) => {
@@ -2588,6 +2651,7 @@ async function loadUnifiedState() {
     rawMap[type] = clone(data);                 // snapshot ไว้ใช้เทียบตอนรวมข้อมูล
     allProjects.push(...data.projects);
     allGplans.push(...data.gplans);
+    if (data.prepTpl && Array.isArray(data.prepTpl.sets) && (!tplSrc || (data.prepTpl.updatedAt || 0) > (tplSrc.updatedAt || 0))) tplSrc = data.prepTpl;
     if (modMap[type] >= latestMod) {
       latestMod = modMap[type];
       if (data.colors || data.viewRange || data.overviewSettings) settingsSource = data;
@@ -2605,6 +2669,7 @@ async function loadUnifiedState() {
   };
   base.overviewSettings.tab1 = base.overviewSettings.tab1 || def.overviewSettings.tab1;
   base.overviewSettings.tab2 = base.overviewSettings.tab2 || def.overviewSettings.tab2;
+  if (tplSrc) base.prepTpl = clone(tplSrc);   // ชุดสำเร็จรูปงานเตรียมการ: ใช้ฉบับที่แก้ล่าสุด
 
   return { state: base, okMap, modMap, rawMap, errMap, complete: order.every(t => okMap[t]) };
 }
@@ -2613,7 +2678,7 @@ async function loadUnifiedState() {
 // --- MULTI-USER MERGE (รวมการแก้ไขจากหลายคน) ---
 // ==========================================
 const CAT_LABELS = { work: 'สลส.', extra: 'PRI', personal: 'ส่วนตัว' };
-const SETTING_KEYS = ['colors', 'viewRange', 'overviewSettings'];
+const SETTING_KEYS = ['colors', 'viewRange', 'overviewSettings', 'prepTpl'];
 const FIELD_LABELS = { label: 'ชื่อกิจกรรม', dates: 'ช่วงวันที่', color: 'สี', remark: 'หมายเหตุ', completed: 'สถานะ', type: 'ประเภท', name: 'ชื่อ', note: 'บันทึกรายละเอียดโครงการ', pct: '% ความคืบหน้า', owner: 'ผู้รับผิดชอบ', start: 'วันเริ่ม', end: 'วันสิ้นสุด', deps: 'งานที่ต้องรอ', parent: 'กลุ่มงาน', bs: 'แผนเดิม (เริ่ม)', be: 'แผนเดิม (สิ้นสุด)' };
 
 function clone(v) { return v === undefined ? undefined : JSON.parse(JSON.stringify(v)); }
@@ -2802,6 +2867,8 @@ async function mergeWithServer(type, sub, theirsRaw) {
     const theirsNewer = (theirs.lastModified || 0) > settingsBaseModified && theirs[k];
     merged[k] = clone(!mineChanged && theirsNewer ? theirs[k] : sub[k]);
   });
+  // ชุดสำเร็จรูป: เลือกฉบับที่แก้ล่าสุดเสมอ (ไม่ทับของคนอื่นที่ใหม่กว่า)
+  { const a = sub.prepTpl, b = theirs.prepTpl; merged.prepTpl = !a ? clone(b) : !b ? clone(a) : clone((a.updatedAt || 0) >= (b.updatedAt || 0) ? a : b); if (!merged.prepTpl) delete merged.prepTpl; }
   return { merged, conflictCount: conflicts.length };
 }
 
@@ -3112,7 +3179,8 @@ function importBackup(event) {
                 gplans: Array.isArray(imported.gplans) ? imported.gplans.filter(g => g && Array.isArray(g.tasks) && can(g.sourceType || 'work')) : (state.gplans || []),
                 colors: imported.colors || state.colors,
                 viewRange: imported.viewRange || state.viewRange,
-                overviewSettings: imported.overviewSettings || state.overviewSettings
+                overviewSettings: imported.overviewSettings || state.overviewSettings,
+                ...((imported.prepTpl || state.prepTpl) ? { prepTpl: imported.prepTpl || state.prepTpl } : {})
             };
             render();
             await saveState();
@@ -3950,6 +4018,7 @@ function openUserMenu(anchor) {
     add('history', 'ประวัติการแก้ไข', openLogModal);
     add('print', 'พิมพ์ / บันทึกเป็น PDF', printView);
     add('download', 'สำรองข้อมูล (ไฟล์ JSON)', exportBackup);
+    add('folder', 'ชุดสำเร็จรูปงานเตรียมการ', () => openPrepTplManager());
     if (!READ_ONLY) add('upload', 'กู้คืนข้อมูลจากไฟล์', () => document.getElementById('importFile').click());
     if (CAN_CHANGE_PWD) add('key', 'เปลี่ยนรหัสผ่าน', openChangePasswordModal);
     const s = document.createElement('div'); s.className = 'pop-sep'; p.appendChild(s);
@@ -7656,12 +7725,179 @@ function tdProjList() {
 // ---- งานเตรียมการ / งานหลังกิจกรรม: รายการย่อยที่มีวันกำหนดเสร็จของตัวเอง ----
 // a.prep = [{ id, text, done, doneAt, doneBy, who, rel: { n, dir: -1 ก่อน | 1 หลัง, unit: 'wd' วันทำการ | 'd' วัน } | null, day (ใช้เมื่อ rel = null) }]
 // rel: ผูกกับวันของกิจกรรม (ก่อน = นับจากวันเริ่ม, หลัง = นับจากวันสิ้นสุด) → เลื่อนกิจกรรมแล้ววันกำหนดเลื่อนตามเอง
-const PREP_TPL = [
-  { name: 'ประชุมคณะกรรมการ', items: [['จองห้องประชุม', 4, -1], ['ส่งหนังสือเชิญ', 3, -1], ['ส่งเอกสารประกอบการประชุม', 2, -1], ['ร่างรายงานการประชุม', 5, 1]] },
-  { name: 'ประชุมทั่วไป', items: [['ส่งหนังสือเชิญ', 3, -1], ['ร่างรายงานการประชุม', 3, 1]] },
-  { name: 'ลงพื้นที่', items: [['ขออนุมัติเดินทาง', 7, -1], ['แจ้งหน่วยงานที่จะไป', 5, -1], ['รายงานผลการลงพื้นที่', 3, 1]] },
-  { name: 'ส่งหนังสือ / รอตอบกลับ', items: [['ร่างหนังสือเสนอลงนาม', 2, -1]] }
+// ชุดสำเร็จรูปเริ่มต้น (ใช้เมื่อยังไม่เคยแก้ในระบบ) · แก้ได้ที่ ⚙ จัดการชุดสำเร็จรูป → เก็บใน state.prepTpl ใช้ร่วมกันทั้งทีม
+const PREP_TPL_DEF = [
+  { id: 'tpl_d1', name: 'ประชุมคณะกรรมการ', icon: '🏛', kinds: ['meeting'], items: [['จองห้องประชุม', 4, -1], ['ส่งหนังสือเชิญ', 3, -1], ['ส่งเอกสารประกอบการประชุม', 2, -1], ['ร่างรายงานการประชุม', 5, 1]] },
+  { id: 'tpl_d2', name: 'ประชุมทั่วไป', icon: '🤝', kinds: ['meeting'], items: [['ส่งหนังสือเชิญ', 3, -1], ['ร่างรายงานการประชุม', 3, 1]] },
+  { id: 'tpl_d3', name: 'ลงพื้นที่', icon: '🚗', kinds: ['field'], items: [['ขออนุมัติเดินทาง', 7, -1], ['แจ้งหน่วยงานที่จะไป', 5, -1], ['รายงานผลการลงพื้นที่', 3, 1]] },
+  { id: 'tpl_d4', name: 'ส่งหนังสือ / รอตอบกลับ', icon: '✉️', kinds: ['task'], items: [['ร่างหนังสือเสนอลงนาม', 2, -1]] }
 ];
+const PREP_KINDS = [['meeting', 'ประชุม / นัดหมาย'], ['field', 'ลงพื้นที่'], ['task', 'กำหนดการที่ต้องทำ'], ['note', 'กิจกรรมทั่วไป']];
+function prepTplDefaults() { return PREP_TPL_DEF.map(s => ({ id: s.id, name: s.name, icon: s.icon, kinds: s.kinds.slice(), items: s.items.map(([text, n, dir], i) => ({ id: s.id + '_' + i, text, n, dir, unit: 'wd' })) })); }
+function prepTpls() { const t = state && state.prepTpl; return t && Array.isArray(t.sets) ? t.sets : prepTplDefaults(); }
+function prepTplCanEdit() { return !READ_ONLY; }
+function prepTplCommit(sets, msg) {
+  state.prepTpl = { sets: clone(sets), updatedAt: Date.now(), updatedBy: USER_NAME || '' };
+  saveState();
+  if (msg) showToast(msg);
+}
+function prepKindOf(modal) {
+  const t = modal.querySelector('#actType'); if (!t) return '';
+  if (t.value === 'meeting') { const k = modal.querySelector('#meetKind'); return k && k.value === 'field' ? 'field' : 'meeting'; }
+  return t.value === 'task' ? 'task' : 'note';
+}
+function prepTplLabel(s) { return `${s.icon ? s.icon + ' ' : ''}${s.name}`; }
+// แปลงรายการในกิจกรรม → งานในชุด (เก็บแค่ชื่อ + ระยะห่างจากวันกิจกรรม)
+function prepItemToTpl(it, A) {
+  if (it.rel) return { id: uid('tpi'), text: it.text.trim(), n: it.rel.n, dir: it.rel.dir, unit: it.rel.unit || 'wd', ...(it.who ? { who: it.who } : {}) };
+  const d = typeof it.day === 'number' ? it.day : A.start, dir = d <= A.start ? -1 : 1, base = dir < 0 ? A.start : A.end;
+  return { id: uid('tpi'), text: it.text.trim(), n: Math.abs(d - base), dir, unit: 'd', ...(it.who ? { who: it.who } : {}) };
+}
+// เปิดหน้าต่างซ้อน (บนหน้าต่างกิจกรรมได้) แล้วคืนค่า modalOpen เดิมตอนปิด
+function prepOverlay(cls, html, guard) {
+  const prev = modalOpen; modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay tpm-ov';
+  const m = document.createElement('div'); m.className = 'modal ' + cls; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m.innerHTML = html; ov.appendChild(m); document.body.appendChild(ov);
+  const onKey = (e) => {
+    if (e.key !== 'Escape' || !document.body.contains(ov) || [...document.querySelectorAll('.modal-overlay')].pop() !== ov) return;
+    e.preventDefault(); e.stopImmediatePropagation(); tryClose();
+  };
+  const close = () => { ov.remove(); modalOpen = prev; document.removeEventListener('keydown', onKey, true); };
+  const tryClose = () => { if (!guard || guard()) close(); };
+  document.addEventListener('keydown', onKey, true);
+  ov.addEventListener('mousedown', (e) => { if (e.target === ov) tryClose(); });
+  return { ov, m, close, tryClose };
+}
+
+// 💾 บันทึกรายการในกิจกรรมนี้เป็นชุดใหม่
+function prepSaveAsTpl(W, A, kind, onDone) {
+  const rows = W.filter(x => (x.text || '').trim());
+  if (!rows.length) { showToast('ยังไม่มีงานเตรียมการให้บันทึก'); return; }
+  const sets = clone(prepTpls());
+  const { m, close } = prepOverlay('tpm-save', `<div class="tpm-top"><h3>💾 บันทึกเป็นชุดสำเร็จรูป</h3><button type="button" class="btn ibtn ghost" data-x aria-label="ปิด">${ic('x', 18)}</button></div>
+    <label class="tpm-lb">ชื่อชุด<input type="text" class="text-input" id="tpsName" placeholder="เช่น ประชุมคณะทำงานเทคนิค" maxlength="60"></label>
+    <div class="tpm-dup" id="tpsDup" hidden></div>
+    <div class="tpm-lb">งานที่จะเก็บ (ติ๊กเลือก)</div>
+    <div class="tps-list">${rows.map((it, i) => { const t = prepItemToTpl(it, A); return `<label class="tps-it"><input type="checkbox" checked data-i="${i}"><span>${escapeHTML(t.text)}</span><small>${escapeHTML((t.dir < 0 ? 'ก่อน ' : 'หลัง ') + t.n + (t.unit === 'd' ? ' วัน' : ' วันทำการ'))}${it.rel ? '' : ' · แปลงจากวันที่แน่นอน'}${t.who ? ' · ' + escapeHTML(t.who) : ''}</small></label>`; }).join('')}</div>
+    <p class="tpm-note">เก็บแค่ชื่องาน + ระยะห่างจากวันกิจกรรม + ผู้รับผิดชอบ (ไม่เก็บสถานะเสร็จแล้ว) · ทุกคนในทีมจะเห็นชุดนี้</p>
+    <div class="tpm-foot"><span></span><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok>บันทึกชุด</button></div>`);
+  const nm = m.querySelector('#tpsName'), dup = m.querySelector('#tpsDup');
+  const findDup = () => sets.find(s => s.name.trim() === nm.value.trim());
+  nm.oninput = () => { const d = findDup(); dup.hidden = !d; if (d) dup.innerHTML = `มีชุดชื่อนี้อยู่แล้ว (${d.items.length} ข้อ) — กดบันทึกจะ<b>แทนที่ชุดเดิม</b> หรือเปลี่ยนชื่อใหม่`; };
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelector('[data-ok]').onclick = () => {
+    const name = nm.value.trim(); if (!name) { nm.focus(); showToast('กรุณาตั้งชื่อชุด'); return; }
+    const pick = [...m.querySelectorAll('.tps-it input:checked')].map(c => prepItemToTpl(rows[+c.dataset.i], A));
+    if (!pick.length) { showToast('เลือกอย่างน้อย 1 งาน'); return; }
+    const d = findDup();
+    if (d) { d.items = pick; d.updatedBy = USER_NAME || ''; }
+    else sets.push({ id: uid('tpl'), name, icon: kind === 'field' ? '🚗' : kind === 'meeting' ? '🤝' : kind === 'task' ? '🎯' : '📋', kinds: kind ? [kind] : [], items: pick });
+    prepTplCommit(sets, `💾 ${d ? 'แทนที่' : 'บันทึก'}ชุด “${name}” แล้ว (${pick.length} ข้อ)`);
+    close(); if (onDone) onDone();
+  };
+  setTimeout(() => nm.focus(), 30);
+}
+
+// ⚙ จัดการชุดสำเร็จรูป
+function openPrepTplManager(onDone, selId) {
+  const canE = prepTplCanEdit();
+  let sets = clone(prepTpls()), sel = Math.max(0, sets.findIndex(s => s.id === selId)), dirty = false;
+  const meta = state.prepTpl;
+  const users = [...new Set([...(todo.users || []), USER_NAME].filter(Boolean))];
+  const { m, close, tryClose } = prepOverlay('tpm-modal', '', () => !dirty || confirm('ยังไม่ได้บันทึกการแก้ไขชุดสำเร็จรูป ต้องการปิดโดยไม่บันทึกหรือไม่?'));
+  const exDay = (() => { let d = todayBangkokIndex() + 7; while (!isWorkday(d)) d++; return d; })();
+  const fmt = (d) => { const dt = dateFromIndex(d); return `${THAI_WEEKDAY_SHORT[dt.getUTCDay()]}. ${calShortDate(d)}`; };
+  const doClose = tryClose;
+  const draw = () => {
+    const s = sets[sel];
+    const left = sets.map((x, i) => `<div class="tpm-set${i === sel ? ' on' : ''}" data-i="${i}" role="button" tabindex="0">
+        <span class="tpm-si">${escapeHTML(x.icon || '📋')}</span><span class="tpm-sn"><b>${escapeHTML(x.name || '(ไม่มีชื่อ)')}</b><small>${x.items.length} ข้อ${(x.kinds || []).length ? ' · ' + escapeHTML(x.kinds.map(k => (PREP_KINDS.find(p => p[0] === k) || [k, k])[1].split(' ')[0]).join(', ')) : ' · ทุกประเภท'}</small></span>
+        ${canE ? `<span class="tpm-mv"><button type="button" data-up aria-label="เลื่อนขึ้น" ${i === 0 ? 'disabled' : ''}>▲</button><button type="button" data-dn aria-label="เลื่อนลง" ${i === sets.length - 1 ? 'disabled' : ''}>▼</button></span>` : ''}</div>`).join('');
+    const ro = canE ? '' : 'disabled';
+    let right = '<div class="tpm-empty">ยังไม่มีชุด — กด “+ ชุดใหม่”</div>';
+    if (s) {
+      const before = s.items.map((it, i) => ({ it, i })).filter(x => x.it.dir < 0), after = s.items.map((it, i) => ({ it, i })).filter(x => x.it.dir >= 0);
+      const row = ({ it, i }) => `<div class="tpm-row" data-r="${i}">
+          <input type="text" class="tpm-t" value="${escapeHTML(it.text)}" placeholder="ชื่องาน" aria-label="ชื่องาน" ${ro}>
+          <input type="number" class="tpm-n" min="0" max="120" value="${it.n}" aria-label="จำนวนวัน" ${ro}>
+          <select class="tpm-d" aria-label="ก่อนหรือหลัง" ${ro}><option value="-1" ${it.dir < 0 ? 'selected' : ''}>ก่อน</option><option value="1" ${it.dir >= 0 ? 'selected' : ''}>หลัง</option></select>
+          <select class="tpm-u" aria-label="หน่วย" ${ro}><option value="wd" ${it.unit !== 'd' ? 'selected' : ''}>วันทำการ</option><option value="d" ${it.unit === 'd' ? 'selected' : ''}>วัน</option></select>
+          <input type="text" class="tpm-w" list="tpmUsers" value="${escapeHTML(it.who || '')}" placeholder="— ไม่ระบุ —" aria-label="ผู้รับผิดชอบเริ่มต้น" ${ro}>
+          ${canE ? `<button type="button" class="tpm-x" aria-label="ลบงานนี้" title="ลบงานนี้">✕</button>` : '<span></span>'}</div>`;
+      const pv = s.items.map(it => ({ it, d: wdShift(exDay, it.n, it.dir, it.unit) })).sort((a, b) => a.d - b.d);
+      right = `<div class="tpm-f1">
+          <label class="tpm-lb tpm-icon">ไอคอน<input type="text" id="tpmIcon" class="text-input" value="${escapeHTML(s.icon || '')}" maxlength="4" ${ro}></label>
+          <label class="tpm-lb tpm-name">ชื่อชุด<input type="text" id="tpmName" class="text-input" value="${escapeHTML(s.name)}" maxlength="60" ${ro}></label></div>
+        <div class="tpm-lb">แนะนำเมื่อกิจกรรมเป็น <small>(ขึ้นเป็นกลุ่มแรกในเมนู · ไม่เลือก = ทุกประเภท)</small></div>
+        <div class="tpm-kinds">${PREP_KINDS.map(([k, t]) => `<label><input type="checkbox" value="${k}" ${(s.kinds || []).includes(k) ? 'checked' : ''} ${ro}><span>${t}</span></label>`).join('')}</div>
+        <div class="tpm-hrow"><span>งาน</span><span>จำนวน</span><span>ก่อน/หลัง</span><span>หน่วย</span><span>ผู้รับผิดชอบเริ่มต้น</span><span></span></div>
+        ${before.map(row).join('')}
+        <div class="prep-anchor">📍 วันกิจกรรม / ประชุม</div>
+        ${after.map(row).join('')}
+        ${canE ? '<button type="button" class="tpm-add">+ เพิ่มงานในชุด</button>' : ''}
+        ${pv.length ? `<div class="tpm-pv"><b>👁 ตัวอย่าง</b> ถ้ากิจกรรมวันที่ ${fmt(exDay)} → ${pv.map(x => `<span class="${x.d < exDay ? 'b' : 'a'}">${escapeHTML(x.it.text || '…')} <i>${fmt(x.d)}</i></span>`).join('')}<small>“วันทำการ” ข้ามเสาร์-อาทิตย์และวันหยุดราชการให้อัตโนมัติ</small></div>` : ''}`;
+    }
+    m.innerHTML = `<div class="tpm-top"><h3>⚙ ชุดสำเร็จรูป · งานเตรียมการ</h3><small>ใช้ร่วมกันทุกคน${canE ? '' : ' · ดูอย่างเดียว'}</small><button type="button" class="btn ibtn ghost" data-x aria-label="ปิด">${ic('x', 18)}</button></div>
+      <div class="tpm-body"><div class="tpm-left">${left}${canE ? '<button type="button" class="tpm-newset">+ ชุดใหม่</button>' : ''}
+        ${meta && meta.updatedAt ? `<div class="tpm-meta">แก้ล่าสุดโดย ${escapeHTML(meta.updatedBy || '-')}<br>${escapeHTML(fmtDateTime(meta.updatedAt))}</div>` : '<div class="tpm-meta">ยังเป็นชุดเริ่มต้นของระบบ</div>'}</div>
+      <div class="tpm-right">${right}</div></div>
+      <datalist id="tpmUsers">${users.map(u => `<option value="${escapeHTML(u)}">`).join('')}</datalist>
+      <div class="tpm-foot">${canE ? `<span class="tpm-fl">${s ? '<button type="button" class="btn" data-dup>⧉ ทำสำเนาชุด</button><button type="button" class="btn danger" data-del>🗑 ลบชุด</button>' : ''}<button type="button" class="btn" data-reset title="แทนที่ทุกชุดด้วยชุดเริ่มต้นของระบบ">↺ คืนค่าชุดเริ่มต้น</button></span>
+        <button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok ${dirty ? '' : 'disabled'}>บันทึก</button>` : '<span></span><button type="button" class="btn" data-x>ปิด</button>'}</div>`;
+    wire();
+  };
+  const touch = () => { dirty = true; const ok = m.querySelector('[data-ok]'); if (ok) ok.disabled = false; };
+  const wire = () => {
+    const s = sets[sel];
+    m.querySelectorAll('[data-x]').forEach(b => b.onclick = doClose);
+    m.querySelectorAll('.tpm-set').forEach(el => {
+      const i = +el.dataset.i;
+      el.onclick = (e) => { if (e.target.closest('.tpm-mv')) return; sel = i; draw(); };
+      el.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sel = i; draw(); } };
+      const up = el.querySelector('[data-up]'), dn = el.querySelector('[data-dn]');
+      if (up) up.onclick = () => { [sets[i - 1], sets[i]] = [sets[i], sets[i - 1]]; sel = i - 1; touch(); draw(); };
+      if (dn) dn.onclick = () => { [sets[i + 1], sets[i]] = [sets[i], sets[i + 1]]; sel = i + 1; touch(); draw(); };
+    });
+    if (!canE) return;
+    const ns = m.querySelector('.tpm-newset');
+    if (ns) ns.onclick = () => { sets.push({ id: uid('tpl'), name: 'ชุดใหม่', icon: '📋', kinds: [], items: [{ id: uid('tpi'), text: '', n: 3, dir: -1, unit: 'wd' }] }); sel = sets.length - 1; touch(); draw(); const n = m.querySelector('#tpmName'); if (n) { n.focus(); n.select(); } };
+    const rs = m.querySelector('[data-reset]');
+    if (rs) rs.onclick = () => { if (!confirm('แทนที่ชุดสำเร็จรูปทั้งหมดด้วยชุดเริ่มต้นของระบบ (4 ชุด)?\nชุดที่ทีมสร้างเองจะหายไป')) return; sets = prepTplDefaults(); sel = 0; touch(); draw(); };
+    if (!s) return;
+    const nm = m.querySelector('#tpmName'), icn = m.querySelector('#tpmIcon');
+    nm.oninput = () => { s.name = nm.value; touch(); const b = m.querySelector('.tpm-set.on b'); if (b) b.textContent = s.name || '(ไม่มีชื่อ)'; };
+    icn.oninput = () => { s.icon = icn.value.trim(); touch(); const b = m.querySelector('.tpm-set.on .tpm-si'); if (b) b.textContent = s.icon || '📋'; };
+    m.querySelectorAll('.tpm-kinds input').forEach(c => c.onchange = () => { s.kinds = [...m.querySelectorAll('.tpm-kinds input:checked')].map(x => x.value); touch(); });
+    m.querySelectorAll('.tpm-row').forEach(r => {
+      const it = s.items[+r.dataset.r], q = (c) => r.querySelector(c);
+      q('.tpm-t').oninput = (e) => { it.text = e.target.value; touch(); };
+      q('.tpm-w').oninput = (e) => { const v = e.target.value.trim(); if (v) it.who = v; else delete it.who; touch(); };
+      q('.tpm-n').onchange = (e) => { it.n = Math.max(0, Math.min(120, parseInt(e.target.value, 10) || 0)); touch(); draw(); };
+      q('.tpm-d').onchange = (e) => { it.dir = +e.target.value; touch(); draw(); };
+      q('.tpm-u').onchange = (e) => { it.unit = e.target.value; touch(); draw(); };
+      q('.tpm-x').onclick = () => { s.items.splice(+r.dataset.r, 1); touch(); draw(); };
+    });
+    const ad = m.querySelector('.tpm-add');
+    if (ad) ad.onclick = () => { s.items.push({ id: uid('tpi'), text: '', n: 3, dir: -1, unit: 'wd' }); touch(); draw(); const ts = m.querySelectorAll('.tpm-t'); const last = [...ts].find(x => +x.closest('.tpm-row').dataset.r === s.items.length - 1); if (last) last.focus(); };
+    const du = m.querySelector('[data-dup]');
+    if (du) du.onclick = () => { const c = clone(s); c.id = uid('tpl'); c.name = s.name + ' (สำเนา)'; c.items.forEach(x => x.id = uid('tpi')); sets.splice(sel + 1, 0, c); sel++; touch(); draw(); };
+    const de = m.querySelector('[data-del]');
+    if (de) de.onclick = () => { if (!confirm(`ลบชุด “${s.name}”?\n(งานเตรียมการที่เคยใส่ในกิจกรรมแล้วจะไม่หาย)`)) return; sets.splice(sel, 1); sel = Math.max(0, sel - 1); touch(); draw(); };
+    const ok = m.querySelector('[data-ok]');
+    if (ok) ok.onclick = () => {
+      const clean = sets.map(x => ({ ...x, name: (x.name || '').trim(), items: x.items.filter(it => (it.text || '').trim()).map(it => ({ ...it, text: it.text.trim() })) }));
+      const bad = clean.findIndex(x => !x.name);
+      if (bad >= 0) { sel = bad; draw(); showToast('มีชุดที่ยังไม่ได้ตั้งชื่อ'); return; }
+      const names = clean.map(x => x.name); const dupN = names.find((n, i) => names.indexOf(n) !== i);
+      if (dupN) { showToast(`มีชุดชื่อ “${dupN}” ซ้ำกัน`); return; }
+      prepTplCommit(clean, '⚙ บันทึกชุดสำเร็จรูปแล้ว · ทุกคนในทีมจะเห็นชุดนี้');
+      dirty = false; close(); if (onDone) onDone();
+    };
+  };
+  draw();
+  setTimeout(() => { const f = m.querySelector('.tpm-set.on') || m.querySelector('[data-x]'); if (f) f.focus(); }, 30);
+}
 function isWorkday(i) { const g = dateFromIndex(i).getUTCDay(); return g !== 0 && g !== 6 && !calHoliday(i); }
 function wdShift(idx, n, dir, unit) {
   n = Math.max(0, Math.round(Number(n) || 0)); dir = dir < 0 ? -1 : 1;
@@ -7720,6 +7956,13 @@ function initPrepForm(modal, existing) {
     const tail = it.done ? ' · ✔ เสร็จแล้ว' : d < today ? ` · เลย ${today - d} วัน` : d === today ? ' · ครบกำหนดวันนี้' : '';
     return `<span class="prep-calc${cls}">= ${THAI_WEEKDAY_SHORT[dt.getUTCDay()]}. ${calShortDate(d)} ${String(dt.getUTCFullYear() + 543).slice(2)}${tail}</span>`;
   };
+  const tplSelectHTML = () => {
+    const all = prepTpls(), kd = prepKindOf(modal), kl = (PREP_KINDS.find(x => x[0] === kd) || ['', ''])[1];
+    const rec = all.filter(t => (t.kinds || []).includes(kd)), oth = all.filter(t => !rec.includes(t));
+    const op = (t) => `<option value="${escapeHTML(t.id)}">${escapeHTML(prepTplLabel(t))} (${t.items.length} ข้อ)</option>`;
+    const hasRows = W.some(x => (x.text || '').trim());
+    return `<select class="prep-tpl" aria-label="ชุดสำเร็จรูป"><option value="">📋 ใช้ชุดสำเร็จรูป…</option>${rec.length ? `<optgroup label="แนะนำสำหรับ “${escapeHTML(kl.split(' ')[0])}”">${rec.map(op).join('')}</optgroup><optgroup label="ชุดอื่น">${oth.map(op).join('')}</optgroup>` : oth.map(op).join('')}<optgroup label="──────────">${hasRows ? '<option value="__save">💾 บันทึกรายการในกิจกรรมนี้เป็นชุดใหม่…</option>' : ''}<option value="__mgr">⚙ จัดการชุดสำเร็จรูป…</option></optgroup></select>`;
+  };
   const rowCls = (it) => { const d = prepDay(anchor(), it); return 'prep-row' + (it.done ? ' done' : d < today ? ' late' : d === today ? ' today' : ''); };
   const rowHTML = (it, i) => {
     const mode = it.rel ? (it.rel.dir < 0 ? 'b' : 'a') : 'f';
@@ -7747,7 +7990,7 @@ function initPrepForm(modal, existing) {
       <div class="prep-anchor">📍 ${escapeHTML(typeName())} · ${prepAnchorText(A)}</div>
       ${after.length ? '<div class="prep-sep">หลัง</div>' + after.map(x => rowHTML(x.it, x.i)).join('') : ''}` : ''}
       ${READ_ONLY ? '' : `<div class="prep-add"><button type="button" class="prep-new">+ เพิ่มงานเตรียมการ</button>
-        <select class="prep-tpl" aria-label="ชุดสำเร็จรูป"><option value="">📋 ใช้ชุดสำเร็จรูป…</option>${PREP_TPL.map((t, i) => `<option value="${i}">${escapeHTML(t.name)} (${t.items.length} ข้อ)</option>`).join('')}</select></div>`}
+        ${tplSelectHTML()}<button type="button" class="prep-gear" title="จัดการชุดสำเร็จรูป (เพิ่ม · แก้ · ลบ)" aria-label="จัดการชุดสำเร็จรูป">⚙</button></div>`}
       <datalist id="prepUsers">${users.map(u => `<option value="${escapeHTML(u)}">`).join('')}</datalist></div>`;
     box.querySelectorAll('.prep-row').forEach(rowEl => {
       const it = W[+rowEl.dataset.i], q = (c) => rowEl.querySelector(c);
@@ -7773,15 +8016,23 @@ function initPrepForm(modal, existing) {
     if (nb) nb.onclick = () => { W.push({ id: uid('prp'), text: '', rel: { n: 3, dir: -1, unit: 'wd' } }); draw(); const ins = box.querySelectorAll('.prep-t'); const last = [...ins].find(x => x.closest('.prep-row').dataset.i == W.length - 1); if (last) last.focus(); };
     const tp = box.querySelector('.prep-tpl');
     if (tp) tp.onchange = () => {
-      const t = PREP_TPL[+tp.value]; if (!t) return;
+      const v = tp.value; tp.value = '';
+      if (v === '__save') { prepSaveAsTpl(W, anchor(), prepKindOf(modal), draw); return; }
+      if (v === '__mgr') { openPrepTplManager(draw); return; }
+      const t = prepTpls().find(x => x.id === v); if (!t) return;
       const have = new Set(W.map(x => (x.text || '').trim()));
-      t.items.forEach(([text, n, dir]) => { if (!have.has(text)) W.push({ id: uid('prp'), text, rel: { n, dir, unit: 'wd' } }); });
+      let k = 0;
+      t.items.forEach(it => { if (!(it.text || '').trim() || have.has(it.text.trim())) return; k++; W.push({ id: uid('prp'), text: it.text.trim(), rel: { n: it.n, dir: it.dir < 0 ? -1 : 1, unit: it.unit === 'd' ? 'd' : 'wd' }, ...(it.who ? { who: it.who } : {}) }); });
       draw();
+      if (!k) showToast('งานในชุดนี้มีอยู่ในกิจกรรมแล้วทั้งหมด');
     };
+    const gear = box.querySelector('.prep-gear');
+    if (gear) gear.onclick = () => openPrepTplManager(draw);
   };
   const later = () => setTimeout(draw, 0);
   ['#actStart', '#actEnd'].forEach(sel => { const el = modal.querySelector(sel); el.addEventListener('input', later); el.addEventListener('change', later); });
   modal.querySelector('#actType').addEventListener('change', later);
+  { const mk = modal.querySelector('#meetKind'); if (mk) mk.addEventListener('change', later); }
   draw();
   return {
     get: () => W.filter(x => (x.text || '').trim()).map(x => { const o = { ...x, text: x.text.trim() }; if (o.rel) delete o.day; else delete o.rel; return o; }),
