@@ -427,7 +427,7 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .td-card.done .td-card-title { color: var(--ink-soft); }
 .td-proj-chip { display: inline-block; font-weight: 600; color: #3730A3; background: #EEF2FF; border-left: 3px solid var(--pc, #6366F1); border-radius: 5px; padding: 0 6px; margin-right: 2px; }
 .td-all-proj { width: auto !important; min-width: 190px; max-width: 260px; padding: 7px 10px; margin: 0 !important; font-size: 13px; }
-.dp-modal { max-width: 620px; }
+.modal.dp-modal { max-width: 620px; }
 .dp-sub { font-size: 12.5px; color: var(--ink-soft); margin: -4px 0 8px; }
 .dp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .dp-shift { display: flex; gap: 6px; } .dp-shift input { width: 80px; }
@@ -446,6 +446,78 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .pp-stseg .st-todo input:checked + span { border-color: #94A3B8; background: #F1F5F9; color: #334155; }
 .pp-stseg .st-wip input:checked + span { border-color: #3E63DD; background: #EEF2FF; color: #3730A3; }
 .pp-stseg .st-done input:checked + span { border-color: #30A46C; background: #DCFCE7; color: #166534; }
+.tf-bar { background: #fff; border: 1px solid #E3E6EE; border-radius: 12px; padding: 8px 10px; margin: 0 0 10px; display: flex; flex-direction: column; gap: 6px; }
+.tf-bar.on { border-color: #C7D2FE; background: #FAFAFF; }
+.tf-bar.mini { flex-direction: row; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 10px; }
+.tf-r { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tf-l { font-weight: 700; color: var(--indigo-deep, #241C4D); font-size: 12.5px; width: 78px; flex: none; }
+.tf-seg button { font-size: 12.5px; white-space: nowrap; }
+.tf-chip { display: inline-flex; align-items: center; gap: 5px; border: 1.5px solid #E3E6EE; border-radius: 16px; padding: 3px 10px; font: inherit; font-size: 12.5px; font-weight: 600; background: #fff; color: #374151; cursor: pointer; }
+.tf-chip b { font-size: 11px; background: #F1F3F7; border-radius: 10px; padding: 0 6px; color: #475569; }
+.tf-chip:hover { border-color: var(--c); }
+.tf-chip.on { border-color: var(--c); color: var(--c); background: color-mix(in srgb, var(--c) 9%, #fff); }
+.tf-chip.on b { background: var(--c); color: #fff; }
+.tf-sel { border: 1px solid #DCE0E8; border-radius: 8px; padding: 4px 8px; font: inherit; font-size: 12.5px; background: #fff; max-width: 230px; }
+.tf-view { display: inline-flex; border: 1.5px solid #E3E6EE; border-radius: 16px; overflow: hidden; background: #fff; }
+.tf-view.on { border-color: #4F46E5; background: #EEF2FF; }
+.tf-view button { border: none; background: none; font: inherit; font-size: 12.5px; font-weight: 600; padding: 3px 4px 3px 10px; cursor: pointer; color: #3730A3; }
+.tf-view .x { padding: 3px 8px 3px 4px; color: #9CA3AF; }
+.tf-view .x:hover { color: #DC2626; }
+.tf-toggle { border: none; background: none; font: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; font-weight: 600; }
+.tf-sum { font-size: 12.5px; color: #3730A3; }
+.tf-res { display: flex; align-items: center; gap: 8px; background: #EEF2FF; border-radius: 9px; padding: 5px 10px; font-size: 12.5px; color: #3730A3; }
+.tf-res .btn, .tf-bar .btn { padding: 4px 10px; font-size: 12.5px; }
+.tf-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.tf-quick button { border: 1.5px solid #E3E6EE; border-radius: 8px; background: #fff; text-align: left; padding: 5px 8px; font: inherit; cursor: pointer; }
+.tf-quick button:hover { border-color: #4F46E5; }
+.tf-quick b { display: block; font-size: 12.5px; } .tf-quick small { color: var(--ink-soft); font-size: 11px; }
+.tf-dates { display: flex; gap: 8px; margin-top: 8px; } .tf-dates label { flex: 1; font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+.act-bar.act-hit { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #4F46E5; }
+/* list */
+.tfl { display: flex; flex-direction: column; gap: 8px; }
+.tfl-empty { padding: 18px; text-align: center; color: var(--ink-soft); }
+.tfl-sec { border: 1px solid #EEF0F5; border-radius: 10px; overflow: hidden; }
+.tfl-h { width: 100%; display: flex; justify-content: space-between; align-items: center; border: none; background: #F7F7FB; font: inherit; font-weight: 700; color: #241C4D; padding: 7px 12px; cursor: pointer; text-align: left; }
+.tfl-h b { background: #fff; border-radius: 10px; padding: 0 8px; font-size: 12px; }
+.tfl-late .tfl-h { background: #FEF2F2; color: #B91C1C; } .tfl-today .tfl-h { background: #FFFBEB; color: #92400E; } .tfl-soon .tfl-h { background: #FEFCE8; color: #854D0E; }
+.tfl-wait .tfl-h { background: #F5F3FF; color: #6D28D9; } .tfl-done .tfl-h { background: #F0FDF4; color: #166534; }
+.tfl-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) 140px 120px 48px auto; gap: 8px; align-items: center; padding: 6px 12px; border-top: 1px solid #F3F4F7; cursor: pointer; }
+.tfl-row:hover { background: #FAFAFF; }
+.tfl-row.done .tfl-name { text-decoration: line-through; color: var(--ink-soft); }
+.tfl-ico { text-align: center; } .tfl-name { font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+.tfl-par { font-weight: 400; font-size: 11.5px; color: #4338CA; }
+.tfl-path { font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tfl-date { font-size: 12px; color: #374151; white-space: nowrap; }
+.tfl-st { display: flex; gap: 4px; flex-wrap: wrap; }
+.tfl-pill { border-radius: 6px; padding: 1px 7px; font-size: 11.5px; font-weight: 600; white-space: nowrap; background: #F1F3F7; color: #475569; }
+.tfl-pill.k-late { background: #FEE2E2; color: #B91C1C; } .tfl-pill.k-today { background: #FEF3C7; color: #92400E; } .tfl-pill.k-soon { background: #FEF9C3; color: #854D0E; }
+.tfl-pill.k-start { background: #DBEAFE; color: #1D4ED8; } .tfl-pill.k-wip { background: #E0E7FF; color: #3730A3; } .tfl-pill.k-wait { background: #F3E8FF; color: #6B21A8; } .tfl-pill.k-done { background: #DCFCE7; color: #166534; }
+.tfl-own { display: flex; } .tfl-own .td-av { width: 20px; height: 20px; font-size: 10.5px; margin-left: -4px; border: 2px solid #fff; }
+.tfl-acts { display: flex; gap: 4px; justify-content: flex-end; }
+.tfl-b { border: 1px solid #DCE0E8; background: #fff; border-radius: 7px; padding: 2px 8px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; color: #374151; }
+.tfl-b:hover { border-color: #4F46E5; color: #3730A3; } .tfl-b.ok:hover { border-color: #30A46C; color: #166534; background: #F0FDF4; }
+.modal.tfl-modal { max-width: 1060px; width: 96vw; }
+.tfl-mh { display: flex; justify-content: space-between; align-items: flex-start; } .tfl-mh h3 { margin: 0; }
+.tfl-sub { color: var(--ink-soft); font-size: 12.5px; margin-top: 2px; }
+.tfl-tools { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.tfl-body { max-height: 66vh; overflow: auto; }
+/* today */
+.today-hello { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(120deg, #241C4D, #4338CA); color: #fff; border-radius: 16px; padding: 18px 22px; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+.th-greet { font-size: 20px; font-weight: 700; } .th-date { opacity: .85; margin-top: 2px; }
+.th-sum { font-size: 14px; text-align: right; } .th-sum b { font-size: 20px; } .th-sum b.r { color: #FCA5A5; } .th-sum b.a { color: #FCD34D; }
+.th-hint { font-size: 11.5px; opacity: .75; }
+.today-tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.today-tile { border: 1px solid #E3E6EE; border-left: 4px solid var(--c); background: #fff; border-radius: 12px; padding: 10px 12px; text-align: left; font: inherit; cursor: pointer; }
+.today-tile b { display: block; font-size: 24px; color: var(--c); } .today-tile span { font-size: 12.5px; color: #374151; font-weight: 600; }
+.today-tile:disabled { opacity: .55; cursor: default; }
+.today-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.today-grid > div { display: flex; flex-direction: column; gap: 12px; }
+.today-card { background: #fff; border: 1px solid #E3E6EE; border-radius: 14px; padding: 12px; }
+.tc-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; } .tc-h h3 { margin: 0; font-size: 15px; color: #241C4D; }
+.tc-h span { background: #F1F3F7; border-radius: 10px; padding: 0 8px; font-weight: 700; font-size: 12px; }
+.today-card .tfl-row { grid-template-columns: 24px minmax(0, 1fr) 110px 100px 40px auto; }
+@media (max-width: 1100px) { .today-tiles { grid-template-columns: repeat(3, 1fr); } .today-grid { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .tf-seg { max-width: 100%; overflow-x: auto; flex-wrap: nowrap; } .tf-seg button { white-space: nowrap; flex: none; } .tf-r .tb-sp { display: none; } .tfl-row, .today-card .tfl-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .tfl-date, .tfl-own { display: none; } .tfl-st { grid-column: 2; } .tf-l { width: auto; } .today-tiles { grid-template-columns: repeat(2, 1fr); } }
 .td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
 .td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
 .td-ph { height: 38px; border-radius: 10px; border: 2px dashed #A5B4FC; background: #EEF2FF; }
@@ -3171,6 +3243,7 @@ function render() {
   else if (view.type === 'todo') content.appendChild(renderTodo());
   else if (view.type === 'rooms') content.appendChild(renderRooms());
   else if (view.type === 'calendar') content.appendChild(renderCalendarAll());
+  else if (view.type === 'today') content.appendChild(renderToday());
   else if (view.type === 'exec') content.appendChild(renderExec());
   else if (view.type === 'gplan') { view = { type: 'overview' }; content.appendChild(renderOverview()); }
   else content.appendChild(renderProjectDetail(view.id));
@@ -3182,7 +3255,7 @@ function render() {
     const inp = document.getElementById('actSearch');
     if (inp) { inp.focus(); try { inp.setSelectionRange(keepSearch, keepSearch); } catch (e) {} }
   }
-  setTimeout(() => { const c = document.getElementById('searchCount'); if (c) c.textContent = searchQuery || onlyPending ? `พบ ${searchHits} งานในช่วงที่แสดง` : ''; }, 0);
+  setTimeout(() => { const c = document.getElementById('searchCount'); if (c) c.textContent = searchQuery || onlyPending || tfActive() ? `พบ ${searchHits} งานในช่วงที่แสดง` : ''; }, 0);
 }
 
 function renderEmptyCategoryState() {
@@ -3196,6 +3269,7 @@ function renderEmptyCategoryState() {
 // --- โครงหน้าจอใหม่: แถบซ้าย + หัวหน้า + แถบเครื่องมือ (ขั้นที่ 1) ---
 // ==========================================
 const ICONS = {
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
   lanes: '<path d="M4 6h10M4 12h16M4 18h8"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
@@ -3266,6 +3340,415 @@ function menuPop(anchor, items, opts = {}) {
       p.appendChild(b);
     });
   }, { role: 'menu', ...opts });
+}
+
+// ================= ตัวกรองช่วงเวลา / สถานะ (ใช้ร่วม ไทม์ไลน์ · ปฏิทิน · แผนโครงการ) + รายการ + วันนี้ของฉัน =================
+const TF_ST = [
+  ['late', '🔴 เลยกำหนด', '#E5484D'], ['today', '🟠 ครบ/มีวันนี้', '#D97706'], ['soon', '🟡 ใกล้ครบ ≤ 3 วัน', '#CA8A04'],
+  ['start', '🔵 กำลังจะเริ่ม ≤ 7 วัน', '#3E63DD'], ['wip', '▶ กำลังดำเนินการ', '#4338CA'], ['wait', '⏳ รอตอบกลับ', '#6D28D9'],
+  ['stale', '⏰ ยังไม่อัปเดต %', '#B45309'], ['done', '✓ เสร็จแล้ว', '#15803D']];
+const TF_GROUP_ORDER = ['late', 'today', 'soon', 'wait', 'wip', 'start', 'stale', 'done', 'other'];
+const TF_GROUP_NAME = { late: '🔴 เลยกำหนด', today: '🟠 ครบกำหนด / มีวันนี้', soon: '🟡 ใกล้ครบ (ภายใน 3 วัน)', wait: '⏳ รอตอบกลับ', wip: '▶ กำลังดำเนินการ', start: '🔵 กำลังจะเริ่ม (ภายใน 7 วัน)', stale: '⏰ ยังไม่อัปเดต %', done: '✓ เสร็จแล้ว', other: '⚪ อื่น ๆ' };
+const TF_RANGES = [['all', 'ทั้งหมด'], ['today', 'วันนี้'], ['7d', '7 วันข้างหน้า'], ['week', 'สัปดาห์นี้'], ['month', 'เดือนนี้'], ['30d', '30 วัน']];
+const TF_DEF = { range: 'all', s: null, e: null, mode: 'overlap', st: [], owner: '', dept: '', hide: false };
+let tf = Object.assign({}, TF_DEF, lsGet('tf_v1', {}) || {});
+if (!Array.isArray(tf.st)) tf.st = [];
+// ตัวกรองเก็บแยกต่อผู้ใช้ (ในเครื่องนี้) — คนอื่นที่เข้าระบบจากเครื่องเดียวกันจะเริ่มแบบไม่กรอง
+function tfUserKey() { return String(USER_NAME || '').trim() || '-'; }
+function tfEnsureUser() { if (tf.u !== tfUserKey()) { tf = Object.assign({}, TF_DEF, { st: [], u: tfUserKey() }); } }
+function tfSave() { tf.u = tfUserKey(); lsSet('tf_v1', tf); }
+function tfActive() { tfEnsureUser(); return tf.range !== 'all' || tf.st.length > 0 || !!tf.owner || !!tf.dept; }
+function tfViews() { const all = lsGet('tf_views_u', {}) || {}; return Array.isArray(all[tfUserKey()]) ? all[tfUserKey()] : []; }
+function tfSetViews(v) { const all = lsGet('tf_views_u', {}) || {}; all[tfUserKey()] = v; lsSet('tf_views_u', all); }
+function tfRangeOf(f) {
+  f = f || tf;
+  const t = todayBangkokIndex(), d = dateFromIndex(t);
+  switch (f.range) {
+    case 'today': return [t, t];
+    case '7d': return [t, t + 6];
+    case '30d': return [t, t + 29];
+    case 'week': { const g = (d.getUTCDay() + 6) % 7; return [t - g, t - g + 6]; }   // จันทร์–อาทิตย์
+    case 'month': return [indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))), indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)))];
+    case 'custom': { const s = f.s != null ? f.s : t, e = f.e != null ? f.e : s; return [Math.min(s, e), Math.max(s, e)]; }
+    default: return null;
+  }
+}
+function tfRangeText(f) {
+  const R = tfRangeOf(f); if (!R) return 'ทุกช่วงเวลา';
+  return R[0] === R[1] ? gpFmt(R[0], true) : `${gpFmt(R[0], true)} – ${gpFmt(R[1], true)}`;
+}
+// สถานะ (หลายค่าได้) ของงานหนึ่งชิ้น เทียบกับวันนี้
+function tfStatuses(o, today) {
+  const S = new Set();
+  if (o.wait) { S.add('wait'); return S; }
+  if (o.done) { S.add('done'); return S; }
+  if (o.task) {
+    if (o.end < today) S.add('late');
+    else if (o.end === today) S.add('today');
+    else if (o.end - today <= 3) S.add('soon');
+  } else if (o.start <= today && o.end >= today && o.meet) S.add('today');
+  if (o.start > today && o.start - today <= 7) S.add('start');
+  if (o.wip || (o.start <= today && o.end >= today && !S.has('late'))) S.add('wip');
+  if (o.stale) S.add('stale');
+  return S;
+}
+function tfMeName() { return USER_NAME; }
+// ตรงเงื่อนไขทั้งหมด (ข้ามเงื่อนไขสถานะได้ด้วย noSt — ใช้นับตัวเลขบนชิป)
+function tfMatch(o, f, noSt) {
+  f = f || tf;
+  const today = todayBangkokIndex(), R = tfRangeOf(f);
+  if (f.owner) {
+    const who = o.owners || [];
+    if (f.owner === '__me') { if (!who.includes(tfMeName())) return false; }
+    else if (f.owner === '__none') { if (who.length) return false; }
+    else if (!who.includes(f.owner)) return false;
+  }
+  if (f.dept && o.dept !== f.dept) return false;
+  if (R) {
+    const [s, e] = R;
+    const inR = f.mode === 'due' ? (o.end >= s && o.end <= e) : (o.start <= e && o.end >= s);
+    // งานที่เลยกำหนดแล้วยังค้าง ถือว่าเกี่ยวกับช่วงที่ครอบคลุมวันนี้ (ไม่ให้หลุดตัวกรอง "วันนี้/สัปดาห์นี้")
+    const carry = !o.done && !o.wait && o.task && o.end < today && s <= today && e >= today;
+    if (!inR && !carry) return false;
+  }
+  if (!noSt && f.st.length) { const S = tfStatuses(o, today); if (!f.st.some(k => S.has(k))) return false; }
+  return true;
+}
+function tfOfAct(a, d) {
+  const isPrep = !!a._prep;
+  const owners = []; if (isPrep) { if (a._prep.it.who) owners.push(a._prep.it.who); } else if (a.owner) owners.push(a.owner);
+  return { start: a.start, end: a.end, done: a.type === 'task' && !!a.completed, task: a.type === 'task', meet: a.type === 'meeting', wip: !!a.wip, wait: fuWaiting(a), stale: false, owners, dept: d ? deptKey(d.name) : '' };
+}
+function tfOfPlan(plan, ix, t, today) {
+  return { start: t.start, end: t.end, done: !!t.done, task: true, meet: false, wip: !!t.wip, wait: false, stale: ppIsStale(plan, ix, t, today), owners: t.owner ? [t.owner] : [], dept: '' };
+}
+
+// ---------- รวบรวมงาน (ใช้ทั้งรายการ / วันนี้ของฉัน / ตัวเลขบนชิป) ----------
+// opt: { acts: 'all'|'action' (เฉพาะกำหนดการ+นัดหมาย+งานเตรียมการ), plan: true (ขั้นตอนแผนที่ไม่ได้ผูกกิจกรรม), planOnly }
+function tfCollect(projects, opt) {
+  opt = opt || {}; const today = todayBangkokIndex(), out = [];
+  projects.forEach(p => {
+    if (!opt.planOnly) {
+      (p.departments || []).forEach(d => { if (typeof isHid === 'function' && isHid(d)) return; (d.rows || []).forEach(r => (r.activities || []).forEach(a => {
+        if (opt.acts !== 'action' || a.type === 'task' || a.type === 'meeting') out.push({ kind: 'act', p, d, r, a, o: tfOfAct(a, d) });
+        if (a.prep && a.prep.length) prepEntries(a).forEach(x => out.push({ kind: 'prep', p, d, r, a: x, parent: a, o: tfOfAct(x, d) }));
+      })); });
+      (p.extraTasks || []).forEach(a => out.push({ kind: 'xt', p, d: null, r: null, a, o: tfOfAct(a, null) }));
+    }
+    if (opt.plan || opt.planOnly) {
+      const plan = ppPlanOf(p); if (!plan) return;
+      ppNormalize(plan); const ix = ppIdx(plan);
+      plan.tasks.forEach(t => { if (ix.has(t.id)) return; if (!opt.planOnly && (t.src || []).length) return; out.push({ kind: 'plan', p, plan, ix, t, o: tfOfPlan(plan, ix, t, today) }); });
+    }
+  });
+  return out;
+}
+function tfLabel(x) { return x.kind === 'plan' ? x.t.name : (x.a.label || '(ไม่มีชื่อ)'); }
+function tfStart(x) { return x.kind === 'plan' ? x.t.start : x.a.start; }
+function tfEnd(x) { return x.kind === 'plan' ? x.t.end : x.a.end; }
+function tfPath(x) {
+  if (x.kind === 'plan') { const wb = ppWbsMap(x.plan, x.ix); return `${x.p.name} › แผน ${wb[x.t.id] || ''}`; }
+  if (x.kind === 'xt') return `${x.p.name} › งานเพิ่มเติม`;
+  return `${x.p.name} › ${x.d.name}`;
+}
+function tfPrimary(x, today) {
+  const S = tfStatuses(x.o, today);
+  for (const k of TF_GROUP_ORDER) if (S.has(k)) return k;
+  return 'other';
+}
+function tfTypeIcon(x) {
+  if (x.kind === 'prep') return '📌';
+  if (x.kind === 'plan') return x.t.kind === 'ms' ? '◆' : '📋';
+  if (x.a.type === 'meeting') return MEETING_ICONS[x.a.meetingKind] || '📅';
+  if (x.a.type === 'task') return '🎯';
+  return '▭';
+}
+function tfCanTick(x) { return x.kind === 'plan' || x.kind === 'prep' || x.kind === 'xt' || (x.kind === 'act' && x.a.type === 'task'); }
+
+// ค้นหาออบเจกต์จริงในข้อมูลปัจจุบัน (หลัง merge/รีเฟรช ออบเจกต์อาจถูกแทนที่)
+function tfLive(x) {
+  const lp = state.projects.find(p => p.id === x.p.id); if (!lp) return null;
+  if (x.kind === 'plan') { const pl = ppPlanOf(lp); return pl ? { plan: pl, t: pl.tasks.find(t => t.id === x.t.id) } : null; }
+  if (x.kind === 'xt') return { a: (lp.extraTasks || []).find(a => a.id === x.a.id) };
+  const row = findLiveRow(x.p.id, x.d.id, x.r.id); if (!row) return null;
+  if (x.kind === 'prep') { const ref = prepParseId(x.a.id); const pa = row.activities.find(a => a.id === ref.aid); return pa ? { pa, it: (pa.prep || []).find(i => i.id === ref.pid) } : null; }
+  return { a: row.activities.find(a => a.id === x.a.id) };
+}
+function tfTarget(L, x) { return !L ? null : x.kind === 'plan' ? L.t : x.kind === 'prep' ? L.it : L.a; }
+async function tfAct(x, op, n) {
+  if (READ_ONLY) return;
+  const L0 = tfLive(x), T0 = tfTarget(L0, x); if (!T0) return;
+  const snap = clone(T0), label = tfLabel(x), today = todayBangkokIndex();
+  const apply = (L) => {
+    const T = tfTarget(L, x); if (!T) return;
+    if (op === 'done') {
+      if (x.kind === 'plan') { T.done = true; T.doneAt = today; delete T.wip; if (ppMethod(L.plan) === 'durpct') T.pct = 100; ppLogPct(L.plan, T); gpStamp(T); }
+      else if (x.kind === 'prep') { T.done = true; T.doneAt = Date.now(); T.doneBy = USER_NAME; L.pa.updatedBy = USER_NAME; L.pa.updatedAt = Date.now(); }
+      else { T.completed = true; T.completedAt = Date.now(); T.completedBy = USER_NAME; T.updatedBy = USER_NAME; T.updatedAt = Date.now(); }
+    } else if (op === 'shift') {
+      if (x.kind === 'prep') { const d0 = prepDay(L.pa, T); T.rel = null; T.day = d0 + n; L.pa.updatedBy = USER_NAME; L.pa.updatedAt = Date.now(); }
+      else { T.start += n; T.end += n; if (x.kind === 'plan') gpStamp(T); else { T.updatedBy = USER_NAME; T.updatedAt = Date.now(); } }
+    }
+  };
+  apply(L0);
+  await persistAndRender();
+  showToast(op === 'done' ? `✓ "${label}" เสร็จแล้ว` : `เลื่อน "${label}" ${n > 0 ? '+' : ''}${n} วัน`, 'เลิกทำ', async () => {
+    const L = tfLive(x), T = tfTarget(L, x); if (!T) return;
+    Object.keys(T).forEach(k => delete T[k]); Object.assign(T, clone(snap));
+    await persistAndRender();
+  });
+}
+function tfOpen(x) {
+  if (x.kind === 'plan') { ppGoProject(x.p.id, x.t.id); return; }
+  if (x.kind === 'xt') { tdOpenProjCard(x.p.id, null, null, x.a.id); return; }
+  openActivityModal(x.p.id, x.d.id, x.r.id, x.a.id);
+}
+function tfWhenText(x, today) {
+  const s = tfStart(x), e = tfEnd(x), k = tfPrimary(x, today);
+  const d = k === 'late' ? `เลย ${today - e} วัน` : e === today && x.o.task ? 'ครบวันนี้' : k === 'start' ? `อีก ${s - today} วันเริ่ม` : x.o.task && !x.o.done && e > today ? `อีก ${e - today} วัน` : '';
+  return { range: s === e ? gpFmt(s) : `${gpFmt(s)} – ${gpFmt(e)}`, rel: d, k };
+}
+function tfOwnersOf(x) { return x.o.owners || []; }
+
+// ---------- ตารางรายการ (จัดกลุ่ม + ปุ่มทำทันที) ----------
+function tfListEl(items, opt) {
+  opt = opt || {}; const today = todayBangkokIndex(), group = opt.group || 'urgency';
+  const wrap = document.createElement('div'); wrap.className = 'tfl';
+  if (!items.length) { wrap.innerHTML = `<div class="tfl-empty">${opt.empty || 'ไม่มีงานที่ตรงกับเงื่อนไข 👍'}</div>`; return wrap; }
+  const keyOf = (x) => group === 'urgency' ? tfPrimary(x, today) : group === 'project' ? x.p.name : group === 'owner' ? (tfOwnersOf(x)[0] || '— ยังไม่ระบุผู้รับผิดชอบ —') : (() => { const d = dateFromIndex(tfEnd(x)); return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`; })();
+  const groups = new Map();
+  items.slice().sort((a, b) => tfEnd(a) - tfEnd(b) || tfStart(a) - tfStart(b)).forEach(x => { const k = keyOf(x); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(x); });
+  let keys = [...groups.keys()];
+  if (group === 'urgency') keys.sort((a, b) => TF_GROUP_ORDER.indexOf(a) - TF_GROUP_ORDER.indexOf(b));
+  else if (group === 'date') keys.sort();
+  else keys.sort((a, b) => a.localeCompare(b, 'th'));
+  const gName = (k) => group === 'urgency' ? TF_GROUP_NAME[k] : group === 'date' ? (() => { const [y, m] = k.split('-').map(Number); return `${THAI_MONTHS_FULL[m - 1]} ${y + 543}`; })() : k;
+  const collapsed = opt.collapsed || new Set();
+  keys.forEach(k => {
+    const list = groups.get(k);
+    const sec = document.createElement('div'); sec.className = 'tfl-sec tfl-' + (group === 'urgency' ? k : 'g');
+    const fold = collapsed.has(k);
+    sec.innerHTML = `<button type="button" class="tfl-h" aria-expanded="${!fold}"><span>${fold ? '▸' : '▾'} ${escapeHTML(gName(k))}</span><b>${list.length}</b></button>`;
+    sec.querySelector('.tfl-h').onclick = () => { if (collapsed.has(k)) collapsed.delete(k); else collapsed.add(k); if (opt.onFold) opt.onFold(collapsed); const n = tfListEl(items, { ...opt, collapsed }); wrap.replaceWith(n); };
+    if (!fold) list.forEach(x => {
+      const w = tfWhenText(x, today), own = tfOwnersOf(x);
+      const row = document.createElement('div'); row.className = 'tfl-row' + (x.o.done ? ' done' : '');
+      const parentTxt = x.kind === 'prep' ? `<span class="tfl-par">${x.a._prep.it.rel && x.a._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'} ${escapeHTML(x.parent.label || '')}</span>` : '';
+      row.innerHTML = `<span class="tfl-ico">${tfTypeIcon(x)}</span>
+        <div class="tfl-main"><div class="tfl-name">${escapeHTML(tfLabel(x))} ${parentTxt}</div><div class="tfl-path">${escapeHTML(tfPath(x))}${x.kind === 'act' && x.a.type === 'meeting' && x.a.allDay === false && x.a.startTime ? ' · ' + escapeHTML(x.a.startTime) + ' น.' : ''}</div></div>
+        <span class="tfl-date">${escapeHTML(w.range)}</span>
+        <span class="tfl-st">${w.rel ? `<span class="tfl-pill k-${w.k}">${escapeHTML(w.rel)}</span>` : x.o.done ? '<span class="tfl-pill k-done">✓ เสร็จ</span>' : x.o.wait ? '<span class="tfl-pill k-wait">รอตอบกลับ</span>' : ''}${x.o.wip && !x.o.done ? '<span class="tfl-pill k-wip">▶</span>' : ''}</span>
+        <span class="tfl-own">${own.slice(0, 2).map(n => `<span class="td-av" style="background:${tdAvColor(n)}" title="${escapeHTML(n)}">${escapeHTML(tdInitial(n))}</span>`).join('')}</span>
+        <span class="tfl-acts"></span>`;
+      const acts = row.querySelector('.tfl-acts');
+      if (!READ_ONLY && opt.actions !== false && !x.o.done) {
+        if (tfCanTick(x) && !x.o.wait) { const b = document.createElement('button'); b.type = 'button'; b.className = 'tfl-b ok'; b.textContent = '✓'; b.title = 'ติ๊กเสร็จ'; b.onclick = (e) => { e.stopPropagation(); tfAct(x, 'done'); }; acts.appendChild(b); }
+        [[1, '+1'], [7, '+7']].forEach(([n, t]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tfl-b'; b.textContent = t; b.title = `เลื่อนออกไป ${n} วัน`; b.onclick = (e) => { e.stopPropagation(); tfAct(x, 'shift', n); }; acts.appendChild(b); });
+      }
+      row.onclick = () => { if (opt.onOpen) opt.onOpen(); tfOpen(x); };
+      row.title = 'คลิกเพื่อเปิดงานนี้';
+      sec.appendChild(row);
+    });
+    wrap.appendChild(sec);
+  });
+  return wrap;
+}
+
+// ---------- ส่งออก ----------
+function tfRowsForExport(items) {
+  const today = todayBangkokIndex();
+  return items.slice().sort((a, b) => TF_GROUP_ORDER.indexOf(tfPrimary(a, today)) - TF_GROUP_ORDER.indexOf(tfPrimary(b, today)) || tfEnd(a) - tfEnd(b)).map(x => {
+    const w = tfWhenText(x, today);
+    return { g: TF_GROUP_NAME[tfPrimary(x, today)].replace(/^\S+\s/, ''), name: tfLabel(x), proj: x.p.name, dept: x.kind === 'plan' ? 'แผนโครงการ' : x.d ? x.d.name : 'งานเพิ่มเติม', s: gpFmt(tfStart(x), true), e: gpFmt(tfEnd(x), true), st: x.o.done ? 'เสร็จแล้ว' : w.rel || (x.o.wait ? 'รอตอบกลับ' : ''), own: tfOwnersOf(x).join(', ') };
+  });
+}
+function tfExportCSV(items, title) {
+  const rows = tfRowsForExport(items), q = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+  const csv = '﻿' + [['กลุ่ม', 'งาน', 'โครงการ', 'หน่วยงาน', 'เริ่ม', 'สิ้นสุด', 'สถานะ', 'ผู้รับผิดชอบ']].concat(rows.map(r => [r.g, r.name, r.proj, r.dept, r.s, r.e, r.st, r.own])).map(r => r.map(q).join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = (title || 'รายการงาน').replace(/[\\/:*?"<>|]/g, '-') + '.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function tfExportText(items, title) {
+  const today = todayBangkokIndex(), by = new Map();
+  items.forEach(x => { const k = tfPrimary(x, today); if (!by.has(k)) by.set(k, []); by.get(k).push(x); });
+  let s = `📋 ${title} (ข้อมูล ณ ${gpFmt(today, true)})\n`;
+  TF_GROUP_ORDER.forEach(k => { const l = by.get(k); if (!l) return; s += `\n${TF_GROUP_NAME[k]} (${l.length})\n`; l.sort((a, b) => tfEnd(a) - tfEnd(b)).forEach(x => { const w = tfWhenText(x, today); s += `• ${tfLabel(x)} — ${x.p.name}${w.rel ? ' (' + w.rel + ')' : ' (' + w.range + ')'}${tfOwnersOf(x).length ? ' · ' + tfOwnersOf(x).join(', ') : ''}\n`; }); });
+  return s;
+}
+function tfPrint(items, title) {
+  const rows = tfRowsForExport(items);
+  const w = window.open('', '_blank'); if (!w) { showToast('เบราว์เซอร์บล็อกหน้าต่างใหม่ — อนุญาตป๊อปอัปแล้วลองอีกครั้ง'); return; }
+  w.document.write(`<!doctype html><html lang="th"><head><meta charset="utf-8"><title>${escapeHTML(title)}</title><style>body{font-family:'Sarabun','Leelawadee UI','Tahoma',sans-serif;margin:24px;color:#16233B}h1{font-size:20px;margin:0 0 4px}p{margin:0 0 12px;color:#555;font-size:13px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #ccc;padding:5px 7px;text-align:left;vertical-align:top}th{background:#EEF0F7}tr.g td{background:#F7F7FB;font-weight:700}@page{size:A4 landscape;margin:12mm}</style></head><body>
+    <h1>${escapeHTML(title)}</h1><p>ข้อมูล ณ ${escapeHTML(gpFmt(todayBangkokIndex(), true))} · ${rows.length} รายการ · ${escapeHTML(USER_NAME || '')}</p>
+    <table><tr><th style="width:28px">#</th><th>งาน</th><th>โครงการ / หน่วยงาน</th><th style="width:150px">ช่วงวันที่</th><th style="width:100px">สถานะ</th><th style="width:120px">ผู้รับผิดชอบ</th><th style="width:110px">หมายเหตุ</th></tr>
+    ${(() => { let g = '', i = 0; return rows.map(r => (r.g !== g ? (g = r.g, `<tr class="g"><td colspan="7">${escapeHTML(r.g)}</td></tr>`) : '') + `<tr><td>${++i}</td><td>${escapeHTML(r.name)}</td><td>${escapeHTML(r.proj)}<br><small>${escapeHTML(r.dept)}</small></td><td>${escapeHTML(r.s === r.e ? r.s : r.s + ' – ' + r.e)}</td><td>${escapeHTML(r.st)}</td><td>${escapeHTML(r.own)}</td><td></td></tr>`).join(''); })()}
+    </table><script>setTimeout(function(){window.print()},300)<\/script></body></html>`);
+  w.document.close();
+}
+
+// ---------- หน้าต่าง "ดูเป็นรายการ" ----------
+function tfOpenList(items, title) {
+  modalOpen = true;
+  const ov = document.createElement('div'); ov.className = 'modal-overlay';
+  const m = document.createElement('div'); m.className = 'modal tfl-modal';
+  let group = lsGet('tfl_group', 'urgency');
+  m.innerHTML = `<div class="tfl-mh"><div><h3>📋 ${escapeHTML(title)}</h3><div class="tfl-sub">${items.length} งาน · ${escapeHTML(tfRangeText())}</div></div><button type="button" class="btn ibtn" data-x aria-label="ปิด">✕</button></div>
+    <div class="tfl-tools"><div class="seg" role="group" aria-label="จัดกลุ่ม">${[['urgency', 'ตามความเร่งด่วน'], ['date', 'ตามเดือน'], ['project', 'ตามโครงการ'], ['owner', 'ตามผู้รับผิดชอบ']].map(([k, t]) => `<button type="button" data-g="${k}" aria-pressed="${group === k}">${t}</button>`).join('')}</div>
+    <span class="tb-sp"></span><button type="button" class="btn" data-csv>⬇ Excel</button><button type="button" class="btn" data-pr>🖨 พิมพ์ / PDF</button><button type="button" class="btn" data-cp>📋 คัดลอกเป็นข้อความ</button></div>
+    <div class="tfl-body"></div>`;
+  ov.appendChild(m); document.body.appendChild(ov);
+  const body = m.querySelector('.tfl-body');
+  const draw = () => { body.innerHTML = ''; body.appendChild(tfListEl(items, { group, onOpen: () => closeModal(ov) })); };
+  m.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { group = b.dataset.g; lsSet('tfl_group', group); m.querySelectorAll('[data-g]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); draw(); });
+  m.querySelector('[data-x]').onclick = () => closeModal(ov);
+  ov.addEventListener('mousedown', (e) => { if (e.target === ov) closeModal(ov); });
+  m.querySelector('[data-csv]').onclick = () => tfExportCSV(items, title);
+  m.querySelector('[data-pr]').onclick = () => tfPrint(items, title);
+  m.querySelector('[data-cp]').onclick = async () => { const t = tfExportText(items, title); try { await navigator.clipboard.writeText(t); showToast('คัดลอกแล้ว — วางใน LINE / อีเมลได้เลย'); } catch (e) { prompt('คัดลอกข้อความนี้', t); } };
+  draw();
+}
+
+// ---------- แถบตัวกรอง ----------
+// ctx: { kind: 'tl'|'plan'|'cal', projects: [...] }
+function tfCtxItems(ctx) { return ctx.kind === 'plan' ? tfCollect(ctx.projects, { planOnly: true }) : tfCollect(ctx.projects, { acts: 'all' }); }
+function tfOwnerList(projects) {
+  const s = new Set([...(todo.users || [])].filter(Boolean));
+  projects.forEach(p => { (p.departments || []).forEach(d => d.rows.forEach(r => r.activities.forEach(a => { if (a.owner) s.add(a.owner); (a.prep || []).forEach(i => { if (i.who) s.add(i.who); }); }))); const pl = ppPlanOf(p); if (pl) pl.tasks.forEach(t => { if (t.owner) s.add(t.owner); }); });
+  return [...s].sort((a, b) => a.localeCompare(b, 'th'));
+}
+function tfRerender() { tfSave(); if (typeof reRenderWithScroll === 'function') reRenderWithScroll(); else render(); }
+function buildTfBar(ctx) {
+  const bar = document.createElement('div'); bar.className = 'tf-bar' + (tfActive() ? ' on' : '');
+  const open = lsGet('tf_open', window.innerWidth > 720);
+  const items = tfCtxItems(ctx), today = todayBangkokIndex();
+  const base = items.filter(x => tfMatch(x.o, tf, true));
+  const cnt = {}; TF_ST.forEach(([k]) => { cnt[k] = 0; });
+  base.forEach(x => { const S = tfStatuses(x.o, today); TF_ST.forEach(([k]) => { if (S.has(k)) cnt[k]++; }); });
+  const matched = items.filter(x => tfMatch(x.o));
+  tfEnsureUser();
+  const views = tfViews();
+  const curJson = JSON.stringify({ range: tf.range, s: tf.s, e: tf.e, mode: tf.mode, st: [...tf.st].sort(), owner: tf.owner, dept: tf.dept });
+  const depts = ctx.kind === 'tl' || ctx.kind === 'cal' ? (() => { const mp = new Map(); ctx.projects.forEach(p => (p.departments || []).forEach(d => { const k = deptKey(d.name); if (!mp.has(k)) mp.set(k, d.name.trim()); })); return [...mp.entries()]; })() : [];
+  const owners = tfOwnerList(ctx.projects);
+  if (!open) {
+    bar.classList.add('mini');
+    bar.innerHTML = `<button type="button" class="tf-toggle" aria-expanded="false">🗓 ตัวกรองช่วงเวลา / สถานะ ▸</button>${tfActive() ? `<span class="tf-sum">${escapeHTML(tfRangeText())}${tf.st.length ? ' · ' + tf.st.map(k => TF_ST.find(x => x[0] === k)[1]).join(', ') : ''} · พบ <b>${matched.length}</b> งาน</span><button type="button" class="btn" data-list>📋 ดูเป็นรายการ</button><button type="button" class="btn" data-clr>✕ ล้าง</button>` : ''}`;
+  } else {
+    bar.innerHTML = `
+      <div class="tf-r"><span class="tf-l">🗓 ช่วงเวลา</span>
+        <div class="seg tf-seg" role="group" aria-label="ช่วงเวลา">${TF_RANGES.map(([k, t]) => `<button type="button" data-r="${k}" aria-pressed="${tf.range === k}">${t}</button>`).join('')}<button type="button" data-r="custom" aria-pressed="${tf.range === 'custom'}">📅 ${tf.range === 'custom' ? escapeHTML(tfRangeText()) : 'กำหนดเอง…'}</button></div>
+        ${ctx.kind === 'tl' ? `<div class="seg tf-seg" role="group" aria-label="งานที่ไม่ตรง"><button type="button" data-h="0" aria-pressed="${!tf.hide}" title="งานที่ไม่ตรงเงื่อนไขแสดงจาง ๆ">จางลง</button><button type="button" data-h="1" aria-pressed="${!!tf.hide}" title="ซ่อนงานที่ไม่ตรงเงื่อนไข">ซ่อน</button></div>` : ''}
+        <span class="tb-sp"></span><button type="button" class="tf-toggle" aria-expanded="true" title="ย่อแถบตัวกรอง">ย่อ ▴</button></div>
+      <div class="tf-r"><span class="tf-l">🚦 สถานะ</span>${TF_ST.filter(([k]) => ctx.kind === 'plan' ? k !== 'wait' : k !== 'stale').map(([k, t, c]) => `<button type="button" class="tf-chip${tf.st.includes(k) ? ' on' : ''}" style="--c:${c}" data-s="${k}" aria-pressed="${tf.st.includes(k)}">${t} <b>${cnt[k]}</b></button>`).join('')}</div>
+      <div class="tf-r"><span class="tf-l">🔎 อื่น ๆ</span>
+        <select class="tf-sel" data-own aria-label="ผู้รับผิดชอบ"><option value="">👤 ผู้รับผิดชอบ: ทั้งหมด</option><option value="__me" ${tf.owner === '__me' ? 'selected' : ''}>👤 งานของฉัน</option><option value="__none" ${tf.owner === '__none' ? 'selected' : ''}>👤 ยังไม่ระบุผู้รับผิดชอบ</option>${owners.map(n => `<option value="${escapeHTML(n)}" ${tf.owner === n ? 'selected' : ''}>👤 ${escapeHTML(n)}</option>`).join('')}</select>
+        ${depts.length > 1 ? `<select class="tf-sel" data-dept aria-label="หน่วยงาน"><option value="">🏢 หน่วยงาน: ทั้งหมด</option>${depts.map(([k, n]) => `<option value="${escapeHTML(k)}" ${tf.dept === k ? 'selected' : ''}>🏢 ${escapeHTML(n)}</option>`).join('')}</select>` : ''}
+        ${views.map((v, i) => `<span class="tf-view${JSON.stringify(v.f) === curJson ? ' on' : ''}"><button type="button" data-v="${i}">⭐ ${escapeHTML(v.n)}</button><button type="button" class="x" data-vx="${i}" title="ลบมุมมองนี้" aria-label="ลบมุมมอง ${escapeHTML(v.n)}">×</button></span>`).join('')}
+        <span class="tb-sp"></span>${tfActive() ? '<button type="button" class="btn" data-save>⭐ บันทึกมุมมองนี้</button><button type="button" class="btn" data-clr>✕ ล้าง</button>' : ''}</div>
+      ${tfActive() ? `<div class="tf-res">พบ <b>${matched.length}</b> งานตรงเงื่อนไข · ${escapeHTML(tfRangeText())}${ctx.kind === 'tl' && !tf.hide ? ' · งานอื่นแสดงจาง ๆ' : ''}<span class="tb-sp"></span><button type="button" class="btn" data-list>📋 ดูเป็นรายการ</button></div>` : ''}`;
+  }
+  const q = (s) => bar.querySelector(s);
+  bar.querySelectorAll('.tf-toggle').forEach(b => b.onclick = () => { lsSet('tf_open', !open); tfRerender(); });
+  bar.querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
+    if (b.dataset.r === 'custom') { tfCustomPop(b); return; }
+    tf.range = b.dataset.r; tfRerender();
+  });
+  bar.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { tf.hide = b.dataset.h === '1'; tfRerender(); });
+  bar.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { const k = b.dataset.s; tf.st = tf.st.includes(k) ? tf.st.filter(x => x !== k) : tf.st.concat(k); tfRerender(); });
+  if (q('[data-own]')) q('[data-own]').onchange = (e) => { tf.owner = e.target.value; tfRerender(); };
+  if (q('[data-dept]')) q('[data-dept]').onchange = (e) => { tf.dept = e.target.value; tfRerender(); };
+  bar.querySelectorAll('[data-clr]').forEach(b => b.onclick = () => { tf = Object.assign({}, TF_DEF, { st: [], u: tfUserKey() }); tfRerender(); });
+  bar.querySelectorAll('[data-list]').forEach(b => b.onclick = () => tfOpenList(matched, ctx.title || 'รายการงานตามตัวกรอง'));
+  bar.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { const v = views[+b.dataset.v]; if (!v) return; tf = Object.assign({}, TF_DEF, clone(v.f), { u: tfUserKey() }); tfRerender(); });
+  bar.querySelectorAll('[data-vx]').forEach(b => b.onclick = () => { const v = views.splice(+b.dataset.vx, 1); tfSetViews(views); render(); showToast(`ลบมุมมอง "${v[0].n}" แล้ว`); });
+  if (q('[data-save]')) q('[data-save]').onclick = () => openTextModal('บันทึกมุมมอง', 'ชื่อมุมมอง เช่น งานของฉันสัปดาห์นี้', '', (n) => {
+    if (!n) return; views.push({ n, f: JSON.parse(curJson) }); tfSetViews(views); render(); showToast(`⭐ บันทึกมุมมอง "${n}" แล้ว`);
+  });
+  return bar;
+}
+function tfCustomPop(anchor) {
+  openPop(anchor, (p) => {
+    const t = todayBangkokIndex(), R = tfRangeOf(tf.range === 'custom' ? tf : { range: '7d' });
+    const d = dateFromIndex(t), dow = (d.getUTCDay() + 6) % 7, mS = (o) => indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + o, 1))), mE = (o) => indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + o + 1, 0)));
+    const fyS = indexFromDate(new Date(Date.UTC(d.getUTCMonth() >= 9 ? d.getUTCFullYear() : d.getUTCFullYear() - 1, 9, 1)));
+    const qS = indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), Math.floor(d.getUTCMonth() / 3) * 3, 1))), qE = indexFromDate(new Date(Date.UTC(d.getUTCFullYear(), Math.floor(d.getUTCMonth() / 3) * 3 + 3, 0)));
+    const quick = [['พรุ่งนี้', t + 1, t + 1], ['สัปดาห์หน้า', t - dow + 7, t - dow + 13], ['เดือนหน้า', mS(1), mE(1)], ['ไตรมาสนี้', qS, qE], ['ปีงบนี้', fyS, indexFromDate(new Date(Date.UTC(dateFromIndex(fyS).getUTCFullYear() + 1, 8, 30)))], ['ที่ผ่านมา 30 วัน', t - 29, t]];
+    p.innerHTML = `<h3 class="pop-h">📅 กำหนดช่วงเวลา</h3>
+      <div class="tf-quick">${quick.map(([n, s, e], i) => `<button type="button" data-q="${i}"><b>${n}</b><small>${gpFmt(s)}${s !== e ? ' – ' + gpFmt(e) : ''}</small></button>`).join('')}</div>
+      <div class="tf-dates"><label>ตั้งแต่<input type="date" id="tfS" class="text-input" value="${dateToInputStr(dateFromIndex(R[0]))}"></label><label>ถึง<input type="date" id="tfE" class="text-input" value="${dateToInputStr(dateFromIndex(R[1]))}"></label></div>
+      <div class="vm-l" style="margin-top:8px">“เกี่ยวข้องกับช่วงนี้” หมายถึง</div>
+      <div class="seg" role="group"><button type="button" data-m="overlap" aria-pressed="${tf.mode !== 'due'}">มีช่วงงานคาบเกี่ยว</button><button type="button" data-m="due" aria-pressed="${tf.mode === 'due'}">ครบกำหนดในช่วง</button></div>
+      <div class="pop-foot"><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok>ใช้ช่วงนี้</button></div>`;
+    let mode = tf.mode || 'overlap';
+    p.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { mode = b.dataset.m; p.querySelectorAll('[data-m]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); });
+    p.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const [, s, e] = quick[+b.dataset.q]; p.querySelector('#tfS').value = dateToInputStr(dateFromIndex(s)); p.querySelector('#tfE').value = dateToInputStr(dateFromIndex(e)); });
+    p.querySelector('[data-x]').onclick = closePop;
+    p.querySelector('[data-ok]').onclick = () => {
+      const s = inputStrToDate(p.querySelector('#tfS').value), e = inputStrToDate(p.querySelector('#tfE').value); if (!s || !e) return;
+      tf.range = 'custom'; tf.s = indexFromDate(s); tf.e = indexFromDate(e); tf.mode = mode; closePop(); tfRerender();
+    };
+  }, { cls: 'pop-w' });
+}
+
+// ---------- ☀️ วันนี้ของฉัน ----------
+function renderToday() {
+  const root = document.createElement('div'); root.className = 'today-page';
+  const today = todayBangkokIndex(), d = dateFromIndex(today);
+  const mine = lsGet('today_mine', 'all');
+  const projects = state.projects.filter(p => can(p.sourceType || 'work'));
+  let items = tfCollect(projects, { acts: 'action', plan: true }).filter(x => !x.o.done || x.o.wait);
+  const meName = USER_NAME;
+  if (mine === 'me') items = items.filter(x => tfOwnersOf(x).includes(meName));
+  else if (mine === 'none') items = items.filter(x => !tfOwnersOf(x).length);
+  const S = (x) => tfStatuses(x.o, today);
+  const meets = items.filter(x => x.kind === 'act' && x.a.type === 'meeting' && x.a.start <= today + 1 && x.a.end >= today)
+    .sort((a, b) => a.a.start - b.a.start || String(a.a.startTime || '').localeCompare(String(b.a.startTime || '')));
+  const late = items.filter(x => S(x).has('late')), dueT = items.filter(x => x.o.task && S(x).has('today')),
+    soon = items.filter(x => S(x).has('soon')), wait = items.filter(x => x.o.wait), startS = items.filter(x => S(x).has('start') && !S(x).has('soon') && !(x.kind === 'act' && x.a.type === 'meeting' && x.a.start <= today + 1)),
+    stale = items.filter(x => x.kind === 'plan' && x.o.stale);
+  const head = buildPageHead({ crumb: 'เครื่องมือ', title: '☀️ วันนี้ของฉัน' });
+  const seg = document.createElement('div'); seg.className = 'seg'; seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', 'แสดงงานของ');
+  seg.innerHTML = [['all', 'ทั้งหมด'], ['me', '👤 งานของฉัน'], ['none', 'ยังไม่มีผู้รับผิดชอบ']].map(([k, t]) => `<button type="button" data-m="${k}" aria-pressed="${mine === k}">${t}</button>`).join('');
+  head.querySelector('.ph-act').appendChild(seg);
+  head.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { lsSet('today_mine', b.dataset.m); render(); });
+  root.appendChild(head);
+  const hello = document.createElement('div'); hello.className = 'today-hello';
+  const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Bangkok', hour: '2-digit', hourCycle: 'h23' }).format(new Date()));
+  hello.innerHTML = `<div><div class="th-greet">${h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'}${meName ? ', ' + escapeHTML(meName) : ''}</div><div class="th-date">วัน${THAI_WEEKDAY_FULL[d.getUTCDay()]}ที่ ${d.getUTCDate()} ${THAI_MONTHS_FULL[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}</div></div>
+    <div class="th-sum">${late.length ? `<b class="r">${late.length}</b> เลยกำหนด · ` : ''}<b class="a">${dueT.length}</b> ครบวันนี้ · <b>${meets.filter(x => x.a.start <= today).length}</b> นัดหมายวันนี้${mine === 'me' ? '' : `<div class="th-hint">${projects.length} โครงการ · ${mine === 'all' ? 'ทุกคน' : 'งานที่ยังไม่มีผู้รับผิดชอบ'}</div>`}</div>`;
+  root.appendChild(hello);
+  const tiles = document.createElement('div'); tiles.className = 'today-tiles';
+  const tile = (k, n, label, c, list, title) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'today-tile'; b.style.setProperty('--c', c);
+    b.innerHTML = `<b>${n}</b><span>${label}</span>`;
+    b.onclick = () => tfOpenList(list, title); b.disabled = !n; return b;
+  };
+  tiles.appendChild(tile('late', late.length, 'เลยกำหนด', '#E5484D', late, 'งานที่เลยกำหนด'));
+  tiles.appendChild(tile('today', dueT.length, 'ครบวันนี้', '#D97706', dueT, 'งานที่ครบกำหนดวันนี้'));
+  tiles.appendChild(tile('soon', soon.length, 'ใกล้ครบ ≤ 3 วัน', '#CA8A04', soon, 'งานที่ใกล้ครบกำหนด'));
+  tiles.appendChild(tile('meet', meets.length, 'นัดหมายวันนี้–พรุ่งนี้', '#3E63DD', meets, 'นัดหมาย / ประชุม วันนี้–พรุ่งนี้'));
+  tiles.appendChild(tile('wait', wait.length, 'รอตอบกลับ', '#6D28D9', wait, 'งานที่รอตอบกลับ'));
+  tiles.appendChild(tile('stale', stale.length, 'ยังไม่อัปเดต %', '#B45309', stale, 'ขั้นตอนที่ยังไม่อัปเดต % รอบนี้'));
+  root.appendChild(tiles);
+  const grid = document.createElement('div'); grid.className = 'today-grid';
+  const card = (title, list, opt) => {
+    const c = document.createElement('div'); c.className = 'today-card';
+    c.innerHTML = `<div class="tc-h"><h3>${title}</h3><span>${list.length}</span></div>`;
+    c.appendChild(tfListEl(list, Object.assign({ group: 'urgency' }, opt || {})));
+    return c;
+  };
+  const colL = document.createElement('div'), colR = document.createElement('div');
+  const fold = new Set(lsGet('today_fold', ['start']) || []);
+  colL.appendChild(card('✅ ต้องทำ', late.concat(dueT, soon, startS.filter(x => x.o.task), wait), { collapsed: fold, onFold: (s) => lsSet('today_fold', [...s]), empty: 'ไม่มีงานค้าง 🎉' }));
+  colR.appendChild(card('📅 นัดหมาย / ประชุม วันนี้–พรุ่งนี้', meets, { group: 'date', actions: false, empty: 'ไม่มีนัดหมาย' }));
+  const up = items.filter(x => x.kind === 'act' && x.a.type === 'meeting' && x.a.start > today + 1 && x.a.start <= today + 7);
+  colR.appendChild(card('🔭 นัดหมายใน 7 วันข้างหน้า', up, { group: 'date', actions: false, empty: 'ไม่มี' }));
+  if (stale.length) colR.appendChild(card('⏰ ยังไม่อัปเดต % (ภายในวันที่ 5)', stale, { group: 'project', actions: false }));
+  grid.appendChild(colL); grid.appendChild(colR); root.appendChild(grid);
+  const note = document.createElement('div'); note.className = 'td-meta';
+  note.textContent = 'รวมกำหนดการที่ต้องทำ · นัดหมาย · งานเตรียมการ 📌 · ขั้นตอนแผนโครงการที่ไม่ได้ผูกกับกิจกรรม จากทุกโครงการที่คุณมีสิทธิ์ · ✓ = ติ๊กเสร็จ · +1/+7 = เลื่อนวัน (กดเลิกทำได้) · ใส่ "ผู้รับผิดชอบ" ในหน้าต่างกิจกรรม เพื่อใช้ "งานของฉัน"';
+  root.appendChild(note);
+  return root;
 }
 
 // ---------- แถบซ้าย ----------
@@ -3370,6 +3853,8 @@ function renderSidebar() {
   // เครื่องมือ
   const g3 = document.createElement('div'); g3.className = 'side-grp';
   g3.innerHTML = '<div class="side-h">เครื่องมือ</div>';
+  { const tdc = (() => { try { const t = todayBangkokIndex(); return tfCollect(state.projects.filter(p => can(p.sourceType || 'work')), { acts: 'action', plan: true }).filter(x => !x.o.done && x.o.task && x.o.end <= t).length; } catch (e) { return 0; } })();
+    g3.appendChild(item({ icon: 'sun', label: 'วันนี้ของฉัน', active: view.type === 'today', badge: tdc || '', badgeTitle: `ครบวันนี้/เลยกำหนด ${tdc} งาน`, fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'today' }) })); }
   g3.appendChild(item({ icon: 'calendar', label: 'ปฏิทินรวม', active: view.type === 'calendar', fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'calendar' }) }));
   g3.appendChild(item({ icon: 'present', label: 'สรุปผู้บริหาร', active: view.type === 'exec', fn: () => goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (APP_MODE === 'all' ? 'all' : APP_MODE) : activeMainCat, { type: 'exec', pid: view.type === 'project' ? view.id : view.pid }) }));
   const od = todoOverdueCount();
@@ -4090,6 +4575,7 @@ function renderProjectDetail(projectId) {
   root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id, togglePlan: true, extra: [exBtn],
     add: [{ label: 'เพิ่มกิจกรรม', icon: 'calendar', fn: () => calAdd(todayBangkokIndex(), [project]) }, { label: 'เพิ่มหน่วยงาน', icon: 'folder', fn: () => addDepartment(project.id) }] }));
   root.appendChild(buildToolRow({ filterCtx: { project }, cal: calMode }));
+  root.appendChild(buildTfBar({ kind: calMode ? 'cal' : 'tl', projects: [project], title: 'รายการงาน · ' + project.name }));
   root.appendChild(renderRowCatBar(project));
   const rcAct = rcActive(project), rcNow = rcNowOn(project);
   if (rcAct.length || rcNow) {
@@ -4256,7 +4742,8 @@ function calCollect(projects, rowOk, flt) {
   const showExtra = flt && flt.extra != null ? flt.extra : o.extra;
   const types = flt && flt.types;   // { task, meeting, note }
   const q = (searchQuery || '').toLowerCase();
-  const pass = (a) => {
+  const pass = (a, dd) => {
+    if (tfActive() && !tfMatch(tfOfAct(a, dd))) return false;
     if (!showDone && a.completed) return false;
     if (onlyPending && (a.type !== 'task' || a.completed)) return false;
     if (q && !((a.label || '') + ' ' + (a.remark || '')).toLowerCase().includes(q)) return false;
@@ -4288,8 +4775,8 @@ function calCollect(projects, rowOk, flt) {
       (d.rows || []).forEach(r => {
         if (isHid(r) || (rowOk && !rowOk(p, d, r))) return;
         (r.activities || []).forEach(a => {
-          if (pass(a)) mk(a, p, d, r, false);
-          if (a.prep && a.prep.length && (!types || types.task)) prepEntries(a).forEach(x => { if (!pass(x)) return; mk(x, p, d, r, false); const it = items[items.length - 1]; it.prep = true; it.label = '📌 ' + it.label; it.title += `\n🔗 ${x._prep.it.rel && x._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'}: ${a.label || ''} (${prepAnchorText(a)}) · ${prepRelText(x._prep.it)}${x._prep.it.who ? '\n👤 ' + x._prep.it.who : ''}`; });
+          if (pass(a, d)) mk(a, p, d, r, false);
+          if (a.prep && a.prep.length && (!types || types.task)) prepEntries(a).forEach(x => { if (!pass(x, d)) return; mk(x, p, d, r, false); const it = items[items.length - 1]; it.prep = true; it.label = '📌 ' + it.label; it.title += `\n🔗 ${x._prep.it.rel && x._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'}: ${a.label || ''} (${prepAnchorText(a)}) · ${prepRelText(x._prep.it)}${x._prep.it.who ? '\n👤 ' + x._prep.it.who : ''}`; });
         });
       });
     });
@@ -4673,7 +5160,7 @@ function renderCalendar(opts) {
   const foot = document.createElement('div'); foot.className = 'cal-foot';
   foot.textContent = READ_ONLY ? 'ชี้เมาส์ที่งานเพื่อดูรายละเอียด · คลิกเพื่อเปิด' : 'คลิกงาน = เปิด/แก้ไข · ลากงานไปวันอื่นได้ (สัปดาห์/วัน: ลากขึ้นลงเพื่อเปลี่ยนเวลา) · คลิกช่องว่าง = เพิ่มกิจกรรมวันนั้น · คลิกเลขวันที่ = ดูรายชั่วโมง';
   wrap.appendChild(foot);
-  setTimeout(() => { const c = document.getElementById('searchCount'); if (c && (searchQuery || onlyPending)) c.textContent = `พบ ${searchHits} งาน`; }, 0);
+  setTimeout(() => { const c = document.getElementById('searchCount'); if (c && (searchQuery || onlyPending || tfActive())) c.textContent = `พบ ${searchHits} งาน`; }, 0);
   return wrap;
 }
 
@@ -4686,6 +5173,7 @@ function renderCalendarAll() {
   root.appendChild(buildPageHead({ crumb: 'เครื่องมือ', title: 'ปฏิทินรวม', noGantt: true,
     add: [{ label: 'เพิ่มกิจกรรม', fn: () => { const hid = new Set(calAllPrefs().hidden || []); calAdd(calAnchor(), state.projects.filter(p => can(p.sourceType || 'work') && !hid.has(p.id))); } }] }));
   root.appendChild(buildToolRow({ noGantt: true, cal: true }));
+  root.appendChild(buildTfBar({ kind: 'cal', projects: state.projects.filter(p => can(p.sourceType || 'work') && !new Set(calAllPrefs().hidden || []).has(p.id)), title: 'รายการงาน · ปฏิทินรวม' }));
   const pf = calAllPrefs(), o = calOpts();
   const hidden = new Set(pf.hidden || []);
   const cats = ['work', 'extra', 'personal'].filter(can);
@@ -4986,11 +5474,12 @@ function createSmartActivityBar(act, colw, rStart, rEnd, totalWidth, rowActiviti
   bar.style.width = 'max-content';
   bar.style.minWidth = actWidth + 'px';
   bar.style.maxWidth = spaceToNext + 'px';
-  bar.title = `${act.label}${statusText}${act.remark ? '\nหมายเหตุ: ' + act.remark : ''}${act.updatedBy ? '\nแก้ล่าสุดโดย ' + act.updatedBy + ' · ' + fmtDateTime(act.updatedAt) : ''}`;
-  const fState = activityFilterState(act);
+  bar.title = `${act.label}${statusText}${act.owner ? '\nผู้รับผิดชอบ: ' + act.owner : ''}${act.remark ? '\nหมายเหตุ: ' + act.remark : ''}${act.updatedBy ? '\nแก้ล่าสุดโดย ' + act.updatedBy + ' · ' + fmtDateTime(act.updatedAt) : ''}`;
+  const fState = activityFilterState(act, dept);
+  if (fState === 'hide') return null;
   if (fState === 'dim') bar.classList.add('act-dim');
   else if (fState === 'hit') { bar.classList.add('act-hit'); searchHits++; }
-  else if (fState === 'show' && (searchQuery || onlyPending)) searchHits++;
+  else if (fState === 'show' && (searchQuery || onlyPending || tfActive())) searchHits++;
 
   // ชื่อทั้งหมดอยู่ "ในกรอบ" ของงาน: ถ้าชื่อยาวกว่าช่วงวันที่ กรอบจะยืดต่อ (สีจางกว่า) ได้ไม่เกินจุดเริ่มของงานถัดไป
   // งานที่ช่วงวันซ้อนกัน: งานวันถัดไปวาดทับด้านบนด้วยพื้นทึบ ส่วนที่ซ้อนของงานก่อนหน้าจึงไม่โผล่มาให้อ่านปนกัน
@@ -5213,6 +5702,7 @@ function renderOverview(categoryFilter = null) {
   root.appendChild(buildPageHead({ crumb: categoryFilter ? 'แผนงาน / ' + (CAT_LABELS[categoryFilter] || '') : 'ภาพรวม', title, toggle: __calScope, togglePlan: true,
     add: categoryFilter && CAT_ADD[categoryFilter] ? [{ label: 'เพิ่มโครงการ', fn: () => CAT_ADD[categoryFilter]() }] : null }));
   root.appendChild(buildToolRow({ filterCtx: { ov: true, ovKey: categoryFilter }, cal: calIsOn(__calScope) }));
+  root.appendChild(buildTfBar({ kind: calIsOn(__calScope) ? 'cal' : 'tl', projects: (categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects).filter(p => can(p.sourceType || 'work')), title: 'รายการงาน · ' + title }));
   root.appendChild(buildWatchPanel(categoryFilter));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
@@ -5302,6 +5792,7 @@ function renderLanesOverview(categoryFilter = null) {
     add: categoryFilter && CAT_ADD[categoryFilter] ? [{ label: 'เพิ่มโครงการ', fn: () => CAT_ADD[categoryFilter]() }] : null }));
   const ovProjs = categoryFilter ? state.projects.filter(p => categoryFilter === 'work' ? (p.sourceType === 'work' || !p.sourceType) : p.sourceType === categoryFilter) : state.projects;
   root.appendChild(buildToolRow({ filterCtx: { ov: true, ovKey: categoryFilter, lanes: true, projects: ovProjs }, cal: calIsOn(__calScope) }));
+  root.appendChild(buildTfBar({ kind: calIsOn(__calScope) ? 'cal' : 'tl', projects: ovProjs.filter(p => can(p.sourceType || 'work')), title: 'รายการงาน · ' + title }));
   root.appendChild(buildWatchPanel(categoryFilter));
   const ovBar = renderOvCatBar(ovProjs, categoryFilter); root.appendChild(ovBar.el);
   const ovAct = ovBar.act;
@@ -5757,6 +6248,9 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
       <input type="checkbox" id="actCompleted" ${existing && existing.completed ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
       <label for="actCompleted" style="font-weight: 600; color: var(--indigo-deep); cursor: pointer;">ทำกิจกรรมนี้เสร็จเรียบร้อยแล้ว ✅</label>
     </div>
+ <label class="field-label" for="actOwner">👤 ผู้รับผิดชอบ</label>
+    <input type="text" id="actOwner" class="text-input" list="actOwners" value="${existing && existing.owner ? escapeHTML(existing.owner) : ''}" placeholder="ชื่อผู้รับผิดชอบ (ไม่บังคับ) — ใช้กรอง &quot;งานของฉัน&quot;" autocomplete="off">
+    <datalist id="actOwners">${tfOwnerList(state.projects).concat(USER_NAME && !tfOwnerList(state.projects).includes(USER_NAME) ? [USER_NAME] : []).map(n => `<option value="${escapeHTML(n)}">`).join('')}</datalist>
     <label class="field-label">หมายเหตุ</label>
     <textarea id="actRemark" class="text-input" placeholder="รายละเอียดเพิ่มเติม...">${existing && existing.remark ? escapeHTML(existing.remark) : ''}</textarea>
     ${exActFieldsHTML(existing)}
@@ -5881,6 +6375,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
       if (done && ppLink && ppLink.sel) { const lr = findLiveRow(projectId, deptId, rowId) || liveRow; lr.activities.forEach(a => { if (!ppBefore.has(a.id) || (existing && existing.seriesId && a.seriesId === existing.seriesId) || (existing && a.id === existing.id)) ppApplyLink(a); }); }
       if (done && existing) exApplyActFields(liveRow.activities.find(a => a.id === existing.id), modal);
       if (done && existing) prepApply((findLiveRow(projectId, deptId, rowId) || liveRow).activities.find(a => a.id === existing.id), prepForm);
+      if (done) { const ow = modal.querySelector('#actOwner').value.trim(); (findLiveRow(projectId, deptId, rowId) || liveRow).activities.filter(a => (existing && a.id === existing.id) || !ppBefore.has(a.id)).forEach(a => { if (ow) a.owner = ow; else delete a.owner; }); }
       if (done) { closeModal(overlay); await persistAndRender(); }
       return;
     }
@@ -5891,6 +6386,7 @@ function openActivityModal(projectId, deptId, rowId, actId, preset) {
     exApplyActFields(target || liveRow.activities[liveRow.activities.length - 1], modal);
     ppApplyLink(target || liveRow.activities[liveRow.activities.length - 1]);
     prepApply(target || liveRow.activities[liveRow.activities.length - 1], prepForm);
+    { const ow = modal.querySelector('#actOwner').value.trim(), ta = target || liveRow.activities[liveRow.activities.length - 1]; if (ow) ta.owner = ow; else delete ta.owner; }
     closeModal(overlay); await persistAndRender();
   };
   actions.appendChild(saveBtn);
@@ -6269,9 +6765,12 @@ function fmtDateTime(t) {
 }
 
 // 'show' = แสดงปกติ, 'hit' = ตรงคำค้นหา (เน้น), 'dim' = ไม่ตรงเงื่อนไข (ทำจาง)
-function activityFilterState(act) {
-  if (!searchQuery && !onlyPending) return 'show';
+function activityFilterState(act, dept) {
+  const tfa = tfActive();
+  if (!searchQuery && !onlyPending && !tfa) return 'show';
   if (onlyPending && (act.type !== 'task' || act.completed)) return 'dim';
+  if (tfa && !tfMatch(tfOfAct(act, dept))) return tf.hide ? 'hide' : 'dim';
+  if (tfa && !searchQuery) return 'hit';
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     const text = ((act.label || '') + ' ' + (act.remark || '')).toLowerCase();
@@ -7160,7 +7659,7 @@ function prepDay(a, it) {
 function prepRelText(it) { return it.rel ? `${it.rel.dir < 0 ? 'ก่อน' : 'หลัง'} ${it.rel.n} ${it.rel.unit === 'd' ? 'วัน' : 'วันทำการ'}` : 'วันที่แน่นอน'; }
 // ตัวแทนของงานเตรียมการ ให้หน้า To-do / งานที่ต้องจับตา / ปฏิทิน ใช้เหมือน "กำหนดการ" ทั่วไป (อ่าน/เขียนลงรายการจริง)
 function prepProxy(a, it) {
-  const M = { label: 'text', completed: 'done', completedAt: 'doneAt', completedBy: 'doneBy', followUp: 'fu', updatedBy: 'updatedBy', updatedAt: 'updatedAt' };
+  const M = { label: 'text', completed: 'done', completedAt: 'doneAt', completedBy: 'doneBy', followUp: 'fu', updatedBy: 'updatedBy', updatedAt: 'updatedAt', owner: 'who' };
   const fixed = { type: 'task', allDay: true };
   return new Proxy({}, {
     get(t, k) {
@@ -9720,6 +10219,7 @@ function renderProjPlan(project) {
     root.appendChild(eb);
   }
   root.appendChild(ppToolbar([plan], false));
+  root.appendChild(buildTfBar({ kind: 'plan', projects: [project], title: 'ขั้นตอนแผนโครงการ · ' + project.name }));
   root.appendChild(ppGrid([{ plan, project, ix, C }], today, plan.id));
   const pr = gpPrefs();
   const lg = document.createElement('div'); lg.className = 'gp-legend';
@@ -9859,11 +10359,12 @@ function ppWbsMap(plan, ix) {
 }
 function ppHospOf(ix, t) { if (t.hosp) return t.hosp; const a = ix.anc(t).find(x => x.hosp); return a ? a.hosp : ''; }
 function ppRows(plan, project, ix, C, today) {
-  const F = gp.filt, q = F.q.toLowerCase(), pr = gpPrefs(), filtering = !!(q || F.st.length || F.hosp.length);
+  const F = gp.filt, q = F.q.toLowerCase(), pr = gpPrefs(), tfa = tfActive(), filtering = !!(q || F.st.length || F.hosp.length || tfa);
   const selfMatch = (t) => {
     if (q && !(`${t.name || ''} ${t.owner || ''} ${t.code || ''}`).toLowerCase().includes(q)) return false;
     if (F.hosp.length && !F.hosp.includes(ppHospOf(ix, t))) return false;
     if (F.st.length) { const r = C.get(t.id); if (!r.leaf) return false; if (!F.st.some(s => s === 'stale' ? ppIsStale(plan, ix, t, today) : r.st === s)) return false; }
+    if (tfa) { if (ix.has(t.id)) return false; if (!tfMatch(tfOfPlan(plan, ix, t, today))) return false; }
     return true;
   };
   const mm = new Map(), sub = (t) => { if (mm.has(t.id)) return mm.get(t.id); const v = selfMatch(t) || ix.k(t.id).some(sub); mm.set(t.id, v); return v; };
@@ -9910,7 +10411,7 @@ function ppGrid(secs, today, key) {
   const { r0, r1 } = gpRange(pseudo, today), W = Math.round((r1 - r0 + 1) * pxd);
   const cols = ppCols(pseudo, edit), LW = cols.LW;
   const X = (i) => (i - r0) * pxd;
-  const F = gp.filt, filtering = !!(F.q || F.st.length || F.hosp.length);
+  const F = gp.filt, filtering = !!(F.q || F.st.length || F.hosp.length || tfActive());
   const rows = [];
   secs.forEach(s => {
     if (s.plan) s.g = { X, pxd, W, today, crit: pr.crit ? gpCritical(s.plan, s.ix) : new Set(), edit: ppEditOn(s.plan), canE: gpCanEdit(s.plan), cols, ix: s.ix, C: s.C, project: s.project, off: s.head ? 18 : 0 };
@@ -10069,6 +10570,7 @@ function renderPlansOverview(projects, o) {
   const nb = document.createElement('button'); nb.type = 'button'; nb.className = 'btn' + (showNo ? ' on' : ''); nb.textContent = 'โครงการที่ยังไม่มีแผน'; nb.title = 'แสดง/ซ่อนโครงการที่ยังไม่ได้สร้างแผนโครงการ'; nb.setAttribute('aria-pressed', showNo ? 'true' : 'false'); nb.onclick = () => { gpSetPrefs({ noPlan: !showNo }); render(); };
   tb.appendChild(nb);
   root.appendChild(tb);
+  root.appendChild(buildTfBar({ kind: 'plan', projects: plans.map(x => x.project).filter(Boolean), title: 'ขั้นตอนแผนโครงการ (ทุกโครงการ)' }));
   root.appendChild(ppGrid(vis, today, o.scope));
   const lg = document.createElement('div'); lg.className = 'gp-legend';
   lg.innerHTML = `<span><i class="gp-lg-bar"></i>ทำแล้ว / ที่เหลือ</span><span><i class="pp-lg-sum"></i>แผนงานที่มีงานย่อย</span><span><i class="gp-lg-late"></i>เลยกำหนด</span><span><i class="gp-lg-ms"></i>หมุดหมาย</span><span><i class="pp-lg-est"></i>วันที่ประมาณการ</span><span class="gp-lg-tip">ดับเบิลคลิกแผนงาน = ติ๊กเสร็จ · คลิกชื่อโครงการ = เปิดแผนของโครงการนั้น</span>`;
