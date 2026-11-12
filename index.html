@@ -1578,6 +1578,23 @@ body.gs-on .content { padding-bottom: 90px; }
 .gp-slip.late { color: #C81E3A; }
 .gp-norow { position: relative; padding: 30px 20px; color: #5B6680; font-size: 14px; position: sticky; left: 0; width: min(100%, 560px); }
 .gp-tip { position: fixed; z-index: 3000; pointer-events: none; background: #3A2E6E; color: #fff; font-size: 12.5px; font-weight: 600; border-radius: 999px; padding: 3px 10px; white-space: nowrap; box-shadow: 0 4px 12px rgba(58, 46, 110, .35); }
+/* โหมดเต็มจอของหน้าแผนโครงการ */
+.pp-page.pp-full { position: fixed; inset: 0; z-index: 45; background: var(--bg); padding: 10px 16px 8px; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
+.pp-page.pp-full > .ph, .pp-page.pp-full > .gp-kpis { display: none; }
+.pp-page.pp-full > * { flex-shrink: 0; }
+.pp-page.pp-full > .gp-grid { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.pp-page.pp-full .gp-scroll { flex: 1 1 auto; max-height: none; min-height: 0; }
+.pp-page.pp-full > .pp-sc { max-height: 30vh; overflow: auto; }
+.pp-fh { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
+.pp-fh b { font-size: 17px; color: #241C4D; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-fh small { color: #5B6680; font-size: 12.5px; }
+.btn.pp-fbtn { gap: 6px; }
+@media (max-width: 720px) {
+  .pp-page.pp-full { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 10px; }
+  .pp-page.pp-full .gp-scroll { max-height: calc(100vh - 90px); min-height: 60vh; }
+  .pp-fh small { display: none; }
+}
+@media print { .pp-page.pp-full { position: static; overflow: visible; } }
 .gp-legend { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: #4A5773; padding: 10px 2px 0; }
 .gp-legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .gp-legend i { display: inline-block; }
@@ -3248,6 +3265,7 @@ function render() {
   else if (view.type === 'gplan') { view = { type: 'overview' }; content.appendChild(renderOverview()); }
   else content.appendChild(renderProjectDetail(view.id));
   
+  if (ppFull && !content.querySelector('.pp-page')) { ppFull = false; try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) {} }
   mainCol.appendChild(content);
   gselMount(mainCol);
   if (!content.querySelector('.pp-page') && document.getElementById('gpDrawer')) gpCloseDrawer();
@@ -10211,6 +10229,7 @@ function renderProjPlan(project) {
   root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id, togglePlan: true, noGantt: !plan || !gpCanEdit(plan), extra, add }));
   if (!plan) { root.appendChild(ppEmpty(project, canE)); return root; }
   const today = todayBangkokIndex(), ix = ppIdx(plan), C = ppCalc(plan, ix, today);
+  if (ppFull) { root.classList.add('pp-full'); root.appendChild(ppFullHead(project.name, 'แผนโครงการ · เต็มจอ')); }
   root.appendChild(ppKpis(plan, ix, C, today));
   if (gpPrefs().sc) root.appendChild(ppSCurve(plan, ix, today));
   if (edit) {
@@ -10346,8 +10365,42 @@ function ppToolbar(plans, multi) {
   tg('เส้นทางวิกฤต', 'crit', 'ไฮไลต์งานที่ถ้าช้า วันจบโครงการจะช้าตาม (คิดจากเงื่อนไข "ต้องรอ")');
   if (!multi) tg('S-Curve', 'sc', 'กราฟความคืบหน้าสะสม แผน เทียบ ผลงานจริง');
   if (!multi) { const cb = document.createElement('button'); cb.type = 'button'; cb.className = 'btn'; cb.innerHTML = '📘 <span>เกณฑ์ %</span>'; cb.title = 'คำสั่งการอัปเดตความคืบหน้า และเกณฑ์การกำหนด % ตามจุดส่งมอบงาน'; cb.onclick = () => ppCritModal(plan.id); tb.appendChild(cb); }
+  if (!ppFull) tb.appendChild(ppFullBtn());
   return tb;
 }
+// ---------- โหมดเต็มจอ (หน้าแผนโครงการ / ภาพรวมแผน) ----------
+let ppFull = false;
+function ppSetFull(on) {
+  ppFull = !!on;
+  const de = document.documentElement;
+  try {
+    if (ppFull && de.requestFullscreen && !document.fullscreenElement) de.requestFullscreen().catch(() => {});
+    else if (!ppFull && document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  } catch (e) {}
+  const el = document.getElementById('gpScroll'), keep = el ? { l: el.scrollLeft, t: el.scrollTop } : null;
+  render();
+  if (keep) requestAnimationFrame(() => { const n = document.getElementById('gpScroll'); if (n) { n.scrollLeft = keep.l; n.scrollTop = keep.t; } });
+}
+function ppFullBtn() {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn pp-fbtn' + (ppFull ? ' on' : '');
+  b.innerHTML = ppFull ? `${ic('x', 15, 2.4)}<span>ออกจากเต็มจอ</span>` : '<span aria-hidden="true">⛶</span><span>เต็มจอ</span>';
+  b.title = ppFull ? 'ออกจากโหมดเต็มจอ (Esc)' : 'ขยายตารางแผนให้เต็มหน้าจอ';
+  b.setAttribute('aria-pressed', ppFull ? 'true' : 'false');
+  b.onclick = () => ppSetFull(!ppFull);
+  return b;
+}
+function ppFullHead(title, sub) {
+  const h = document.createElement('div'); h.className = 'pp-fh';
+  h.innerHTML = `<b title="${escapeHTML(title)}">${escapeHTML(title)}</b>${sub ? `<small>${escapeHTML(sub)}</small>` : ''}`;
+  h.appendChild(ppFullBtn());
+  return h;
+}
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && ppFull) { ppFull = false; render(); } });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !ppFull || document.fullscreenElement) return;
+  if (document.querySelector('.modal-overlay, .pop, .gp-drawer')) return;
+  ppSetFull(false);
+});
 function ppFoldTo(plans, n) {
   gp.collapsed.clear();
   plans.forEach(plan => { const ix = ppIdx(plan); const walk = (list, lvl) => list.forEach(t => { if (ix.has(t.id)) { if (lvl + 1 >= n) gp.collapsed.add(t.id); else walk(ix.k(t.id), lvl + 1); } }); walk(ix.k(''), 0); });
@@ -10549,6 +10602,7 @@ function renderPlansOverview(projects, o) {
   const vis = secs.filter(s => s.plan || showNo);
   const anyEd = secs.some(s => s.plan && gpCanEdit(s.plan));
   root.appendChild(buildPageHead({ crumb: o.crumb, title: o.title, toggle: o.scope, togglePlan: true, noGantt: !anyEd, add: o.add }));
+  if (ppFull) { root.classList.add('pp-full'); root.appendChild(ppFullHead(o.title || 'แผนโครงการ', 'ภาพรวมแผนโครงการ · เต็มจอ')); }
   const plans = secs.filter(s => s.plan).map(s => s.plan);
   // การ์ดสรุป
   const k = document.createElement('div'); k.className = 'gp-kpis pp-kpis pp-mk';
