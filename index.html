@@ -2016,6 +2016,90 @@ body.gs-on .content { padding-bottom: 90px; }
 .pf-in { width: 100%; min-width: 90px; border: 1px solid #D5D9E3; border-radius: 6px; padding: 4px 6px; font: inherit; font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; }
 .pf-in:focus { outline: 2px solid #6366F1; border-color: #6366F1; }
 .pf-g .rt { background: #FAFAFD; }
+/* การเงิน: โซน 1 / โซน 3 */
+.pf-z1 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; }
+.pf-z1 > .pf-card { margin-top: 12px; }
+.pf-empty { color: #5B6680; font-size: 13px; padding: 40px 10px; text-align: center; }
+.pf-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; flex: none; }
+.pf-sc line.nw { stroke: #0891B2; stroke-dasharray: 3 3; } .pf-sc text.nw { fill: #0891B2; font-weight: 700; }
+.pf-fyb svg { width: 100%; height: auto; display: block; }
+.pf-fyb text { font-size: 11px; fill: #5B6680; font-family: inherit; } .pf-fyb text.fy { fill: #241C4D; font-weight: 700; } .pf-fyb text.v { fill: #241C4D; font-weight: 700; font-size: 11.5px; }
+.pf-fyb line.g { stroke: #EEF0F5; } .pf-fyb rect.ac { fill: #15803D; } .pf-fyb rect.hit { fill: transparent; }
+.pf-fyg { cursor: pointer; } .pf-fyg:hover rect.hit { fill: #F5F3FF; } .pf-fyg.on rect.hit { fill: #EEF2FF; }
+.pf-h i.sq { width: 10px; height: 10px; border: none; border-radius: 3px; vertical-align: -1px; } .pf-h i.sq.ac { background: #15803D; }
+.pf-t .pw { background: #FEF3C7; color: #92400E; cursor: help; }
+.pfx-h small { margin-left: 8px !important; } .pfx-h .pill { margin-left: auto; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 3px 10px; background: #FEE2E2; color: #B91C1C; }
+.pfx-tb { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 12.5px; }
+.pfx-lb { color: #5B6680; font-weight: 600; margin-left: 4px; }
+.pfx-seg { display: inline-flex; border: 1px solid #D5D9E3; border-radius: 8px; overflow: hidden; background: #fff; }
+.pfx-seg button { border: none; border-right: 1px solid #E3E6EE; background: #fff; font: inherit; font-size: 12.5px; padding: 5px 10px; cursor: pointer; color: #16233B; display: inline-flex; align-items: center; white-space: nowrap; }
+.pfx-seg button:last-child { border-right: none; }
+.pfx-seg button[aria-pressed="true"] { background: #EEF2FF; color: #241C4D; font-weight: 700; }
+.pfx-seg button:disabled { cursor: default; color: #9CA3AF; } .pfx-seg .pfx-fyl:disabled { color: #241C4D; font-weight: 700; background: #F8F9FC; }
+.pfx-u { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; }
+.pfx-sc { overflow: auto; max-height: calc(100vh - 150px); border: 1px solid #E1E4EC; border-radius: 10px; outline: none; position: relative; }
+.pfx-sc:focus-visible { box-shadow: 0 0 0 3px #C7D2FE; }
+.pfx { border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12.5px; }
+.pfx col.c1 { width: 230px; } .pfx col.c2 { width: 52px; } .pfx col.c3 { width: 86px; } .pfx col.cm { width: 92px; } .pfx col.cr { width: 92px; }
+.pfx th, .pfx td { border-bottom: 1px solid #EEF0F5; border-right: 1px solid #F3F4F8; padding: 0 7px; height: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #fff; }
+.pfx thead th { position: sticky; top: 0; z-index: 3; background: #F8F9FC; color: #4A5773; font-weight: 700; font-size: 12px; height: 32px; }
+.pfx thead tr.grp th { height: 22px; font-size: 11px; color: #8A93A8; font-weight: 600; text-align: center; border-bottom: none; }
+.pfx thead tr:nth-child(2) th { top: 22px; }
+.pfx th.q { border-left: 2px solid #E3E6EE; }
+.pfx th i { display: block; font-style: normal; font-size: 10px; color: #0E7490; line-height: 1; }
+.pfx .n { text-align: right; font-variant-numeric: tabular-nums; }
+.pfx .fz { position: sticky; z-index: 2; } .pfx .f1 { left: 0; } .pfx .f2 { left: 230px; padding: 0 4px; } .pfx .f3 { left: 282px; box-shadow: 1px 0 0 #E1E4EC; }
+.pfx thead .fz { z-index: 4; }
+.pfx .rr { position: sticky; z-index: 2; background: #FAFAFC; }
+.pfx tr > .rr:nth-last-child(1) { right: 0; } .pfx tr > .rr:nth-last-child(2) { right: 92px; } .pfx tr > .rr:nth-last-child(3) { right: 184px; box-shadow: -1px 0 0 #E1E4EC; }
+.pfx thead .rr { z-index: 4; background: #F3F4F8; }
+.pfx th.now, .pfx td.now { background: #ECFEFF; } .pfx thead th.now { color: #0E7490; background: #DDF6FA; }
+.pfx th.fys, .pfx td.fys { border-left: 2px solid #E3E6EE; }
+.pfx tr.it td { background: #F5F3FF; font-weight: 600; color: #241C4D; height: 36px; } .pfx tr.it td.now { background: #E6F2F9; } .pfx tr.it td.rr { background: #EFEBFD; }
+.pfx td small { display: block; font-size: 10.5px; color: #15803D; font-weight: 600; line-height: 1.1; }
+.pfx tr.it td.f1 b { color: #241C4D; }
+.pfx-cv { border: none; background: none; color: #6366F1; cursor: pointer; width: 18px; padding: 0; font-size: 12px; }
+.pfx-w { color: #B45309; cursor: help; }
+.pfx td.ind { padding-left: 26px; font-size: 12px; color: #4A5773; }
+.pfx-kd { border-radius: 5px; padding: 1px 6px; font-size: 10.5px; font-weight: 700; } .pfx-kd.p { background: #EEF2FF; color: #3730A3; } .pfx-kd.a { background: #DCFCE7; color: #166534; }
+.pfx tr.v.a td.ce { color: #166534; }
+.pfx tr.v.a td { border-bottom-color: #E3E6EE; }
+.pfx tr.v.fst td { border-top: 1px solid #EAE7FB; }
+.pfx td.ce { cursor: cell; user-select: none; }
+.pfx td.ce.ro { cursor: default; }
+.pfx td.miss { background: #FEF2F2 !important; } .pfx .mtx { color: #B91C1C; font-size: 10.5px; font-weight: 700; }
+.pfx td.sel { background: #EEF2FF !important; box-shadow: inset 0 0 0 1px #A5B4FC; }
+.pfx td.act { box-shadow: inset 0 0 0 2px #4F46E5; }
+.pfx td.edit { padding: 0; box-shadow: inset 0 0 0 2px #0891B2; }
+.pfx-in { width: 100%; height: 100%; border: none; outline: none; font: inherit; font-size: 12.5px; text-align: right; padding: 0 7px; background: #fff; font-variant-numeric: tabular-nums; }
+.pfx tfoot td { position: sticky; z-index: 2; background: #F8F9FC; font-weight: 700; color: #241C4D; }
+.pfx tfoot tr:nth-child(1) td { bottom: 62px; } .pfx tfoot tr:nth-child(2) td { bottom: 31px; } .pfx tfoot tr:nth-child(3) td { bottom: 0; }
+.pfx tfoot tr.a td { color: #166534; } .pfx tfoot tr.s td { font-weight: 600; color: #4A5773; }
+.pfx tfoot td.fz, .pfx tfoot td.rr { z-index: 3; }
+.pfx tfoot td.now { background: #E6F2F9; }
+.pfx-foot { font-size: 11.5px; color: #5B6680; margin-top: 6px; }
+.pop-mi.pop-dis { opacity: 1; color: #5B6680; font-size: 12px; cursor: default; }
+.pp-fsrcs { display: grid; grid-template-columns: 1fr; gap: 0; }
+.pp-fgo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: #4A5773; background: #F7F8FB; border-radius: 9px; padding: 8px 10px; margin-top: 8px; }
+.pp-fgo span { flex: 1; min-width: 180px; }
+/* แหล่งเงิน / Excel */
+.modal.pfs-modal { max-width: 980px; width: calc(100vw - 32px); padding: 0; }
+.pfs-b { padding: 12px 16px; }
+.pfs-r { display: grid; grid-template-columns: 34px minmax(0, 1.4fr) 190px 140px minmax(0, 1fr) 100px 26px; gap: 8px; align-items: center; margin-bottom: 6px; }
+.pfs-r .text-input { margin: 0; height: 34px; padding: 0 8px; }
+.pfs-hd { font-size: 12px; color: #5B6680; font-weight: 600; }
+.pfs-c { width: 32px; height: 32px; border: 1px solid #DCE0E8; border-radius: 8px; padding: 2px; background: #fff; }
+.pfs-add { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 10px; font-size: 12.5px; }
+.pfs-add button { border: 1px dashed #A5A3E8; border-radius: 999px; padding: 4px 10px; color: #4338CA; font: inherit; font-weight: 600; font-size: 12px; background: #fff; cursor: pointer; }
+.pfe-o { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 10px; font-size: 13.5px; } .pfe-o label { display: inline-flex; align-items: center; gap: 6px; }
+.modal.pfi-modal { max-width: 1100px; width: calc(100vw - 32px); padding: 0; display: flex; flex-direction: column; max-height: calc(100vh - 32px); }
+.pfi-b { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 14px; padding: 12px 16px; min-height: 0; overflow: hidden; flex: 1; }
+.pfi-l { font-size: 13px; line-height: 1.7; } .pfi-r { overflow: auto; max-height: calc(100vh - 220px); }
+.pfi-pills { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; } .pfi-pills .pill { font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 9px; }
+.pfi-c { background: #FEF3C7; color: #92400E; } .pfi-a { background: #DCFCE7; color: #166534; } .pfi-d { background: #FEE2E2; color: #991B1B; }
+.pfi-miss { background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; }
+.pfi-t tr.pfi-chg td:last-child { background: #FEF3C7; } .pfi-t tr.pfi-add td:last-child { background: #DCFCE7; } .pfi-t tr.pfi-del td:last-child { background: #FEE2E2; }
+@media (max-width: 900px) { .pf-z1 { grid-template-columns: 1fr; } .pfs-r { grid-template-columns: 34px 1fr 1fr 26px; } .pfs-r .pfs-k, .pfs-r .pfs-ref, .pfs-r > span.n { grid-column: 2 / 4; } .pfi-b { grid-template-columns: 1fr; overflow: auto; } .pfx col.c1 { width: 170px; } .pfx .f2 { left: 170px; } .pfx .f3 { left: 222px; } }
 /* รายงานประจำเดือน */
 .pr-modal { width: min(760px, 96vw); max-width: none; }
 .pr-secs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
@@ -3422,6 +3506,7 @@ function menuPop(anchor, items, opts = {}) {
       if (it === '-') { const s = document.createElement('div'); s.className = 'pop-sep'; p.appendChild(s); return; }
       const b = document.createElement('button'); b.type = 'button'; b.className = 'pop-mi' + (it.danger ? ' danger' : ''); b.setAttribute('role', 'menuitem');
       b.innerHTML = (it.icon ? ic(it.icon, 18) : '') + `<span>${escapeHTML(it.label)}</span>`;
+      if (it.disabled) { b.disabled = true; b.classList.add('pop-dis'); }
       b.onclick = () => { closePop(); it.fn(); };
       p.appendChild(b);
     });
@@ -11322,16 +11407,16 @@ function gpOpenDrawer(pid, tid) {
   if (linked.length) { const nm = linked.filter(x => ppAttKind(x.a) === 'meet').length; html += `<div class="pp-calc sm">ผูกไว้ใต้ขั้นตอนนี้: <b>📅 ${nm} · 🎯 ${linked.length - nm}</b><small>กดปุ่ม 📅 / 🎯 ที่แถบเครื่องมือเพื่อแสดง</small></div>`; }
   html += `<label class="gp-fl" for="gpNote">หมายเหตุ</label><textarea id="gpNote" class="text-input" rows="3" ${ro}>${escapeHTML(t.note || '')}</textarea>`;
   html += `<details class="pp-fin" ${t.sname || t.ssub ? 'open' : ''}><summary>🖥 บนสไลด์ผู้บริหาร <small>(ไม่บังคับ)</small></summary><label class="gp-fl" for="ppSN">ชื่อบนสไลด์</label><input id="ppSN" class="text-input" maxlength="120" value="${escapeHTML(t.sname || '')}" placeholder="ว่าง = ใช้ชื่อรายการ" ${ro}><label class="gp-fl" for="ppSS">บรรทัดรอง</label><input id="ppSS" class="text-input" maxlength="160" value="${escapeHTML(t.ssub || '')}" placeholder="เช่น โรงพยาบาลนครพิงค์ จังหวัดเชียงใหม่" ${ro}></details>`;
-  // การเงิน (เก็บไว้ ไม่แสดงในแผน ไม่ผูกกับความก้าวหน้า)
-  const F = t.fin || {}, fm = F.m || {}, months = Object.keys(fm).sort();
-  const hasFin = !!(F.total || F.loan || F.budget || months.length);
-  html += `<details class="pp-fin" ${hasFin && r0 && !par ? '' : ''}><summary>💰 การเงิน <small>${hasFin ? 'วงเงิน ' + ppMB(F.total || (+F.loan || 0) + (+F.budget || 0)) + ' ลบ.' : 'ยังไม่ได้กรอก'} · ไม่แสดงในแผน</small></summary>
-    <div class="gp-dates"><div><label class="gp-fl" for="ppFT">วงเงินรวม (บาท)</label><input id="ppFT" class="text-input" inputmode="decimal" value="${F.total ? ppMoney(F.total) : ''}" ${ro}></div></div>
-    <div class="gp-dates"><div><label class="gp-fl" for="ppFL">เงินกู้ (บาท)</label><input id="ppFL" class="text-input" inputmode="decimal" value="${F.loan ? ppMoney(F.loan) : ''}" ${ro}></div><div><label class="gp-fl" for="ppFB">งบประมาณ (บาท)</label><input id="ppFB" class="text-input" inputmode="decimal" value="${F.budget ? ppMoney(F.budget) : ''}" ${ro}></div></div>
-    <label class="gp-fl">แผน / ผลการเบิกจ่าย รายเดือน (บาท)</label>
-    <table class="pp-ft"><thead><tr><th>เดือน</th><th>แผน</th><th>เบิกจริง</th><th></th></tr></thead><tbody id="ppFm">${months.map(k => ppFinRow(k, fm[k], ro)).join('')}</tbody></table>
-    ${edit ? '<div class="pp-fadd"><input type="month" id="ppFmK" class="text-input"><button type="button" class="btn" id="ppFmA">+ เพิ่มเดือน</button></div>' : ''}
-    <div class="pp-fsum" id="ppFsum"></div></details>`;
+  // การเงิน: วงเงินแยกตามแหล่งเงิน (แผน/ผลรายเดือนกรอกที่หน้า "การเงิน")
+  const F = t.fin || {}, fSrcs = pfSources(plan), fAmt = pfSrcAmts(F), fM = F.m || {};
+  const hasFin = !!(pfTot(F) || Object.keys(fM).length);
+  const fP = Object.values(fM).reduce((a, v) => a + (+v[0] || 0), 0), fA = Object.values(fM).reduce((a, v) => a + (+v[1] || 0), 0);
+  const fLegacy = !Object.keys(fAmt).length && +F.total ? +F.total : 0;
+  html += `<details class="pp-fin"><summary>💰 การเงิน <small>${hasFin ? 'วงเงิน ' + ppMB(pfTot(F)) + ' ลบ.' : 'ยังไม่ได้กรอก'} · ไม่แสดงในแผน</small></summary>
+    <div class="pp-fsrcs">${fSrcs.map(s => `<div><label class="gp-fl" for="ppFS_${escapeHTML(s.id)}"><span class="pf-dot" style="background:${escapeHTML(s.color || '#64748B')}"></span>${escapeHTML(s.name)} <small>(${s.kind === 'in' ? 'ในงบ' : 'นอกงบ'} · บาท)</small></label><input id="ppFS_${escapeHTML(s.id)}" data-fs="${escapeHTML(s.id)}" class="text-input" inputmode="decimal" value="${fAmt[s.id] ? ppMoney(fAmt[s.id]) : ''}" ${ro}></div>`).join('')}</div>
+    ${fLegacy ? `<div class="pp-hint">วงเงินรวมเดิม ${ppMoney(fLegacy)} บาท (ยังไม่แยกแหล่งเงิน) · ใส่ตัวเลขแยกแหล่งด้านบนเพื่อแทนที่</div>` : ''}
+    <div class="pp-fsum" id="ppFsum"></div>
+    <div class="pp-fgo"><span>แผน / ผลการเบิกจ่ายรายเดือน กรอกที่หน้า “การเงิน”${fP || fA ? ` · ตอนนี้ แผนรวม ${ppMB(fP)} · เบิกจริง ${ppMB(fA)} ลบ.` : ''}</span><button type="button" class="btn" data-gofin>💰 ไปหน้าการเงิน</button></div></details>`;
   if (t0.updatedBy) html += `<div class="gp-upd">แก้ล่าสุดโดย ${escapeHTML(t0.updatedBy)} · ${escapeHTML(fmtDateTime(t0.updatedAt))}</div>`;
   html += `</div>`;
   if (edit) html += `<div class="gp-df"><button type="button" class="btn ibtn" data-up aria-label="เลื่อนขึ้น" title="เลื่อนขึ้น">${ic('up', 16, 2.2)}</button><button type="button" class="btn ibtn" data-down aria-label="เลื่อนลง" title="เลื่อนลง">${ic('down', 16, 2.2)}</button><button type="button" class="btn gp-del" data-del>${ic('trash', 15)}<span>ลบ</span></button><span class="tb-sp"></span><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-save>บันทึก</button></div>`;
@@ -11369,14 +11454,13 @@ function gpOpenDrawer(pid, tid) {
   d.querySelectorAll('[data-src]').forEach(b => b.onclick = () => { src = src.filter(x => x !== b.dataset.src); b.closest('.gp-dep').remove(); });
   // การเงิน
   const fsum = () => {
-    const box = q('#ppFsum'); if (!box) return; let p = 0, a = 0;
-    d.querySelectorAll('#ppFm tr').forEach(tr => { p += ppNum(tr.querySelector('[data-p]').value); a += ppNum(tr.querySelector('[data-a]').value); });
-    const tot = ppNum(q('#ppFT').value) || ppNum(q('#ppFL').value) + ppNum(q('#ppFB').value);
-    box.innerHTML = (p || a) ? `แผนรวม ${ppMB(p)} ลบ. · เบิกจริง ${ppMB(a)} ลบ.${tot ? ` (${(a / tot * 100).toFixed(1)}% ของวงเงิน)` : ''}` : '';
+    const box = q('#ppFsum'); if (!box) return; let tot = 0;
+    d.querySelectorAll('[data-fs]').forEach(i => { tot += ppNum(i.value); });
+    box.innerHTML = tot ? `วงเงินรวม <b>${ppMoney(tot)}</b> บาท (${ppMB(tot)} ลบ.)` : '';
   };
-  const bindF = () => { d.querySelectorAll('#ppFm input').forEach(i => i.oninput = fsum); d.querySelectorAll('#ppFm [data-rm]').forEach(b => b.onclick = () => { b.closest('tr').remove(); fsum(); }); };
-  bindF(); fsum(); ['#ppFT', '#ppFL', '#ppFB'].forEach(s => { const i = q(s); if (i) { i.oninput = fsum; i.onblur = () => { if (i.value.trim()) i.value = ppMoney(ppNum(i.value)); }; } });
-  const FA = q('#ppFmA'); if (FA) FA.onclick = () => { const k = q('#ppFmK').value; if (!/^\d{4}-\d{2}$/.test(k)) { showToast('เลือกเดือนก่อน'); return; } if (q(`#ppFm tr[data-k="${k}"]`)) return; const tb = q('#ppFm'); tb.insertAdjacentHTML('beforeend', ppFinRow(k, [0, 0], '')); const rows = [...tb.querySelectorAll('tr')].sort((a, b) => a.dataset.k.localeCompare(b.dataset.k)); rows.forEach(r => tb.appendChild(r)); bindF(); };
+  d.querySelectorAll('[data-fs]').forEach(i => { i.oninput = fsum; i.onblur = () => { if (i.value.trim()) i.value = ppMoney(ppNum(i.value)); }; });
+  fsum();
+  { const gf = d.querySelector('[data-gofin]'); if (gf) gf.onclick = () => { const pr = ppProjOf(plan); gpCloseDrawer(); if (pr) pfGoFin(pr.id); }; }
   const save = async () => {
     const name = q('#gpName').value.trim(); if (!name) { q('#gpName').focus(); showToast('กรุณาใส่ชื่อ'); return; }
     const [pl, live] = ppT(pid, tid); if (!live) { showToast('รายการนี้ถูกลบโดยผู้ใช้อื่นแล้ว'); gpCloseDrawer(); render(); return; }
@@ -11408,10 +11492,14 @@ function gpOpenDrawer(pid, tid) {
       else delete live.wmode;
     }
     // การเงิน
-    const fin = { total: ppNum(q('#ppFT').value), loan: ppNum(q('#ppFL').value), budget: ppNum(q('#ppFB').value), m: {} };
-    d.querySelectorAll('#ppFm tr').forEach(tr => { const p = ppNum(tr.querySelector('[data-p]').value), a = ppNum(tr.querySelector('[data-a]').value); if (p || a) fin.m[tr.dataset.k] = [p, a]; });
-    ['total', 'loan', 'budget'].forEach(k => { if (!fin[k]) delete fin[k]; }); if (!Object.keys(fin.m).length) delete fin.m;
-    if (Object.keys(fin).length) live.fin = fin; else delete live.fin;
+    { const amts = {}; d.querySelectorAll('[data-fs]').forEach(i => { const v = ppNum(i.value); if (v > 0) amts[i.dataset.fs] = v; });
+      if (JSON.stringify(amts) !== JSON.stringify(pfSrcAmts(live.fin || {})) && (Object.keys(amts).length || live.fin)) {
+        const srcsL = pfSources(pl); live.fin = live.fin || {};
+        if (!live.fin.ms && live.fin.m) live.fin.ms = clone(pfMsOf(live.fin, srcsL));
+        if (Object.keys(amts).length) live.fin.src = amts;
+        else { const legacyOnly = !live.fin.src && !+live.fin.loan && !+live.fin.budget; delete live.fin.src; delete live.fin.loan; delete live.fin.budget; if (!legacyOnly) delete live.fin.total; }
+        pfDerive(live, srcsL);
+      } }
     // ย้ายระดับ
     const np = q('#gpParent').value || null;
     if (np !== (live.parent || null)) {
@@ -12307,121 +12395,661 @@ function exSanitizeIt(s) {
 // task.fin = { total, loan, budget, m: { 'YYYY-MM': [แผนเบิกจ่าย, เบิกจ่ายจริง] } } (บาท)
 // ==========================================
 const PF = { fy: null, mode: 'act' };
+// task.fin = { total, src: { [แหล่งเงิน]: บาท }, ms: { [แหล่งเงิน]: { 'YYYY-MM': [แผน, ผลจริง] } },
+//              m (= ผลรวมทุกแหล่ง · คำนวณให้), loan / budget (คำนวณให้ เพื่อให้ส่วนอื่นของระบบใช้ต่อได้) }
+// plan.finSrc = [{ id, type, name, kind: 'in' ในงบ | 'out' นอกงบ, ref, color }]
+const PFG = { span: lsGet('pf_span', 1), show: lsGet('pf_show', 'pa'), src: '', unit: lsGet('pf_unit', 'm'), col: new Set(lsGet('pf_col', [])), sel: null, focus: false, sx: 0 };
+const PF_PRESETS = {
+  bud: { name: 'งบประมาณแผ่นดิน', icon: '🏛', kind: 'in', color: '#2563EB' },
+  loan: { name: 'เงินกู้', icon: '🏦', kind: 'out', color: '#7C3AED' },
+  lot: { name: 'เงินกองสลาก', icon: '🎫', kind: 'out', color: '#0D9488' },
+  grant: { name: 'เงินให้เปล่า (Grant)', icon: '🎁', kind: 'out', color: '#D97706' },
+  main: { name: 'เงินบำรุง', icon: '🏥', kind: 'out', color: '#DB2777' },
+  oth: { name: 'อื่น ๆ', icon: '✎', kind: 'out', color: '#64748B' }
+};
+const PF_U = { id: '_u', type: 'oth', name: 'ยังไม่ระบุแหล่งเงิน', kind: 'out', color: '#94A3B8' };
 function pfItems(plan) { const ix = ppIdx(plan); return { ix, items: exItemNodes(plan, ix) }; }
 function pfTot(F) { F = F || {}; return +F.total || (+F.loan || 0) + (+F.budget || 0); }
 function pfSum(F, upTo, idx) { return Object.entries((F || {}).m || {}).filter(([k]) => !upTo || k <= upTo).reduce((a, [, v]) => a + (+v[idx] || 0), 0); }
 function pfFyOfKey(k) { const o = exParseKey(k); return o ? exFyOf(o) : null; }
 function pfFyMonths(fy) { const out = []; let o = { y: fy - 544, m: 9 }; for (let i = 0; i < 12; i++) { out.push(o); o = exAddM(o, 1); } return out; }   // ต.ค. – ก.ย.
 function pfMB(v, d = 2) { return ((+v || 0) / 1e6).toLocaleString('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+function pfSources(plan) {
+  if (plan && Array.isArray(plan.finSrc) && plan.finSrc.length) return plan.finSrc;
+  let hb = false, hl = false;
+  ((plan && plan.tasks) || []).forEach(t => { const F = t.fin; if (!F) return; if (+F.budget) hb = true; if (+F.loan) hl = true; if (F.src) { if (F.src.bud) hb = true; if (F.src.loan) hl = true; } });
+  const out = [];
+  if (hb || !hl) out.push({ id: 'bud', type: 'bud', name: PF_PRESETS.bud.name, kind: 'in', color: PF_PRESETS.bud.color });
+  if (hl) out.push({ id: 'loan', type: 'loan', name: PF_PRESETS.loan.name, kind: 'out', color: PF_PRESETS.loan.color });
+  return out;
+}
+function pfSrcAmts(F) { F = F || {}; if (F.src) return F.src; const o = {}; if (+F.budget) o.bud = +F.budget; if (+F.loan) o.loan = +F.loan; return o; }
+function pfMsOf(F, srcs) {
+  F = F || {}; if (F.ms) return F.ms;
+  if (!F.m || !Object.keys(F.m).length) return {};
+  const amts = pfSrcAmts(F), nz = Object.keys(amts).filter(k => +amts[k] > 0);
+  const tgt = nz.length === 1 ? nz[0] : (srcs.length === 1 && !nz.length) ? srcs[0].id : '_u';
+  return { [tgt]: F.m };
+}
+function pfDerive(t, srcs) {
+  const F = t.fin; if (!F) return;
+  if (F.ms) {
+    const m = {};
+    Object.keys(F.ms).forEach(sid => {
+      const mm = F.ms[sid] || {};
+      Object.keys(mm).forEach(k => { const v = mm[k] || [0, 0]; if (!(+v[0]) && !(+v[1])) { delete mm[k]; return; } const c = m[k] || [0, 0]; c[0] += +v[0] || 0; c[1] += +v[1] || 0; m[k] = c; });
+      if (!Object.keys(mm).length) delete F.ms[sid];
+    });
+    if (!Object.keys(F.ms).length) delete F.ms;
+    Object.keys(m).forEach(k => { m[k] = [Math.round(m[k][0] * 100) / 100, Math.round(m[k][1] * 100) / 100]; });
+    if (Object.keys(m).length) F.m = m; else delete F.m;
+  }
+  if (F.src) {
+    Object.keys(F.src).forEach(k => { if (!(+F.src[k])) delete F.src[k]; });
+    const sum = Object.values(F.src).reduce((a, v) => a + (+v || 0), 0);
+    const kd = (id) => (srcs.find(s => s.id === id) || {}), b = Object.entries(F.src).filter(([k]) => kd(k).kind === 'in').reduce((a, [, v]) => a + v, 0), l = Object.entries(F.src).filter(([k]) => kd(k).type === 'loan').reduce((a, [, v]) => a + v, 0);
+    if (sum > 0) F.total = sum;
+    if (b) F.budget = b; else delete F.budget;
+    if (l) F.loan = l; else delete F.loan;
+    if (!Object.keys(F.src).length) delete F.src;
+  }
+  ['total', 'loan', 'budget'].forEach(k => { if (!(+F[k])) delete F[k]; });
+  if (!Object.keys(F).length) delete t.fin;
+}
+function pfSetCell(t, srcs, sid, key, idx, v) {
+  t.fin = t.fin || {};
+  if (!t.fin.ms) t.fin.ms = clone(pfMsOf(t.fin, srcs));
+  if (!t.fin.src) { const a = pfSrcAmts(t.fin); if (Object.keys(a).length) t.fin.src = clone(a); }
+  const mm = t.fin.ms[sid] = t.fin.ms[sid] || {};
+  const c = mm[key] ? mm[key].slice() : [0, 0]; c[idx] = Math.max(0, Math.round((+v || 0) * 100) / 100); mm[key] = c;
+}
+function pfSrcList(plan) { const s = pfSources(plan); return (plan.tasks || []).some(t => t.fin && pfMsOf(t.fin, s)._u) ? [...s, PF_U] : s; }
+function pfGoFin(pid) { lsSet('viewmode_p_' + pid, 'fin'); const p = state.projects.find(x => x.id === pid); goView(activeMainCat === 'todo' || activeMainCat === 'rooms' ? (p ? p.sourceType || 'work' : 'work') : activeMainCat, { type: 'project', id: pid }); }
+function pfUnitF() { return PFG.unit === 'b' ? 1 : 1e6; }
+function pfFmtU(v) { if (!v) return ''; return PFG.unit === 'b' ? ppMoney(v) : (v / 1e6).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
 function renderProjFin(project) {
   const root = document.createElement('div'); root.className = 'gp-page pf-page';
   const plan = ppPlanOf(project);
-  const exBtn = document.createElement('button'); exBtn.type = 'button'; exBtn.className = 'btn'; exBtn.innerHTML = ic('present', 16) + '<span>สรุปผู้บริหาร</span>'; exBtn.onclick = () => goView(activeMainCat, { type: 'exec', pid: project.id });
-  const rp = document.createElement('button'); rp.type = 'button'; rp.className = 'btn'; rp.innerHTML = ic('download', 16) + '<span>รายงานประจำเดือน</span>'; rp.onclick = () => prReportModal(project.id);
-  root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id, togglePlan: true, noGantt: !plan || !gpCanEdit(plan), extra: plan ? [rp, exBtn] : [exBtn] }));
+  const mk = (html, title, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn'; b.innerHTML = html; if (title) b.title = title; b.onclick = fn; return b; };
+  const exBtn = mk(ic('present', 16) + '<span>สรุปผู้บริหาร</span>', '', () => goView(activeMainCat, { type: 'exec', pid: project.id }));
+  const extra = [];
+  if (plan) {
+    const canE = gpCanEdit(plan);
+    extra.push(mk('⚙ <span>แหล่งเงิน</span>', 'ตั้งค่าแหล่งเงินของโครงการ (งบประมาณ / เงินกู้ / เงินกองสลาก / อื่น ๆ)', () => pfSrcModal(plan.id)));
+    const xb = mk(`📤 <span>ส่งออก Excel</span>${ic('down', 14, 2.2)}`, 'ส่งออกแผน / ผลเบิกจ่ายเป็นไฟล์ Excel', () => menuPop(xb, [
+      { icon: 'download', label: 'แผน / ผลเบิกจ่าย (Excel) — แก้แล้วนำเข้ากลับได้', fn: () => pfExportModal(plan.id, false) },
+      { icon: 'download', label: 'แม่แบบว่างสำหรับกรอก (Excel)', fn: () => pfExportModal(plan.id, true) },
+      '-',
+      { icon: 'download', label: 'รายงานความก้าวหน้าประจำเดือน (Word / PDF)…', fn: () => prReportModal(project.id) }
+    ], { alignRight: true }));
+    extra.push(xb);
+    if (canE) extra.push(mk('📥 <span>นำเข้า Excel</span>', 'นำเข้าแผน / ผลเบิกจ่ายจากไฟล์ Excel (ตรวจก่อนบันทึก)', () => pfImportPick(plan.id)));
+  }
+  extra.push(exBtn);
+  root.appendChild(buildPageHead({ crumb: 'แผนงาน / ' + (CAT_LABELS[project.sourceType || 'work'] || ''), title: project.name, rename: () => renameProject(project.id), toggle: 'p_' + project.id, togglePlan: true, noGantt: !plan || !gpCanEdit(plan), extra }));
   if (!plan) { const e = document.createElement('div'); e.className = 'gp-empty'; e.innerHTML = `<div class="gp-empty-ic">💰</div><h3>ยังไม่มีแผนโครงการ</h3><p>หน้าการเงินใช้วงเงินและแผน/ผลเบิกจ่ายของ "รายการ" ในแผนโครงการ<br>สร้างแผนโครงการก่อนที่แท็บ "แผนโครงการ"</p>`; root.appendChild(e); return root; }
   ppNormalize(plan);
   const today = todayBangkokIndex(), nowK = exKey(exYM(today)), { ix, items } = pfItems(plan), C = ppCalc(plan, ix, today), wb = ppWbsMap(plan, ix);
   const D = exItData(project), nm = new Map((D ? D.items : []).map(i => [i.t.id, i]));
+  const srcs = pfSources(plan), srcAll = pfSrcList(plan);
   const curFy = exFyOf(exYM(today));
   if (!PF.fy) PF.fy = curFy;
-  const fyEndK = exKey({ y: curFy - 543, m: 8 });
   // ตัวเลขรวม
-  let tot = 0, loan = 0, bud = 0, act = 0, plTo = 0, plFy = 0, actFy = 0, allPl = 0;
-  items.forEach(t => { const F = t.fin || {}; tot += pfTot(F); loan += +F.loan || 0; bud += +F.budget || 0; act += pfSum(F, nowK, 1); plTo += pfSum(F, nowK, 0); allPl += pfSum(F, null, 0); Object.entries(F.m || {}).forEach(([k, v]) => { if (pfFyOfKey(k) === curFy) { plFy += +v[0] || 0; actFy += +v[1] || 0; } }); });
+  let tot = 0, act = 0, plTo = 0, plFy = 0, actFy = 0;
+  const bySrc = {}; srcAll.forEach(s => { bySrc[s.id] = 0; });
+  items.forEach(t => { const F = t.fin || {}; tot += pfTot(F); const am = pfSrcAmts(F); Object.keys(am).forEach(k => { if (k in bySrc) bySrc[k] += +am[k] || 0; }); act += pfSum(F, nowK, 1); plTo += pfSum(F, nowK, 0); Object.entries(F.m || {}).forEach(([k, v]) => { if (pfFyOfKey(k) === curFy) { plFy += +v[0] || 0; actFy += +v[1] || 0; } }); });
+  const inB = srcs.filter(s => s.kind === 'in').reduce((a, s) => a + (bySrc[s.id] || 0), 0), outB = srcs.filter(s => s.kind !== 'in').reduce((a, s) => a + (bySrc[s.id] || 0), 0);
   const hasData = items.some(t => t.fin && (pfTot(t.fin) || Object.keys(t.fin.m || {}).length));
   const k = document.createElement('div'); k.className = 'gp-kpis pf-kpis';
   const card = (label, val, sub, color) => { const c = document.createElement('div'); c.className = 'gp-k'; c.innerHTML = `<small>${label}</small><b style="color:${color || '#241C4D'}">${val}</b>${sub ? `<i>${sub}</i>` : ''}`; k.appendChild(c); };
-  card('วงเงินรวม (ล้านบาท)', pfMB(tot), loan || bud ? `เงินกู้ ${pfMB(loan)} · งบประมาณ ${pfMB(bud)}` : '');
+  card('วงเงินรวม (ล้านบาท)', pfMB(tot), inB || outB ? `ในงบ ${pfMB(inB)} · นอกงบ ${pfMB(outB)}` : srcs.map(s => s.name).join(' + '));
   card('เบิกจ่ายแล้ว (สะสม)', pfMB(act), tot ? `${(act / tot * 100).toFixed(1)}% ของวงเงิน` : '', '#15803D');
   const gap = act - plTo;
   card('เทียบแผนเบิกจ่ายถึงเดือนนี้', plTo ? (gap >= 0 ? '+' : '') + pfMB(gap) : '—', plTo ? `แผนสะสม ${pfMB(plTo)} · ทำได้ ${(act / plTo * 100).toFixed(0)}%` : 'ยังไม่ได้กรอกแผนเบิกจ่าย', gap < 0 ? '#C81E3A' : '#15803D');
   card(`ปีงบ ${curFy}`, `${pfMB(actFy)} / ${pfMB(plFy)}`, plFy ? `เบิกได้ ${(actFy / plFy * 100).toFixed(0)}% ของแผนปีงบ · คงเหลือ ${pfMB(Math.max(0, plFy - actFy))}` : 'ผลเบิก / แผน (ล้านบาท)', '#3A2E6E');
   if (plan.tasks.some(t => t.code === '1.5') && plan.tasks.some(t => t.code === '0')) { const close = indexFromDate(new Date(Date.UTC(2032, 2, 31))); card('ปิดบัญชีเงินกู้ (Loan Closing)', `${Math.max(0, Math.round((close - today) / 30.44))} เดือน`, 'ภายใน 31 มี.ค. 2575', '#B45309'); }
+  else card('คงเหลือต้องเบิก', pfMB(Math.max(0, tot - act)), tot ? `${(100 - act / tot * 100).toFixed(1)}% ของวงเงิน` : '');
   root.appendChild(k);
-  if (!hasData) { const n = document.createElement('div'); n.className = 'pf-note'; n.innerHTML = `ยังไม่มีข้อมูลการเงิน · เปิด <b>โหมดแก้ไข</b> แล้วกรอกวงเงินและแผน/ผลเบิกจ่ายรายเดือนในตารางด้านล่างได้เลย (หรือที่ 💰 ในรายละเอียดของรายการ)`; root.appendChild(n); }
-  // กราฟสะสม
-  root.appendChild(pfCurve(items, today));
-  // ตารางรายรายการ
+  if (!hasData) { const n = document.createElement('div'); n.className = 'pf-note'; n.innerHTML = `ยังไม่มีข้อมูลการเงิน · ตั้ง <b>⚙ แหล่งเงิน</b> แล้วกรอกวงเงินที่ 💰 ในรายละเอียดของรายการ จากนั้นกรอกแผน/ผลเบิกจ่ายในตาราง “กรอกรายเดือน” ด้านล่าง (หรือ 📥 นำเข้า Excel)`; root.appendChild(n); }
+  // โซน 1: กราฟเส้นสะสม (ซ้าย) + แท่งรายปีงบ (ขวา)
+  const z1 = document.createElement('div'); z1.className = 'pf-z1';
+  z1.appendChild(pfCurve(items, today)); z1.appendChild(pfFyBars(items, srcAll, today));
+  root.appendChild(z1);
+  // โซน 2: ตารางรายรายการ
   const tw = document.createElement('div'); tw.className = 'pf-card';
   let th = `<div class="pf-h"><b>รายรายการ</b><small>ล้านบาท · ข้อมูลถึง ${exMLabel(exYM(today))} · "งานคืบหน้า" มาจากแผนโครงการ (แสดงเทียบเท่านั้น ไม่ได้ใช้คำนวณ)</small></div>
-    <table class="pf-t"><thead><tr><th>#</th><th>รายการ</th><th class="n">วงเงิน</th><th class="n">เงินกู้</th><th class="n">งบประมาณ</th><th class="n">แผนสะสม</th><th class="n">เบิกจริงสะสม</th><th>% เบิกจ่าย</th><th class="n">งานคืบหน้า</th><th>ข้อสังเกต</th></tr></thead><tbody>`;
-  items.forEach((t, i) => {
-    const F = t.fin || {}, T = pfTot(F), a = pfSum(F, nowK, 1), p = pfSum(F, nowK, 0), dp = T ? a / T * 100 : 0, wp = Math.round(C.get(t.id).pct), it = nm.get(t.id);
+    <div class="pf-gs"><table class="pf-t"><thead><tr><th>#</th><th>รายการ</th><th class="n">วงเงิน</th>${srcAll.map(s => `<th class="n"><span class="pf-dot" style="background:${escapeHTML(s.color)}"></span>${escapeHTML(s.name)}</th>`).join('')}<th class="n">แผนสะสม</th><th class="n">เบิกจริงสะสม</th><th>% เบิกจ่าย</th><th class="n">งานคืบหน้า</th><th>ข้อสังเกต</th></tr></thead><tbody>`;
+  const sumSrc = {}; let sumP = 0;
+  items.forEach(t => {
+    const F = t.fin || {}, T = pfTot(F), a = pfSum(F, nowK, 1), p = pfSum(F, nowK, 0), dp = T ? a / T * 100 : 0, wp = Math.round(C.get(t.id).pct), it = nm.get(t.id), am = pfSrcAmts(F), msx = pfMsOf(F, srcs);
+    sumP += p;
     let flag = '';
     if (T && dp - wp > 15) flag = '<span class="pill pa">เบิกนำงาน</span>';
     else if (T && wp - dp > 15) flag = '<span class="pill pb">เบิกช้ากว่างาน</span>';
     if (p && a < p * 0.8) flag += ' <span class="pill pr">ต่ำกว่าแผนเบิก</span>';
-    th += `<tr><td class="w">${escapeHTML(wb[t.id] || '')}</td><td><b>${escapeHTML(it ? it.name : t.name)}</b>${it && it.sub ? `<small>${escapeHTML(it.sub)}</small>` : ''}</td><td class="n">${T ? pfMB(T) : '—'}</td><td class="n">${F.loan ? pfMB(F.loan) : '—'}</td><td class="n">${F.budget ? pfMB(F.budget) : '—'}</td><td class="n">${p ? pfMB(p) : '—'}</td><td class="n">${a ? pfMB(a) : '—'}</td><td><div class="pf-bar"><i style="width:${Math.min(100, dp)}%"></i></div><span class="pf-bp">${T ? dp.toFixed(1) + '%' : ''}</span></td><td class="n">${wp}%</td><td>${flag}</td></tr>`;
+    const allP = pfSum(F, null, 0); if (T && allP > T + 1) flag += ` <span class="pill pw" title="แผนเบิกจ่ายรวมทุกเดือน ${pfMB(allP)} ลบ. เกินวงเงิน ${pfMB(T)} ลบ.">⚠ แผนเกินวงเงิน</span>`;
+    th += `<tr><td class="w">${escapeHTML(wb[t.id] || '')}</td><td><b>${escapeHTML(it ? it.name : t.name)}</b>${it && it.sub ? `<small>${escapeHTML(it.sub)}</small>` : ''}</td><td class="n">${T ? pfMB(T) : '—'}</td>${srcAll.map(s => { const v = s.id === '_u' ? 0 : +am[s.id] || 0; sumSrc[s.id] = (sumSrc[s.id] || 0) + v; return `<td class="n">${v ? pfMB(v) : (s.id === '_u' && msx._u ? '<small>มีแผน/ผลเดิม</small>' : '—')}</td>`; }).join('')}<td class="n">${p ? pfMB(p) : '—'}</td><td class="n">${a ? pfMB(a) : '—'}</td><td><div class="pf-bar"><i style="width:${Math.min(100, dp)}%"></i></div><span class="pf-bp">${T ? dp.toFixed(1) + '%' : ''}</span></td><td class="n">${wp}%</td><td>${flag}</td></tr>`;
   });
-  th += `</tbody><tfoot><tr><td></td><td><b>รวม</b></td><td class="n">${pfMB(tot)}</td><td class="n">${pfMB(loan)}</td><td class="n">${pfMB(bud)}</td><td class="n">${pfMB(plTo)}</td><td class="n">${pfMB(act)}</td><td><span class="pf-bp">${tot ? (act / tot * 100).toFixed(1) + '%' : ''}</span></td><td class="n">${Math.round(C.root.pct)}%</td><td></td></tr></tfoot></table>`;
+  th += `</tbody><tfoot><tr><td></td><td><b>รวม</b></td><td class="n">${pfMB(tot)}</td>${srcAll.map(s => `<td class="n">${pfMB(sumSrc[s.id] || 0)}</td>`).join('')}<td class="n">${pfMB(plTo)}</td><td class="n">${pfMB(act)}</td><td><span class="pf-bp">${tot ? (act / tot * 100).toFixed(1) + '%' : ''}</span></td><td class="n">${Math.round(C.root.pct)}%</td><td></td></tr></tfoot></table></div>`;
   tw.innerHTML = th; root.appendChild(tw);
+  // โซน 3: ตารางกรอกรายเดือน
   root.appendChild(pfGrid(plan, project, items, nm, wb, today));
   return root;
 }
+function pfAxisFmt(v, max) { const d = max < 5 ? 2 : max < 50 ? 1 : 0; return pfMB(v, d); }
 function pfCurve(items, today) {
   const box = document.createElement('div'); box.className = 'pf-card pf-sc';
   const keys = new Set(); items.forEach(t => Object.keys(((t.fin || {}).m) || {}).forEach(k => keys.add(k)));
   const allTot = items.reduce((a, t) => a + pfTot(t.fin), 0);
-  if (!keys.size) { box.innerHTML = '<div class="pf-h"><b>แผน–ผลเบิกจ่ายสะสม</b><small>ยังไม่มีข้อมูลรายเดือน</small></div>'; return box; }
-  const ks = [...keys].sort(); let o = exParseKey(ks[0]); const e = exParseKey(ks[ks.length - 1] > exKey(exYM(today)) ? ks[ks.length - 1] : exKey(exYM(today)));
+  if (!keys.size) { box.innerHTML = '<div class="pf-h"><b>แผน–ผลเบิกจ่ายสะสม</b><small>ยังไม่มีข้อมูลรายเดือน</small></div><div class="pf-empty">กรอกแผน / ผลเบิกจ่ายในตาราง “กรอกรายเดือน” ด้านล่าง แล้วกราฟจะขึ้นที่นี่</div>'; return box; }
+  const nowK = exKey(exYM(today)), ks = [...keys].sort();
+  let o = exParseKey(ks[0] < nowK ? ks[0] : nowK); const e = exParseKey(ks[ks.length - 1] > nowK ? ks[ks.length - 1] : nowK);
   const months = []; for (let g = 0; g < 240; g++) { months.push(o); if (o.y === e.y && o.m === e.m) break; o = exAddM(o, 1); }
-  let cp = 0, ca = 0; const nowK = exKey(exYM(today));
+  let cp = 0, ca = 0;
   const P = months.map(mo => { const kk = exKey(mo); items.forEach(t => { const v = (((t.fin || {}).m) || {})[kk]; if (v) { cp += +v[0] || 0; ca += +v[1] || 0; } }); return { mo, kk, cp, ca }; });
   const top = Math.max(P[P.length - 1].cp, P[P.length - 1].ca, 1), max = allTot && allTot <= top * 1.6 ? Math.max(allTot, top) * 1.05 : top * 1.1;
-  const W = 1000, H = 220, L = 60, R = 14, T = 14, B = 34, w = W - L - R, h = H - T - B;
-  const x = (i) => L + (i + 0.5) / P.length * w, y = (v) => T + h - v / max * h;
+  const W = 760, H = 250, L = 58, R = 14, T = 14, B = 34, w = W - L - R, h = H - T - B;
+  const x = (i) => L + (P.length === 1 ? w / 2 : i / (P.length - 1) * w), y = (v) => T + h - v / max * h;
   let g = '';
-  [0, .25, .5, .75, 1].forEach(f => { g += `<line x1="${L}" x2="${W - R}" y1="${y(max * f)}" y2="${y(max * f)}" class="g"/><text x="${L - 6}" y="${y(max * f) + 4}" text-anchor="end">${pfMB(max * f, 0)}</text>`; });
-  const step = Math.max(1, Math.ceil(P.length / 14));
+  [0, .25, .5, .75, 1].forEach(f => { g += `<line x1="${L}" x2="${W - R}" y1="${y(max * f)}" y2="${y(max * f)}" class="g"/><text x="${L - 6}" y="${y(max * f) + 4}" text-anchor="end">${pfAxisFmt(max * f, max / 1e6)}</text>`; });
+  const step = Math.max(1, Math.ceil(P.length / 10));
   P.forEach((p, i) => { if (p.mo.m === 9 || i % step === 0) g += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" class="${p.mo.m === 9 ? 'fy' : ''}">${p.mo.m === 9 ? 'ปีงบ ' + (p.mo.y + 544) : THAI_MONTHS_SHORT[p.mo.m] + String(p.mo.y + 543).slice(2)}</text>`; });
+  const ni = P.findIndex(p => p.kk === nowK); if (ni >= 0) g += `<line x1="${x(ni)}" x2="${x(ni)}" y1="${T}" y2="${T + h}" class="nw"/><text x="${x(ni) + 4}" y="${T + 10}" class="nw">วันนี้</text>`;
   if (allTot && allTot <= max) g += `<line x1="${L}" x2="${W - R}" y1="${y(allTot)}" y2="${y(allTot)}" class="tot"/><text x="${W - R}" y="${y(allTot) - 5}" text-anchor="end" class="tot">วงเงินรวม ${pfMB(allTot)} ลบ.</text>`;
   g += `<polyline points="${P.map((p, i) => `${x(i).toFixed(1)},${y(p.cp).toFixed(1)}`).join(' ')}" class="pl"/>`;
   const A = P.filter(p => p.kk <= nowK);
   if (A.length) g += `<polyline points="${A.map((p, i) => `${x(i).toFixed(1)},${y(p.ca).toFixed(1)}`).join(' ')}" class="ac"/><circle cx="${x(A.length - 1)}" cy="${y(A[A.length - 1].ca)}" r="4" class="acd"/>`;
   const last = A[A.length - 1] || { cp: 0, ca: 0 };
-  box.innerHTML = `<div class="pf-h"><b>แผน–ผลเบิกจ่ายสะสม</b><span><i class="pl"></i>แผนเบิกจ่าย ${pfMB(last.cp)}</span><span><i class="ac"></i>เบิกจริง ${pfMB(last.ca)}</span><small>ล้านบาท · ถึง ${exMLabel(exYM(today))}${allTot && allTot > max ? ` · วงเงินรวม ${pfMB(allTot)} (อยู่นอกกราฟ)` : ''}</small></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟแผนและผลเบิกจ่ายสะสม">${g}</svg>`;
+  box.innerHTML = `<div class="pf-h"><b>แผน–ผลเบิกจ่ายสะสม</b><span><i class="pl"></i>แผน ${pfMB(last.cp)}</span><span><i class="ac"></i>เบิกจริง ${pfMB(last.ca)}</span><small>ล้านบาท · ถึง ${exMLabel(exYM(today))} · แผนทั้งหมด ${pfMB(P[P.length - 1].cp)}${allTot && allTot > max ? ` · วงเงินรวม ${pfMB(allTot)} (อยู่นอกกราฟ)` : ''}</small></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟแผนและผลเบิกจ่ายสะสม">${g}</svg>`;
   return box;
 }
-// ตารางกรอกแผน / ผลเบิกจ่ายรายเดือน (ปีงบ ต.ค.–ก.ย.)
-function pfGrid(plan, project, items, nm, wb, today) {
-  const box = document.createElement('div'); box.className = 'pf-card pf-gridw';
-  const ed = gpCanEdit(plan) && dragMode, fy = PF.fy, ms = pfFyMonths(fy), idx = PF.mode === 'plan' ? 0 : 1, nowK = exKey(exYM(today));
-  const fys = new Set([exFyOf(exYM(today)) - 1, exFyOf(exYM(today)), exFyOf(exYM(today)) + 1, fy]); items.forEach(t => Object.keys(((t.fin || {}).m) || {}).forEach(kk => fys.add(pfFyOfKey(kk))));
-  let h = `<div class="pf-h"><b>กรอกรายเดือน</b><select class="text-input pf-fy" aria-label="ปีงบประมาณ">${[...fys].filter(Boolean).sort().map(f => `<option value="${f}" ${f === fy ? 'selected' : ''}>ปีงบ ${f}</option>`).join('')}</select><span class="seg pf-mode"><button type="button" data-m="plan" aria-pressed="${idx === 0}">แผนเบิกจ่าย</button><button type="button" data-m="act" aria-pressed="${idx === 1}">ผลเบิกจ่ายจริง</button></span><small>${ed ? 'หน่วย: บาท · พิมพ์แล้วกด Tab / Enter บันทึกให้อัตโนมัติ' : 'เปิด "โหมดแก้ไข" เพื่อกรอก'}</small></div>`;
-  h += `<div class="pf-gs"><table class="pf-t pf-g"><thead><tr><th class="st">รายการ</th>${ms.map(mo => `<th class="n${exKey(mo) === nowK ? ' now' : ''}">${THAI_MONTHS_SHORT[mo.m]} ${String(mo.y + 543).slice(2)}</th>`).join('')}<th class="n">รวมปีงบ</th></tr></thead><tbody>`;
-  const colTot = ms.map(() => 0);
-  items.forEach(t => {
-    const M = ((t.fin || {}).m) || {}, it = nm.get(t.id); let rt = 0;
-    h += `<tr><td class="st"><b>${escapeHTML(wb[t.id] || '')}</b> ${escapeHTML(exItShort(it ? it.name : t.name, 30))}</td>`;
-    ms.forEach((mo, j) => { const kk = exKey(mo), v = M[kk] ? +M[kk][idx] || 0 : 0; rt += v; colTot[j] += v; h += `<td class="n${kk === nowK ? ' now' : ''}">${ed ? `<input class="pf-in" inputmode="decimal" data-t="${t.id}" data-k="${kk}" value="${v ? ppMoney(v) : ''}" aria-label="${escapeHTML(t.name)} ${exMLabel(mo)}">` : (v ? ppMoney(v) : '')}</td>`; });
-    h += `<td class="n rt" data-rt="${t.id}"><b>${rt ? ppMoney(rt) : ''}</b></td></tr>`;
+// แผนเบิกจ่ายรายปีงบ แยกแหล่งเงิน + ผลจริง (คลิกแท่ง = เปิดปีงบนั้นในตารางกรอก)
+function pfFyBars(items, srcAll, today) {
+  const box = document.createElement('div'); box.className = 'pf-card pf-fyb';
+  const srcs = srcAll.filter(s => s.id !== '_u'), nowK = exKey(exYM(today));
+  const D = {}; // fy -> { p: {sid: v}, a }
+  items.forEach(t => { const F = t.fin; if (!F) return; const ms = pfMsOf(F, srcs); Object.entries(ms).forEach(([sid, mm]) => Object.entries(mm || {}).forEach(([k, v]) => { const fy = pfFyOfKey(k); if (!fy) return; const d = D[fy] = D[fy] || { p: {}, a: 0 }; d.p[sid] = (d.p[sid] || 0) + (+v[0] || 0); if (k <= nowK) d.a += +v[1] || 0; })); });
+  const fys = Object.keys(D).map(Number).sort((a, b) => a - b);
+  if (!fys.length) { box.innerHTML = '<div class="pf-h"><b>แผนเบิกจ่ายรายปีงบ</b><small>ยังไม่มีข้อมูล</small></div><div class="pf-empty">ยังไม่มีแผนเบิกจ่าย</div>'; return box; }
+  const tots = fys.map(f => Object.values(D[f].p).reduce((a, v) => a + v, 0)), mx = Math.max(...tots, ...fys.map(f => D[f].a), 1) * 1.15;
+  const W = 600, H = 250, L = 52, R = 10, T = 18, B = 34, w = W - L - R, h = H - T - B, slot = w / fys.length, bw = Math.min(56, slot * 0.5), aw = Math.min(12, slot * 0.12);
+  const y = (v) => T + h - v / mx * h, curFy = exFyOf(exYM(today));
+  let g = '';
+  [0, .5, 1].forEach(f => { g += `<line x1="${L}" x2="${W - R}" y1="${y(mx * f / 1.15)}" y2="${y(mx * f / 1.15)}" class="g"/><text x="${L - 6}" y="${y(mx * f / 1.15) + 4}" text-anchor="end">${pfAxisFmt(mx * f / 1.15, mx / 1e6)}</text>`; });
+  fys.forEach((fy, i) => {
+    const x0 = L + slot * i + (slot - bw - aw - 4) / 2; let acc = 0;
+    g += `<g class="pf-fyg${fy === PF.fy ? ' on' : ''}" data-fy="${fy}"><rect x="${L + slot * i}" y="${T}" width="${slot}" height="${h}" class="hit"/>`;
+    srcAll.forEach(s => { const v = D[fy].p[s.id] || 0; if (!v) return; const y1 = y(acc + v), y0 = y(acc); g += `<rect x="${x0}" y="${y1.toFixed(1)}" width="${bw}" height="${Math.max(1, y0 - y1).toFixed(1)}" fill="${escapeHTML(s.color)}"><title>${escapeHTML(s.name)} ${pfMB(v)} ลบ.</title></rect>`; acc += v; });
+    if (D[fy].a) g += `<rect x="${x0 + bw + 4}" y="${y(D[fy].a).toFixed(1)}" width="${aw}" height="${Math.max(1, T + h - y(D[fy].a)).toFixed(1)}" class="ac"><title>เบิกจริง ${pfMB(D[fy].a)} ลบ.</title></rect>`;
+    g += `<text x="${x0 + bw / 2}" y="${y(tots[i]) - 5}" text-anchor="middle" class="v">${pfMB(tots[i], tots[i] >= 1e8 ? 0 : 1)}</text><text x="${L + slot * i + slot / 2}" y="${H - 12}" text-anchor="middle" class="${fy === curFy ? 'fy' : ''}">ปีงบ ${String(fy).slice(2)}</text></g>`;
   });
-  h += `</tbody><tfoot><tr><td class="st"><b>รวม</b></td>${colTot.map((v, j) => `<td class="n" data-ct="${j}"><b>${v ? ppMoney(v) : ''}</b></td>`).join('')}<td class="n" data-ct="all"><b>${ppMoney(colTot.reduce((a, b) => a + b, 0))}</b></td></tr></tfoot></table></div>`;
-  box.innerHTML = h;
-  box.querySelector('.pf-fy').onchange = (e) => { PF.fy = +e.target.value; render(); };
-  box.querySelectorAll('.pf-mode button').forEach(b => b.onclick = () => { PF.mode = b.dataset.m; render(); });
-  const recalc = () => {
-    const tb = box.querySelector('tbody'); const cols = ms.map(() => 0); let all = 0;
-    tb.querySelectorAll('tr').forEach(tr => { let rt = 0; tr.querySelectorAll('.pf-in').forEach((i, j) => { const v = ppNum(i.value); rt += v; cols[j] += v; }); const c = tr.querySelector('[data-rt] b'); if (c) c.textContent = rt ? ppMoney(rt) : ''; all += rt; });
-    cols.forEach((v, j) => { const c = box.querySelector(`[data-ct="${j}"] b`); if (c) c.textContent = v ? ppMoney(v) : ''; });
-    const c = box.querySelector('[data-ct="all"] b'); if (c) c.textContent = ppMoney(all);
-  };
-  box.querySelectorAll('.pf-in').forEach(inp => {
-    inp.onfocus = () => inp.select();
-    inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); const all = [...box.querySelectorAll('.pf-in')], i = all.indexOf(inp); (all[i + 12] || all[i + 1] || inp).focus(); } };
-    inp.onchange = async () => {
-      const pl = gpLive(plan.id), t = pl && pl.tasks.find(x => x.id === inp.dataset.t); if (!t) return;
-      const v = Math.max(0, ppNum(inp.value)); inp.value = v ? ppMoney(v) : '';
-      t.fin = t.fin || {}; t.fin.m = t.fin.m || {};
-      const cur = t.fin.m[inp.dataset.k] || [0, 0]; cur[idx] = v;
-      if (!cur[0] && !cur[1]) delete t.fin.m[inp.dataset.k]; else t.fin.m[inp.dataset.k] = cur;
-      gpStamp(t); recalc();
-      clearTimeout(pfGrid._t); pfGrid._t = setTimeout(async () => { await saveState(); if (!box.contains(document.activeElement)) reRenderWithScroll(); }, 700);
-    };
-  });
-  box.addEventListener('focusout', (e) => { if (e.relatedTarget && box.contains(e.relatedTarget)) return; setTimeout(() => { if (!box.contains(document.activeElement) && document.body.contains(box)) reRenderWithScroll(); }, 900); });
+  box.innerHTML = `<div class="pf-h"><b>แผนเบิกจ่ายรายปีงบ</b>${srcAll.map(s => `<span><i class="sq" style="background:${escapeHTML(s.color)}"></i>${escapeHTML(s.name)}</span>`).join('')}<span><i class="sq ac"></i>เบิกจริง</span><small>ล้านบาท · คลิกแท่ง = เปิดปีงบนั้นในตารางกรอก</small></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="แผนเบิกจ่ายรายปีงบ">${g}</svg>`;
+  box.querySelectorAll('.pf-fyg').forEach(el => el.addEventListener('click', () => { PF.fy = +el.dataset.fy; PFG.span = 1; lsSet('pf_span', 1); reRenderWithScroll(); setTimeout(() => { const z = document.querySelector('.pf-z3'); if (z) z.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50); }));
   return box;
+}
+
+// ---------- โซน 3: ตารางกรอกรายเดือน (แบบ Excel) ----------
+function pfRangeMonths(plan, items, today) {
+  const fy0 = PF.fy, span = PFG.span;
+  let fys;
+  if (span === 0) {
+    const all = new Set([exFyOf(exYM(today))]);
+    items.forEach(t => { const F = t.fin; if (F && F.m) Object.keys(F.m).forEach(k => all.add(pfFyOfKey(k))); if (t.start != null) all.add(exFyOf(exYM(t.start))); if (t.end != null) all.add(exFyOf(exYM(t.end))); });
+    const arr = [...all].filter(Boolean).sort((a, b) => a - b); const a = arr[0], b = Math.min(arr[arr.length - 1], a + 9);
+    fys = []; for (let f = a; f <= b; f++) fys.push(f);
+  } else fys = span === 2 ? [fy0, fy0 + 1] : [fy0];
+  return { fys, ms: fys.flatMap(pfFyMonths) };
+}
+function pfGrid(plan, project, items, nm, wb, today) {
+  const box = document.createElement('div'); box.className = 'pf-card pf-z3';
+  const ed = gpCanEdit(plan), nowK = exKey(exYM(today)), srcs = pfSources(plan), srcAll = pfSrcList(plan);
+  const { fys, ms } = pfRangeMonths(plan, items, today), keys = ms.map(exKey), U = pfUnitF();
+  if (PFG.src && !srcAll.some(s => s.id === PFG.src)) PFG.src = '';
+  const showP = PFG.show !== 'a', showA = PFG.show !== 'p';
+  // แถว
+  const rows = [], erows = [];   // erows = แถวที่กรอกได้ (แผน/ผล ของแหล่งเงิน)
+  let miss = 0, hasU = false;
+  items.forEach(t => {
+    const F = t.fin || {}, am = pfSrcAmts(F), msx = pfMsOf(F, srcs);
+    // รายการที่ใส่วงเงินแยกแหล่งแล้ว: แสดงเฉพาะแหล่งที่มีวงเงิน/มีข้อมูล · ยังไม่ใส่: แสดงทุกแหล่ง (แถวไม่หายไปตอนเริ่มกรอก)
+    const hasAmt = Object.keys(am).some(k => +am[k] > 0);
+    let use = hasAmt ? srcAll.filter(s => (s.id === '_u' ? !!msx._u : (+am[s.id] > 0 || (msx[s.id] && Object.keys(msx[s.id]).length)))) : [...srcs, ...(msx._u ? [PF_U] : [])];
+    if (PFG.src) use = use.filter(s => s.id === PFG.src);
+    if (msx._u) hasU = true;
+    const col = PFG.col.has(t.id);
+    const allP = pfSum(F, null, 0), T = pfTot(F);
+    rows.push({ k: 'it', t, use, msx, col, warn: T && allP > T + 1 ? `แผนเบิกจ่ายรวมทุกเดือน ${pfMB(allP)} ลบ. เกินวงเงิน ${pfMB(T)} ลบ.` : '' });
+    if (col) return;
+    use.forEach(s => {
+      [[0, showP], [1, showA]].forEach(([idx, on], j) => {
+        if (!on) return;
+        const r = { k: 'v', t, s, idx, fst: j === 0 || !showP, amt: s.id === '_u' ? 0 : +am[s.id] || 0, mm: msx[s.id] || {}, er: erows.length };
+        rows.push(r); erows.push(r);
+      });
+    });
+  });
+  const val = (r, kk) => { const v = r.mm[kk]; return v ? +v[r.idx] || 0 : 0; };
+  const unitL = PFG.unit === 'b' ? 'บาท' : 'ล้านบาท';
+  const seg = (name, opts, cur) => `<span class="pfx-seg" data-g="${name}">${opts.map(([v, t]) => `<button type="button" data-v="${v}" aria-pressed="${String(cur) === String(v)}">${t}</button>`).join('')}</span>`;
+  const fyLabel = fys.length === 1 ? `ปีงบ ${fys[0]} (${exMLabel(ms[0])} – ${exMLabel(ms[11])})` : `ปีงบ ${fys[0]}–${fys[fys.length - 1]}`;
+  // นับช่องที่ยังไม่กรอกผล
+  erows.forEach(r => { if (r.idx !== 1) return; keys.forEach(kk => { if (kk < nowK && (r.mm[kk] ? +r.mm[kk][0] : 0) > 0 && !(r.mm[kk] && +r.mm[kk][1])) miss++; }); });
+  let h = `<div class="pf-h pfx-h"><b>✎ กรอกรายเดือน</b><small>${ed ? `คลิกแล้วพิมพ์ · Enter/Tab/ลูกศร · ลากเลือกหลายช่องแล้วคลิกขวา · วางจาก Excel ด้วย Ctrl+V · บันทึกอัตโนมัติ` : 'ดูอย่างเดียว'}</small>${miss ? `<span class="pill pr" title="เดือนที่ผ่านแล้วมีแผนแต่ยังไม่กรอกผล">⚠ ผลเดือนที่ผ่านแล้วยังไม่กรอก ${miss} ช่อง</span>` : ''}</div>
+    <div class="pfx-tb"><span class="pfx-lb">ช่วง</span><span class="pfx-seg"><button type="button" data-fy="-1" aria-label="ปีงบก่อนหน้า" ${PFG.span === 0 ? 'disabled' : ''}>◀</button><button type="button" class="pfx-fyl" disabled>${fyLabel}</button><button type="button" data-fy="1" aria-label="ปีงบถัดไป" ${PFG.span === 0 ? 'disabled' : ''}>▶</button></span>
+    ${seg('span', [[1, '1 ปีงบ'], [2, '2 ปีงบ'], [0, 'ทั้งโครงการ']], PFG.span)}
+    <span class="pfx-lb">แสดง</span>${seg('show', [['pa', 'แผน + ผล'], ['p', 'แผน'], ['a', 'ผล']], PFG.show)}
+    <span class="pfx-lb">แหล่งเงิน</span>${seg('src', [['', 'ทุกแหล่ง'], ...srcAll.map(s => [s.id, `<span class="pf-dot" style="background:${escapeHTML(s.color)}"></span>${escapeHTML(s.name)}`])], PFG.src)}
+    <span class="pfx-lb">หน่วย</span>${seg('unit', [['m', 'ล้านบาท'], ['b', 'บาท']], PFG.unit)}
+    <span class="pfx-seg"><button type="button" data-all="open">ขยายทั้งหมด</button><button type="button" data-all="close">ยุบทั้งหมด</button></span></div>`;
+  if (hasU && ed) h += `<div class="pf-note pfx-u">มีแผน/ผลเบิกจ่ายเดิมที่ยังไม่ได้แยกแหล่งเงิน (แถว “${PF_U.name}”) · <button type="button" class="btn" data-splitu>➗ แบ่งตามสัดส่วนวงเงินของแต่ละแหล่งให้อัตโนมัติ</button></div>`;
+  // หัวตาราง
+  const qh = fys.map(f => [1, 2, 3, 4].map(q => `<th colspan="3" class="q">${fys.length > 1 ? 'ปีงบ ' + String(f).slice(2) + ' · ' : ''}ไตรมาส ${q}</th>`).join('')).join('');
+  h += `<div class="pfx-sc" id="pfxSc"><table class="pfx" id="pfx" style="width:${368 + 92 * keys.length + 276}px"><colgroup><col class="c1"><col class="c2"><col class="c3">${keys.map(() => '<col class="cm">').join('')}<col class="cr"><col class="cr"><col class="cr"></colgroup>
+    <thead><tr class="grp"><th class="fz f1"></th><th class="fz f2"></th><th class="fz f3"></th>${qh}<th colspan="3" class="q rr">${fys.length > 1 ? 'ทั้งช่วง' : 'ทั้งปีงบ'}</th></tr>
+    <tr><th class="fz f1">รายการ / แหล่งเงิน</th><th class="fz f2"></th><th class="fz f3 n">วงเงิน</th>${ms.map((mo, j) => `<th class="n${keys[j] === nowK ? ' now' : ''}${mo.m === 9 ? ' fys' : ''}">${exMLabel(mo)}${keys[j] === nowK ? '<i>เดือนนี้</i>' : ''}</th>`).join('')}<th class="n rr">รวม${fys.length > 1 ? 'ช่วง' : 'ปีงบ ' + String(fys[0]).slice(2)}</th><th class="n rr">เบิกสะสม</th><th class="n rr">คงเหลือ</th></tr></thead><tbody>`;
+  const colP = keys.map(() => 0), colA = keys.map(() => 0);
+  rows.forEach(r => {
+    if (r.k === 'it') {
+      const t = r.t, it = nm.get(t.id), F = t.fin || {}, T = pfTot(F);
+      const sp = keys.map(kk => r.use.reduce((a, s) => a + ((r.msx[s.id] || {})[kk] ? +r.msx[s.id][kk][0] || 0 : 0), 0));
+      const sa = keys.map(kk => r.use.reduce((a, s) => a + ((r.msx[s.id] || {})[kk] ? +r.msx[s.id][kk][1] || 0 : 0), 0));
+      sp.forEach((v, j) => { colP[j] += v; }); sa.forEach((v, j) => { colA[j] += v; });
+      const cumA = r.use.reduce((a, s) => a + Object.entries(r.msx[s.id] || {}).filter(([kk]) => kk <= nowK).reduce((b, [, v]) => b + (+v[1] || 0), 0), 0);
+      const tP = sp.reduce((a, b) => a + b, 0), tA = sa.reduce((a, b) => a + b, 0);
+      h += `<tr class="it" data-t="${t.id}"><td class="fz f1" colspan="2"><button type="button" class="pfx-cv" data-cv="${t.id}" aria-expanded="${!r.col}" aria-label="${r.col ? 'ขยาย' : 'ยุบ'}">${r.col ? '▸' : '▾'}</button><b>${escapeHTML(wb[t.id] || '')}</b> <span title="${escapeHTML(it ? it.name : t.name)}">${escapeHTML(exItShort(it ? it.name : t.name, 40))}</span>${r.warn ? ` <span class="pfx-w" title="${escapeHTML(r.warn)}">⚠</span>` : ''}</td><td class="fz f3 n">${T ? pfFmtU(T) : ''}</td>${keys.map((kk, j) => `<td class="n${kk === nowK ? ' now' : ''}${ms[j].m === 9 ? ' fys' : ''}">${showP && sp[j] ? pfFmtU(sp[j]) : ''}${showA && sa[j] ? `<small>${showP ? 'ผล ' : ''}${pfFmtU(sa[j])}</small>` : ''}</td>`).join('')}<td class="n rr">${showP ? pfFmtU(tP) : ''}${showA && tA ? `<small>${showP ? 'ผล ' : ''}${pfFmtU(tA)}</small>` : ''}</td><td class="n rr">${pfFmtU(cumA) || (T ? '0' : '')}</td><td class="n rr">${T ? pfFmtU(Math.max(0, T - cumA)) || '0' : ''}</td></tr>`;
+      return;
+    }
+    const s = r.s, cumA = r.idx === 1 ? Object.entries(r.mm).filter(([kk]) => kk <= nowK).reduce((b, [, v]) => b + (+v[1] || 0), 0) : 0;
+    const tot = keys.reduce((a, kk) => a + val(r, kk), 0);
+    h += `<tr class="v ${r.idx ? 'a' : 'p'}${r.fst ? ' fst' : ''}"><td class="fz f1 ind">${r.fst ? `<span class="pf-dot" style="background:${escapeHTML(s.color)}"></span>${escapeHTML(s.name)}` : ''}</td><td class="fz f2"><span class="pfx-kd ${r.idx ? 'a' : 'p'}">${r.idx ? 'ผล' : 'แผน'}</span></td><td class="fz f3 n muted">${r.fst && r.amt ? pfFmtU(r.amt) : ''}</td>`;
+    keys.forEach((kk, j) => {
+      const v = val(r, kk), ms0 = r.idx === 1 && kk < nowK && (r.mm[kk] ? +r.mm[kk][0] : 0) > 0 && !v;
+      h += `<td class="n ce${kk === nowK ? ' now' : ''}${ms[j].m === 9 ? ' fys' : ''}${ms0 ? ' miss' : ''}${ed ? '' : ' ro'}" data-r="${r.er}" data-c="${j}">${v ? pfFmtU(v) : ms0 ? '<span class="mtx">ยังไม่กรอก</span>' : ''}</td>`;
+    });
+    h += `<td class="n rr">${tot ? pfFmtU(tot) : '–'}</td><td class="n rr">${r.idx === 1 && cumA ? pfFmtU(cumA) : ''}</td><td class="n rr">${r.idx === 1 && r.amt ? pfFmtU(Math.max(0, r.amt - cumA)) || '0' : ''}</td></tr>`;
+  });
+  let cp = 0, ca = 0;
+  h += `</tbody><tfoot><tr class="ft"><td class="fz f1" colspan="2">รวมแผน</td><td class="fz f3"></td>${colP.map((v, j) => `<td class="n${keys[j] === nowK ? ' now' : ''}">${v ? pfFmtU(v) : ''}</td>`).join('')}<td class="n rr">${pfFmtU(colP.reduce((a, b) => a + b, 0)) || '–'}</td><td class="rr"></td><td class="rr"></td></tr>
+    <tr class="ft a"><td class="fz f1" colspan="2">รวมผลเบิกจริง</td><td class="fz f3"></td>${colA.map((v, j) => `<td class="n${keys[j] === nowK ? ' now' : ''}">${v ? pfFmtU(v) : (keys[j] < nowK ? '–' : '')}</td>`).join('')}<td class="n rr">${pfFmtU(colA.reduce((a, b) => a + b, 0)) || '–'}</td><td class="rr"></td><td class="rr"></td></tr>
+    <tr class="ft s"><td class="fz f1" colspan="2">สะสม แผน / ผล</td><td class="fz f3"></td>${colP.map((v, j) => { cp += v; ca += colA[j]; return `<td class="n${keys[j] === nowK ? ' now' : ''}">${cp ? pfFmtU(cp) : ''}${keys[j] <= nowK && ca ? `<small>${pfFmtU(ca)}</small>` : ''}</td>`; }).join('')}<td class="rr"></td><td class="rr"></td><td class="rr"></td></tr></tfoot></table></div>
+    <div class="pfx-foot">หน่วย: ${unitL} · ช่องสีแดง = เดือนที่ผ่านแล้วมีแผนแต่ยังไม่กรอกผล · ⚠ ที่ชื่อรายการ = แผนรวมทุกเดือนเกินวงเงิน · แถวสีม่วง = ยอดรวมของรายการ (คำนวณให้)</div>`;
+  box.innerHTML = h;
+  // ---- แถบเครื่องมือ ----
+  box.querySelectorAll('[data-fy]').forEach(b => b.onclick = () => { PF.fy += +b.dataset.fy; reRenderWithScroll(); });
+  box.querySelectorAll('.pfx-seg[data-g] button').forEach(b => b.onclick = () => {
+    const g = b.parentElement.dataset.g, v = b.dataset.v;
+    if (g === 'span') { PFG.span = +v; lsSet('pf_span', PFG.span); } else if (g === 'show') { PFG.show = v; lsSet('pf_show', v); } else if (g === 'src') PFG.src = v; else if (g === 'unit') { PFG.unit = v; lsSet('pf_unit', v); }
+    PFG.sel = null; reRenderWithScroll();
+  });
+  box.querySelectorAll('[data-all]').forEach(b => b.onclick = () => { if (b.dataset.all === 'open') PFG.col.clear(); else items.forEach(t => PFG.col.add(t.id)); lsSet('pf_col', [...PFG.col]); PFG.sel = null; reRenderWithScroll(); });
+  box.querySelectorAll('[data-cv]').forEach(b => b.onclick = () => { const id = b.dataset.cv; if (PFG.col.has(id)) PFG.col.delete(id); else PFG.col.add(id); lsSet('pf_col', [...PFG.col]); PFG.sel = null; reRenderWithScroll(); });
+  const su = box.querySelector('[data-splitu]'); if (su) su.onclick = () => pfSplitUnassigned(plan.id);
+  // ---- ตาราง ----
+  const sc = box.querySelector('#pfxSc'), tbl = box.querySelector('#pfx');
+  requestAnimationFrame(() => { if (PFG.sx) sc.scrollLeft = PFG.sx; else { const n = tbl.querySelector('th.now'); if (n) sc.scrollLeft = Math.max(0, n.offsetLeft - 520); } });
+  sc.addEventListener('scroll', () => { PFG.sx = sc.scrollLeft; });
+  if (!ed) return box;
+  sc.tabIndex = 0;
+  const cellEl = (r, c) => tbl.querySelector(`td.ce[data-r="${r}"][data-c="${c}"]`);
+  const nR = erows.length, nC = keys.length;
+  if (PFG.sel && (PFG.sel.r >= nR || PFG.sel.c >= nC || PFG.sel.key !== plan.id)) PFG.sel = null;
+  const rect = () => { const s = PFG.sel; return s ? { r0: Math.min(s.r, s.r2), r1: Math.max(s.r, s.r2), c0: Math.min(s.c, s.c2), c1: Math.max(s.c, s.c2) } : null; };
+  const paint = () => {
+    tbl.querySelectorAll('td.sel,td.act').forEach(td => td.classList.remove('sel', 'act'));
+    const R = rect(); if (!R) return;
+    for (let r = R.r0; r <= R.r1; r++) for (let c = R.c0; c <= R.c1; c++) { const td = cellEl(r, c); if (td) td.classList.add('sel'); }
+    const a = cellEl(PFG.sel.r, PFG.sel.c); if (a) a.classList.add('act');
+  };
+  const setSel = (r, c, ext) => { r = Math.max(0, Math.min(nR - 1, r)); c = Math.max(0, Math.min(nC - 1, c)); if (ext && PFG.sel) { PFG.sel.r2 = r; PFG.sel.c2 = c; } else PFG.sel = { r, c, r2: r, c2: c, key: plan.id }; paint(); const td = cellEl(ext ? r : PFG.sel.r, ext ? c : PFG.sel.c); if (td) pfScrollInto(sc, td); };
+  // เขียนค่าหลายช่องพร้อมกัน: changes = [{ r, c, v (บาท) }]
+  const commit = (changes, msg, keepFocus = true) => {
+    if (!changes.length) return;
+    const pl = gpLive(plan.id); if (!pl) return;
+    const touched = new Map();
+    changes.forEach(({ r, c, v }) => { const row = erows[r]; if (!row) return; const t = pl.tasks.find(x => x.id === row.t.id); if (!t) return; pfSetCell(t, srcs, row.s.id, keys[c], row.idx, v); touched.set(t.id, t); });
+    touched.forEach(t => { pfDerive(t, srcs); gpStamp(t); });
+    PFG.focus = keepFocus;
+    saveState();
+    reRenderWithScroll();
+    if (msg) showToast(msg);
+  };
+  let editing = null;
+  const startEdit = (initial) => {
+    if (!PFG.sel) return; const td = cellEl(PFG.sel.r, PFG.sel.c); if (!td) return;
+    const row = erows[PFG.sel.r], cur = val(row, keys[PFG.sel.c]);
+    const inp = document.createElement('input'); inp.className = 'pfx-in'; inp.inputMode = 'decimal';
+    inp.value = initial != null ? initial : (cur ? String(PFG.unit === 'b' ? cur : Math.round(cur / 1e6 * 1e6) / 1e6) : '');
+    td.textContent = ''; td.appendChild(inp); td.classList.add('edit'); editing = { td, inp, r: PFG.sel.r, c: PFG.sel.c, cur };
+    inp.focus(); if (initial == null) inp.select(); else inp.setSelectionRange(inp.value.length, inp.value.length);
+    inp.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); e.stopPropagation(); const dr = e.key === 'Enter' ? (e.shiftKey ? -1 : 1) : 0, dc = e.key === 'Tab' ? (e.shiftKey ? -1 : 1) : 0; finish(true, dr, dc); }
+      else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false); }
+    };
+    inp.onblur = () => { if (editing && editing.inp === inp) finish(true, 0, 0, true); };
+  };
+  const finish = (ok, dr, dc, blur) => {
+    const E = editing; if (!E) return false; editing = null;
+    const raw = E.inp.value.trim(), v = raw === '' ? 0 : Math.max(0, ppNum(raw) * pfUnitF());
+    const nr = Math.max(0, Math.min(nR - 1, E.r + (dr || 0))), nc = Math.max(0, Math.min(nC - 1, E.c + (dc || 0)));
+    if (ok && Math.abs(v - E.cur) > 0.004) { if (!blur) PFG.sel = { r: nr, c: nc, r2: nr, c2: nc, key: plan.id }; commit([{ r: E.r, c: E.c, v }], '', !blur); return true; }
+    E.td.classList.remove('edit'); E.td.textContent = E.cur ? pfFmtU(E.cur) : '';
+    if (!blur) { sc.focus({ preventScroll: true }); setSel(nr, nc); }
+    return false;
+  };
+  if (!pfGrid._mu) { pfGrid._mu = true; document.addEventListener('mouseup', () => { PFG.drag = false; }); }
+  tbl.addEventListener('mousedown', (e) => {
+    const td = e.target.closest('td.ce'); if (!td || e.button !== 0) return; if (editing && editing.td === td) return;
+    const r = +td.dataset.r, c = +td.dataset.c;
+    if (editing) { PFG.sel = { r, c, r2: r, c2: c, key: plan.id }; if (finish(true, 0, 0, true)) return; }
+    e.preventDefault(); sc.focus({ preventScroll: true }); setSel(r, c, e.shiftKey); PFG.drag = true;
+  });
+  tbl.addEventListener('mouseover', (e) => { if (!PFG.drag) return; const td = e.target.closest('td.ce'); if (td) setSel(+td.dataset.r, +td.dataset.c, true); });
+  tbl.addEventListener('dblclick', (e) => { const td = e.target.closest('td.ce'); if (!td) return; setSel(+td.dataset.r, +td.dataset.c); startEdit(); });
+  const rangeCells = () => { const R = rect(), out = []; if (!R) return out; for (let r = R.r0; r <= R.r1; r++) for (let c = R.c0; c <= R.c1; c++) out.push({ r, c }); return out; };
+  const toTSV = () => { const R = rect(); if (!R) return ''; const lines = []; for (let r = R.r0; r <= R.r1; r++) { const a = []; for (let c = R.c0; c <= R.c1; c++) { const v = val(erows[r], keys[c]); a.push(v ? String(PFG.unit === 'b' ? v : v / 1e6) : ''); } lines.push(a.join('\t')); } return lines.join('\n'); };
+  const pasteTSV = (text) => {
+    if (!PFG.sel || !text) return;
+    const lines = text.replace(/\r/g, '').replace(/\n$/, '').split('\n').map(l => l.split('\t'));
+    const R = rect(), ch = [];
+    const single = lines.length === 1 && lines[0].length === 1;
+    if (single && R && (R.r1 > R.r0 || R.c1 > R.c0)) { const v = lines[0][0].trim() === '' ? 0 : Math.max(0, ppNum(lines[0][0]) * pfUnitF()); rangeCells().forEach(x => ch.push({ ...x, v })); }
+    else lines.forEach((ln, i) => ln.forEach((cell, j) => { const r = R.r0 + i, c = R.c0 + j; if (r >= nR || c >= nC) return; const t = cell.trim(); if (t === '' ) { ch.push({ r, c, v: 0 }); return; } const n = ppNum(t.replace(/[^\d.,\-]/g, '')); ch.push({ r, c, v: Math.max(0, n * pfUnitF()) }); }));
+    if (!single) PFG.sel = { r: R.r0, c: R.c0, r2: Math.min(nR - 1, R.r0 + lines.length - 1), c2: Math.min(nC - 1, R.c0 + Math.max(...lines.map(l => l.length)) - 1), key: plan.id };
+    commit(ch, `📥 วาง ${ch.length} ช่อง · กด Ctrl+Z เพื่อเลิกทำ`);
+  };
+  sc.addEventListener('keydown', (e) => {
+    if (editing || !PFG.sel) return;
+    const s = PFG.sel, ext = e.shiftKey;
+    const mv = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+    if (mv) { e.preventDefault(); const r0 = ext ? s.r2 : s.r, c0 = ext ? s.c2 : s.c; setSel(r0 + mv[0], c0 + mv[1], ext); return; }
+    if (e.key === 'Tab') { e.preventDefault(); setSel(s.r, s.c + (e.shiftKey ? -1 : 1)); return; }
+    if (e.key === 'Enter' || e.key === 'F2') { e.preventDefault(); startEdit(); return; }
+    if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); commit(rangeCells().map(x => ({ ...x, v: 0 }))); return; }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R' || e.code === 'KeyR')) { e.preventDefault(); fillRight(); return; }
+    if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyA')) { e.preventDefault(); PFG.sel = { r: 0, c: 0, r2: nR - 1, c2: nC - 1, key: plan.id }; paint(); return; }
+    if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1 && /[\d.\-]/.test(e.key)) { e.preventDefault(); startEdit(e.key); }
+  });
+  sc.addEventListener('copy', (e) => { if (editing || !PFG.sel) return; e.preventDefault(); e.clipboardData.setData('text/plain', toTSV()); showToast('📋 คัดลอกแล้ว'); });
+  sc.addEventListener('paste', (e) => { if (editing || !PFG.sel) return; e.preventDefault(); pasteTSV(e.clipboardData.getData('text/plain')); });
+  const fillRight = () => { const R = rect(); if (!R) return; const ch = []; for (let r = R.r0; r <= R.r1; r++) { const v = val(erows[r], keys[R.c0]); for (let c = R.c0 + 1; c <= R.c1; c++) ch.push({ r, c, v }); } commit(ch, ch.length ? `➡ เติมค่า ${ch.length} ช่อง` : ''); };
+  const splitEven = () => {
+    const R = rect(); if (!R) return; const n = R.c1 - R.c0 + 1;
+    const cur = (() => { let s = 0; for (let c = R.c0; c <= R.c1; c++) s += val(erows[R.r0], keys[c]); return s; })();
+    const ans = prompt(`ยอดรวมที่จะแบ่งเท่ากัน ${n} เดือน (${unitL})${R.r1 > R.r0 ? ` · ใช้กับทุกแถวที่เลือก (${R.r1 - R.r0 + 1} แถว)` : ''}`, cur ? String(PFG.unit === 'b' ? cur : cur / 1e6) : '');
+    if (ans == null) return; const totB = Math.max(0, ppNum(ans) * pfUnitF()); if (!totB) return;
+    const each = Math.floor(totB / n * 100) / 100, ch = [];
+    for (let r = R.r0; r <= R.r1; r++) for (let c = R.c0; c <= R.c1; c++) ch.push({ r, c, v: c === R.c1 ? Math.round((totB - each * (n - 1)) * 100) / 100 : each });
+    commit(ch, `➗ แบ่ง ${pfFmtU(totB)} ${unitL} เป็น ${n} เดือน`);
+  };
+  const planToAct = () => {
+    const ch = []; const seen = new Set();
+    rangeCells().forEach(({ r, c }) => { const row = erows[r]; const target = erows.find(x => x.t.id === row.t.id && x.s.id === row.s.id && x.idx === 1); if (!target) return; const id = target.er + ':' + c; if (seen.has(id)) return; seen.add(id); const pv = (row.mm[keys[c]] || [0, 0])[0] || 0; if (pv) ch.push({ r: target.er, c, v: +pv }); });
+    if (!ch.length) { showToast(showA ? 'ช่องที่เลือกไม่มีแผน' : 'เปิด “แสดง: แผน + ผล” ก่อน'); return; }
+    commit(ch, `📋 คัดลอกแผนเป็นผล ${ch.length} ช่อง`);
+  };
+  tbl.addEventListener('contextmenu', (e) => {
+    const td = e.target.closest('td.ce'); if (!td) return; e.preventDefault();
+    const r = +td.dataset.r, c = +td.dataset.c, R = rect();
+    if (!R || r < R.r0 || r > R.r1 || c < R.c0 || c > R.c1) setSel(r, c);
+    const cells = rangeCells(), sum = cells.reduce((a, x) => a + val(erows[x.r], keys[x.c]), 0);
+    menuPop(td, [
+      { label: `เลือก ${cells.length} ช่อง · รวม ${pfFmtU(sum) || '0'} ${unitL}`, fn: () => {}, disabled: true },
+      { label: '➗ แบ่งยอดเท่ากันในช่องที่เลือก…', fn: splitEven },
+      { label: '➡ เติมค่าช่องแรกให้ทุกช่อง (Ctrl+R)', fn: fillRight },
+      { label: '📋 คัดลอก “แผน” ลงเป็น “ผล”', fn: planToAct },
+      '-',
+      { label: '📋 คัดลอก (Ctrl+C)', fn: () => { const t = toTSV(); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => showToast('📋 คัดลอกแล้ว')).catch(() => showToast('กด Ctrl+C เพื่อคัดลอก')); } },
+      { label: '📥 วาง (Ctrl+V)', fn: () => { (navigator.clipboard && navigator.clipboard.readText ? navigator.clipboard.readText() : Promise.reject()).then(pasteTSV).catch(() => showToast('กด Ctrl+V เพื่อวาง')); } },
+      { label: '✕ ล้างค่า (Delete)', fn: () => commit(cells.map(x => ({ ...x, v: 0 }))) }
+    ]);
+  });
+  if (PFG.sel) requestAnimationFrame(() => { paint(); if (PFG.focus) { PFG.focus = false; sc.focus({ preventScroll: true }); } });
+  return box;
+}
+function pfScrollInto(sc, td) {
+  const L = 380, rr = 300, x = td.offsetLeft, w = td.offsetWidth;
+  if (x - L < sc.scrollLeft) sc.scrollLeft = Math.max(0, x - L);
+  else if (x + w + rr > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = x + w + rr - sc.clientWidth;
+  const r = td.getBoundingClientRect(); if (r.top < 60 || r.bottom > window.innerHeight - 20) td.scrollIntoView({ block: 'nearest' });
+}
+// แผน/ผลเดิมที่ยังไม่แยกแหล่ง → แบ่งตามสัดส่วนวงเงินของแต่ละแหล่ง
+function pfSplitUnassigned(pid) {
+  const plan = gpLive(pid); if (!plan) return; const srcs = pfSources(plan); let n = 0, skip = 0;
+  plan.tasks.forEach(t => {
+    const F = t.fin; if (!F) return; const msx = pfMsOf(F, srcs); if (!msx._u) return;
+    const am = pfSrcAmts(F), ids = srcs.map(s => s.id).filter(id => +am[id] > 0), tot = ids.reduce((a, id) => a + +am[id], 0);
+    if (!tot) { skip++; return; }
+    F.ms = clone(msx); if (!F.src) F.src = clone(am);
+    const u = F.ms._u; delete F.ms._u;
+    Object.entries(u).forEach(([k, v]) => { let lp = +v[0] || 0, la = +v[1] || 0; ids.forEach((id, i) => { const last = i === ids.length - 1, r = +am[id] / tot; const p = last ? lp : Math.round((+v[0] || 0) * r * 100) / 100, a = last ? la : Math.round((+v[1] || 0) * r * 100) / 100; lp -= p; la -= a; const mm = F.ms[id] = F.ms[id] || {}; const c = mm[k] || [0, 0]; mm[k] = [c[0] + p, c[1] + a]; }); });
+    pfDerive(t, srcs); gpStamp(t); n++;
+  });
+  if (!n) { showToast(skip ? 'รายการที่ยังไม่แยกแหล่งไม่มีวงเงินแยกตามแหล่ง — ใส่วงเงินแต่ละแหล่งใน 💰 ก่อน' : 'ไม่มีข้อมูลที่ต้องแบ่ง'); return; }
+  saveState(); reRenderWithScroll(); showToast(`➗ แบ่งแผน/ผลเดิมตามสัดส่วนวงเงินแล้ว ${n} รายการ${skip ? ` · ข้าม ${skip} รายการ (ไม่มีวงเงินแยกแหล่ง)` : ''} · Ctrl+Z เพื่อเลิกทำ`);
+}
+
+// ---------- ⚙ ตั้งค่าแหล่งเงินของโครงการ ----------
+function pfSrcModal(pid) {
+  const plan = gpLive(pid); if (!plan) return;
+  const canE = gpCanEdit(plan), old = pfSources(plan);
+  let L = clone(old);
+  const used = (id) => plan.tasks.reduce((a, t) => a + (+pfSrcAmts(t.fin || {})[id] || 0), 0);
+  const hasM = (id) => plan.tasks.some(t => t.fin && (pfMsOf(t.fin, old)[id]));
+  const { m, close } = prepOverlay('pfs-modal', '');
+  const draw = () => {
+    m.innerHTML = `<div class="tpm-top"><h3>⚙ แหล่งเงินของโครงการ</h3><small>${escapeHTML((ppProjOf(plan) || {}).name || '')}</small><button type="button" class="btn ibtn ghost" data-x aria-label="ปิด">${ic('x', 18)}</button></div>
+      <div class="pfs-b"><p class="tpm-note" style="margin:0 0 10px">วงเงินรวม = ผลรวมทุกแหล่ง · วงเงินของแต่ละรายการกรอกที่ 💰 ในรายละเอียดรายการ · แผน/ผลรายเดือนกรอกแยกแหล่งในตาราง “กรอกรายเดือน”</p>
+      <div class="pfs-r pfs-hd"><span></span><span>ชื่อแหล่งเงิน</span><span>ประเภท</span><span>ในงบ / นอกงบ</span><span>รหัส / อ้างอิง</span><span class="n">วงเงินรวม (ลบ.)</span><span></span></div>
+      ${L.map((s, i) => `<div class="pfs-r" data-i="${i}"><input type="color" class="pfs-c" value="${escapeHTML(s.color || '#64748B')}" aria-label="สี" ${canE ? '' : 'disabled'}><input type="text" class="text-input pfs-n" value="${escapeHTML(s.name)}" aria-label="ชื่อแหล่งเงิน" ${canE ? '' : 'disabled'}>
+        <select class="text-input pfs-t" aria-label="ประเภท" ${canE ? '' : 'disabled'}>${Object.entries(PF_PRESETS).map(([k, p]) => `<option value="${k}" ${s.type === k ? 'selected' : ''}>${p.icon} ${p.name}</option>`).join('')}</select>
+        <select class="text-input pfs-k" aria-label="ในงบหรือนอกงบ" ${canE ? '' : 'disabled'}><option value="in" ${s.kind === 'in' ? 'selected' : ''}>ในงบประมาณ</option><option value="out" ${s.kind !== 'in' ? 'selected' : ''}>นอกงบประมาณ</option></select>
+        <input type="text" class="text-input pfs-ref" value="${escapeHTML(s.ref || '')}" placeholder="เช่น Loan 4785-THA" aria-label="รหัสอ้างอิง" ${canE ? '' : 'disabled'}>
+        <span class="n"><b>${pfMB(used(s.id))}</b></span>${canE && L.length > 1 ? `<button type="button" class="tpm-x" data-del="${i}" aria-label="ลบแหล่งเงินนี้" title="ลบแหล่งเงินนี้">✕</button>` : '<span></span>'}</div>`).join('')}
+      ${canE ? `<div class="pfs-add"><span class="muted">+ เพิ่มแหล่งเงิน:</span>${Object.entries(PF_PRESETS).map(([k, p]) => `<button type="button" data-add="${k}">${p.icon} ${p.name}</button>`).join('')}</div>` : ''}</div>
+      <div class="tpm-foot"><span></span><button type="button" class="btn" data-x>${canE ? 'ยกเลิก' : 'ปิด'}</button>${canE ? '<button type="button" class="btn btn-p" data-ok>บันทึก</button>' : ''}</div>`;
+    m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+    if (!canE) return;
+    m.querySelectorAll('.pfs-r[data-i]').forEach(r => {
+      const s = L[+r.dataset.i], q = (c) => r.querySelector(c);
+      q('.pfs-n').oninput = (e) => { s.name = e.target.value; };
+      q('.pfs-c').oninput = (e) => { s.color = e.target.value; };
+      q('.pfs-ref').oninput = (e) => { s.ref = e.target.value.trim(); if (!s.ref) delete s.ref; };
+      q('.pfs-k').onchange = (e) => { s.kind = e.target.value; };
+      q('.pfs-t').onchange = (e) => { const p = PF_PRESETS[e.target.value]; const wasDef = !s.name || Object.values(PF_PRESETS).some(x => x.name === s.name); s.type = e.target.value; s.kind = p.kind; if (wasDef) s.name = p.name; s.color = p.color; draw(); };
+    });
+    m.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+      const s = L[+b.dataset.del], u = used(s.id), mm = hasM(s.id);
+      if ((u || mm) && !confirm(`ลบแหล่งเงิน “${s.name}”?\nข้อมูลของแหล่งนี้จะถูกลบด้วย: วงเงิน ${pfMB(u)} ลบ.${mm ? ' และแผน/ผลรายเดือน' : ''}\n(กด Ctrl+Z หลังบันทึกเพื่อเลิกทำได้)`)) return;
+      L.splice(+b.dataset.del, 1); draw();
+    });
+    m.querySelectorAll('[data-add]').forEach(b => b.onclick = () => { const k = b.dataset.add, p = PF_PRESETS[k]; const id = L.some(x => x.id === k) ? uid('fs') : k; L.push({ id, type: k, name: p.name, kind: p.kind, color: p.color }); draw(); const ns = m.querySelectorAll('.pfs-n'); if (ns.length) { ns[ns.length - 1].focus(); ns[ns.length - 1].select(); } });
+    m.querySelector('[data-ok]').onclick = () => {
+      L = L.map(s => ({ ...s, name: (s.name || '').trim() || PF_PRESETS[s.type || 'oth'].name }));
+      const ids = new Set(L.map(s => s.id));
+      // ทำข้อมูลเดิมให้อยู่ในรูปแยกแหล่งก่อนเปลี่ยนรายการแหล่งเงิน
+      plan.tasks.forEach(t => {
+        const F = t.fin; if (!F) return;
+        if (!F.src) { const a = pfSrcAmts(F); if (Object.keys(a).length) F.src = clone(a); }
+        if (!F.ms && F.m && Object.keys(F.m).length) F.ms = clone(pfMsOf(F, old));
+        if (F.src) Object.keys(F.src).forEach(k => { if (!ids.has(k)) delete F.src[k]; });
+        if (F.ms) Object.keys(F.ms).forEach(k => { if (k !== '_u' && !ids.has(k)) delete F.ms[k]; });
+        pfDerive(t, L);
+      });
+      plan.finSrc = L; plan.updatedAt = Date.now();
+      saveState(); close(); reRenderWithScroll(); showToast('⚙ บันทึกแหล่งเงินแล้ว');
+    };
+  };
+  draw();
+}
+
+// ---------- Excel (ใช้ SheetJS โหลดเมื่อกดใช้) ----------
+function pfXlsx() {
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return pfXlsx._p || (pfXlsx._p = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+    s.onload = () => window.XLSX ? res(window.XLSX) : rej(new Error('no XLSX'));
+    s.onerror = () => { pfXlsx._p = null; rej(new Error('โหลดตัวอ่าน/เขียน Excel ไม่สำเร็จ (ต้องต่ออินเทอร์เน็ต)')); };
+    document.head.appendChild(s);
+  }));
+}
+function pfSheetName(kind, s, used) {
+  let n = `${kind === 0 ? 'แผน' : 'ผล'} · ${s.name}`.replace(/[:\\/?*\[\]]/g, ' ').slice(0, 31);
+  let k = n, i = 2; while (used.has(k)) { k = n.slice(0, 28) + ' ' + i++; } used.add(k); return k;
+}
+function pfMonthKeyFromLabel(v) {
+  if (v == null) return null; const t = String(v).trim();
+  let m = /^(\S+?)\s*(\d{2,4})$/.exec(t); if (m) { const mi = THAI_MONTHS_SHORT.indexOf(m[1].replace(/\s/g, '')); if (mi >= 0) { let y = +m[2]; if (y < 100) y += 2500; if (y > 2400) y -= 543; return exKey({ y, m: mi }); } }
+  m = /^(\d{4})-(\d{2})$/.exec(t); if (m) return t;
+  return null;
+}
+function pfExportModal(pid, blank) {
+  const plan = gpLive(pid); if (!plan) return;
+  const today = todayBangkokIndex(), { items } = pfItems(plan), curFy = exFyOf(exYM(today));
+  const fysAll = new Set([curFy]); items.forEach(t => { if (t.fin && t.fin.m) Object.keys(t.fin.m).forEach(k => fysAll.add(pfFyOfKey(k))); if (t.start != null) fysAll.add(exFyOf(exYM(t.start))); if (t.end != null) fysAll.add(exFyOf(exYM(t.end))); });
+  const fyList = [...fysAll].filter(Boolean).sort((a, b) => a - b);
+  const { m, close } = prepOverlay('tpm-save pfe-modal', `<div class="tpm-top"><h3>📤 ส่งออก Excel${blank ? ' · แม่แบบว่าง' : ''}</h3><button type="button" class="btn ibtn ghost" data-x aria-label="ปิด">${ic('x', 18)}</button></div>
+    <div class="tpm-lb">ข้อมูล</div><div class="pfe-o"><label><input type="checkbox" id="pfeP" checked> แผนเบิกจ่าย</label><label><input type="checkbox" id="pfeA" checked> ผลเบิกจ่ายจริง</label></div>
+    <div class="tpm-lb">ช่วงเวลา</div><div class="pfe-o"><label><input type="radio" name="pfeR" value="all" checked> ทั้งโครงการ (ปีงบ ${fyList[0]}–${fyList[fyList.length - 1]})</label><label><input type="radio" name="pfeR" value="fy"> ปีงบ <select id="pfeFy" class="text-input" style="width:auto;display:inline-block;margin:0 0 0 4px;height:32px;padding:0 8px">${fyList.map(f => `<option value="${f}" ${f === (PF.fy || curFy) ? 'selected' : ''}>${f}</option>`).join('')}</select></label></div>
+    <div class="tpm-lb">หน่วย</div><div class="pfe-o"><label><input type="radio" name="pfeU" value="b" checked> บาท</label><label><input type="radio" name="pfeU" value="m"> ล้านบาท</label></div>
+    <p class="tpm-note">ได้ไฟล์ .xlsx แยกชีตตาม “แผน / ผล × แหล่งเงิน” + ชีตสรุปรายปีงบ · คอลัมน์ “รหัสระบบ” ใช้จับคู่ตอนนำเข้า ห้ามแก้</p>
+    <div class="tpm-foot"><span></span><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok>📤 ดาวน์โหลด .xlsx</button></div>`);
+  m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+  m.querySelector('#pfeFy').onfocus = () => { m.querySelector('input[name=pfeR][value=fy]').checked = true; };
+  m.querySelector('[data-ok]').onclick = async () => {
+    const P = m.querySelector('#pfeP').checked, A = m.querySelector('#pfeA').checked;
+    if (!P && !A) { showToast('เลือกแผนหรือผลอย่างน้อย 1 อย่าง'); return; }
+    const rng = m.querySelector('input[name=pfeR]:checked').value, fy = +m.querySelector('#pfeFy').value, unit = m.querySelector('input[name=pfeU]:checked').value;
+    const b = m.querySelector('[data-ok]'); b.disabled = true; b.textContent = 'กำลังสร้างไฟล์…';
+    try { await pfExportXlsx(plan.id, { P, A, fys: rng === 'all' ? fyList : [fy], unit, blank }); close(); }
+    catch (e) { showToast('ส่งออกไม่สำเร็จ: ' + e.message); b.disabled = false; b.textContent = '📤 ดาวน์โหลด .xlsx'; }
+  };
+}
+async function pfExportXlsx(pid, o) {
+  const X = await pfXlsx();
+  const plan = gpLive(pid), project = ppProjOf(plan), today = todayBangkokIndex(), { ix, items } = pfItems(plan), wb = ppWbsMap(plan, ix);
+  const D = exItData(project), nm = new Map((D ? D.items : []).map(i => [i.t.id, i]));
+  const srcs = pfSources(plan), srcAll = pfSrcList(plan), ms = o.fys.flatMap(pfFyMonths), keys = ms.map(exKey), f = o.unit === 'm' ? 1e6 : 1;
+  const W = X.utils.book_new(), used = new Set(['อ่านก่อน', 'สรุปรายปีงบ']), map = [];
+  const numFmt = o.unit === 'm' ? '#,##0.000000' : '#,##0.00';
+  const name = (t) => { const it = nm.get(t.id); return it ? it.name : t.name; };
+  [[0, o.P], [1, o.A]].forEach(([kind, on]) => {
+    if (!on) return;
+    srcAll.forEach(s => {
+      if (s.id === '_u' && o.blank) return;
+      const rowsT = items.filter(t => { if (s.id === '_u') return !!(t.fin && pfMsOf(t.fin, srcs)._u); const am = pfSrcAmts(t.fin || {}); return srcAll.filter(x => x.id !== '_u').length === 1 || +am[s.id] > 0 || !Object.keys(am).length || (t.fin && pfMsOf(t.fin, srcs)[s.id]); });
+      if (!rowsT.length) return;
+      const sn = pfSheetName(kind, s, used); map.push([sn, kind === 0 ? 'แผน' : 'ผล', s.id, s.name]);
+      const aoa = [['รหัสระบบ', 'WBS', 'รายการ', 'แหล่งเงิน', ...ms.map(exMLabel), 'รวม']];
+      rowsT.forEach(t => { const mm = pfMsOf(t.fin || {}, srcs)[s.id] || {}; aoa.push([t.id, wb[t.id] || '', name(t), s.name, ...keys.map(k => { const v = mm[k] ? +mm[k][kind] || 0 : 0; return o.blank || !v ? null : v / f; }), null]); });
+      aoa.push([null, null, 'รวม', null, ...keys.map(() => null), null]);
+      const ws = X.utils.aoa_to_sheet(aoa); const nCol = 4 + keys.length, last = aoa.length;
+      for (let r = 2; r <= last - 1; r++) ws[X.utils.encode_cell({ r: r - 1, c: nCol })] = { t: 'n', f: `SUM(${X.utils.encode_cell({ r: r - 1, c: 4 })}:${X.utils.encode_cell({ r: r - 1, c: nCol - 1 })})`, z: numFmt };
+      for (let c = 4; c <= nCol; c++) ws[X.utils.encode_cell({ r: last - 1, c })] = { t: 'n', f: `SUM(${X.utils.encode_cell({ r: 1, c })}:${X.utils.encode_cell({ r: last - 2, c })})`, z: numFmt };
+      for (let r = 1; r < last - 1; r++) for (let c = 4; c < nCol; c++) { const a = X.utils.encode_cell({ r, c }); if (ws[a] && ws[a].t === 'n') ws[a].z = numFmt; }
+      ws['!cols'] = [{ wch: 14, hidden: false }, { wch: 6 }, { wch: 44 }, { wch: 18 }, ...keys.map(() => ({ wch: 14 })), { wch: 16 }];
+      ws['!freeze'] = { xSplit: 4, ySplit: 1 }; ws['!views'] = [{ state: 'frozen', xSplit: 4, ySplit: 1 }];
+      X.utils.book_append_sheet(W, ws, sn);
+    });
+  });
+  // สรุปรายปีงบ (ข้อมูลทั้งหมด ไม่ใช้ตอนนำเข้า)
+  const fysAll = [...new Set(items.flatMap(t => Object.keys((t.fin || {}).m || {}).map(pfFyOfKey)))].filter(Boolean).sort((a, b) => a - b);
+  const sum = [['WBS', 'รายการ', 'แหล่งเงิน', 'วงเงิน', ...fysAll.flatMap(fy => [`แผน ปีงบ ${fy}`, `ผล ปีงบ ${fy}`]), 'แผนรวม', 'ผลรวม']];
+  items.forEach(t => { const F = t.fin || {}, am = pfSrcAmts(F), mx = pfMsOf(F, srcs); srcAll.forEach(s => { const mm = mx[s.id] || {}; const a = s.id === '_u' ? 0 : +am[s.id] || 0; if (!a && !Object.keys(mm).length) return; const byFy = fysAll.flatMap(fy => { let p = 0, q = 0; Object.entries(mm).forEach(([k, v]) => { if (pfFyOfKey(k) === fy) { p += +v[0] || 0; q += +v[1] || 0; } }); return [p / f || null, q / f || null]; }); const P = Object.values(mm).reduce((x, v) => x + (+v[0] || 0), 0), Q = Object.values(mm).reduce((x, v) => x + (+v[1] || 0), 0); sum.push([wb[t.id] || '', name(t), s.name, a / f || null, ...byFy, P / f || null, Q / f || null]); }); });
+  const ws2 = X.utils.aoa_to_sheet(sum); ws2['!cols'] = [{ wch: 6 }, { wch: 44 }, { wch: 18 }, ...sum[0].slice(3).map(() => ({ wch: 14 }))];
+  // อ่านก่อน
+  const info = [['คำอธิบาย'], ['โครงการ', project ? project.name : ''], ['ส่งออกเมื่อ', fmtDateTime(Date.now())], ['หน่วย', o.unit === 'm' ? 'ล้านบาท' : 'บาท'], ['ช่วง', o.fys.length > 1 ? `ปีงบ ${o.fys[0]}–${o.fys[o.fys.length - 1]}` : `ปีงบ ${o.fys[0]}`], [],
+    ['วิธีใช้'], ['1. กรอก/แก้ตัวเลขในช่องเดือน (ช่องว่าง = ไม่มี) แล้วบันทึกไฟล์'], ['2. ในระบบ หน้าการเงิน กด “📥 นำเข้า Excel” แล้วเลือกไฟล์นี้ ระบบจะแสดงความเปลี่ยนแปลงให้ตรวจก่อนบันทึก'], ['3. ห้ามแก้คอลัมน์ “รหัสระบบ” และชื่อชีต · แก้ชื่อรายการ / เพิ่มคอลัมน์หมายเหตุท้ายตารางได้'], ['4. ชีต “สรุปรายปีงบ” ใช้ดูอย่างเดียว ไม่ถูกนำเข้า'], [],
+    ['ชีต', 'ข้อมูล', 'รหัสแหล่งเงิน', 'แหล่งเงิน'], ...map];
+  const ws0 = X.utils.aoa_to_sheet(info); ws0['!cols'] = [{ wch: 30 }, { wch: 60 }, { wch: 14 }, { wch: 24 }];
+  W.SheetNames.unshift('อ่านก่อน'); W.Sheets['อ่านก่อน'] = ws0;
+  X.utils.book_append_sheet(W, ws2, 'สรุปรายปีงบ');
+  const d = new Date(), stamp = `${d.getFullYear() + 543}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const fn = `${o.blank ? 'แม่แบบ' : 'แผนผลเบิกจ่าย'}_${(project ? project.name : 'โครงการ').replace(/[\\/:*?"<>|]/g, '')}_${o.fys.length > 1 ? 'ทั้งโครงการ' : 'ปีงบ' + o.fys[0]}_${stamp}.xlsx`;
+  X.writeFile(W, fn);
+  showToast('📤 ส่งออก ' + fn);
+}
+function pfImportPick(pid) {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.xlsx,.xls,.xlsm,.csv';
+  inp.onchange = async () => {
+    const file = inp.files && inp.files[0]; if (!file) return;
+    try { const X = await pfXlsx(); const buf = await file.arrayBuffer(); const W = X.read(buf, { type: 'array' }); pfImportPreview(pid, W, file.name, X); }
+    catch (e) { showToast('อ่านไฟล์ไม่สำเร็จ: ' + e.message); }
+  };
+  inp.click();
+}
+function pfImportParse(plan, W, X) {
+  const srcs = pfSources(plan), srcAll = pfSrcList(plan), { ix, items } = pfItems(plan), wb = ppWbsMap(plan, ix);
+  const byId = new Map(items.map(t => [t.id, t])), byW = new Map(items.map(t => [String(wb[t.id] || ''), t]));
+  let unit = 1; const sheetMap = {};
+  if (W.Sheets['อ่านก่อน']) {
+    const rows = X.utils.sheet_to_json(W.Sheets['อ่านก่อน'], { header: 1, defval: null });
+    rows.forEach(r => { if (r[0] === 'หน่วย' && String(r[1] || '').includes('ล้าน')) unit = 1e6; if (r[0] && (r[1] === 'แผน' || r[1] === 'ผล') && r[2]) sheetMap[r[0]] = { kind: r[1] === 'แผน' ? 0 : 1, sid: String(r[2]) }; });
+  }
+  const out = [], miss = [], sheets = [];
+  W.SheetNames.forEach(sn => {
+    let mp = sheetMap[sn];
+    if (!mp) { const m = /^(แผน|ผล)\s*·\s*(.+)$/.exec(sn); if (m) { const s = srcAll.find(x => x.name === m[2].trim() || x.name.slice(0, 26) === m[2].trim().slice(0, 26)); if (s) mp = { kind: m[1] === 'แผน' ? 0 : 1, sid: s.id }; } }
+    if (!mp || !srcAll.some(s => s.id === mp.sid)) return;
+    const rows = X.utils.sheet_to_json(W.Sheets[sn], { header: 1, defval: null, raw: true }); if (!rows.length) return;
+    const hd = rows[0].map(v => v == null ? '' : String(v).trim());
+    const cId = hd.indexOf('รหัสระบบ'), cW = hd.indexOf('WBS'), cN = hd.indexOf('รายการ'), mcols = [];
+    hd.forEach((v, c) => { const k = pfMonthKeyFromLabel(v); if (k) mcols.push([c, k]); });
+    if (!mcols.length) return;
+    sheets.push(sn); let n = 0;
+    rows.slice(1).forEach((r, i) => {
+      const id = cId >= 0 ? String(r[cId] || '').trim() : '', w = cW >= 0 ? String(r[cW] == null ? '' : r[cW]).trim() : '', label = cN >= 0 ? String(r[cN] || '').trim() : '';
+      if (!id && !w && (!label || label === 'รวม')) return;
+      if (label === 'รวม' && !id) return;
+      const t = (id && byId.get(id)) || (w && byW.get(w)); if (!t) { miss.push(`${sn} แถว ${i + 2}${label ? ' “' + label + '”' : ''}`); return; }
+      mcols.forEach(([c, k]) => { const raw = r[c]; let v = null; if (raw != null && String(raw).trim() !== '') { v = typeof raw === 'number' ? raw : ppNum(String(raw).replace(/[^\d.,\-]/g, '')); v = Math.max(0, Math.round(v * unit * 100) / 100); } out.push({ t, sid: mp.sid, kind: mp.kind, k, v }); });
+      n++;
+    });
+  });
+  return { cells: out, miss, sheets, unit };
+}
+function pfImportPreview(pid, W, fname, X) {
+  const plan = gpLive(pid); if (!plan) return;
+  const srcs = pfSources(plan), srcAll = pfSrcList(plan), { ix } = pfItems(plan), wb = ppWbsMap(plan, ix);
+  const P = pfImportParse(plan, W, X);
+  if (!P.sheets.length) { showToast('ไม่พบชีตแผน/ผลเบิกจ่ายในไฟล์ (ใช้ไฟล์ที่ส่งออกจากระบบ หรือแม่แบบ)'); return; }
+  let blank = 'keep', kinds = { 0: true, 1: true };
+  const { m, close } = prepOverlay('pfi-modal', '');
+  const diff = () => {
+    const ch = [];
+    P.cells.forEach(x => {
+      if (!kinds[x.kind]) return;
+      const cur = ((pfMsOf(x.t.fin || {}, srcs)[x.sid] || {})[x.k] || [0, 0])[x.kind] || 0;
+      if (x.v == null) { if (blank === 'clear' && cur) ch.push({ ...x, old: cur, nv: 0, ty: 'del' }); return; }
+      if (Math.abs(x.v - cur) > 0.004) ch.push({ ...x, old: cur, nv: x.v, ty: !cur ? 'add' : !x.v ? 'del' : 'chg' });
+    });
+    return ch;
+  };
+  const sname = (id) => (srcAll.find(s => s.id === id) || {}).name || id;
+  const draw = () => {
+    const ch = diff(), nC = ch.filter(x => x.ty === 'chg').length, nA = ch.filter(x => x.ty === 'add').length, nD = ch.filter(x => x.ty === 'del').length;
+    m.innerHTML = `<div class="tpm-top"><h3>📥 นำเข้า Excel — ตรวจก่อนบันทึก</h3><small>${escapeHTML(fname)}</small><button type="button" class="btn ibtn ghost" data-x aria-label="ปิด">${ic('x', 18)}</button></div>
+      <div class="pfi-b"><div class="pfi-l">
+        <div>✅ อ่านได้ ${P.sheets.length} ชีต · หน่วยในไฟล์: ${P.unit === 1e6 ? 'ล้านบาท' : 'บาท'}</div>
+        <div class="pfi-pills"><span class="pill pfi-c">เปลี่ยน ${nC} ช่อง</span><span class="pill pfi-a">เพิ่มใหม่ ${nA} ช่อง</span><span class="pill pfi-d">ลบ ${nD} ช่อง</span></div>
+        ${P.miss.length ? `<div class="pfi-miss">⚠ ${P.miss.length} แถวไม่พบรายการในระบบ → ข้าม<br><small>${P.miss.slice(0, 6).map(escapeHTML).join('<br>')}${P.miss.length > 6 ? '<br>…' : ''}</small></div>` : ''}
+        <div class="tpm-lb" style="margin-top:12px">ช่องว่างในไฟล์</div><div class="pfe-o"><label><input type="radio" name="pfiB" value="keep" ${blank === 'keep' ? 'checked' : ''}> ไม่แตะค่าเดิม</label><label><input type="radio" name="pfiB" value="clear" ${blank === 'clear' ? 'checked' : ''}> ถือว่าลบ</label></div>
+        <div class="tpm-lb">นำเข้า</div><div class="pfe-o"><label><input type="checkbox" data-k="0" ${kinds[0] ? 'checked' : ''}> แผน</label><label><input type="checkbox" data-k="1" ${kinds[1] ? 'checked' : ''}> ผล</label></div>
+        <p class="tpm-note">นำเข้าแล้วกด Ctrl+Z เพื่อเลิกทำได้ · บันทึกในประวัติการแก้ไข</p></div>
+      <div class="pfi-r">${ch.length ? `<table class="pf-t pfi-t"><thead><tr><th>รายการ</th><th>แหล่งเงิน</th><th>แผน/ผล</th><th>เดือน</th><th class="n">เดิม (บาท)</th><th class="n">ใหม่ (บาท)</th></tr></thead><tbody>${ch.slice(0, 400).map(x => `<tr class="pfi-${x.ty}"><td><b>${escapeHTML(wb[x.t.id] || '')}</b> ${escapeHTML(exItShort(x.t.name, 34))}</td><td>${escapeHTML(sname(x.sid))}</td><td>${x.kind ? 'ผล' : 'แผน'}</td><td>${escapeHTML(exMLabel(exParseKey(x.k)))}</td><td class="n">${x.old ? ppMoney(x.old) : '—'}</td><td class="n"><b>${x.ty === 'del' ? 'ลบ' : ppMoney(x.nv)}</b></td></tr>`).join('')}</tbody></table>${ch.length > 400 ? `<div class="tpm-note">แสดง 400 จาก ${ch.length} ช่อง</div>` : ''}` : '<div class="tpm-empty">ไม่มีอะไรเปลี่ยน — ตัวเลขในไฟล์ตรงกับในระบบแล้ว</div>'}</div></div>
+      <div class="tpm-foot"><span></span><button type="button" class="btn" data-x>ยกเลิก</button><button type="button" class="btn btn-p" data-ok ${ch.length ? '' : 'disabled'}>📥 นำเข้า ${ch.length} ช่อง</button></div>`;
+    m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
+    m.querySelectorAll('input[name=pfiB]').forEach(r => r.onchange = () => { blank = r.value; draw(); });
+    m.querySelectorAll('input[data-k]').forEach(c => c.onchange = () => { kinds[c.dataset.k] = c.checked; draw(); });
+    const ok = m.querySelector('[data-ok]');
+    if (ok) ok.onclick = () => {
+      const pl = gpLive(pid); if (!pl) return; const touched = new Map();
+      ch.forEach(x => { const t = pl.tasks.find(y => y.id === x.t.id); if (!t) return; pfSetCell(t, srcs, x.sid, x.k, x.kind, x.nv); touched.set(t.id, t); });
+      touched.forEach(t => { pfDerive(t, srcs); gpStamp(t); });
+      saveState(); close(); reRenderWithScroll(); showToast(`📥 นำเข้า ${ch.length} ช่อง (${touched.size} รายการ) · กด Ctrl+Z เพื่อเลิกทำ`);
+    };
+  };
+  draw();
 }
 
 // ==========================================
