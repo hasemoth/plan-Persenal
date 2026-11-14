@@ -521,17 +521,27 @@ body.col-resizing { cursor: col-resize; user-select: none; }
 .today-page { container: tdy / inline-size; }
 .tfl { container: tfl / inline-size; }
 .tfl-name { overflow-wrap: anywhere; }
-@container tdy (max-width: 1060px) { .today-grid { grid-template-columns: minmax(0, 1fr); } .today-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@container tdy (max-width: 560px) { .today-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .today-hello { padding: 14px 16px; } .th-sum { text-align: left; } }
-/* แถวรายการ: กว้าง = 1 บรรทัด · กลาง = ชื่อเต็มบรรทัด แล้ววัน/สถานะ/ผู้รับผิดชอบไว้บรรทัดล่าง · แคบ = ปุ่มลงบรรทัดล่าง */
-@container tfl (max-width: 700px) {
-  .tfl-row, .today-card .tfl-row { grid-template-columns: 22px max-content max-content minmax(0, 1fr) auto; grid-template-areas: "ico main main main acts" "ico date st own acts"; row-gap: 3px; }
-  .tfl-ico { grid-area: ico; align-self: start; padding-top: 2px; } .tfl-main { grid-area: main; } .tfl-date { grid-area: date; } .tfl-st { grid-area: st; } .tfl-own { grid-area: own; } .tfl-acts { grid-area: acts; }
-  .tfl-date:empty, .tfl-st:empty { display: none; }
+.tfl-dbx { display: none; }
+/* ซ้าย : ขวา — ขวากว้าง 38% (ไม่ต่ำกว่า 340px ไม่เกิน 560px) · เรียงบน–ล่างเมื่อพื้นที่ < 780px */
+.today-grid { grid-template-columns: minmax(0, 1fr) clamp(340px, 38%, 560px); }
+@container tdy (max-width: 780px) { .today-grid { grid-template-columns: minmax(0, 1fr); } }
+@container tdy (max-width: 760px) { .today-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container tdy (max-width: 440px) { .today-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .today-hello { padding: 14px 16px; } .th-sum { text-align: left; } }
+/* แถวรายการเมื่อกล่องแคบ (คอลัมน์ขวา / แท็บเล็ต / มือถือ): แบบ B ป้ายวันที่ด้านซ้าย */
+@container tfl (max-width: 640px) {
+  .tfl-row, .today-card .tfl-row { grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "dbx main acts" "dbx st acts"; gap: 2px 9px; padding: 7px 10px; align-items: center; }
+  .tfl-dbx { display: block; grid-area: dbx; align-self: start; text-align: center; border-radius: 8px; background: #F1F3F7; padding: 3px 0 2px; line-height: 1.1; }
+  .tfl-dbx b { display: block; font-size: 16px; color: #241C4D; } .tfl-dbx small { font-size: 10px; color: #5B6680; white-space: nowrap; }
+  .tfl-dbx.k-late { background: #FEE2E2; } .tfl-dbx.k-late b, .tfl-dbx.k-late small { color: #B91C1C; }
+  .tfl-dbx.k-today { background: #FEF3C7; } .tfl-dbx.k-today b { color: #92400E; }
+  .tfl-dbx.k-done { background: #DCFCE7; } .tfl-dbx.k-done b { color: #166534; }
+  .tfl-ico, .tfl-date, .tfl-own { display: none; }
+  .tfl-main { grid-area: main; } .tfl-st { grid-area: st; } .tfl-acts { grid-area: acts; }
+  .tfl-st:empty { display: none; }
 }
-@container tfl (max-width: 440px) {
-  .tfl-row, .today-card .tfl-row { grid-template-columns: 20px max-content minmax(0, 1fr) auto; grid-template-areas: "ico main main main" "ico date st acts"; padding: 6px 8px; }
-  .tfl-own { display: none; } .tfl-st { flex-wrap: wrap; } .tfl-b { padding: 2px 6px; }
+@container tfl (max-width: 360px) {
+  .tfl-row, .today-card .tfl-row { grid-template-areas: "dbx main main" "dbx st acts"; }
+  .tfl-b { padding: 2px 6px; }
 }
 .td-rk-reset { border: none; background: none; color: var(--ink-soft); cursor: pointer; font-size: 14px; margin-left: auto; margin-right: 4px; padding: 0 4px; border-radius: 6px; }
 .td-rk-reset:hover { background: #EEF2FF; color: #4338CA; }
@@ -2116,6 +2126,43 @@ body.gs-on .content { padding-bottom: 90px; }
 .pfi-miss { background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 8px; padding: 6px 10px; font-size: 12.5px; }
 .pfi-t tr.pfi-chg td:last-child { background: #FEF3C7; } .pfi-t tr.pfi-add td:last-child { background: #DCFCE7; } .pfi-t tr.pfi-del td:last-child { background: #FEE2E2; }
 @media (max-width: 900px) { .pf-z1 { grid-template-columns: 1fr; } .pfs-r { grid-template-columns: 34px 1fr 1fr 26px; } .pfs-r .pfs-k, .pfs-r .pfs-ref, .pfs-r > span.n { grid-column: 2 / 4; } .pfi-b { grid-template-columns: 1fr; overflow: auto; } .pfx col.c1 { width: 170px; } .pfx .f2 { left: 170px; } .pfx .f3 { left: 222px; } }
+/* 📝 บันทึก / รูป */
+.gp-memo { border: none; background: #EEF2FF; color: #4338CA; border-radius: 6px; padding: 0 5px; margin-left: 6px; font: inherit; font-size: 11px; line-height: 18px; cursor: pointer; display: inline-flex; gap: 3px; align-items: center; flex: none; }
+.gp-memo b { font-weight: 700; color: #0E7490; }
+.gp-memo:hover { background: #E0E7FF; }
+.memo { margin: 12px 0 4px; border: 1px solid #E3E6EE; border-radius: 12px; padding: 10px 12px; background: #FCFCFE; }
+.memo-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; } .memo-h b { color: #241C4D; font-size: 13.5px; } .memo-h small { color: #5B6680; font-size: 11.5px; text-align: right; }
+.memo-doc { font-size: 13.5px; line-height: 1.65; color: #16233B; overflow-wrap: anywhere; } .memo-doc ul, .memo-doc ol, .memo-tx ul, .memo-tx ol { margin: 2px 0 6px; padding-left: 20px; } .memo-doc p, .memo-tx p { margin: 0 0 6px; } .memo-doc a, .memo-tx a { color: #2563EB; }
+.memo-ed { border: 1.5px solid #C7D2FE; border-radius: 10px; background: #fff; overflow: hidden; } .memo-ed:focus-within { border-color: #6366F1; box-shadow: 0 0 0 3px #E0E7FF; }
+.memo-tb { display: flex; gap: 2px; padding: 4px 6px; background: #F8F9FC; border-bottom: 1px solid #EEF0F5; } .memo-tb .sp { flex: 1; }
+.memo-tb button { border: none; background: none; border-radius: 6px; min-width: 28px; height: 26px; font: inherit; font-size: 13px; cursor: pointer; color: #374151; } .memo-tb button:hover { background: #EEF0F7; } .memo-tb .memo-del:hover { background: #FEE2E2; }
+.memo-tx { min-height: 84px; max-height: 320px; overflow: auto; padding: 8px 10px; font-size: 13.5px; line-height: 1.65; outline: none; overflow-wrap: anywhere; }
+.memo-tx:empty::before { content: attr(data-ph); color: #9CA3AF; }
+.memo-imgs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .memo-imgs:empty { display: none; }
+.memo-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; max-width: 100%; border: 1px solid #E3E6EE; border-radius: 9px; background: #fff; padding: 3px 8px 3px 3px; cursor: zoom-in; font-size: 12px; color: #374151; }
+.memo-chip:hover { border-color: #A5B4FC; background: #F7F7FF; }
+.memo-ct { width: 40px; height: 30px; object-fit: cover; border-radius: 6px; background: #EEF0F5; flex: none; }
+.memo-cn { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memo-x { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; border: none; background: #374151; color: #fff; font-size: 10px; line-height: 18px; cursor: pointer; padding: 0; }
+.memo-x:hover { background: #DC2626; }
+.memo-chip.busy { cursor: default; color: #4338CA; } .memo-spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #C7D2FE; border-top-color: #4F46E5; animation: memoSpin 0.8s linear infinite; margin: 0 6px 0 4px; }
+@keyframes memoSpin { to { transform: rotate(360deg); } }
+.memo-drop { margin-top: 8px; border: 1.5px dashed #C7D2FE; border-radius: 9px; padding: 7px; text-align: center; font-size: 12px; color: #4338CA; cursor: pointer; background: #FAFAFF; } .memo-drop.on { background: #EEF2FF; border-color: #6366F1; }
+.memo-broken { opacity: .35; }
+.memo-peek { position: fixed; z-index: 6000; background: #fff; border: 1px solid #DCE0E8; border-radius: 12px; box-shadow: 0 16px 40px rgba(22,35,59,.22); padding: 8px; max-width: 380px; pointer-events: none; }
+.memo-peek.wide { width: 340px; padding: 10px 12px; font-size: 12.5px; line-height: 1.55; color: #16233B; }
+.memo-pi { display: block; max-width: 360px; max-height: 260px; border-radius: 8px; background: #EEF0F5; }
+.memo-pc { font-size: 12px; margin-top: 6px; color: #374151; } .memo-pc small { display: block; color: #5B6680; font-size: 11px; }
+.memo-pm { font-size: 11px; color: #5B6680; margin-bottom: 3px; } .memo-pt { overflow-wrap: anywhere; }
+.memo-pg { display: flex; gap: 5px; margin-top: 6px; align-items: center; } .memo-pg img { width: 70px; height: 50px; object-fit: cover; border-radius: 6px; background: #EEF0F5; } .memo-pg span { font-size: 12px; color: #5B6680; }
+.memo-pf { font-size: 11px; color: #4F46E5; font-weight: 600; margin-top: 6px; }
+.memo-lb { position: fixed; inset: 0; z-index: 5000; background: rgba(10, 14, 28, .88); display: flex; flex-direction: column; outline: none; }
+.memo-lbt { display: flex; align-items: center; gap: 14px; padding: 10px 16px; color: #E5E7EB; font-size: 13px; } .memo-lbt .memo-lbn { flex: 1; color: #9CA3AF; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memo-lbt a { color: #A5B4FC; } .memo-lbt button { border: none; background: rgba(255,255,255,.12); color: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; cursor: pointer; }
+.memo-lbm { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 12px 16px; min-height: 0; }
+.memo-lbi { max-width: calc(100vw - 140px); max-height: calc(100vh - 90px); object-fit: contain; border-radius: 8px; background: #1F2937; }
+.memo-lbp { border: none; background: rgba(255,255,255,.12); color: #fff; width: 44px; height: 44px; border-radius: 50%; font-size: 16px; cursor: pointer; flex: none; } .memo-lbp:hover { background: rgba(255,255,255,.24); }
+@media (max-width: 700px) { .memo-lbi { max-width: calc(100vw - 24px); } .memo-lbp { position: absolute; bottom: 16px; } .memo-lbp[data-p] { left: 16px; } .memo-lbp[data-n] { right: 16px; } }
 /* รายงานประจำเดือน */
 .pr-modal { width: min(760px, 96vw); max-width: none; }
 .pr-secs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
@@ -3721,7 +3768,8 @@ function tfListEl(items, opt) {
       const w = tfWhenText(x, today), own = tfOwnersOf(x);
       const row = document.createElement('div'); row.className = 'tfl-row' + (x.o.done ? ' done' : '');
       const parentTxt = x.kind === 'prep' ? `<span class="tfl-par">${x.a._prep.it.rel && x.a._prep.it.rel.dir > 0 ? 'หลัง' : 'เตรียมสำหรับ'} ${escapeHTML(x.parent.label || '')}</span>` : '';
-      row.innerHTML = `<span class="tfl-ico">${tfTypeIcon(x)}</span>
+      const dbI = x.o.task ? x.o.end : x.o.start, dbD = typeof dbI === 'number' ? dateFromIndex(dbI) : null;
+      row.innerHTML = `${dbD ? `<span class="tfl-dbx k-${x.o.done ? 'done' : w.k || ''}"><b>${dbD.getUTCDate()}</b><small>${THAI_WEEKDAY_SHORT[dbD.getUTCDay()]}. ${THAI_MONTHS_SHORT[dbD.getUTCMonth()]}</small></span>` : '<span class="tfl-dbx"></span>'}<span class="tfl-ico">${tfTypeIcon(x)}</span>
         <div class="tfl-main"><div class="tfl-name">${escapeHTML(tfLabel(x))} ${parentTxt}</div><div class="tfl-path">${escapeHTML(tfPath(x))}${x.kind === 'act' && x.a.type === 'meeting' && x.a.allDay === false && x.a.startTime ? ' · ' + escapeHTML(x.a.startTime) + ' น.' : ''}</div></div>
         <span class="tfl-date">${escapeHTML(w.range)}</span>
         <span class="tfl-st">${w.rel ? `<span class="tfl-pill k-${w.k}">${escapeHTML(w.rel)}</span>` : x.o.done ? '<span class="tfl-pill k-done">✓ เสร็จ</span>' : x.o.wait ? '<span class="tfl-pill k-wait">รอตอบกลับ</span>' : ''}${x.o.wip && !x.o.done ? '<span class="tfl-pill k-wip">▶</span>' : ''}</span>
@@ -10586,7 +10634,7 @@ function renderProjPlan(project) {
   if (gpPrefs().sc) root.appendChild(ppSCurve(plan, ix, today));
   if (edit) {
     const eb = document.createElement('div'); eb.className = 'pp-editbar';
-    eb.innerHTML = `<b>${ic('pencil', 15)} โหมดแก้ไขเปิดอยู่</b><span><i>⋮⋮</i> ลากจัดลำดับ / ย้ายเข้าระดับ</span><span><i>▲▼</i> เลื่อนลำดับ</span><span><i>✎</i> แก้ชื่อ</span><span><i>＋</i> เพิ่มระดับย่อย</span><span><i>📅</i> นัดหมาย</span><span><i>🎯</i> กำหนดการ</span><span><i>⋯</i> ย้ายระดับ · ลบ</span><span class="pp-eb-tip">ลากแถบเพื่อเลื่อนวัน · แผนงานที่มีงานย่อย = ช่วงเวลาคำนวณจากงานย่อย</span>`;
+    eb.innerHTML = `<b>${ic('pencil', 15)} โหมดแก้ไขเปิดอยู่</b><span><i>⋮⋮</i> ลากจัดลำดับ / ย้ายเข้าระดับ</span><span><i>▲▼</i> เลื่อนลำดับ</span><span><i>✎</i> แก้ชื่อ</span><span><i>＋</i> เพิ่มระดับย่อย</span><span><i>📅</i> นัดหมาย</span><span><i>🎯</i> กำหนดการ</span><span><i>📝</i> บันทึก / รูป</span><span><i>⋯</i> ย้ายระดับ · ลบ</span><span class="pp-eb-tip">ลากแถบเพื่อเลื่อนวัน · แผนงานที่มีงานย่อย = ช่วงเวลาคำนวณจากงานย่อย</span>`;
     root.appendChild(eb);
   }
   root.appendChild(ppToolbar([plan], false));
@@ -11026,11 +11074,11 @@ function ppRow(plan, r, i, g) {
     const cur = ppCurStep(g.ix, t.id, g.today);
     st = `${cur ? `<span class="pp-cur" title="${escapeHTML(cur.name)}">${escapeHTML(cur.name)}</span>` : ''}${C.late ? `<span class="pp-latec" title="งานย่อยที่เลยกำหนด">⚠ ${C.late} เลยกำหนด</span>` : ''}`;
   }
-  const eb = g.edit ? `<span class="pp-ebs"><button type="button" class="pp-eb" data-a="ren" title="แก้ชื่อ" aria-label="แก้ชื่อ">✎</button>${t.kind === 'ms' ? '' : '<button type="button" class="pp-eb" data-a="sub" title="เพิ่มระดับย่อย" aria-label="เพิ่มระดับย่อย">＋</button>'}<button type="button" class="pp-eb" data-a="meet" title="เพิ่มนัดหมาย / ประชุม / ลงพื้นที่ ใต้ขั้นตอนนี้" aria-label="เพิ่มนัดหมาย">📅</button><button type="button" class="pp-eb" data-a="todo" title="เพิ่มกำหนดการที่ต้องทำ ใต้ขั้นตอนนี้" aria-label="เพิ่มกำหนดการ">🎯</button><button type="button" class="pp-eb" data-a="more" title="ตัวเลือกเพิ่มเติม" aria-label="ตัวเลือกเพิ่มเติม" aria-haspopup="menu">⋯</button></span>` : '';
+  const eb = g.edit ? `<span class="pp-ebs"><button type="button" class="pp-eb" data-a="ren" title="แก้ชื่อ" aria-label="แก้ชื่อ">✎</button>${t.kind === 'ms' ? '' : '<button type="button" class="pp-eb" data-a="sub" title="เพิ่มระดับย่อย" aria-label="เพิ่มระดับย่อย">＋</button>'}<button type="button" class="pp-eb" data-a="meet" title="เพิ่มนัดหมาย / ประชุม / ลงพื้นที่ ใต้ขั้นตอนนี้" aria-label="เพิ่มนัดหมาย">📅</button><button type="button" class="pp-eb" data-a="todo" title="เพิ่มกำหนดการที่ต้องทำ ใต้ขั้นตอนนี้" aria-label="เพิ่มกำหนดการ">🎯</button><button type="button" class="pp-eb" data-a="memo" title="${memoHas(t) ? 'แก้บันทึก / รูป' : 'เพิ่มบันทึก / คำอธิบาย / รูป'}" aria-label="บันทึก">📝</button><button type="button" class="pp-eb" data-a="more" title="ตัวเลือกเพิ่มเติม" aria-label="ตัวเลือกเพิ่มเติม" aria-haspopup="menu">⋯</button></span>` : '';
   const cols = g.cols;
   left.innerHTML = `${cols.ed ? `<span class="pp-ctl"><i class="pp-hdl" title="ลากเพื่อจัดลำดับ / ย้ายเข้าระดับ" aria-hidden="true">⋮⋮</i><span class="pp-ud"><button type="button" data-a="up" aria-label="เลื่อนขึ้น">▲</button><button type="button" data-a="down" aria-label="เลื่อนลง">▼</button></span></span>` : ''}
     <span class="gp-w">${escapeHTML(r.wbs)}</span>
-    <span class="gp-nm pp-nm" style="padding-left:${ind}px">${sumNode ? `<button type="button" class="gp-fold" data-a="fold" aria-expanded="${!r.folded}" aria-label="${r.folded ? 'ขยาย' : 'พับ'} ${escapeHTML(t.name)}">${ic(r.folded ? 'right' : 'down', 14, 2.2)}</button>` : '<i class="pp-sp"></i>'}${t.kind === 'ms' ? '<i class="gp-msi" aria-hidden="true"></i>' : ''}<span class="pp-t">${sumNode ? '<b>' + escapeHTML(t.name || '(ไม่มีชื่อ)') + '</b>' : escapeHTML(t.name || '(ไม่มีชื่อ)')}</span>${t.est && !sumNode ? '<i class="pp-est" title="วันที่ประมาณการ — ลากปรับได้">≈</i>' : ''}${t.note ? `<i class="gp-note" title="${escapeHTML(t.note)}">${ic('pencil', 12)}</i>` : ''}${r.folded ? `<small class="pp-nk">${C.n} งาน</small>` : ''}${eb}</span>
+    <span class="gp-nm pp-nm" style="padding-left:${ind}px">${sumNode ? `<button type="button" class="gp-fold" data-a="fold" aria-expanded="${!r.folded}" aria-label="${r.folded ? 'ขยาย' : 'พับ'} ${escapeHTML(t.name)}">${ic(r.folded ? 'right' : 'down', 14, 2.2)}</button>` : '<i class="pp-sp"></i>'}${t.kind === 'ms' ? '<i class="gp-msi" aria-hidden="true"></i>' : ''}<span class="pp-t">${sumNode ? '<b>' + escapeHTML(t.name || '(ไม่มีชื่อ)') + '</b>' : escapeHTML(t.name || '(ไม่มีชื่อ)')}</span>${t.est && !sumNode ? '<i class="pp-est" title="วันที่ประมาณการ — ลากปรับได้">≈</i>' : ''}${memoHas(t) ? `<button type="button" class="gp-memo" data-a="memo" data-mt="${t.id}" aria-label="ดูบันทึก">📝${memoImgs(t).length ? `<b>🖼${memoImgs(t).length}</b>` : ''}</button>` : ''}${r.folded ? `<small class="pp-nk">${C.n} งาน</small>` : ''}${eb}</span>
     ${cols.h ? `<span class="pp-hosp">${escapeHTML(t.hosp || '')}</span>` : ''}
     ${cols.d ? `<span class="gp-c-dt">${t.kind === 'ms' ? gpFmt(t.start, true) : gpFmt(t.start) + ' – ' + gpFmt(t.end, true)}</span>` : ''}
     ${cols.narrow ? '' : `<span class="pp-st">${st}</span>`}
@@ -11122,6 +11170,7 @@ async function ppRowAct(pid, tid, a, btn) {
   const [plan, t] = ppT(pid, tid); if (!t) return;
   if (a === 'fold') { gp.collapsed.has(tid) ? gp.collapsed.delete(tid) : gp.collapsed.add(tid); lsSet('gp_collapsed', [...gp.collapsed]); render(); return; }
   if (a === 'pct') { ppDonePop(btn, pid, tid); return; }
+  if (a === 'memo') { memoOpen(pid, tid, ppEditOn(plan)); return; }
   if (!gpCanEdit(plan)) return;
   if (a === 'up' || a === 'down') { if (ppSwap(plan, tid, a === 'up' ? -1 : 1)) await ppCommit(plan); return; }
   if (a === 'ren') { ppRename(pid, tid); return; }
@@ -11374,6 +11423,211 @@ function ppDonePop(anchor, pid, tid) {
 }
 
 // ---------- แผงรายละเอียดด้านขวา ----------
+// ---------- 📝 บันทึก / คำอธิบาย / รูป ของรายการในแผนโครงการ ----------
+// task.memo = { html, imgs: [{ id, name, w, h, cat, by, at }], at, by } · task.note = ข้อความล้วน (ใช้ค้นหา / ส่งออก / สรุปผู้บริหาร)
+// รูปเก็บใน Google Drive (ผ่าน Apps Script action imgUpload) · แสดงด้วยลิงก์ภาพย่อของ Drive ถ้าโหลดไม่ได้จะขอผ่าน Apps Script (action img)
+const MEMO_IMG = new Map();
+function memoHas(t) { return !!(t && ((t.memo && ((t.memo.html || '').replace(/<[^>]*>/g, '').trim() || (t.memo.imgs || []).length)) || (t.note || '').trim())); }
+function memoImgs(t) { return (t && t.memo && t.memo.imgs) || []; }
+function memoThumb(id, w) { return `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w${w || 800}`; }
+function memoImgTag(im, w, cls) { const c = MEMO_IMG.get(im.id); return `<img class="${cls || ''}" data-mid="${escapeHTML(im.id)}" data-mcat="${escapeHTML(im.cat || 'work')}" src="${c && typeof c === 'string' ? c : memoThumb(im.id, w)}" alt="${escapeHTML(im.name || 'รูปภาพ')}" loading="lazy" referrerpolicy="no-referrer">`; }
+document.addEventListener('error', (e) => {
+  const im = e.target; if (!(im instanceof HTMLImageElement) || !im.dataset.mid || im.dataset.fb) return;
+  im.dataset.fb = '1'; memoFetch(im.dataset.mid, im.dataset.mcat).then(src => { if (src) im.src = src; else im.classList.add('memo-broken'); });
+}, true);
+function memoFetch(id, cat) {
+  const c = MEMO_IMG.get(id); if (typeof c === 'string') return Promise.resolve(c); if (c) return c;
+  const u = URLS[cat] || URLS.work;
+  const p = secureFetch(u, { action: 'img', id }).then(d => { const s = d && d.data || ''; if (s) MEMO_IMG.set(id, s); else MEMO_IMG.delete(id); return s; }).catch(() => { MEMO_IMG.delete(id); return ''; });
+  MEMO_IMG.set(id, p); return p;
+}
+async function memoApi(cat, body) {
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 60000);
+  try {
+    const r = await fetch(URLS[cat], { method: 'POST', body: JSON.stringify({ token: API_TOKEN, ...body }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal });
+    let d; try { d = JSON.parse(await r.text()); } catch (e) { throw new Error('เซิร์ฟเวอร์ตอบกลับผิดรูปแบบ'); }
+    if (d.error) throw new Error(d.error === 'ข้อมูลไม่ถูกต้อง' ? 'เซิร์ฟเวอร์ยังไม่รองรับรูป — ต้อง Deploy Apps Script เวอร์ชันใหม่ก่อน' : d.error);
+    return d;
+  } catch (e) { if (e.name === 'AbortError') throw new Error('หมดเวลารอเซิร์ฟเวอร์'); throw e; }
+  finally { clearTimeout(tm); }
+}
+// ย่อรูปก่อนอัปโหลด (ด้านยาว ≤ 1600px)
+function memoShrink(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const M = 1600, r = Math.min(1, M / Math.max(img.naturalWidth, img.naturalHeight)), w = Math.round(img.naturalWidth * r), h = Math.round(img.naturalHeight * r);
+      const keep = (file.type === 'image/gif') || (r === 1 && file.size < 400 * 1024 && /png|jpe?g|webp/.test(file.type));
+      if (keep) { const fr = new FileReader(); fr.onload = () => { URL.revokeObjectURL(url); res({ data: fr.result, w: img.naturalWidth, h: img.naturalHeight }); }; fr.onerror = () => rej(new Error('อ่านไฟล์ไม่ได้')); fr.readAsDataURL(file); return; }
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); cx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url); res({ data: cv.toDataURL('image/jpeg', 0.86), w, h });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('ไฟล์นี้ไม่ใช่รูปภาพ')); };
+    img.src = url;
+  });
+}
+async function memoUpload(file, cat, ref) {
+  if (file.size > 25 * 1024 * 1024) throw new Error('รูปใหญ่เกิน 25 MB');
+  const s = await memoShrink(file);
+  const name = (file.name && file.name !== 'image.png' ? file.name : `รูป ${new Date().toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })}`).slice(0, 80);
+  const r = await memoApi(cat, { action: 'imgUpload', data: s.data, name, ref: ref || '' });
+  if (!r.id) throw new Error('อัปโหลดไม่สำเร็จ');
+  MEMO_IMG.set(r.id, s.data);
+  return { id: r.id, name, w: s.w, h: s.h, cat, by: USER_NAME || '', at: Date.now() };
+}
+// ล้าง HTML ให้เหลือเฉพาะรูปแบบพื้นฐาน
+function memoClean(html) {
+  const tpl = document.createElement('template'); tpl.innerHTML = String(html || '');
+  const OK = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'A', 'BR', 'P', 'DIV']);
+  const walk = (node) => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) return;
+      if (n.nodeType !== 1) { n.remove(); return; }
+      if (['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'IMG', 'SVG', 'VIDEO', 'AUDIO', 'TEMPLATE'].includes(n.tagName)) { n.remove(); return; }
+      walk(n);
+      if (!OK.has(n.tagName)) { n.replaceWith(...n.childNodes); return; }
+      const href = n.tagName === 'A' ? n.getAttribute('href') : null;
+      [...n.attributes].forEach(a => n.removeAttribute(a.name));
+      if (n.tagName === 'A') { if (href && /^https?:\/\//i.test(href)) { n.setAttribute('href', href); n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener'); } else n.replaceWith(...n.childNodes); }
+    });
+  };
+  walk(tpl.content);
+  let out = tpl.innerHTML.replace(/(<br>\s*){3,}/g, '<br><br>').trim();
+  if (!out.replace(/<[^>]*>|&nbsp;|\s/g, '')) out = '';
+  return out;
+}
+function memoText(html) { const d = document.createElement('div'); d.innerHTML = String(html || '').replace(/<br\s*\/?>/gi, '\n').replace(/<(p|div|li)\b[^>]*>/gi, '\n$&').replace(/<\/(p|div|li)>/gi, '\n'); return d.textContent.replace(/\n{3,}/g, '\n\n').trim(); }
+function memoHtmlOf(t) { if (t.memo && t.memo.html != null) return t.memo.html; return t.note ? escapeHTML(t.note).replace(/\n/g, '<br>') : ''; }
+function memoLinkify(html) { return html; }
+
+// ส่วน “📝 บันทึก” ในหน้าต่างรายละเอียด
+function memoSectionHTML(t, edit) {
+  const html = memoHtmlOf(t), imgs = memoImgs(t), has = memoHas(t), m = t.memo || {};
+  const meta = m.at ? `แก้ล่าสุด ${escapeHTML(fmtDateTime(m.at))}${m.by ? ' · ' + escapeHTML(m.by) : ''}` : '';
+  if (!edit) {
+    if (!has) return '';
+    return `<div class="memo" id="memoBox"><div class="memo-h"><b>📝 บันทึก</b><small>${meta}</small></div>${html ? `<div class="memo-doc">${html}</div>` : ''}<div class="memo-imgs" data-mimgs></div></div>`;
+  }
+  return `<div class="memo edit" id="memoBox"><div class="memo-h"><b>📝 บันทึก / คำอธิบาย</b><small>${meta || 'โน้ต · คำอธิบาย · รายการ · ลิงก์ · รูป'}</small></div>
+    <div class="memo-ed"><div class="memo-tb" role="toolbar" aria-label="จัดรูปแบบบันทึก"><button type="button" data-cmd="bold" title="ตัวหนา (Ctrl+B)"><b>B</b></button><button type="button" data-cmd="italic" title="ตัวเอียง (Ctrl+I)"><i>I</i></button><button type="button" data-cmd="insertUnorderedList" title="รายการ •">•</button><button type="button" data-cmd="insertOrderedList" title="รายการ 1.">1.</button><button type="button" data-cmd="link" title="ใส่ลิงก์">🔗</button><button type="button" data-cmd="img" title="แนบรูป (หรือลากมาวาง / Ctrl+V)">🖼</button><span class="sp"></span>${has ? '<button type="button" data-cmd="clear" class="memo-del" title="ลบบันทึกทั้งหมด">🗑</button>' : ''}</div>
+    <div class="memo-tx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="บันทึก" data-ph="พิมพ์บันทึก คำอธิบาย หรือวางรูป (Ctrl+V) ได้เลย…">${html}</div></div>
+    <div class="memo-imgs" data-mimgs></div>
+    <div class="memo-drop" data-mdrop>🖼 ลากรูปมาวาง · Ctrl+V · <u>คลิกเลือกไฟล์</u></div>
+    <input type="file" accept="image/*" multiple hidden data-mfile></div>`;
+}
+// ผูกการทำงาน · คืน { apply(live) } ไว้เรียกตอนบันทึก
+function memoWire(d, t, plan, edit) {
+  const box = d.querySelector('#memoBox');
+  const W = { imgs: clone(memoImgs(t)), dirty: false, busy: 0, cleared: false };
+  const cat = (plan && plan.sourceType) || 'work';
+  const drawImgs = () => {
+    const el = box && box.querySelector('[data-mimgs]'); if (!el) return;
+    el.innerHTML = W.imgs.map((im, i) => `<span class="memo-chip" data-mi="${i}" tabindex="0" role="button" aria-label="ดูรูป ${escapeHTML(im.name || '')}">${memoImgTag(im, 120, 'memo-ct')}<span class="memo-cn">${escapeHTML(im.name || 'รูปภาพ')}</span>${edit ? `<button type="button" class="memo-x" data-mx="${i}" title="ลบรูปนี้" aria-label="ลบรูป">✕</button>` : ''}</span>`).join('') + (W.busy ? `<span class="memo-chip busy"><span class="memo-spin"></span><span class="memo-cn">กำลังอัปโหลด ${W.busy} รูป…</span></span>` : '');
+    el.querySelectorAll('[data-mi]').forEach(c => {
+      const i = +c.dataset.mi;
+      c.onclick = (e) => { if (e.target.closest('[data-mx]')) return; memoLightbox(W.imgs, i, t.name); };
+      c.onkeydown = (e) => { if (e.key === 'Enter') memoLightbox(W.imgs, i, t.name); };
+      c.onmouseenter = () => memoPeekImg(c, W.imgs[i]); c.onmouseleave = memoPeekHide;
+    });
+    el.querySelectorAll('[data-mx]').forEach(b => b.onclick = (e) => { e.stopPropagation(); memoPeekHide(); W.imgs.splice(+b.dataset.mx, 1); W.dirty = true; drawImgs(); });
+  };
+  if (!box) return { apply() {} };
+  drawImgs();
+  if (!edit) return { apply() {} };
+  const tx = box.querySelector('.memo-tx'), fileIn = box.querySelector('[data-mfile]');
+  const addFiles = async (files) => {
+    files = [...files].filter(f => /^image\//.test(f.type)); if (!files.length) return;
+    W.busy += files.length; drawImgs();
+    for (const f of files) {
+      try { W.imgs.push(await memoUpload(f, cat, (plan ? plan.id : '') + '/' + t.id)); W.dirty = true; }
+      catch (e) { showToast('🖼 ' + e.message); }
+      W.busy--; drawImgs();
+    }
+  };
+  tx.addEventListener('input', () => { W.dirty = true; });
+  tx.addEventListener('paste', (e) => {
+    const dt = e.clipboardData; if (!dt) return;
+    const files = [...dt.items].filter(i => i.kind === 'file' && /^image\//.test(i.type)).map(i => i.getAsFile()).filter(Boolean);
+    if (files.length) { e.preventDefault(); addFiles(files); return; }
+    const h = dt.getData('text/html'), p = dt.getData('text/plain');
+    e.preventDefault();
+    if (h) document.execCommand('insertHTML', false, memoClean(h)); else document.execCommand('insertText', false, p);
+  });
+  const dz = box.querySelector('[data-mdrop]');
+  [tx, dz].forEach(el => {
+    el.addEventListener('dragover', (e) => { if ([...(e.dataTransfer.items || [])].some(i => i.kind === 'file')) { e.preventDefault(); dz.classList.add('on'); } });
+    el.addEventListener('dragleave', () => dz.classList.remove('on'));
+    el.addEventListener('drop', (e) => { const f = e.dataTransfer.files; if (f && f.length) { e.preventDefault(); dz.classList.remove('on'); addFiles(f); } });
+  });
+  dz.onclick = () => fileIn.click(); fileIn.onchange = () => { addFiles(fileIn.files); fileIn.value = ''; };
+  box.querySelectorAll('[data-cmd]').forEach(b => b.onmousedown = (e) => e.preventDefault());
+  box.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => {
+    const c = b.dataset.cmd;
+    if (c === 'img') { fileIn.click(); return; }
+    if (c === 'clear') { if (!confirm('ลบบันทึกและรูปทั้งหมดของรายการนี้?\n(กดบันทึกแล้ว Ctrl+Z เพื่อเลิกทำได้)')) return; tx.innerHTML = ''; W.imgs = []; W.dirty = true; W.cleared = true; drawImgs(); return; }
+    tx.focus();
+    if (c === 'link') { const u = prompt('ใส่ลิงก์ (https://…)', 'https://'); if (u && /^https?:\/\/\S+$/i.test(u.trim())) { const sel = window.getSelection(); if (sel && sel.toString()) document.execCommand('createLink', false, u.trim()); else document.execCommand('insertHTML', false, `<a href="${escapeHTML(u.trim())}" target="_blank" rel="noopener">${escapeHTML(u.trim())}</a>&nbsp;`); W.dirty = true; } return; }
+    document.execCommand(c, false, null); W.dirty = true;
+  });
+  return {
+    busy: () => W.busy > 0,
+    apply(live) {
+      const html = memoClean(tx.innerHTML), orig = memoHtmlOf(t);
+      const changed = W.dirty || html !== memoClean(orig);
+      if (!changed) return;
+      if (!html && !W.imgs.length) { delete live.memo; delete live.note; return; }
+      live.memo = { html, imgs: W.imgs, at: Date.now(), by: USER_NAME || '' };
+      const txt = memoText(html); if (txt) live.note = txt; else delete live.note;
+    }
+  };
+}
+// ชี้ที่รูป = ภาพตัวอย่าง (ยังไม่ต้องกด)
+let memoPeekEl = null, memoPeekT = null;
+function memoPeekHide() { clearTimeout(memoPeekT); if (memoPeekEl) { memoPeekEl.remove(); memoPeekEl = null; } }
+function memoPeekAt(anchor, html, wide) {
+  memoPeekHide();
+  memoPeekT = setTimeout(() => {
+    const p = document.createElement('div'); p.className = 'memo-peek' + (wide ? ' wide' : ''); p.innerHTML = html; document.body.appendChild(p); memoPeekEl = p;
+    const r = anchor.getBoundingClientRect(), pw = p.offsetWidth, ph = p.offsetHeight;
+    let x = Math.min(window.innerWidth - pw - 8, Math.max(8, r.left)), y = r.bottom + 6; if (y + ph > window.innerHeight - 8) y = Math.max(8, r.top - ph - 6);
+    p.style.left = x + 'px'; p.style.top = y + 'px';
+  }, 220);
+}
+function memoPeekImg(anchor, im) { if (!im) return; memoPeekAt(anchor, `${memoImgTag(im, 720, 'memo-pi')}<div class="memo-pc">${escapeHTML(im.name || 'รูปภาพ')}<small>กดเพื่อดูเต็มจอ</small></div>`, false); }
+function memoPeekTask(anchor, t) {
+  const html = memoHtmlOf(t), imgs = memoImgs(t), m = t.memo || {};
+  const txt = memoText(html); const short = txt.length > 260 ? txt.slice(0, 260) + '…' : txt;
+  memoPeekAt(anchor, `<div class="memo-pm">📝 บันทึก${m.at ? ` · ${escapeHTML(fmtDateTime(m.at))}${m.by ? ' · ' + escapeHTML(m.by) : ''}` : ''}</div>${short ? `<div class="memo-pt">${escapeHTML(short).replace(/\n/g, '<br>')}</div>` : ''}${imgs.length ? `<div class="memo-pg">${imgs.slice(0, 4).map(im => memoImgTag(im, 240, '')).join('')}${imgs.length > 4 ? `<span>+${imgs.length - 4}</span>` : ''}</div>` : ''}<div class="memo-pf">คลิกเพื่อเปิดดูทั้งหมด</div>`, true);
+}
+document.addEventListener('mouseover', (e) => {
+  const a = e.target.closest && e.target.closest('.gp-memo'); if (!a || a.contains(e.relatedTarget)) return;
+  const id = a.dataset.mt, pl = gpPlans().find(p => p.tasks.some(x => x.id === id)); const t = pl && pl.tasks.find(x => x.id === id); if (t) memoPeekTask(a, t);
+});
+document.addEventListener('mouseout', (e) => { const a = e.target.closest && e.target.closest('.gp-memo'); if (a && !a.contains(e.relatedTarget)) memoPeekHide(); });
+function memoOpen(pid, tid, focus) {
+  memoPeekHide(); gpOpenDrawer(pid, tid);
+  setTimeout(() => { const b = document.querySelector('#gpDrawer #memoBox'); if (b) { b.scrollIntoView({ block: 'start', behavior: 'smooth' }); const tx = b.querySelector('.memo-tx'); if (focus && tx) { tx.focus(); const r = document.createRange(); r.selectNodeContents(tx); r.collapse(false); const s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } } }, 80);
+}
+// ดูรูปเต็มจอ
+function memoLightbox(imgs, i, title) {
+  memoPeekHide(); if (!imgs || !imgs.length) return;
+  const ov = document.createElement('div'); ov.className = 'memo-lb'; ov.tabIndex = -1;
+  const draw = () => {
+    const im = imgs[i];
+    ov.innerHTML = `<div class="memo-lbt"><span>${escapeHTML(title || '')} · รูป ${i + 1} / ${imgs.length}</span><span class="memo-lbn">${escapeHTML(im.name || '')}</span><a href="https://drive.google.com/file/d/${encodeURIComponent(im.id)}/view" target="_blank" rel="noopener">เปิดใน Google Drive ↗</a><button type="button" data-c aria-label="ปิด">✕</button></div>
+      <div class="memo-lbm">${imgs.length > 1 ? '<button type="button" class="memo-lbp" data-p aria-label="รูปก่อนหน้า">◀</button>' : ''}${memoImgTag(im, 2000, 'memo-lbi')}${imgs.length > 1 ? '<button type="button" class="memo-lbp" data-n aria-label="รูปถัดไป">▶</button>' : ''}</div>`;
+    ov.querySelector('[data-c]').onclick = close;
+    const p = ov.querySelector('[data-p]'), n = ov.querySelector('[data-n]');
+    if (p) p.onclick = (e) => { e.stopPropagation(); i = (i - 1 + imgs.length) % imgs.length; draw(); };
+    if (n) n.onclick = (e) => { e.stopPropagation(); i = (i + 1) % imgs.length; draw(); };
+  };
+  const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } else if (e.key === 'ArrowLeft' && imgs.length > 1) { i = (i - 1 + imgs.length) % imgs.length; draw(); } else if (e.key === 'ArrowRight' && imgs.length > 1) { i = (i + 1) % imgs.length; draw(); } };
+  const close = () => { document.removeEventListener('keydown', onKey, true); ov.remove(); };
+  ov.addEventListener('mousedown', (e) => { if (e.target === ov || e.target.classList.contains('memo-lbm')) close(); });
+  document.addEventListener('keydown', onKey, true);
+  draw(); document.body.appendChild(ov); ov.focus();
+}
+
 function gpOpenDrawer(pid, tid) {
   const plan = gpLive(pid); if (!plan) return;
   const t0 = plan.tasks.find(x => x.id === tid); if (!t0) return;
@@ -11421,7 +11675,7 @@ function gpOpenDrawer(pid, tid) {
   if (leaf && srcs.length) html += `<label class="gp-fl">ใช้วันที่ร่วมกับกิจกรรมในไทม์ไลน์</label><div class="gp-deps" id="ppSrc">${srcs.map(x => `<div class="gp-dep"><span>${escapeHTML(x.a.label)}</span><small>${escapeHTML(x.d ? x.d.name : 'To-do')}</small>${edit ? `<button type="button" class="gp-dx" data-src="${x.a.id}" aria-label="เลิกผูก">${ic('x', 13, 2.4)}</button>` : ''}</div>`).join('')}</div><small class="pp-hint">แก้วันที่ที่ไหน อีกที่เปลี่ยนตาม</small>`;
   const linked = [...M.values()].filter(x => x.a.planRef === tid);
   if (linked.length) { const nm = linked.filter(x => ppAttKind(x.a) === 'meet').length; html += `<div class="pp-calc sm">ผูกไว้ใต้ขั้นตอนนี้: <b>📅 ${nm} · 🎯 ${linked.length - nm}</b><small>กดปุ่ม 📅 / 🎯 ที่แถบเครื่องมือเพื่อแสดง</small></div>`; }
-  html += `<label class="gp-fl" for="gpNote">หมายเหตุ</label><textarea id="gpNote" class="text-input" rows="3" ${ro}>${escapeHTML(t.note || '')}</textarea>`;
+  html += memoSectionHTML(t, edit);
   html += `<details class="pp-fin" ${t.sname || t.ssub ? 'open' : ''}><summary>🖥 บนสไลด์ผู้บริหาร <small>(ไม่บังคับ)</small></summary><label class="gp-fl" for="ppSN">ชื่อบนสไลด์</label><input id="ppSN" class="text-input" maxlength="120" value="${escapeHTML(t.sname || '')}" placeholder="ว่าง = ใช้ชื่อรายการ" ${ro}><label class="gp-fl" for="ppSS">บรรทัดรอง</label><input id="ppSS" class="text-input" maxlength="160" value="${escapeHTML(t.ssub || '')}" placeholder="เช่น โรงพยาบาลนครพิงค์ จังหวัดเชียงใหม่" ${ro}></details>`;
   // การเงิน: วงเงินแยกตามแหล่งเงิน (แผน/ผลรายเดือนกรอกที่หน้า "การเงิน")
   const F = t.fin || {}, fSrcs = pfSources(plan), fAmt = pfSrcAmts(F), fM = F.m || {};
@@ -11477,15 +11731,17 @@ function gpOpenDrawer(pid, tid) {
   d.querySelectorAll('[data-fs]').forEach(i => { i.oninput = fsum; i.onblur = () => { if (i.value.trim()) i.value = ppMoney(ppNum(i.value)); }; });
   fsum();
   { const gf = d.querySelector('[data-gofin]'); if (gf) gf.onclick = () => { const pr = ppProjOf(plan); gpCloseDrawer(); if (pr) pfGoFin(pr.id); }; }
+  const memoW = memoWire(d, t, plan, edit);
   const save = async () => {
     const name = q('#gpName').value.trim(); if (!name) { q('#gpName').focus(); showToast('กรุณาใส่ชื่อ'); return; }
+    if (memoW.busy && memoW.busy()) { showToast('รอให้รูปอัปโหลดเสร็จก่อน'); return; }
     const [pl, live] = ppT(pid, tid); if (!live) { showToast('รายการนี้ถูกลบโดยผู้ใช้อื่นแล้ว'); gpCloseDrawer(); render(); return; }
     const ix2 = ppIdx(pl), isLeaf = !ix2.has(tid), oldS = live.start, oldE = live.end;
     live.name = name;
     const code = q('#ppCode').value.trim(); if (code) live.code = code; else delete live.code;
     const hosp = q('#ppHosp').value.trim(); if (hosp) live.hosp = hosp; else delete live.hosp;
     live.owner = q('#gpOwner').value.trim();
-    const note = q('#gpNote').value.trim(); if (note) live.note = note; else delete live.note;
+    memoW.apply(live);
     const sn = q('#ppSN').value.trim(), ss = q('#ppSS').value.trim(); if (sn) live.sname = sn; else delete live.sname; if (ss) live.ssub = ss; else delete live.ssub;
     let n = 0;
     if (isLeaf) {
