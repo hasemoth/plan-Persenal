@@ -1666,6 +1666,28 @@ body.gs-on .content { padding-bottom: 90px; }
 .gp-slip.late { color: #C81E3A; }
 .gp-norow { position: relative; padding: 30px 20px; color: #5B6680; font-size: 14px; position: sticky; left: 0; width: min(100%, 560px); }
 .gp-tip { position: fixed; z-index: 3000; pointer-events: none; background: #3A2E6E; color: #fff; font-size: 12.5px; font-weight: 600; border-radius: 999px; padding: 3px 10px; white-space: nowrap; box-shadow: 0 4px 12px rgba(58, 46, 110, .35); }
+/* เรียงงานตามวันที่คลิกบนหัวตาราง */
+.gp-th { cursor: pointer; user-select: none; }
+.gp-thhov { position: absolute; top: 0; bottom: 0; background: rgba(79, 70, 229, .08); border-left: 1px solid #A5B4FC; border-right: 1px solid #A5B4FC; pointer-events: none; box-sizing: border-box; }
+.gp-thsel { position: absolute; top: 0; bottom: 0; background: rgba(79, 70, 229, .16); box-shadow: inset 0 -3px #4F46E5; pointer-events: none; }
+.gp-bg i.gp-sband { background: rgba(99, 102, 241, .07); border-left: 1.5px dashed #818CF8; border-right: 1.5px dashed #818CF8; box-sizing: border-box; }
+.gp-row.gp-dim > .gp-track, .gp-row.gp-dim > .gp-cell > * { opacity: .42; }
+.gp-row.gp-dim:hover > .gp-track, .gp-row.gp-dim:hover > .gp-cell > * { opacity: .85; }
+.gp-sorted .gp-fold { visibility: hidden; }
+.gp-sortsep .gp-sepc { display: flex; align-items: center; gap: 6px; background: #F3F5F9; color: #5B6680; font-size: 12px; font-weight: 700; cursor: default; border-top: 1px dashed #C7CCD8; }
+.gp-sortsep .gp-sepc small { font-weight: 500; }
+.gp-sortsep .gp-track { background: #F8F9FC; border-top: 1px dashed #C7CCD8; }
+.gp-sorted .pp-t, .gp-sorted .pp-alb { flex: 0 1 auto; min-width: 70px; }
+.gp-wdot { flex: none; width: 9px; height: 9px; border-radius: 50%; margin-right: 2px; }
+.gp-why { flex: none; margin-left: 4px; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 0 7px; line-height: 18px; white-space: nowrap; }
+.gp-why.w-late { background: #FEE2E2; color: #B91C1C; } .gp-why.w-due { background: #FEF3C7; color: #92400E; } .gp-why.w-start { background: #DBEAFE; color: #1D4ED8; }
+.gp-why.w-prog { background: #E0E7FF; color: #4338CA; } .gp-why.w-meet, .gp-why.w-todo { background: #F3E8FF; color: #6B21A8; } .gp-why.w-done { background: #DCFCE7; color: #166534; }
+.gp-sortbar { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; padding: 7px 12px; background: #EEF2FF; border-bottom: 1px solid #C7D2FE; font-size: 13px; color: #312E81; flex-shrink: 0; }
+.gp-sortbar b { color: #241C4D; }
+.gp-sb-c { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: #3730A3; }
+.gp-sb-tip { color: #6366F1; font-size: 11.5px; }
+.gp-sortbar .gp-sb-x { margin-left: auto; padding: 3px 12px; }
+@media (max-width: 900px) { .gp-sb-tip { display: none; } }
 /* โหมดเต็มจอของหน้าแผนโครงการ */
 .pp-page.pp-full { position: fixed; inset: 0; z-index: 45; background: var(--bg); padding: 10px 16px 8px; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
 .pp-page.pp-full > .ph, .pp-page.pp-full > .gp-kpis { display: none; }
@@ -4878,6 +4900,10 @@ function renderProjectDetail(projectId) {
           toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | table image media link | preview fullscreen',
           height: 450,
           menubar: 'file edit view insert format tools table',
+          // ฟอนต์ไทยราชการ: ใช้ฟอนต์ที่ติดตั้งในเครื่อง ถ้าเครื่องไม่มี (เช่น iPad / Mac) จะแสดงด้วย Sarabun แทน
+          font_family_formats: 'TH SarabunIT๙=TH SarabunIT๙,TH SarabunIT9,TH SarabunPSK,TH Sarabun New,Sarabun,sans-serif;TH Sarabun New=TH Sarabun New,TH SarabunPSK,Sarabun,sans-serif;Angsana New=Angsana New,AngsanaUPC,Angsana,Sarabun,serif;Sarabun=Sarabun,sans-serif;Tahoma=tahoma,arial,helvetica,sans-serif;Arial=arial,helvetica,sans-serif;Times New Roman=times new roman,times,serif;Courier New=courier new,courier,monospace;ระบบ (System Font)=-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif',
+          font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 20pt 24pt 28pt 36pt 48pt',
+          content_css: ['default', 'https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,700;1,400;1,700&display=swap'],
           branding: false,
           promotion: false,
           readonly: READ_ONLY,
@@ -10857,6 +10883,143 @@ function ppCols(plan, edit) {
   const w = narrow ? 270 : (c.ed ? 50 : 0) + 62 + 330 + (c.h ? 108 : 0) + (c.d ? 128 : 0) + 154 + 52 + (c.o ? 92 : 0) + 16;
   return { ...c, narrow, tpl: parts.join(' '), LW: w };
 }
+// ---------- เรียงงานตามวัน / สัปดาห์ / เดือน ที่คลิกบนหัวตาราง (เก็บในหน่วยความจำ · รีเซ็ตเมื่อเปลี่ยนหน้า/รีเฟรช) ----------
+const GP_DOW = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+function gpSortUnit(i, band, zoom) {
+  const d = dateFromIndex(i), y = d.getUTCFullYear(), m = d.getUTCMonth();
+  const fyMode = zoom === 'quarter' || zoom === 'year';
+  const month = () => ({ a: exIdx({ y, m }), b: exIdx(exAddM({ y, m }, 1)) - 1, kind: 'เดือน', label: `${THAI_MONTHS_FULL[m]} ${y + 543}` });
+  if (band === 1) {
+    if (!fyMode) return month();
+    const fy = m >= 9 ? y + 1 : y;
+    return { a: exIdx({ y: fy - 1, m: 9 }), b: exIdx({ y: fy, m: 9 }) - 1, kind: 'ปีงบ', label: `ปีงบประมาณ ${fy + 543}` };
+  }
+  if (zoom === 'week') return { a: i, b: i, kind: 'วัน', label: `${GP_DOW[d.getUTCDay()]} ${gpFmt(i, true)}` };
+  if (zoom === 'month') { const a = i - ((d.getUTCDay() + 6) % 7), b = a + 6; return { a, b, kind: 'สัปดาห์', label: `${gpFmt(a)} – ${gpFmt(b, true)}` }; }
+  if (zoom === 'quarter') return month();
+  const q0 = m - (m % 3), fy = m >= 9 ? y + 1 : y;
+  return { a: exIdx({ y, m: q0 }), b: exIdx(exAddM({ y, m: q0 }, 3)) - 1, kind: 'ไตรมาส', label: `ไตรมาส ${(Math.floor(m / 3) + 1) % 4 + 1} ปีงบ ${String(fy + 543).slice(2)}` };
+}
+function gpSortJoin(u, v) {
+  const a = Math.min(u.a, v.a), b = Math.max(u.b, v.b);
+  if (a === u.a && b === u.b) return u;
+  return { a, b, kind: 'ช่วง', label: `${gpFmt(a, true)} – ${gpFmt(b, true)}` };
+}
+function gpSortSet(u, key) {
+  if (!u) gp.sortR = null; else gp.sortR = { a: u.a, b: u.b, kind: u.kind, label: u.label, key };
+  if (gp.scroll) gp.scroll.y = 0;
+  render();
+}
+function gpSortRows(secs, SR, today, filtering) {
+  const saved = gp.collapsed; gp.collapsed = new Set();
+  const all = [];
+  try {
+    secs.forEach(s => {
+      const rs = s.plan ? ppRows(s.plan, s.project, s.ix, s.C, today) : [];
+      if (s.head && (!filtering || rs.length)) all.push({ proj: s, folded: false });
+      rs.forEach(r => { r.sec = s; all.push(r); });
+    });
+  } finally { gp.collapsed = saved; }
+  const { a, b } = SR, rel = [], rest = [];
+  let nAll = 0;
+  all.forEach(r => {
+    let why = null, k = 0, dd = 0, done = false;
+    if (r.t && !r.nk) {
+      nAll++;
+      const t = r.t, C = r.sec.C.get(t.id), ms = t.kind === 'ms', e = ms ? t.start : t.end;
+      done = !!t.done || C.st === 'done';
+      if (!done && e < a && e < today) { why = ['late', `เลย ${today - e} วัน`]; k = 1; dd = e; }
+      else if (e >= a && e <= b) { why = ['due', (ms ? '◆ ' : 'ครบ ') + gpFmt(e)]; k = 2; dd = e; }
+      else if (t.start >= a && t.start <= b) { why = ['start', 'เริ่ม ' + gpFmt(t.start)]; k = 3; dd = t.start; }
+      else if (t.start < a && e > b) { why = ['prog', 'อยู่ระหว่างดำเนินการ']; k = 4; dd = e; }
+      if (why && done) why = ['done', '✓ ' + why[1].replace(/^เลย .*/, 'เสร็จแล้ว')];
+    } else if (r.att) {
+      nAll++;
+      const list = r.att.series ? r.att.items : [r.att.a];
+      const hit = list.find(x => x.end >= a && x.start <= b);
+      if (hit) { done = !!hit.completed; why = [done ? 'done' : r.att.k === 'todo' ? 'todo' : 'meet', (r.att.k === 'todo' ? '🎯 ' : '📅 ') + gpFmt(hit.start)]; k = 5; dd = hit.start; }
+    }
+    if (why) rel.push({ r, why, k, dd, done }); else rest.push({ r, done });
+  });
+  rel.sort((x, y) => (x.done - y.done) || (x.k - y.k) || (x.dd - y.dd));
+  const hideDone = !!gp.sortHideDone;
+  const R = rel.filter(x => !(hideDone && x.done));
+  const out = R.map(x => ({ ...x.r, lvl: 1, why: x.why, flat: true }));
+  if (!gp.sortHideRest) {
+    const rr = rest.filter(x => !(hideDone && x.done && x.r.t && !x.r.nk)).map(x => ({ ...x.r, dim: true }));
+    const n = rr.filter(x => (x.t && !x.nk) || x.att).length;
+    if (rr.length) out.push({ sep: true, n });
+    out.push(...rr);
+  }
+  return { rows: out, nRel: R.length, nAll, nDone: rel.filter(x => x.done).length };
+}
+function gpSortDecor(el, r, multi) {
+  if (!r.why) return;
+  const nm = el.querySelector('.pp-nm'); if (!nm) return;
+  nm.style.paddingLeft = (r.att ? 4 : 0) + 'px';
+  const at = nm.querySelector('.pp-t, .pp-alb');
+  const P = multi && r.sec && r.sec.project;
+  if (P) nm.insertAdjacentHTML('afterbegin', `<i class="gp-wdot" style="background:${escapeHTML(P.color || '#7C3AED')}" title="${escapeHTML(P.name)}"></i>`);
+  if (at) { at.insertAdjacentHTML('afterend', `<span class="gp-why w-${r.why[0]}" title="${escapeHTML(r.why[1])}">${escapeHTML(r.why[1])}</span>`); if (P) at.title = P.name + ' › ' + (at.textContent || ''); }
+}
+function gpSortSep(n, W) {
+  const row = document.createElement('div'); row.className = 'gp-row gp-sortsep';
+  row.innerHTML = `<div class="gp-cell gp-sepc">งานอื่น ${n} รายการ <small>(ลำดับเดิม)</small></div><div class="gp-track" style="width:${W}px"></div>`;
+  return row;
+}
+function gpSortBar(SR, info) {
+  const bar = document.createElement('div'); bar.className = 'gp-sortbar'; bar.setAttribute('role', 'status');
+  bar.innerHTML = `<span class="gp-sb-t">🔃 เรียงตาม${SR.kind && SR.kind !== 'ช่วง' ? ' ' + escapeHTML(SR.kind) : ''}: <b>${escapeHTML(SR.label)}</b></span><span class="gp-sb-n">เกี่ยวข้อง <b>${info.nRel}</b> จาก ${info.nAll} งาน</span>
+    <label class="gp-sb-c"><input type="checkbox" data-k="sortHideRest" ${gp.sortHideRest ? 'checked' : ''}> ซ่อนงานที่ไม่เกี่ยวข้อง</label>
+    <label class="gp-sb-c"><input type="checkbox" data-k="sortHideDone" ${gp.sortHideDone ? 'checked' : ''}> ซ่อนที่เสร็จแล้ว</label>
+    <span class="gp-sb-tip">Shift+คลิก / ลาก บนหัวตาราง = เลือกช่วง · Esc = ยกเลิก</span>
+    <button type="button" class="btn gp-sb-x">✕ ยกเลิกการเรียง</button>`;
+  bar.querySelectorAll('input[data-k]').forEach(c => c.onchange = () => { gp[c.dataset.k] = c.checked; render(); });
+  bar.querySelector('.gp-sb-x').onclick = () => gpSortSet(null);
+  return bar;
+}
+function gpSortBindHead(th, o) {
+  const { r0, r1, pxd, zoom, key } = o;
+  const hov = document.createElement('div'); hov.className = 'gp-thhov'; hov.hidden = true; th.appendChild(hov);
+  const unitAt = (ev, band) => {
+    const rc = th.getBoundingClientRect(), x = ev.clientX - rc.left, y = ev.clientY - rc.top;
+    const i = Math.max(r0, Math.min(r1, r0 + Math.floor(x / pxd)));
+    const bd = band || (y < 25 ? 1 : 2);
+    return [gpSortUnit(i, bd, zoom), bd];
+  };
+  const show = (u) => { const a = Math.max(u.a, r0), b = Math.min(u.b, r1); hov.style.left = (a - r0) * pxd + 'px'; hov.style.width = Math.max(2, (b - a + 1) * pxd) + 'px'; hov.hidden = false; };
+  let drag = null;
+  th.addEventListener('mousemove', (ev) => {
+    if (drag) return;
+    const [u] = unitAt(ev); show(u);
+    const cur = gp.sortR && gp.sortR.key === key && gp.sortR.a === u.a && gp.sortR.b === u.b;
+    th.title = cur ? `คลิกอีกครั้ง = ยกเลิกการเรียง` : `คลิก = เรียงงานที่เกี่ยวข้องกับ ${u.label} ขึ้นก่อน\nShift+คลิก หรือ ลาก = เลือกเป็นช่วง`;
+  });
+  th.addEventListener('mouseleave', () => { if (!drag) hov.hidden = true; });
+  th.addEventListener('mousedown', (ev) => {
+    if (ev.button !== 0) return;
+    ev.preventDefault();
+    const [u, bd] = unitAt(ev);
+    drag = { u0: u, u: u, bd, moved: false, shift: ev.shiftKey };
+    const mv = (e2) => { const [v] = unitAt(e2, drag.bd); const j = gpSortJoin(drag.u0, v); if (j !== drag.u0) drag.moved = true; drag.u = j; show(j); };
+    const up = () => {
+      document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up);
+      const d = drag; drag = null;
+      const cur = gp.sortR && gp.sortR.key === key ? gp.sortR : null;
+      if (d.moved) return gpSortSet(d.u, key);
+      if (d.shift && cur) return gpSortSet(gpSortJoin(cur, d.u0), key);
+      if (cur && cur.a === d.u0.a && cur.b === d.u0.b) return gpSortSet(null);
+      gpSortSet(d.u0, key);
+    };
+    document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !gp.sortR || !document.querySelector('.gp-sortbar')) return;
+  if (popEl || modalOpen || document.getElementById('gpDrawer') || document.querySelector('.prep-ov, .ctx-menu, .modal-overlay')) return;
+  const tg = e.target; if (tg && tg.closest && tg.closest('input, textarea, select, [contenteditable="true"]')) return;
+  gpSortSet(null);
+});
 function ppGrid(secs, today, key) {
   const pr = gpPrefs(), pxd = GP_ZOOM[pr.zoom] || GP_ZOOM.quarter, multi = secs.some(s => s.head);
   const pseudo = { tasks: secs.flatMap(s => s.plan ? s.plan.tasks : []) };
@@ -10873,14 +11036,18 @@ function ppGrid(secs, today, key) {
     if (s.head && (!filtering || rs.length)) rows.push({ proj: s, folded });
     rs.forEach(r => { r.sec = s; rows.push(r); });
   });
-  const wrap = document.createElement('div'); wrap.className = 'gp-grid' + (edit ? ' pp-edit' : '');
+  if (gp.sortR && gp.sortR.key !== key) gp.sortR = null;
+  const SR = gp.sortR, sortInfo = SR ? gpSortRows(secs, SR, today, filtering) : null;
+  if (sortInfo) { rows.length = 0; rows.push(...sortInfo.rows); }
+  const wrap = document.createElement('div'); wrap.className = 'gp-grid' + (edit ? ' pp-edit' : '') + (SR ? ' gp-sorted' : '');
+  if (sortInfo) wrap.appendChild(gpSortBar(SR, sortInfo));
   const sc = document.createElement('div'); sc.className = 'gp-scroll'; sc.id = 'gpScroll';
   sc.style.setProperty('--gp-lw', LW + 'px'); sc.style.setProperty('--pp-cols', cols.tpl);
   const inner = document.createElement('div'); inner.className = 'gp-inner'; inner.style.width = (LW + W) + 'px';
   const head = document.createElement('div'); head.className = 'gp-hrow';
   head.innerHTML = `<div class="gp-lh pp-cols">${cols.ed ? '<span></span>' : ''}<span>#</span><span>รายการ / ขั้นตอน</span>${cols.h ? '<span>โรงพยาบาล</span>' : ''}${cols.d ? '<span>เริ่ม – สิ้นสุด</span>' : ''}${cols.narrow ? '' : '<span>สถานะ / ขั้นปัจจุบัน</span>'}<span class="gp-c-pc">%</span>${cols.o ? '<span>ผู้รับผิดชอบ</span>' : ''}</div>`;
   const th = document.createElement('div'); th.className = 'gp-th'; th.style.width = W + 'px';
-  let h = '';
+  let h = SR && SR.b >= r0 && SR.a <= r1 ? `<div class="gp-thsel" style="left:${X(Math.max(SR.a, r0))}px;width:${(Math.min(SR.b, r1) - Math.max(SR.a, r0) + 1) * pxd}px"></div>` : '';
   const zoom = pr.zoom, fyMode = zoom === 'quarter' || zoom === 'year';
   for (let i = r0; i <= r1; i++) {
     const d = dateFromIndex(i), dd = d.getUTCDate(), m = d.getUTCMonth(), y = d.getUTCFullYear() + 543;
@@ -10894,7 +11061,7 @@ function ppGrid(secs, today, key) {
     }
   }
   if (today >= r0 && today <= r1) h += `<div class="gp-tpill" style="left:${X(today) + pxd / 2}px">วันนี้</div>`;
-  th.innerHTML = h; head.appendChild(th); inner.appendChild(head);
+  th.innerHTML = h; gpSortBindHead(th, { r0, r1, pxd, zoom, key }); head.appendChild(th); inner.appendChild(head);
   const body = document.createElement('div'); body.className = 'gp-body'; body.style.height = Math.max(rows.length * GP_RH, 120) + 'px';
   let bg = '';
   for (let i = r0; i <= r1; i++) {
@@ -10904,10 +11071,16 @@ function ppGrid(secs, today, key) {
     else if (zoom === 'week' && dow === 1) bg += `<i class="gp-vl" style="left:${X(i)}px"></i>`;
   }
   if (today >= r0 && today <= r1) bg += `<i class="gp-today" style="left:${X(today) + pxd / 2 - 1}px"></i>`;
+  if (SR && SR.b >= r0 && SR.a <= r1) bg = `<i class="gp-sband" style="left:${X(Math.max(SR.a, r0))}px;width:${(Math.min(SR.b, r1) - Math.max(SR.a, r0) + 1) * pxd}px"></i>` + bg;
   const bgl = document.createElement('div'); bgl.className = 'gp-bg'; bgl.style.width = W + 'px'; bgl.innerHTML = bg; body.appendChild(bgl);
   const pos = {}; rows.forEach((r, i) => { if (r.t) pos[r.t.id] = i; });
-  rows.forEach((r, i) => body.appendChild(r.proj ? ppProjRow(r.proj, r.folded, { X, pxd, W, today, cols }) : r.att ? ppAttRow(r.sec.plan, r, r.sec.g) : ppRow(r.sec.plan, r, i, r.sec.g)));
-  if (!rows.length) { const e = document.createElement('div'); e.className = 'gp-norow'; e.textContent = filtering ? 'ไม่มีรายการที่ตรงกับตัวกรอง' : multi ? 'ไม่มีโครงการในหมวดนี้' : 'ยังไม่มีรายการ — เปิดโหมดแก้ไข แล้วกด "+ เพิ่ม" ด้านบน'; body.appendChild(e); }
+  rows.forEach((r, i) => {
+    const el = r.sep ? gpSortSep(r.n, W) : r.proj ? ppProjRow(r.proj, r.folded, { X, pxd, W, today, cols }) : r.att ? ppAttRow(r.sec.plan, r, r.sec.g) : ppRow(r.sec.plan, r, i, r.sec.g);
+    if (r.dim) el.classList.add('gp-dim');
+    if (r.why) gpSortDecor(el, r, multi);
+    body.appendChild(el);
+  });
+  if (!rows.length) { const e = document.createElement('div'); e.className = 'gp-norow'; e.textContent = SR ? 'ไม่มีงานที่เกี่ยวข้องกับช่วงที่เลือก' : filtering ? 'ไม่มีรายการที่ตรงกับตัวกรอง' : multi ? 'ไม่มีโครงการในหมวดนี้' : 'ยังไม่มีรายการ — เปิดโหมดแก้ไข แล้วกด "+ เพิ่ม" ด้านบน'; body.appendChild(e); }
   let sv = '';
   rows.forEach(r => {
     const t = r.t; if (!t || !(t.deps || []).length) return;
